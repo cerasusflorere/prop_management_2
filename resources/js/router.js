@@ -6,6 +6,7 @@ import showScene from './pages/Show_Scene.vue'
 import showProp from './pages/Show_Prop.vue'
 import registerScene from './pages/Register_Scene.vue'
 import registerProp from './pages/Register_Prop.vue'
+import Setting from './pages/Setting.vue'
 
 // VueRouterプラグインを使用する
 // これによって<RouterView />コンポーネントなどを使うことができる
@@ -28,6 +29,10 @@ const routes = [
   {
     path: '/register_prop',
     component: registerProp
+  },
+  {
+    path: '/setting',
+    component: Setting
   }
 ]
 

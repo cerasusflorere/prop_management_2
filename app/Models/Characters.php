@@ -8,9 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 class Characters extends Model
 {
     /** JSONに含める属性 */
-    protected $characters = [
-        'id', 'name', 
+    protected $visible = [
+        'id', 'section_id', 'name', 
     ];
+
+    /** 登録時にJSONに含める属性 */
+    protected $fillable = [
+        'section_id', 'name',
+    ];
+
+    /**
+     * リレーションシップ - sectionsテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function section()
+    {
+        return $this->belongsTo('App\Models\Sections');
+    }
+
 
     /**
      * リレーションシップ - scenesテーブル

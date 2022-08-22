@@ -22,7 +22,7 @@
         <select id="prop" class="form__item"  v-model="registerForm.prop" required>
           <option disabled value="">小道具一覧</option>
           <option v-for="prop in optionProps" 
-            v-bind:value="prop.name" 
+            v-bind:value="prop.id" 
             v-bind:key="prop.id">
             {{ prop.name }}
           </option>
@@ -66,6 +66,7 @@ export default {
     return {
       // 取得するデータ
       characters: [],
+      optionProps: [],
       // 連動プルダウン
       selectedAttr: '',
       selectedCharacters: '',
@@ -104,12 +105,6 @@ export default {
           { id: 27, name: '未定' },
         ],
       },
-      // 小道具候補
-      optionProps: [ 
-          { id: 1, name: '手紙' }, 
-          { id: 2, name: 'ペン' }, 
-          { id: 3, name: 'くわ' }
-      ],
       // 小道具登録
       showContent: false,
       postFlag: "",
@@ -118,9 +113,9 @@ export default {
         character: '',
         prop: '',
         page: null,
-        usage: false,
+        usage: null,
         comment: null
-      } 
+      }
     }
   },
   methods: {
@@ -134,6 +129,18 @@ export default {
       // }
 
       this.characters = response.data
+    },
+
+    // 小道具を取得
+    async fetchProps () {
+      const response = await axios.get('/api/props')
+
+      // if (response.statusText !== OK) {
+      //   this.$store.commit('error/setCode', response.status)
+      //   return false
+      // }
+
+      this.optionProps = response.data
     },
 
     // 連動プルダウン
@@ -150,14 +157,15 @@ export default {
       this.showContent = false
     },
     // 登録する
-    register () {
-      console.log(this.registerForm)
+    async register () {
+      const response = await axios.post('/api/scenes', registerForm)
     }
   },
   watch: {
     $route: {
       async handler () {
         await this.fetchCharacters()
+        await this.fetchProps()
       },
       immediate: true
     }

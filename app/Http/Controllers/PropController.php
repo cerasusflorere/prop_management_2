@@ -19,7 +19,7 @@ class PropController extends Controller
      */
     public function index()
     {
-        $props = Props::all();
+        $props = Props::select('id', 'name')->get();
 
         return $props;
     }

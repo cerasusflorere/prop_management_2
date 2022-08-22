@@ -24,6 +24,11 @@
           登録- 小道具
         </RouterLink>
       </div>
+      <div class="navbar__item">
+        <RouterLink class="button" to="/setting">
+          設定
+        </RouterLink>
+      </div>
     </div>
   </nav>
 </template>

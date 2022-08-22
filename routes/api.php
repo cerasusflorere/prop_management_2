@@ -18,11 +18,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// 区分取得
+Route::get('/informations/sections', 'App\Http\Controllers\InformationController@index_section')->name('imformation.index_section');
+
+// 区分投稿
+Route::post('/informations/sections', 'App\Http\Controllers\InformationController@store_section')->name('imformation.store_section');
+
 // 登場人物取得
 Route::get('/informations/characters', 'App\Http\Controllers\InformationController@index_character')->name('imformation.index_character');
 
+// 登場人物投稿
+Route::post('/informations/characters', 'App\Http\Controllers\InformationController@store_character')->name('imformation.store_character');
+
 // 持ち主取得
 Route::get('/informations/owners', 'App\Http\Controllers\InformationController@index_owner')->name('information.index_owner');
+
+// 持ち主登録
+Route::post('/informations/owners', 'App\Http\Controllers\InformationController@store_owner')->name('information.store_owner');
 
 // 小道具一覧取得
 Route::get('/props', 'App\Http\Controllers\PropController@index')->name('prop.index');

@@ -20,8 +20,7 @@
           <label for="owner">持ち主</label>
           <select id="owner" class="form__item"  v-model="registerForm.owner">
             <option disabled value="">持ち主一覧</option>
-            <option v-for="owner in optionOwners" 
-              v-bind:value="owner.id">
+            <option v-for="owner in optionOwners" v-bind:value="owner.id">
               {{ owner.name }}
             </option>
           </select>
@@ -185,22 +184,15 @@ export default {
         formData.append('usage', null)
         formData.append('photo', this.registerForm.photo)
         const response = await axios.post('/api/props', formData)
-        // const response = await axios.post('/api/props', {
-        //   name: this.registerForm.prop,
-        //   owner_id: this.registerForm.owner,
-        //   memo: this.registerForm.comment,
-        //   usage: null,
-        //   photo: formData,
-        // })
 
         // if (response.status === UNPROCESSABLE_ENTITY) {
         //   this.errors = response.data.errors
         //   return false
         // }
 
-        // // 諸々データ削除
-        // this.registerForm = ''
-        // this.errors.prop = null
+        // 諸々データ削除
+        this.registerForm = ''
+        this.errors.prop = null
         this.reset()
 
         this.$emit('input', false)
