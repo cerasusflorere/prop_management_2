@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Cloudinary;
 use App\Models\Props;
+use App\Models\Props_Comments;
 use App\Http\Requests\StorePhoto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PropController extends Controller
 {
@@ -28,38 +32,41 @@ class PropController extends Controller
      */
     public function store(Request $request)
     {
-        dump($request);
-        // Cloudinaryにファイルを保存する
-        $result = $request->photo->storeOnCloudinary('prop_management');
-        $image_path = $result->getSecurePath(); 
-        $public_id = $result->getPublicId();
-        dump($image_path, $public_id);
-        // } else {
-        //     $public_id = null;
-        //     $url = 'A';
-        // }
+        if($request->photo !== 'null'){
+            // Cloudinaryにファイルを保存する
+            $result = $request->photo->storeOnCloudinary('prop_management');
+            $url = $result->getSecurePath(); 
+            $public_id = $result->getPublicId();
+        } else {
+            $public_id = null;
+            $url = null;
+        }
+        $owner_id = $request->owner_id !== 'null' ? $request->owner_id : null; // nullで送ると文字列になる
+        $usage = $request->usage !== 'null' ? 1 : null;
         
 
-        // DB::beginTransaction();
+        DB::beginTransaction();
 
-        // try {
-        //     $prop = Prop::create(['name' => $request->name, 'owner_id' => $request->owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $request->usage]);
-        //     $prop_comment = Props_Comments::create(['prop_id' => $prop->id, 'memo' => $request->memo]);
+        try {
+            $prop = Props::create(['name' => $request->name, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage]);
+            if($request->memo !== 'null'){
+                $prop_comment = Props_Comments::create(['prop_id' => $prop->id, 'memo' => $request->memo]);
+            }            
 
-        //     DB::commit();
-        // }catch (\Exception $exception) {
-        //     DB::rollBack();
-        //     if($request->photo != null){
-        //         // DBとの不整合を避けるためアップロードしたファイルを削除
-        //         Cloudinary::destroy($public_id);
-        //     }
+            DB::commit();
+        }catch (\Exception $exception) {
+            DB::rollBack();
+            if($request->photo !== "null"){
+                // DBとの不整合を避けるためアップロードしたファイルを削除
+                Cloudinary::destroy($public_id);
+            }
             
-        //     throw $exception;
-        // }
+            throw $exception;
+        }
 
-        // // リソースの新規作成なので
-        // // レスポンスコードは201(CREATED)を返却する
-        // return response($prop_comment, 201);
+        // リソースの新規作成なので
+        // レスポンスコードは201(CREATED)を返却する
+        return response($prop, 201);
     }
 
     /**
