@@ -28,16 +28,12 @@ class PropController extends Controller
      */
     public function store(Request $request)
     {
-        
         dump($request);
         // Cloudinaryにファイルを保存する
         $result = $request->photo->storeOnCloudinary('prop_management');
         $image_path = $result->getSecurePath(); 
         $public_id = $result->getPublicId();
         dump($image_path, $public_id);
-            // $result = $request->file('photo')->storeOnCloudinary('prop_management');
-            // $public_id = $result->getPublicId();
-            // $url = $result->getSecurePath();
         // } else {
         //     $public_id = null;
         //     $url = 'A';

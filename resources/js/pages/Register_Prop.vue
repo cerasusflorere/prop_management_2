@@ -179,15 +179,19 @@ export default {
         this.errors.prop = '小道具名を入力してください'
       }else{
         const formData = new FormData()
+        formData.append('name', this.registerForm.prop)
+        formData.append('owner_id', this.registerForm.owner)
+        formData.append('memo', this.registerForm.comment)
+        formData.append('usage', null)
         formData.append('photo', this.registerForm.photo)
         const response = await axios.post('/api/props', formData)
         // const response = await axios.post('/api/props', {
-        //   // name: this.registerForm.prop,
-        //   // owner_id: this.registerForm.owner,
-        //   // memo: this.registerForm.comment,
-        //   // usage: null,
-        //   photo: this.registerForm.photo,
-        // }) 
+        //   name: this.registerForm.prop,
+        //   owner_id: this.registerForm.owner,
+        //   memo: this.registerForm.comment,
+        //   usage: null,
+        //   photo: formData,
+        // })
 
         // if (response.status === UNPROCESSABLE_ENTITY) {
         //   this.errors = response.data.errors

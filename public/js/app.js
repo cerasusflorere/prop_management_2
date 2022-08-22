@@ -2620,9 +2620,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 //   return false
                 // }
                 _this2.prop = response.data;
-                console.log(response);
 
-              case 5:
+              case 4:
               case "end":
                 return _context2.stop();
             }
@@ -3031,25 +3030,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }
 
                 _this4.errors.prop = '小道具名を入力してください';
-                _context3.next = 11;
+                _context3.next = 15;
                 break;
 
               case 4:
                 formData = new FormData();
+                formData.append('name', _this4.registerForm.prop);
+                formData.append('owner_id', _this4.registerForm.owner);
+                formData.append('memo', _this4.registerForm.comment);
+                formData.append('usage', null);
                 formData.append('photo', _this4.registerForm.photo);
-                _context3.next = 8;
+                _context3.next = 12;
                 return axios.post('/api/props', formData);
 
-              case 8:
+              case 12:
                 response = _context3.sent;
 
                 // const response = await axios.post('/api/props', {
-                //   // name: this.registerForm.prop,
-                //   // owner_id: this.registerForm.owner,
-                //   // memo: this.registerForm.comment,
-                //   // usage: null,
-                //   photo: this.registerForm.photo,
-                // }) 
+                //   name: this.registerForm.prop,
+                //   owner_id: this.registerForm.owner,
+                //   memo: this.registerForm.comment,
+                //   usage: null,
+                //   photo: formData,
+                // })
                 // if (response.status === UNPROCESSABLE_ENTITY) {
                 //   this.errors = response.data.errors
                 //   return false
@@ -3071,7 +3074,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 // this.$router.push('')
 
 
-              case 11:
+              case 15:
               case "end":
                 return _context3.stop();
             }

@@ -113,7 +113,6 @@ export default {
       // }
 
       this.prop = response.data
-      console.log(response)
     },
     // 該当する小道具に絞る
     async scopeData_first(id) {
