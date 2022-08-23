@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sections;
-use App\Models\Characters;
-use App\Models\Owners;
+use App\Models\Section;
+use App\Models\Character;
+use App\Models\Owner;
 use Illuminate\Http\Request;
 
 class InformationController extends Controller
@@ -16,8 +16,7 @@ class InformationController extends Controller
      */
     public function index_section()
     {
-        $sections = Sections::all();
-
+        $sections = Section::all();
         return $sections;
     }
 
@@ -28,9 +27,12 @@ class InformationController extends Controller
      */
     public function index_character()
     {
-        $characters = Characters::all();
+        // $characters = Character::with('section')->get();
 
-        return $characters;
+        // return $characters;
+        $sections = Section::with('characters')->get();
+
+        return $sections->toArray();
     }
 
     /**
@@ -40,7 +42,7 @@ class InformationController extends Controller
      */
     public function index_owner()
     {
-        $owners = Owners::all();
+        $owners = Owner::all();
 
         return $owners;
     }
@@ -53,7 +55,7 @@ class InformationController extends Controller
      */
     public function store_section(Request $request)
     {
-        $section = Sections::create(['section' => $request->section]);
+        $section = Section::create(['section' => $request->section]);
 
         return response($section, 201);
     }
@@ -66,7 +68,7 @@ class InformationController extends Controller
      */
     public function store_character(Request $request)
     {
-        $character = Characters::create(['section_id' => (int)$request->section_id, 'name' => $request->name]);
+        $character = Character::create(['section_id' => (int)$request->section_id, 'name' => $request->name]);
 
         return response($character, 201);
     }
@@ -79,7 +81,7 @@ class InformationController extends Controller
      */
     public function store_owner(Request $request)
     {
-        $owner = Owners::create(['name' => $request->name]);
+        $owner = Owner::create(['name' => $request->name]);
 
         return response($owner, 201);
     }

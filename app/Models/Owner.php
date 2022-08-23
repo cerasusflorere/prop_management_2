@@ -5,24 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Sections extends Model
+class Owner extends Model
 {
     /** JSONに含める属性 */
     protected $visible = [
-        'id', 'section', 
+        'id', 'name',
     ];
 
     /** 登録時にJSONに含める属性 */
     protected $fillable = [
-        'section',
+        'name',
     ];
 
     /**
-     * リレーションシップ - charactersテーブル
+     * リレーションシップ - propsテーブル
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function character()
+    public function prop()
     {
-        return $this->hasMany('App\Models\Characters')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\Prop')->orderBy('id', 'desc');
     }
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Scenes extends Model
+class Scene extends Model
 {
     /** 取得時にJSONに含める属性 */
     protected $visible = [
@@ -25,7 +25,7 @@ class Scenes extends Model
      */
     public function character()
     {
-        return $this->belongsTo('App\Models\Characters');
+        return $this->belongsTo('App\Models\Character');
     }
 
     /**
@@ -34,7 +34,7 @@ class Scenes extends Model
      */
     public function prop()
     {
-        return $this->belongsTo('App\Models\Props');
+        return $this->belongsTo('App\Models\Prop');
     }
 
     /**
@@ -43,6 +43,6 @@ class Scenes extends Model
      */
     public function scene_comment()
     {
-        return $this->hasMany('App\Models\Scenes_Comments')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\Scenes_Comment')->orderBy('id', 'desc');
     }
 }

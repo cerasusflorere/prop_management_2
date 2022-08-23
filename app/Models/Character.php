@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Characters extends Model
+class Character extends Model
 {
     /** JSONに含める属性 */
     protected $visible = [
-        'id', 'section_id', 'name', 
+         'section','id', 'name', 'scenes',
     ];
 
     /** 登録時にJSONに含める属性 */
@@ -23,7 +23,7 @@ class Characters extends Model
      */
     public function section()
     {
-        return $this->belongsTo('App\Models\Sections');
+        return $this->belongsTo('App\Models\Section', 'section_id', 'id', 'sections');
     }
 
 
@@ -31,8 +31,8 @@ class Characters extends Model
      * リレーションシップ - scenesテーブル
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function scene()
+    public function scenes()
     {
-        return $this->hasMany('App\Models\Scenes')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\Scene');
     }
 }

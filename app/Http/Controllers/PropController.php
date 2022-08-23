@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Cloudinary;
-use App\Models\Props;
-use App\Models\Props_Comments;
+use App\Models\Prop;
+use App\Models\Props_Comment;
 use App\Http\Requests\StorePhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +19,7 @@ class PropController extends Controller
      */
     public function index()
     {
-        $props = Props::select('id', 'name')->get();
+        $props = Prop::select('id', 'name')->get();
 
         return $props;
     }
@@ -48,9 +48,9 @@ class PropController extends Controller
         DB::beginTransaction();
 
         try {
-            $prop = Props::create(['name' => $request->name, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage]);
+            $prop = Prop::create(['name' => $request->name, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage]);
             if($request->memo !== 'null'){
-                $prop_comment = Props_Comments::create(['prop_id' => $prop->id, 'memo' => $request->memo]);
+                $prop_comment = Props_Comment::create(['prop_id' => $prop->id, 'memo' => $request->memo]);
             }            
 
             DB::commit();
@@ -77,7 +77,7 @@ class PropController extends Controller
      */
     public function show($id)
     {
-        $prop = Props::where('id', $id)
+        $prop = Prop::where('id', $id)
               ->with(['owner', 'prop_comment'])->first();
 
 

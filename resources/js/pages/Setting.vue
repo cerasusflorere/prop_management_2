@@ -64,7 +64,7 @@ export default {
     }
   },
   methods: {
-    // 登場人物を取得
+    // 区分を取得
     async fetchSections () {
       const response = await axios.get('/api/informations/sections')
 

@@ -190,9 +190,9 @@ export default {
         //   return false
         // }
 
-        // 諸々データ削除
-        this.registerForm = ''
-        this.errors.prop = null
+        // // 諸々データ削除
+        // this.registerForm = ''
+        // this.errors.prop = null
         this.reset()
 
         this.$emit('input', false)

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
-class Props extends Model
+class Prop extends Model
 {
     /** 取得時にJSONに含める属性 */
     protected $visible = [
@@ -26,7 +26,7 @@ class Props extends Model
      */
     public function owner()
     {
-        return $this->belongsTo('App\Models\Owners');
+        return $this->belongsTo('App\Models\Owner');
     }
 
     /**
@@ -35,7 +35,7 @@ class Props extends Model
      */
     public function scenes()
     {
-        return $this->hasMany('App\Models\Scenes')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\Scene')->orderBy('id', 'desc');
     }
 
     /**
@@ -44,6 +44,6 @@ class Props extends Model
      */
     public function prop_comment()
     {
-        return $this->hasMany('App\Models\Props_Comments')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\Props_Comment')->orderBy('id', 'desc');
     }
 }

@@ -3256,13 +3256,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context.sent;
-                // if (response.statusText !== OK) {
+                console.log(response); // if (response.statusText !== OK) {
                 //   this.$store.commit('error/setCode', response.status)
                 //   return false
                 // }
+
                 _this.characters = response.data;
 
-              case 4:
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -3401,7 +3402,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   methods: {
-    // 登場人物を取得
+    // 区分を取得
     fetchSections: function fetchSections() {
       var _this = this;
 

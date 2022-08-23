@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Scenes;
+use App\Models\Scene;
 use Illuminate\Http\Request;
 
 class SceneController extends Controller
@@ -14,7 +14,7 @@ class SceneController extends Controller
      */
     public function index()
     {
-        $scenes = Scenes::with(['characters, props'])->get();
+        $scenes = Scene::with(['characters, props'])->get();
 
         return $scenes;
     }
@@ -38,7 +38,7 @@ class SceneController extends Controller
      */
     public function show($id)
     {
-        $scene = Scenes::where('id', $id)
+        $scene = Scene::where('id', $id)
             ->with(['scene_comment'])->first();
 
         return $scene ?? abort(404);

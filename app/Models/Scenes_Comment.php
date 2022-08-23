@@ -5,26 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Props_Comments extends Model
+class Scenes_Comment extends Model
 {
-    protected $table = 'props_comments';
+    protected $table = 'scenes_comments';
     
     /** 取得時にJSONに含める属性 */
     protected $visible = [
-        'id', 'prop_id', 'memo',
+        'id', 'scene_id', 'memo',
     ];
 
     /** JSONに含める属性 */
     protected $fillable = [
-        'prop_id', 'memo',
+        'scene_id', 'memo',
     ];
 
     /**
-     * リレーションシップ - propsテーブル
+     * リレーションシップ - scenesテーブル
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function prop()
+    public function scene()
     {
-        return $this->belongsTo('App\Models\Props');
+        return $this->belongsTo('App\Models\Scene');
     }
 }
