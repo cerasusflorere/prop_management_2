@@ -9,12 +9,13 @@
             <div class="form__button">
               <button type="button" @click="openModal_listProps()" class="button button--inverse">小道具リスト</button>
             </div>
-            
           </div>
          
           <!-- <input type="text" class="form__item" id="prop" v-model="registerForm.prop" required> -->
           <div v-if="errors.prop !== null">{{ errors.prop }}</div>
-          <vue-suggest-input class="form__item" id="prop" v-model="registerForm.prop" :items="props"/>
+          <input class="form__item" id="prop" v-model="registerForm.prop" @input="handleNameInput"/>
+          <lavel for="furigana">ふりがな</lavel>
+          <input name="furigana" id="furigana" v-model="registerForm.kana">
 
           <!-- 所有者 -->
           <label for="owner">持ち主</label>
@@ -53,6 +54,10 @@ import listProps from '../components/List_Props.vue'
 // 予測変換
 import VueSuggestInput from 'vue-suggest-input'
 import 'vue-suggest-input/dist/vue-suggest-input.css'
+// ふりがな
+import * as AutoKana from 'vanilla-autokana';
+
+let autokana;
 
 export default {
   // モーダルとして表示
@@ -87,7 +92,8 @@ export default {
       },
       // 登録内容
       registerForm: {
-        prop: null,
+        prop: '',
+        kana: '',
         owner: null,
         comment: null,
         // 写真
@@ -96,6 +102,10 @@ export default {
       // 登録状態
       loading: false
     }
+  },
+  mounted() {
+    // ふりがなのinput要素のidは省略可能
+    autokana = AutoKana.bind('#prop');
   },
   methods: {
       // 持ち主を取得
@@ -120,6 +130,10 @@ export default {
       // }
 
       this.props = response.data
+    },
+
+    handleNameInput() {
+      this.registerForm.kana = autokana.getFurigana();
     },
 
     // 小道具リストのモーダル表示 
@@ -167,9 +181,14 @@ export default {
 
     // 入力欄の値とプレビュー表示をクリアするメソッド
     reset () {
+      this.registerForm.prop = ''
+      this.registerForm.kana = ''
+      this.registerForm.owner = null
+      this.registerForm.comment = null
       this.preview = null
       this.registerForm.photo = null
       this.$el.querySelector('input[type="file"]').value = null
+      this.errors.prop = null
     },
 
     // 登録する
@@ -179,6 +198,7 @@ export default {
       }else{
         const formData = new FormData()
         formData.append('name', this.registerForm.prop)
+        formData.append('kana', this.registerForm.kana)
         formData.append('owner_id', this.registerForm.owner)
         formData.append('memo', this.registerForm.comment)
         formData.append('usage', null)
@@ -190,9 +210,7 @@ export default {
         //   return false
         // }
 
-        // // 諸々データ削除
-        // this.registerForm = ''
-        // this.errors.prop = null
+        // // 諸々データ削除        
         this.reset()
 
         this.$emit('input', false)

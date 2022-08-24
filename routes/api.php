@@ -45,6 +45,9 @@ Route::get('/props/{id}', 'App\Http\Controllers\PropController@show')->name('pro
 // 小道具投稿
 Route::post('/props', 'App\Http\Controllers\PropController@store')->name('prop.store');
 
+// 小道具更新
+Route::post('/props/{id}', 'App\Http\Controllers\PropController@update')->name('prop.update');
+
 // 使用シーン一覧取得
 Route::get('/scenes', 'App\Http\Controllers\SceneController@index')->name('scene.index');
 
@@ -52,4 +55,4 @@ Route::get('/scenes', 'App\Http\Controllers\SceneController@index')->name('scene
 Route::get('/scenes/{id}', 'App\Http\Controllers\SceneController@index')->name('scene.index');
 
 // 使用シーン投稿
-Route::post('/scenes', 'App\Http\Controllers\SceneController@create')->name('scene.create');
+Route::post('/scenes', 'App\Http\Controllers\SceneController@store')->name('scene.store');

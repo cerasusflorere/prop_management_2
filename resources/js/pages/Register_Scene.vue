@@ -12,7 +12,8 @@
 
         <select class="form__item" v-model="registerForm.character" required>
           <option disabled value="">登場人物一覧</option>
-          <option v-if="selectedCharacters" v-for="characters in selectedCharacters">
+          <option v-if="selectedCharacters" v-for="characters in selectedCharacters"
+           v-bind:value="characters.id">
             {{ characters.name }}
           </option>
         </select>
@@ -22,8 +23,7 @@
         <select id="prop" class="form__item"  v-model="registerForm.prop" required>
           <option disabled value="">小道具一覧</option>
           <option v-for="prop in optionProps" 
-            v-bind:value="prop.id" 
-            v-bind:key="prop.id">
+            v-bind:value="prop.id">
             {{ prop.name }}
           </option>
         </select>
@@ -35,7 +35,7 @@
         <!-- ページ数 -->
         <label for="page">ページ数</label>
         <small>例) 22, 24-25</small>
-        <input type="text"  id="page" class="form__item" v-model="registerForm.page">
+        <input type="text"  id="page" class="form__item" v-model="registerForm.pages">
 
         <!-- 使用するか -->
         <div class="form__check">
@@ -70,41 +70,7 @@ export default {
       // 連動プルダウン
       selectedAttr: '',
       selectedCharacters: '',
-      optionCharacters: {
-        移民たち: [
-          { id: 1, name: 'アン' }, 
-          { id: 2, name: 'メアリー' }, 
-          { id: 3, name: 'アンジェラ' },
-          { id: 4, name: 'エマ' }, 
-          { id: 5, name: 'フィオナ' }, 
-          { id: 6, name: 'モイラ' },
-          { id: 7, name: 'イアン' }, 
-          { id: 8, name: 'ハリー' }, 
-          { id: 9, name: 'ジェニファー' },
-          { id: 10, name: 'マルグレット' }, 
-          { id: 11, name: 'ステファン' }, 
-          { id: 12, name: 'ポーラ' },
-          { id: 13, name: 'ジョー' }, 
-          { id: 14, name: 'エドナ' }, 
-        ],
-        村に残った人々: [
-          { id: 15, name: 'ブレンダ' },
-          { id: 16, name: 'エドワード' }, 
-          { id: 17, name: 'グレン' }, 
-          { id: 18, name: 'ジョナサン' },
-          { id: 19, name: 'サラ' }, 
-          { id: 20, name: 'ケリー' }, 
-          { id: 21, name: 'モーリーン' },
-          { id: 22, name: 'リザ' }, 
-          { id: 23, name: 'ジョセフ' }, 
-        ],
-        船の人々: [
-          { id: 24, name: 'クリス' },
-          { id: 25, name: 'スーザン' }, 
-          { id: 26, name: 'フェルディナンド' },
-          { id: 27, name: '未定' },
-        ],
-      },
+      optionCharacters: null,
       // 小道具登録
       showContent: false,
       postFlag: "",
@@ -112,7 +78,7 @@ export default {
       registerForm: {
         character: '',
         prop: '',
-        page: null,
+        pages: null,
         usage: null,
         comment: null
       }
@@ -129,6 +95,13 @@ export default {
       // }
 
       this.characters = response.data
+
+      // 区分と登場人物をオブジェクトに変換する
+      let sections = new Object();
+      this.characters.forEach(function(section){
+        sections[section.section] = section.characters
+      })
+      this.optionCharacters = sections
     },
 
     // 小道具を取得
@@ -147,6 +120,7 @@ export default {
     selected: function(){
       this.selectedCharacters = this.optionCharacters[this.selectedAttr];
     },
+
     // 小道具登録のモーダル表示 
     openModal_register () {
       this.showContent = true
@@ -156,10 +130,74 @@ export default {
     closeModal_register (){
       this.showContent = false
     },
+
+    // first_pageとfinal_pageに分割する
+    first_finalDivide(str) {
+      return str.split(/-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/)
+    },
+
+    // 全角→半角
+    hankaku2Zenkaku(str) {
+      return str.replace(/[０-９]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+    },
+
     // 登録する
-    async register () {
-      const response = await axios.post('/api/scenes', registerForm)
-    }
+    register () {
+      // ページを分割
+      let pages_before = this.registerForm.pages.split(/,|、|，|\s+/);
+      pages_before.forEach(page => {
+        page = page.replaceAll(/\s+/g, '');
+      });
+      let pages_after = pages_before.filter(Boolean);
+
+      let pattern = /-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/;
+      let first_pages = [];
+      let final_pages = [];
+
+      pages_after.forEach(page => {
+        if ( pattern.test(page) ) {
+          let pages = this.first_finalDivide(page);
+          first_pages.push(parseInt(this.hankaku2Zenkaku(pages[0])));
+          final_pages.push(parseInt(this.hankaku2Zenkaku(pages[1])));
+        }else{
+          first_pages.push(parseInt(this.hankaku2Zenkaku(page)))
+          final_pages.push(null)
+        }
+      });
+      
+      const character = this.registerForm.character;
+      const prop = this.registerForm.prop;
+      const usage = this.registerForm.usage;
+      const comment = this.registerForm.comment;
+      first_pages.forEach(async function(page, index) {
+        const response = await axios.post('/api/scenes', {
+          character_id: character,
+          prop_id: prop,
+          first_page: page,
+          final_page: final_pages[index],
+          usage: usage,
+          memo: comment
+        })
+      });
+
+      if(usage){
+        this.usageJudgement(usage);
+      }
+
+      this.registerForm.character = '';
+      this.registerForm.prop = '';
+      this.registerForm.pages = null;
+      this.registerForm.usage = null;
+      this.registerForm.comment = null;
+    },
+    async usageJudgement (usage){
+      const response = await axios.post('/api/props/'+ this.registerForm.prop, {
+        method: 'usage_change',
+        usage: usage
+      })
+    }     
   },
   watch: {
     $route: {

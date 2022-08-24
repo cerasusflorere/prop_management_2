@@ -83,6 +83,7 @@ export default {
       })
       this.registerForm_section = null
     },
+
     async register_character () {
       const response = await axios.post('/api/informations/characters', {
         section_id: this.registerForm_character.section,
@@ -91,6 +92,7 @@ export default {
       this.registerForm_character.section = null
       this.registerForm_character.character = null
     },
+    
     async register_owner () {
       const response = await axios.post('/api/informations/owners', {
         name: this.registerForm_owner

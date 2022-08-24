@@ -3,7 +3,7 @@
     <div id="content" class="panel">
       <ul>
         <li v-for="prop in props">
-          <div type="button" @click="openModal_propDetail(prop)">{{ prop.name }}</div>
+          <div type="button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</div>
         </li>
         <detailProp :val="postProp" v-show="showContent" @close="closeModal_propDetail" />
       </ul>
@@ -46,9 +46,9 @@ export default {
     },
 
     // 小道具詳細のモーダル表示 
-    openModal_propDetail (prop) {
+    openModal_propDetail (id) {
       this.showContent = true
-      this.postProp = prop;
+      this.postProp = id;
     },
     // 小道具詳細のモーダル非表示
     closeModal_propDetail() {

@@ -10,13 +10,13 @@ class Prop extends Model
 {
     /** 取得時にJSONに含める属性 */
     protected $visible = [
-        'id', 'name', 'owner_id', 'public_id',
-        'url', 'usage',
+        'id', 'name', 'kana', 'owner_id', 'public_id',
+        'url', 'usage', 'owner', 'prop_comments', 'scenes',
     ];
  
     /** 登録時にJSONに含める属性 */
     protected $fillable = [
-        'name', 'owner_id', 'public_id',
+        'name', 'kana', 'owner_id', 'public_id',
         'url', 'usage',
     ];
 
@@ -28,6 +28,15 @@ class Prop extends Model
     {
         return $this->belongsTo('App\Models\Owner');
     }
+    
+    /**
+     * リレーションシップ - props_commetsテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function prop_comments()
+    {
+        return $this->hasMany('App\Models\Props_Comment');
+    }
 
     /**
      * リレーションシップ - scenesテーブル
@@ -35,15 +44,16 @@ class Prop extends Model
      */
     public function scenes()
     {
-        return $this->hasMany('App\Models\Scene')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\Scene');
     }
 
     /**
-     * リレーションシップ - props_commetsテーブル
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * リレーションシップ - sceneps_commentsテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function prop_comment()
+    public function scene_comments()
     {
-        return $this->hasMany('App\Models\Props_Comment')->orderBy('id', 'desc');
+        return $this->hasManyThrough('App\Models\Scene', 'App\Models\Scenes_Comment');
     }
+    
 }

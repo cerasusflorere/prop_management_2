@@ -19,7 +19,7 @@ class PropController extends Controller
      */
     public function index()
     {
-        $props = Prop::select('id', 'name')->get();
+        $props = Prop::select('id', 'name', 'kana')->orderBy('kana')->get();
 
         return $props;
     }
@@ -48,7 +48,7 @@ class PropController extends Controller
         DB::beginTransaction();
 
         try {
-            $prop = Prop::create(['name' => $request->name, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage]);
+            $prop = Prop::create(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage]);
             if($request->memo !== 'null'){
                 $prop_comment = Props_Comment::create(['prop_id' => $prop->id, 'memo' => $request->memo]);
             }            
@@ -78,8 +78,7 @@ class PropController extends Controller
     public function show($id)
     {
         $prop = Prop::where('id', $id)
-              ->with(['owner', 'prop_comment'])->first();
-
+              ->with(['owner', 'prop_comments', 'scenes', 'scenes.character', 'scenes.scene_comments'])->first();
 
         return $prop;
     }
@@ -93,7 +92,16 @@ class PropController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if($request->method == 'usage_change'){
+            $usage = Prop::where('id', $id)
+              ->select('usage')->first();
+            if($usage !== 1){
+                $affected = Prop::where('id', $id)
+                   ->update(['usage' => 1]);
+            }        
+
+            return $affected;
+        }
     }
 
     /**

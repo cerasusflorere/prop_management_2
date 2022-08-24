@@ -10,7 +10,7 @@ class Scene extends Model
     /** 取得時にJSONに含める属性 */
     protected $visible = [
         'id', 'character_id', 'prop_id', 
-        'first_page', 'final_page', 'usage',
+        'first_page', 'final_page', 'usage', 'character', 'scene_comments'
     ];
 
     /** JSONに含める属性 */
@@ -41,8 +41,8 @@ class Scene extends Model
      * リレーションシップ - scenes_commentsテーブル
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function scene_comment()
+    public function scene_comments()
     {
-        return $this->hasMany('App\Models\Scenes_Comment')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\Scenes_Comment');
     }
 }

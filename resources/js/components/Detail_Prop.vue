@@ -4,20 +4,20 @@
         <div class="detail-box">
           <!-- 写真 -->
           <div>
-            <img :src="val.url" :alt="val.name">
+            <img :src="prop.url" :alt="prop.name">
           </div>
           <!-- 詳細 -->
           <div>
             <div>
-              <h1 style="display: inline">{{ val.name }}</h1>
-              <div v-if="val.usage === 1"><i class="fas fa-tag"></i></div>
+              <h1 style="display: inline">{{ prop.name }}</h1>
+              <div v-if="prop.usage === 1"><i class="fas fa-tag"></i></div>
             </div>
-            <div>所有者: {{ val.owner }}</div>
+            <div>所有者: <span v-if="prop.owner">{{ prop.owner.name }}</span></div>
 
             <div>
               <label>メモ:</label>
-              <ul v-if="comments_prop.length" >
-                <li v-for="comment in comments_prop">
+              <ul v-if="prop.prop_comments.length" >
+                <li v-for="comment in prop.prop_comments">
                   <div>{{ comment.memo }}</div>
                 </li>
               </ul>
@@ -25,18 +25,18 @@
 
             <div>
               <label>シーン:</label>
-                <ol v-if="scenes.length">
-                  <li v-for="scene in scenes">
+                <ol v-if="prop.scenes.length">
+                  <li v-for="scene in prop.scenes">
                     <!-- 名前 -->
-                    <span>{{ scene.name }}</span>
+                    <span>{{ scene.character.name }}</span>
                     <!-- 何ページ -->
                     <span v-if="scene !== null && scene.first_page !== null"> : p. {{ scene.first_page }} 
                       <span v-if="scene !== null && scene.final_page !== null"> ~ p. {{ scene.final_page}}</span>
                     </span>
                     <!-- メモ -->
                     <div>
-                      <ul v-for="comment in comments_scene">
-                        <li v-if="comment.scene_id == scene.id">
+                      <ul v-if="scene.scene_comments.length">
+                        <li v-for="comment in scene.scene_comments">
                           <div>{{ comment.memo }}</div>
                         </li>
                       </ul>
@@ -57,7 +57,7 @@ export default {
   name: 'detailProp',
   props: {
     val: {
-      type: Object,
+      type: Number,
       required: true
     }
   },
@@ -65,8 +65,6 @@ export default {
   data() {
     return {
       prop: [],
-      // 小道具のid
-      mono: '',
       // 小道具に関するメモ
       comments_prop_all: [ 
         { id: 1, prop_id: 1, memo: '変えるかも' }, 
@@ -89,23 +87,17 @@ export default {
   },
   watch: {
     val: {
-      immediate: true,
-      handler(val){
-        this.mono = this.val.id,
-        this.scopeData_second(this.mono)
-      }  
-    },
-    $route: {
-      async handler () {
+      async handler(val) {
         await this.fetchProp()
       },
-      immediate: true
+      immediate: true,
     }
   },
   methods: {
     // 小道具の詳細を取得
     async fetchProp () {
-      const response = await axios.get('/api/props/{id}')
+      const response = await axios.get('/api/props/'+ this.val)
+      console.log(response)
 
       // if (response.statusText !== OK) {
       //   this.$store.commit('error/setCode', response.status)

@@ -2512,7 +2512,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   name: 'detailProp',
   props: {
     val: {
-      type: Object,
+      type: Number,
       required: true
     }
   },
@@ -2520,8 +2520,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       prop: [],
-      // 小道具のid
-      mono: '',
       // 小道具に関するメモ
       comments_prop_all: [{
         id: 1,
@@ -2571,13 +2569,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   watch: {
     val: {
-      immediate: true,
       handler: function handler(val) {
-        this.mono = this.val.id, this.scopeData_second(this.mono);
-      }
-    },
-    $route: {
-      handler: function handler() {
         var _this = this;
 
         return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -2611,17 +2603,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.next = 2;
-                return axios.get('/api/props/{id}');
+                return axios.get('/api/props/' + _this2.val);
 
               case 2:
                 response = _context2.sent;
-                // if (response.statusText !== OK) {
+                console.log(response); // if (response.statusText !== OK) {
                 //   this.$store.commit('error/setCode', response.status)
                 //   return false
                 // }
+
                 _this2.prop = response.data;
 
-              case 4:
+              case 5:
               case "end":
                 return _context2.stop();
             }
@@ -2776,9 +2769,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     // 小道具詳細のモーダル表示 
-    openModal_propDetail: function openModal_propDetail(prop) {
+    openModal_propDetail: function openModal_propDetail(id) {
       this.showContent = true;
-      this.postProp = prop;
+      this.postProp = id;
     },
     // 小道具詳細のモーダル非表示
     closeModal_propDetail: function closeModal_propDetail() {
@@ -2852,6 +2845,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_suggest_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-suggest-input */ "./node_modules/vue-suggest-input/dist/vue-suggest-input.common.js");
 /* harmony import */ var vue_suggest_input__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_suggest_input__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var vue_suggest_input_dist_vue_suggest_input_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-suggest-input/dist/vue-suggest-input.css */ "./node_modules/vue-suggest-input/dist/vue-suggest-input.css");
+/* harmony import */ var vanilla_autokana__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vanilla-autokana */ "./node_modules/vanilla-autokana/dist/autokana.js");
+/* harmony import */ var vanilla_autokana__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vanilla_autokana__WEBPACK_IMPORTED_MODULE_3__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
@@ -2864,7 +2859,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
  // 予測変換
 
 
+ // ふりがな
 
+
+var autokana;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // モーダルとして表示
   name: 'registerProp',
@@ -2898,7 +2896,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       },
       // 登録内容
       registerForm: {
-        prop: null,
+        prop: '',
+        kana: '',
         owner: null,
         comment: null,
         // 写真
@@ -2907,6 +2906,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       // 登録状態
       loading: false
     };
+  },
+  mounted: function mounted() {
+    // ふりがなのinput要素のidは省略可能
+    autokana = vanilla_autokana__WEBPACK_IMPORTED_MODULE_3__.bind('#prop');
   },
   methods: {
     // 持ち主を取得
@@ -2967,6 +2970,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee2);
       }))();
     },
+    handleNameInput: function handleNameInput() {
+      this.registerForm.kana = autokana.getFurigana();
+    },
     // 小道具リストのモーダル表示 
     openModal_listProps: function openModal_listProps() {
       this.showContent = true;
@@ -3010,9 +3016,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 入力欄の値とプレビュー表示をクリアするメソッド
     reset: function reset() {
+      this.registerForm.prop = '';
+      this.registerForm.kana = '';
+      this.registerForm.owner = null;
+      this.registerForm.comment = null;
       this.preview = null;
       this.registerForm.photo = null;
       this.$el.querySelector('input[type="file"]').value = null;
+      this.errors.prop = null;
     },
     // 登録する
     register_prop: function register_prop() {
@@ -3030,29 +3041,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }
 
                 _this4.errors.prop = '小道具名を入力してください';
-                _context3.next = 15;
+                _context3.next = 16;
                 break;
 
               case 4:
                 formData = new FormData();
                 formData.append('name', _this4.registerForm.prop);
+                formData.append('kana', _this4.registerForm.kana);
                 formData.append('owner_id', _this4.registerForm.owner);
                 formData.append('memo', _this4.registerForm.comment);
                 formData.append('usage', null);
                 formData.append('photo', _this4.registerForm.photo);
-                _context3.next = 12;
+                _context3.next = 13;
                 return axios.post('/api/props', formData);
 
-              case 12:
+              case 13:
                 response = _context3.sent;
 
                 // if (response.status === UNPROCESSABLE_ENTITY) {
                 //   this.errors = response.data.errors
                 //   return false
                 // }
-                // // 諸々データ削除
-                // this.registerForm = ''
-                // this.errors.prop = null
+                // // 諸々データ削除        
                 _this4.reset();
 
                 _this4.$emit('input', false); // if (response.status !== CREATED) {
@@ -3067,7 +3077,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 // this.$router.push('')
 
 
-              case 15:
+              case 16:
               case "end":
                 return _context3.stop();
             }
@@ -3141,92 +3151,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       // 連動プルダウン
       selectedAttr: '',
       selectedCharacters: '',
-      optionCharacters: {
-        移民たち: [{
-          id: 1,
-          name: 'アン'
-        }, {
-          id: 2,
-          name: 'メアリー'
-        }, {
-          id: 3,
-          name: 'アンジェラ'
-        }, {
-          id: 4,
-          name: 'エマ'
-        }, {
-          id: 5,
-          name: 'フィオナ'
-        }, {
-          id: 6,
-          name: 'モイラ'
-        }, {
-          id: 7,
-          name: 'イアン'
-        }, {
-          id: 8,
-          name: 'ハリー'
-        }, {
-          id: 9,
-          name: 'ジェニファー'
-        }, {
-          id: 10,
-          name: 'マルグレット'
-        }, {
-          id: 11,
-          name: 'ステファン'
-        }, {
-          id: 12,
-          name: 'ポーラ'
-        }, {
-          id: 13,
-          name: 'ジョー'
-        }, {
-          id: 14,
-          name: 'エドナ'
-        }],
-        村に残った人々: [{
-          id: 15,
-          name: 'ブレンダ'
-        }, {
-          id: 16,
-          name: 'エドワード'
-        }, {
-          id: 17,
-          name: 'グレン'
-        }, {
-          id: 18,
-          name: 'ジョナサン'
-        }, {
-          id: 19,
-          name: 'サラ'
-        }, {
-          id: 20,
-          name: 'ケリー'
-        }, {
-          id: 21,
-          name: 'モーリーン'
-        }, {
-          id: 22,
-          name: 'リザ'
-        }, {
-          id: 23,
-          name: 'ジョセフ'
-        }],
-        船の人々: [{
-          id: 24,
-          name: 'クリス'
-        }, {
-          id: 25,
-          name: 'スーザン'
-        }, {
-          id: 26,
-          name: 'フェルディナンド'
-        }, {
-          id: 27,
-          name: '未定'
-        }]
-      },
+      optionCharacters: null,
       // 小道具登録
       showContent: false,
       postFlag: "",
@@ -3234,7 +3159,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       registerForm: {
         character: '',
         prop: '',
-        page: null,
+        pages: null,
         usage: null,
         comment: null
       }
@@ -3246,7 +3171,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var response;
+        var response, sections;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -3256,14 +3181,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context.sent;
-                console.log(response); // if (response.statusText !== OK) {
+                // if (response.statusText !== OK) {
                 //   this.$store.commit('error/setCode', response.status)
                 //   return false
                 // }
+                _this.characters = response.data; // 区分と登場人物をオブジェクトに変換する
 
-                _this.characters = response.data;
+                sections = new Object();
 
-              case 5:
+                _this.characters.forEach(function (section) {
+                  sections[section.section] = section.characters;
+                });
+
+                _this.optionCharacters = sections;
+
+              case 7:
               case "end":
                 return _context.stop();
             }
@@ -3313,52 +3245,137 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     closeModal_register: function closeModal_register() {
       this.showContent = false;
     },
+    // first_pageとfinal_pageに分割する
+    first_finalDivide: function first_finalDivide(str) {
+      return str.split(/-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/);
+    },
+    // 全角→半角
+    hankaku2Zenkaku: function hankaku2Zenkaku(str) {
+      return str.replace(/[０-９]/g, function (s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+    },
     // 登録する
     register: function register() {
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var _this3 = this;
+
+      // ページを分割
+      var pages_before = this.registerForm.pages.split(/,|、|，|\s+/);
+      pages_before.forEach(function (page) {
+        page = page.replaceAll(/\s+/g, '');
+      });
+      var pages_after = pages_before.filter(Boolean);
+      var pattern = /-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/;
+      var first_pages = [];
+      var final_pages = [];
+      pages_after.forEach(function (page) {
+        if (pattern.test(page)) {
+          var pages = _this3.first_finalDivide(page);
+
+          first_pages.push(parseInt(_this3.hankaku2Zenkaku(pages[0])));
+          final_pages.push(parseInt(_this3.hankaku2Zenkaku(pages[1])));
+        } else {
+          first_pages.push(parseInt(_this3.hankaku2Zenkaku(page)));
+          final_pages.push(null);
+        }
+      });
+      var character = this.registerForm.character;
+      var prop = this.registerForm.prop;
+      var usage = this.registerForm.usage;
+      var comment = this.registerForm.comment;
+      first_pages.forEach( /*#__PURE__*/function () {
+        var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(page, index) {
+          var response;
+          return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  _context3.next = 2;
+                  return axios.post('/api/scenes', {
+                    character_id: character,
+                    prop_id: prop,
+                    first_page: page,
+                    final_page: final_pages[index],
+                    usage: usage,
+                    memo: comment
+                  });
+
+                case 2:
+                  response = _context3.sent;
+
+                case 3:
+                case "end":
+                  return _context3.stop();
+              }
+            }
+          }, _callee3);
+        }));
+
+        return function (_x, _x2) {
+          return _ref.apply(this, arguments);
+        };
+      }());
+
+      if (usage) {
+        this.usageJudgement(usage);
+      }
+
+      this.registerForm.character = '';
+      this.registerForm.prop = '';
+      this.registerForm.pages = null;
+      this.registerForm.usage = null;
+      this.registerForm.comment = null;
+    },
+    usageJudgement: function usageJudgement(usage) {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                _context3.next = 2;
-                return axios.post('/api/scenes', registerForm);
+                _context4.next = 2;
+                return axios.post('/api/props/' + _this4.registerForm.prop, {
+                  method: 'usage_change',
+                  usage: usage
+                });
 
               case 2:
-                response = _context3.sent;
+                response = _context4.sent;
 
               case 3:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3);
+        }, _callee4);
       }))();
     }
   },
   watch: {
     $route: {
       handler: function handler() {
-        var _this3 = this;
+        var _this5 = this;
 
-        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-          return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+          return _regeneratorRuntime().wrap(function _callee5$(_context5) {
             while (1) {
-              switch (_context4.prev = _context4.next) {
+              switch (_context5.prev = _context5.next) {
                 case 0:
-                  _context4.next = 2;
-                  return _this3.fetchCharacters();
+                  _context5.next = 2;
+                  return _this5.fetchCharacters();
 
                 case 2:
-                  _context4.next = 4;
-                  return _this3.fetchProps();
+                  _context5.next = 4;
+                  return _this5.fetchProps();
 
                 case 4:
                 case "end":
-                  return _context4.stop();
+                  return _context5.stop();
               }
             }
-          }, _callee4);
+          }, _callee5);
         }))();
       },
       immediate: true
@@ -3597,21 +3614,21 @@ var render = function render() {
     staticClass: "detail-box"
   }, [_c("div", [_c("img", {
     attrs: {
-      src: _vm.val.url,
-      alt: _vm.val.name
+      src: _vm.prop.url,
+      alt: _vm.prop.name
     }
   })]), _vm._v(" "), _c("div", [_c("div", [_c("h1", {
     staticStyle: {
       display: "inline"
     }
-  }, [_vm._v(_vm._s(_vm.val.name))]), _vm._v(" "), _vm.val.usage === 1 ? _c("div", [_c("i", {
+  }, [_vm._v(_vm._s(_vm.prop.name))]), _vm._v(" "), _vm.prop.usage === 1 ? _c("div", [_c("i", {
     staticClass: "fas fa-tag"
-  })]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("所有者: " + _vm._s(_vm.val.owner))]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.comments_prop.length ? _c("ul", _vm._l(_vm.comments_prop, function (comment) {
+  })]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.prop.prop_comments.length ? _c("ul", _vm._l(_vm.prop.prop_comments, function (comment) {
     return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
-  }), 0) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("シーン:")]), _vm._v(" "), _vm.scenes.length ? _c("ol", _vm._l(_vm.scenes, function (scene) {
-    return _c("li", [_c("span", [_vm._v(_vm._s(scene.name))]), _vm._v(" "), scene !== null && scene.first_page !== null ? _c("span", [_vm._v(" : p. " + _vm._s(scene.first_page) + " \n                    "), scene !== null && scene.final_page !== null ? _c("span", [_vm._v(" ~ p. " + _vm._s(scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", _vm._l(_vm.comments_scene, function (comment) {
-      return _c("ul", [comment.scene_id == scene.id ? _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]) : _vm._e()]);
-    }), 0)]);
+  }), 0) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("シーン:")]), _vm._v(" "), _vm.prop.scenes.length ? _c("ol", _vm._l(_vm.prop.scenes, function (scene) {
+    return _c("li", [_c("span", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), scene !== null && scene.first_page !== null ? _c("span", [_vm._v(" : p. " + _vm._s(scene.first_page) + " \n                    "), scene !== null && scene.final_page !== null ? _c("span", [_vm._v(" ~ p. " + _vm._s(scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", [scene.scene_comments.length ? _c("ul", _vm._l(scene.scene_comments, function (comment) {
+      return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
+    }), 0) : _vm._e()])]);
   }), 0) : _vm._e()])])]), _vm._v(" "), _c("button", {
     staticClass: "button button--inverse",
     attrs: {
@@ -3697,7 +3714,7 @@ var render = function render() {
       },
       on: {
         click: function click($event) {
-          return _vm.openModal_propDetail(prop);
+          return _vm.openModal_propDetail(prop.id);
         }
       }
     }, [_vm._v(_vm._s(prop.name))])]);
@@ -3851,18 +3868,51 @@ var render = function render() {
         return _vm.openModal_listProps();
       }
     }
-  }, [_vm._v("小道具リスト")])])]), _vm._v(" "), _vm.errors.prop !== null ? _c("div", [_vm._v(_vm._s(_vm.errors.prop))]) : _vm._e(), _vm._v(" "), _c("vue-suggest-input", {
+  }, [_vm._v("小道具リスト")])])]), _vm._v(" "), _vm.errors.prop !== null ? _c("div", [_vm._v(_vm._s(_vm.errors.prop))]) : _vm._e(), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.prop,
+      expression: "registerForm.prop"
+    }],
     staticClass: "form__item",
     attrs: {
-      id: "prop",
-      items: _vm.props
+      id: "prop"
     },
-    model: {
-      value: _vm.registerForm.prop,
-      callback: function callback($$v) {
-        _vm.$set(_vm.registerForm, "prop", $$v);
-      },
-      expression: "registerForm.prop"
+    domProps: {
+      value: _vm.registerForm.prop
+    },
+    on: {
+      input: [function ($event) {
+        if ($event.target.composing) return;
+
+        _vm.$set(_vm.registerForm, "prop", $event.target.value);
+      }, _vm.handleNameInput]
+    }
+  }), _vm._v(" "), _c("lavel", {
+    attrs: {
+      "for": "furigana"
+    }
+  }, [_vm._v("ふりがな")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.kana,
+      expression: "registerForm.kana"
+    }],
+    attrs: {
+      name: "furigana",
+      id: "furigana"
+    },
+    domProps: {
+      value: _vm.registerForm.kana
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+
+        _vm.$set(_vm.registerForm, "kana", $event.target.value);
+      }
     }
   }), _vm._v(" "), _c("label", {
     attrs: {
@@ -4078,7 +4128,11 @@ var render = function render() {
       value: ""
     }
   }, [_vm._v("登場人物一覧")]), _vm._v(" "), _vm._l(_vm.selectedCharacters, function (characters) {
-    return _vm.selectedCharacters ? _c("option", [_vm._v("\n          " + _vm._s(characters.name) + "\n        ")]) : _vm._e();
+    return _vm.selectedCharacters ? _c("option", {
+      domProps: {
+        value: characters.id
+      }
+    }, [_vm._v("\n          " + _vm._s(characters.name) + "\n        ")]) : _vm._e();
   })], 2), _vm._v(" "), _c("label", {
     attrs: {
       "for": "prop"
@@ -4114,7 +4168,6 @@ var render = function render() {
     }
   }, [_vm._v("小道具一覧")]), _vm._v(" "), _vm._l(_vm.optionProps, function (prop) {
     return _c("option", {
-      key: prop.id,
       domProps: {
         value: prop.id
       }
@@ -4152,8 +4205,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.registerForm.page,
-      expression: "registerForm.page"
+      value: _vm.registerForm.pages,
+      expression: "registerForm.pages"
     }],
     staticClass: "form__item",
     attrs: {
@@ -4161,13 +4214,13 @@ var render = function render() {
       id: "page"
     },
     domProps: {
-      value: _vm.registerForm.page
+      value: _vm.registerForm.pages
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
 
-        _vm.$set(_vm.registerForm, "page", $event.target.value);
+        _vm.$set(_vm.registerForm, "pages", $event.target.value);
       }
     }
   }), _vm._v(" "), _c("div", {
@@ -7475,6 +7528,16 @@ module.exports = function (list, options) {
     lastIdentifiers = newLastIdentifiers;
   };
 };
+
+/***/ }),
+
+/***/ "./node_modules/vanilla-autokana/dist/autokana.js":
+/*!********************************************************!*\
+  !*** ./node_modules/vanilla-autokana/dist/autokana.js ***!
+  \********************************************************/
+/***/ ((module) => {
+
+!function(t,e){ true?module.exports=e():0}(window,function(){return function(t){var e={};function n(i){if(e[i])return e[i].exports;var r=e[i]={i:i,l:!1,exports:{}};return t[i].call(r.exports,r,r.exports,n),r.l=!0,r.exports}return n.m=t,n.c=e,n.d=function(t,e,i){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:i})},n.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var i=Object.create(null);if(n.r(i),Object.defineProperty(i,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var r in t)n.d(i,r,function(e){return t[e]}.bind(null,r));return i},n.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="",n(n.s=2)}([function(t,e){t.exports=function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}},function(t,e){function n(t,e){for(var n=0;n<e.length;n++){var i=e[n];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(t,i.key,i)}}t.exports=function(t,e,i){return e&&n(t.prototype,e),i&&n(t,i),t}},function(t,e,n){"use strict";n.r(e);var i=n(0),r=n.n(i),a=n(1),u=n.n(a);function o(t,e){e=e?e.replace(/([[\]().?\/*{}+$^:])/g,"$1"):" \\s ";var n=new RegExp("^[".concat(e,"]+"),"g");return t.replace(n,"")}function s(t){var e=Number(t);return e>=12353&&e<=12435||12445===e||12446===e}var l=/[^ 　ぁあ-んー]/g,c=/[ぁぃぅぇぉっゃゅょ]/g,h=function(){function t(e){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"",i=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};r()(this,t),this.isActive=!0,this.timer=null,this.initializeValues(),this.option=Object.assign({katakana:!1,debug:!1,checkInterval:30},i);var a=document.getElementById(o(e,"#")),u=document.getElementById(o(n,"#"));if(!a)throw new Error("Element not found: ".concat(e));this.elName=a,this.registerEvents(this.elName),u&&(this.elFurigana=u)}return u()(t,[{key:"getFurigana",value:function(){return this.furigana}},{key:"start",value:function(){this.isActive=!0}},{key:"stop",value:function(){this.isActive=!1}},{key:"toggle",value:function(t){if(t){var e=Event.element(t);e&&(this.isActive=e.checked)}else this.isActive=!this.isActive}},{key:"initializeValues",value:function(){this.baseKana="",this.furigana="",this.isConverting=!1,this.ignoreString="",this.input="",this.values=[]}},{key:"registerEvents",value:function(t){var e=this;t.addEventListener("blur",function(){e.debug("blur"),e.clearInterval()}),t.addEventListener("focus",function(){e.debug("focus"),e.onInput(),e.setInterval()}),t.addEventListener("keydown",function(){e.debug("keydown"),e.isConverting&&e.onInput()})}},{key:"clearInterval",value:function(t){function e(){return t.apply(this,arguments)}return e.toString=function(){return t.toString()},e}(function(){this.timer&&clearInterval(this.timer)})},{key:"toKatakana",value:function(t){if(this.option.katakana){for(var e,n="",i=0;i<t.length;i+=1)s(e=t.charCodeAt(i))?n+=String.fromCharCode(e+96):n+=t.charAt(i);return n}return t}},{key:"setFurigana",value:function(t){this.isConverting||(t&&(this.values=t),this.isActive&&(this.furigana=this.toKatakana(this.baseKana+this.values.join("")),this.elFurigana&&(this.elFurigana.value=this.furigana)))}},{key:"removeString",value:function(t){if(-1!==t.indexOf(this.ignoreString))return String(t).replace(this.ignoreString,"");for(var e=this.ignoreString.split(""),n=t.split(""),i=0;i<e.length;i+=1)e[i]===n[i]&&(n[i]="");return n.join("")}},{key:"checkConvert",value:function(t){if(!this.isConverting)if(Math.abs(this.values.length-t.length)>1){var e=t.join("").replace(c,"").split("");Math.abs(this.values.length-e.length)>1&&this.onConvert()}else this.values.length===this.input.length&&this.values.join("")!==this.input&&this.input.match(l)&&this.onConvert()}},{key:"checkValue",value:function(){var t;if(""===(t=this.elName.value))this.initializeValues(),this.setFurigana();else{if(t=this.removeString(t),this.input===t)return;if(this.input=t,this.isConverting)return;var e=t.replace(l,"").split("");this.checkConvert(e),this.setFurigana(e)}this.debug(this.input)}},{key:"setInterval",value:function(t){function e(){return t.apply(this,arguments)}return e.toString=function(){return t.toString()},e}(function(){this.timer=setInterval(this.checkValue.bind(this),this.option.checkInterval)})},{key:"onInput",value:function(){this.elFurigana&&(this.baseKana=this.elFurigana.value),this.isConverting=!1,this.ignoreString=this.elName.value}},{key:"onConvert",value:function(){this.baseKana=this.baseKana+this.values.join(""),this.isConverting=!0,this.values=[]}},{key:"debug",value:function(){var t;this.option.debug&&(t=console).log.apply(t,arguments)}}]),t}();function f(t,e){var n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};return new h(t,e,n)}n.d(e,"bind",function(){return f})}])});
 
 /***/ }),
 

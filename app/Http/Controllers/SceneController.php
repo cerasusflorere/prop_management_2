@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Scene;
+use App\Models\Scenes_Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SceneController extends Controller
 {
@@ -27,7 +29,28 @@ class SceneController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        DB::beginTransaction();
+
+        $first_page = $request->first_page !== 'null' ? $request->first_page : null; // nullで送ると文字列になる
+        $final_page = $request->final_page !== 'null' ? $request->final_page : null;
+        $usage = $request->usage !== 'null' ? 1 : null;
+
+        try {
+            $scene = Scene::create(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage]);
+            if($request->memo !== 'null'){
+                $scene_comment = Scenes_Comment::create(['scene_id' => $scene->id, 'memo' => $request->memo]);
+            }            
+
+            DB::commit();
+        }catch (\Exception $exception) {
+            DB::rollBack();
+            
+            throw $exception;
+        }
+
+        // リソースの新規作成なので
+        // レスポンスコードは201(CREATED)を返却する
+        return response($scene, 201);
     }
 
     /**
