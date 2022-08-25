@@ -14,7 +14,10 @@
 </template>
 
 <script>
+import { OK } from '../util'
+
 import detailProp from './Detail_Prop.vue'
+
 export default {
   // モーダルとしてこのページを表示
   name: 'listProps',
@@ -37,10 +40,10 @@ export default {
     async fetchProps () {
       const response = await axios.get('/api/props')
 
-      // if (response.statusText !== OK) {
-      //   this.$store.commit('error/setCode', response.status)
-      //   return false
-      // }
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
 
       this.props = response.data
     },

@@ -7,6 +7,8 @@ import showProp from './pages/Show_Prop.vue'
 import registerScene from './pages/Register_Scene.vue'
 import registerProp from './pages/Register_Prop.vue'
 import Setting from './pages/Setting.vue'
+import SystemError from './pages/errors/System.vue'
+import NotFound from './pages/errors/NotFound.vue'
 
 // VueRouterプラグインを使用する
 // これによって<RouterView />コンポーネントなどを使うことができる
@@ -33,6 +35,14 @@ const routes = [
   {
     path: '/setting',
     component: Setting
+  },
+  {
+    path: '/500',
+    component: SystemError
+  },
+  {
+    path: '*',
+    component: NotFound
   }
 ]
 

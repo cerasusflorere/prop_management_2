@@ -68,10 +68,10 @@ export default {
     async fetchSections () {
       const response = await axios.get('/api/informations/sections')
 
-      // if (response.statusText !== OK) {
-      //   this.$store.commit('error/setCode', response.status)
-      //   return false
-      // }
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
 
       this.optionSections = response.data
     },
@@ -81,7 +81,24 @@ export default {
       const response = await axios.post('/api/informations/sections', {
         section: this.registerForm_section
       })
+
+      if (response.statusText === 'Unprocessable Entity') {
+        this.errors.error = response.data.errors
+        return false
+      }
+
       this.registerForm_section = null
+
+      if (response.statusText !== 'Created') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '区分が登録されました！',
+        timeout: 6000
+      })
     },
 
     async register_character () {
@@ -89,15 +106,50 @@ export default {
         section_id: this.registerForm_character.section,
         name: this.registerForm_character.character
       })
+
+      if (response.statusText === 'Unprocessable Entity') {
+        this.errors.error = response.data.errors
+        return false
+      }
+      
       this.registerForm_character.section = null
       this.registerForm_character.character = null
+
+      if (response.statusText !== 'Created') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '登場人物が登録されました！',
+        timeout: 6000
+      })
     },
     
     async register_owner () {
       const response = await axios.post('/api/informations/owners', {
         name: this.registerForm_owner
       })
+
+      if (response.statusText === 'Unprocessable Entity') {
+        this.errors.error = response.data.errors
+        return false
+      }      
+      
       this.registerForm_owner = null
+
+      if (response.statusText !== 'Created') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '持ち主が登録されました！',
+        timeout: 6000
+      })
+      
     }
   },
   watch: {

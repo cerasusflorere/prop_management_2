@@ -80,7 +80,7 @@ class PropController extends Controller
         $prop = Prop::where('id', $id)
               ->with(['owner', 'prop_comments', 'scenes', 'scenes.character', 'scenes.scene_comments'])->first();
 
-        return $prop;
+        return $prop ?? abort(404);
     }
 
     /**

@@ -52,6 +52,8 @@
 </template>
 
 <script>
+import { OK, UNPROCESSABLE_ENTITY } from '../util'
+
 export default {
   // モーダルとして表示
   name: 'detailProp',
@@ -64,25 +66,7 @@ export default {
   // データ
   data() {
     return {
-      prop: [],
-      // 小道具に関するメモ
-      comments_prop_all: [ 
-        { id: 1, prop_id: 1, memo: '変えるかも' }, 
-        { id: 2, prop_id: 3, memo: '壊さないように' }, 
-        { id: 3, prop_id: 3, memo: '要検討' }
-      ],
-      scenes_all: [ 
-        { id: 1, name: 'アン', prop_id: 1, first_page: 1, final_page: null }, 
-        { id: 2, name: 'ステファン', prop_id: 3, first_page: 20, final_page: 22 }, 
-        { id: 3, name: 'ジョー', prop_id: 3, first_page: null, final_page: null }
-      ],
-      comments_scene_all: [
-        { id: 1, scene_id: 1, memo: '毎回変える？'},
-        { id: 2, scene_id: 3, memo: 'どこ？'},
-      ],
-      comments_prop: [],
-      scenes: [],
-      comments_scene: [],
+      prop: []
     }
   },
   watch: {
@@ -98,46 +82,12 @@ export default {
     async fetchProp () {
       const response = await axios.get('/api/props/'+ this.val)
 
-      // if (response.statusText !== OK) {
-      //   this.$store.commit('error/setCode', response.status)
-      //   return false
-      // }
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
 
       this.prop = response.data
-    },
-    // 該当する小道具に絞る
-    async scopeData_first(id) {
-      // 小道具のコメント絞り込み
-      let comments_selected = []
-      this.comments_prop_all.forEach(function(comment){
-        if(comment.prop_id == id){
-          comments_selected.push(comment)
-        }
-      })
-      this.comments_prop = JSON.parse(JSON.stringify(comments_selected))
-      // 使用シーン絞り込み
-      let scenes_selected = []
-      this.scenes_all.forEach(function(scene){
-        if(scene.prop_id == id){
-          scenes_selected.push(scene)
-        }
-      })
-      this.scenes = JSON.parse(JSON.stringify(scenes_selected))
-      return scenes_selected;
-    },
-
-    async scopeData_second(id) {
-      let comments_selected = []
-      let scenes_selected = await this.scopeData_first(id)
-      let comments_all = JSON.parse(JSON.stringify(this.comments_scene_all))
-      scenes_selected.forEach(function(scene) {
-        comments_all.forEach(function(comment) {
-          if(comment.scene_id == scene.id){
-            comments_selected.push(comment)
-          }
-        })
-      })
-      this.comments_scene = JSON.parse(JSON.stringify(comments_selected))
     }
   }
 }

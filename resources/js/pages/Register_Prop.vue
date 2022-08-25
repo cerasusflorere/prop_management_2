@@ -3,6 +3,12 @@
   <div v-bind:id="[val === 1 ? 'overlay' : '']">
     <div v-bind:id="[val === 1 ? 'content' : '']" class="panel">
         <form class="form"  @submit.prevent="register_prop">
+          <!-- エラー表示 -->
+          <div class="errors" v-if="errors.error">
+            <ul v-if="errors.error.photo">
+             <li v-for="msg in errors.error.photo" :key="msg">{{ msg }}</li>
+            </ul>
+          </div>
           <!-- 小道具名 -->
           <div>
             <label for="prop_input">小道具</label>
@@ -28,8 +34,9 @@
           <textarea class="form__item" id="comment_prop" v-model="registerForm.comment"></textarea>
 
           <!-- 写真 -->
-          <label for="photo">写真</label>
-          <input class="form__item" type="file" @change="onFileChange">
+          <label for="photo_input">写真</label>
+          <div v-if="errors.photo">{{ errors.photo }}</div>
+          <input id="photo_photo" class="form__item" type="file" @change="onFileChange">
           <output class="form__output" v-if="preview">
             <img :src="preview" alt="" style="max-height: 12em">
           </output>
@@ -47,6 +54,8 @@
 </template>
 
 <script>
+import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util'
+
 // 小道具リスト
 import listProps from '../components/List_Props.vue'
 // 予測変換
@@ -82,6 +91,11 @@ export default {
       props: [],
       // 写真プレビュー
       preview: null,
+      // エラー
+      errors: {
+        photo: null,
+        error: null,
+      },
       // 登録内容
       registerForm: {
         prop: '',
@@ -105,10 +119,10 @@ export default {
     async fetchOwners () {
       const response = await axios.get('/api/informations/owners')
 
-      // if (response.statusText !== OK) {
-      //   this.$store.commit('error/setCode', response.status)
-      //   return false
-      // }
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
 
       this.optionOwners = response.data
     },
@@ -117,10 +131,10 @@ export default {
     async fetchProps () {
       const response = await axios.get('/api/props')
 
-      // if (response.statusText !== OK) {
-      //   this.$store.commit('error/setCode', response.status)
-      //   return false
-      // }
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
 
       this.props = response.data
     },
@@ -141,15 +155,17 @@ export default {
     
     // フォームでファイルが選択されたら実行される
     onFileChange (event) {
+      this.errors.photo = null;
       // 何も選択されていなかったら処理中断
       if (event.target.files.length === 0) {
-        this.reset()
+        this.reset_photo()
         return false
       }
 
       // ファイルが画像ではなかったら処理中断
       if (! event.target.files[0].type.match('image.*')) {
-        this.reset()
+        this.reset_photo()
+        this.errors.photo = '写真データを選択してください'
         return false
       }
 
@@ -171,6 +187,13 @@ export default {
 
       this.registerForm.photo = event.target.files[0]
     },
+     
+    // 画像をクリアするメソッド
+    reset_photo () {
+      this.preview = null
+      this.registerForm.photo = ''
+      this.$el.querySelector('input[type="file"]').value = null
+    },
 
     // 入力欄の値とプレビュー表示をクリアするメソッド
     reset () {
@@ -180,7 +203,8 @@ export default {
       this.registerForm.comment = ''
       this.preview = null
       this.registerForm.photo = ''
-      this.$el.querySelector('input[type="file"]').value = null
+      this.$el.querySelector('input[type="file"]').value = null,
+      this.errors.photo = null
     },
 
     // 登録する
@@ -194,26 +218,26 @@ export default {
       formData.append('photo', this.registerForm.photo)
       const response = await axios.post('/api/props', formData)
 
-      // if (response.status === UNPROCESSABLE_ENTITY) {
-      //   this.errors = response.data.errors
-      //   return false
-      // }
+      if (response.statusText === 'Unprocessable Entity') {
+        this.errors.error = response.data.errors
+        return false
+      }
 
       // // 諸々データ削除        
       this.reset()
 
-      this.$emit('input', false)
-      // if (response.status !== CREATED) {
-      //   this.$store.commit('error/setCode', response.status)
-      //   return false
-      // }
-      // // メッセージ登録
-      // this.$store.commit('message/setContent', {
-      //   content: '小道具が投稿されました！',
-      //   timeout: 6000
-      // })
+      if (response.statusText !== 'Created') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '小道具が投稿されました！',
+        timeout: 6000
+      })
+      
       // this.$router.push('')
-        
     }
   },
   watch: {

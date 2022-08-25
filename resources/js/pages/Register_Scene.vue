@@ -56,6 +56,8 @@
 </template>
 
 <script>
+import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util'
+
 import registerProp from './Register_Prop.vue'
 
 export default {
@@ -89,10 +91,10 @@ export default {
     async fetchCharacters () {
       const response = await axios.get('/api/informations/characters')
 
-      // if (response.statusText !== OK) {
-      //   this.$store.commit('error/setCode', response.status)
-      //   return false
-      // }
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
 
       this.characters = response.data
 
@@ -108,10 +110,10 @@ export default {
     async fetchProps () {
       const response = await axios.get('/api/props')
 
-      // if (response.statusText !== OK) {
-      //   this.$store.commit('error/setCode', response.status)
-      //   return false
-      // }
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
 
       this.optionProps = response.data
     },
@@ -129,6 +131,15 @@ export default {
     // 小道具登録のモーダル非表示
     closeModal_register (){
       this.showContent = false
+    },
+
+    reset() {
+      this.selectedAttr = '';
+      this.registerForm.character = '';
+      this.registerForm.prop = '';
+      this.registerForm.pages = '';
+      this.registerForm.usage = '';
+      this.registerForm.comment = '';
     },
 
     // first_pageとfinal_pageに分割する
@@ -186,6 +197,7 @@ export default {
       const prop = this.registerForm.prop;
       const usage = this.registerForm.usage;
       const comment = this.registerForm.comment;
+      let last_flag = false;
       first_pages.forEach(async function(page, index) {
         const response = await axios.post('/api/scenes', {
           character_id: character,
@@ -195,25 +207,46 @@ export default {
           usage: usage,
           memo: comment
         })
+        console.log(response);
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors
+          return false
+        }
+
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status)
+          return false
+        }
+        if(index === first_pages.length-1){
+          if(response.statusText === 'Created' && usage){
+            // 小道具の使用有無変更
+            const response = axios.post('/api/props/'+ prop, {
+              method: 'usage_change',
+              usage: usage
+            })
+
+            if (response.statusText === 'Unprocessable Entity') {
+              this.errors.error = response.data.errors
+              return false
+            }
+
+            if (response.statusText !== 'Created') {
+              this.$store.commit('error/setCode', response.status)
+              return false
+            }
+          }
+        }        
       });
 
-      if(usage){
-        this.usageJudgement(usage);
-      }
-
-      this.selectedAttr = '';
-      this.registerForm.character = '';
-      this.registerForm.prop = '';
-      this.registerForm.pages = '';
-      this.registerForm.usage = '';
-      this.registerForm.comment = '';
-    },
-    async usageJudgement (usage){
-      const response = await axios.post('/api/props/'+ this.registerForm.prop, {
-        method: 'usage_change',
-        usage: usage
+      // 諸々データ削除        
+      this.reset()
+      
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '使用シーンが投稿されました！',
+        timeout: 6000
       })
-    }     
+    }
   },
   watch: {
     $route: {
