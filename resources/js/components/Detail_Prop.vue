@@ -97,7 +97,6 @@ export default {
     // 小道具の詳細を取得
     async fetchProp () {
       const response = await axios.get('/api/props/'+ this.val)
-      console.log(response)
 
       // if (response.statusText !== OK) {
       //   this.$store.commit('error/setCode', response.status)

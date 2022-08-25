@@ -32,7 +32,7 @@ class PropController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->photo !== 'null'){
+        if($request->photo){
             // Cloudinaryにファイルを保存する
             $result = $request->photo->storeOnCloudinary('prop_management');
             $url = $result->getSecurePath(); 
@@ -41,22 +41,22 @@ class PropController extends Controller
             $public_id = null;
             $url = null;
         }
-        $owner_id = $request->owner_id !== 'null' ? $request->owner_id : null; // nullで送ると文字列になる
-        $usage = $request->usage !== 'null' ? 1 : null;
+        $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
+        $usage = !empty($request->usage) ? 1 : null;
         
 
         DB::beginTransaction();
 
         try {
             $prop = Prop::create(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage]);
-            if($request->memo !== 'null'){
+            if($request->memo){
                 $prop_comment = Props_Comment::create(['prop_id' => $prop->id, 'memo' => $request->memo]);
             }            
 
             DB::commit();
         }catch (\Exception $exception) {
             DB::rollBack();
-            if($request->photo !== "null"){
+            if($request->photo){
                 // DBとの不整合を避けるためアップロードしたファイルを削除
                 Cloudinary::destroy($public_id);
             }

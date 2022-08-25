@@ -5,17 +5,15 @@
         <form class="form"  @submit.prevent="register_prop">
           <!-- 小道具名 -->
           <div>
-            <label for="prop">小道具</label>
+            <label for="prop_input">小道具</label>
             <div class="form__button">
               <button type="button" @click="openModal_listProps()" class="button button--inverse">小道具リスト</button>
             </div>
           </div>
          
-          <!-- <input type="text" class="form__item" id="prop" v-model="registerForm.prop" required> -->
-          <div v-if="errors.prop !== null">{{ errors.prop }}</div>
-          <input class="form__item" id="prop" v-model="registerForm.prop" @input="handleNameInput"/>
+          <input type="text" class="form__item" id="prop_input" v-model="registerForm.prop" @input="handleNameInput" required>
           <lavel for="furigana">ふりがな</lavel>
-          <input name="furigana" id="furigana" v-model="registerForm.kana">
+          <input type="text" name="furigana" id="furigana" v-model="registerForm.kana" required>
 
           <!-- 所有者 -->
           <label for="owner">持ち主</label>
@@ -26,8 +24,8 @@
             </option>
           </select>
           <!-- コメント -->
-          <label for="comment">コメント</label>
-          <textarea class="form__item" id="comment" v-model="registerForm.comment"></textarea>
+          <label for="comment_prop">コメント</label>
+          <textarea class="form__item" id="comment_prop" v-model="registerForm.comment"></textarea>
 
           <!-- 写真 -->
           <label for="photo">写真</label>
@@ -70,8 +68,7 @@ export default {
   },
   // 表示するコンポーネント
   components: {
-    listProps,
-    VueSuggestInput
+    listProps
   },
   // データ
   data() {
@@ -85,19 +82,14 @@ export default {
       props: [],
       // 写真プレビュー
       preview: null,
-      photo: null,
-      // エラー達
-      errors: {
-        prop: ''
-      },
       // 登録内容
       registerForm: {
         prop: '',
         kana: '',
-        owner: null,
-        comment: null,
+        owner: '',
+        comment: '',
         // 写真
-        photo: null
+        photo: ''
       },
       // 登録状態
       loading: false
@@ -105,7 +97,8 @@ export default {
   },
   mounted() {
     // ふりがなのinput要素のidは省略可能
-    autokana = AutoKana.bind('#prop');
+    // 使用シーン登録時のid=propと被るから
+    autokana = AutoKana.bind('#prop_input');
   },
   methods: {
       // 持ち主を取得
@@ -183,49 +176,44 @@ export default {
     reset () {
       this.registerForm.prop = ''
       this.registerForm.kana = ''
-      this.registerForm.owner = null
-      this.registerForm.comment = null
+      this.registerForm.owner = ''
+      this.registerForm.comment = ''
       this.preview = null
-      this.registerForm.photo = null
+      this.registerForm.photo = ''
       this.$el.querySelector('input[type="file"]').value = null
-      this.errors.prop = null
     },
 
     // 登録する
     async register_prop () {
-      if(this.registerForm.prop === null){
-        this.errors.prop = '小道具名を入力してください'
-      }else{
-        const formData = new FormData()
-        formData.append('name', this.registerForm.prop)
-        formData.append('kana', this.registerForm.kana)
-        formData.append('owner_id', this.registerForm.owner)
-        formData.append('memo', this.registerForm.comment)
-        formData.append('usage', null)
-        formData.append('photo', this.registerForm.photo)
-        const response = await axios.post('/api/props', formData)
+      const formData = new FormData()
+      formData.append('name', this.registerForm.prop)
+      formData.append('kana', this.registerForm.kana)
+      formData.append('owner_id', this.registerForm.owner)
+      formData.append('memo', this.registerForm.comment)
+      formData.append('usage', '')
+      formData.append('photo', this.registerForm.photo)
+      const response = await axios.post('/api/props', formData)
 
-        // if (response.status === UNPROCESSABLE_ENTITY) {
-        //   this.errors = response.data.errors
-        //   return false
-        // }
+      // if (response.status === UNPROCESSABLE_ENTITY) {
+      //   this.errors = response.data.errors
+      //   return false
+      // }
 
-        // // 諸々データ削除        
-        this.reset()
+      // // 諸々データ削除        
+      this.reset()
 
-        this.$emit('input', false)
-        // if (response.status !== CREATED) {
-        //   this.$store.commit('error/setCode', response.status)
-        //   return false
-        // }
-        // // メッセージ登録
-        // this.$store.commit('message/setContent', {
-        //   content: '小道具が投稿されました！',
-        //   timeout: 6000
-        // })
-        // this.$router.push('')
+      this.$emit('input', false)
+      // if (response.status !== CREATED) {
+      //   this.$store.commit('error/setCode', response.status)
+      //   return false
+      // }
+      // // メッセージ登録
+      // this.$store.commit('message/setContent', {
+      //   content: '小道具が投稿されました！',
+      //   timeout: 6000
+      // })
+      // this.$router.push('')
         
-      }      
     }
   },
   watch: {

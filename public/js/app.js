@@ -2607,14 +2607,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context2.sent;
-                console.log(response); // if (response.statusText !== OK) {
+                // if (response.statusText !== OK) {
                 //   this.$store.commit('error/setCode', response.status)
                 //   return false
                 // }
-
                 _this2.prop = response.data;
 
-              case 5:
+              case 4:
               case "end":
                 return _context2.stop();
             }
@@ -2874,8 +2873,7 @@ var autokana;
   },
   // 表示するコンポーネント
   components: {
-    listProps: _components_List_Props_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
-    VueSuggestInput: (vue_suggest_input__WEBPACK_IMPORTED_MODULE_1___default())
+    listProps: _components_List_Props_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   // データ
   data: function data() {
@@ -2889,19 +2887,14 @@ var autokana;
       props: [],
       // 写真プレビュー
       preview: null,
-      photo: null,
-      // エラー達
-      errors: {
-        prop: ''
-      },
       // 登録内容
       registerForm: {
         prop: '',
         kana: '',
-        owner: null,
-        comment: null,
+        owner: '',
+        comment: '',
         // 写真
-        photo: null
+        photo: ''
       },
       // 登録状態
       loading: false
@@ -2909,7 +2902,8 @@ var autokana;
   },
   mounted: function mounted() {
     // ふりがなのinput要素のidは省略可能
-    autokana = vanilla_autokana__WEBPACK_IMPORTED_MODULE_3__.bind('#prop');
+    // 使用シーン登録時のid=propと被るから
+    autokana = vanilla_autokana__WEBPACK_IMPORTED_MODULE_3__.bind('#prop_input');
   },
   methods: {
     // 持ち主を取得
@@ -3018,12 +3012,11 @@ var autokana;
     reset: function reset() {
       this.registerForm.prop = '';
       this.registerForm.kana = '';
-      this.registerForm.owner = null;
-      this.registerForm.comment = null;
+      this.registerForm.owner = '';
+      this.registerForm.comment = '';
       this.preview = null;
-      this.registerForm.photo = null;
+      this.registerForm.photo = '';
       this.$el.querySelector('input[type="file"]').value = null;
-      this.errors.prop = null;
     },
     // 登録する
     register_prop: function register_prop() {
@@ -3035,27 +3028,17 @@ var autokana;
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                if (!(_this4.registerForm.prop === null)) {
-                  _context3.next = 4;
-                  break;
-                }
-
-                _this4.errors.prop = '小道具名を入力してください';
-                _context3.next = 16;
-                break;
-
-              case 4:
                 formData = new FormData();
                 formData.append('name', _this4.registerForm.prop);
                 formData.append('kana', _this4.registerForm.kana);
                 formData.append('owner_id', _this4.registerForm.owner);
                 formData.append('memo', _this4.registerForm.comment);
-                formData.append('usage', null);
+                formData.append('usage', '');
                 formData.append('photo', _this4.registerForm.photo);
-                _context3.next = 13;
+                _context3.next = 9;
                 return axios.post('/api/props', formData);
 
-              case 13:
+              case 9:
                 response = _context3.sent;
 
                 // if (response.status === UNPROCESSABLE_ENTITY) {
@@ -3077,7 +3060,7 @@ var autokana;
                 // this.$router.push('')
 
 
-              case 16:
+              case 12:
               case "end":
                 return _context3.stop();
             }
@@ -3159,9 +3142,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       registerForm: {
         character: '',
         prop: '',
-        pages: null,
-        usage: null,
-        comment: null
+        pages: '',
+        usage: '',
+        comment: ''
       }
     };
   },
@@ -3260,25 +3243,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this3 = this;
 
       // ページを分割
-      var pages_before = this.registerForm.pages.split(/,|、|，|\s+/);
-      pages_before.forEach(function (page) {
-        page = page.replaceAll(/\s+/g, '');
-      });
-      var pages_after = pages_before.filter(Boolean);
-      var pattern = /-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/;
       var first_pages = [];
       var final_pages = [];
-      pages_after.forEach(function (page) {
-        if (pattern.test(page)) {
-          var pages = _this3.first_finalDivide(page);
+      first_pages[0] = 0;
+      final_pages[0] = 0;
 
-          first_pages.push(parseInt(_this3.hankaku2Zenkaku(pages[0])));
-          final_pages.push(parseInt(_this3.hankaku2Zenkaku(pages[1])));
-        } else {
-          first_pages.push(parseInt(_this3.hankaku2Zenkaku(page)));
-          final_pages.push(null);
-        }
-      });
+      if (this.registerForm.pages) {
+        var pages_before = this.registerForm.pages.split(/,|、|，|\s+/);
+        pages_before.forEach(function (page) {
+          page = page.replaceAll(/\s+/g, '');
+        });
+        var pages_after = pages_before.filter(Boolean);
+        var pattern = /-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/;
+        pages_after.forEach(function (page, index) {
+          if (index === 0) {
+            if (pattern.test(page)) {
+              var pages = _this3.first_finalDivide(page);
+
+              first_pages[index] = parseInt(_this3.hankaku2Zenkaku(pages[0]));
+              final_pages[index] = parseInt(_this3.hankaku2Zenkaku(pages[1]));
+            } else {
+              first_pages[index] = parseInt(_this3.hankaku2Zenkaku(page));
+              final_pages[index] = 0;
+            }
+          } else {
+            if (pattern.test(page)) {
+              var _pages = _this3.first_finalDivide(page);
+
+              first_pages.push(parseInt(_this3.hankaku2Zenkaku(_pages[0])));
+              final_pages.push(parseInt(_this3.hankaku2Zenkaku(_pages[1])));
+            } else {
+              first_pages.push(parseInt(_this3.hankaku2Zenkaku(page)));
+              final_pages.push(0);
+            }
+          }
+        });
+      }
+
       var character = this.registerForm.character;
       var prop = this.registerForm.prop;
       var usage = this.registerForm.usage;
@@ -3320,11 +3321,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         this.usageJudgement(usage);
       }
 
+      this.selectedAttr = '';
       this.registerForm.character = '';
       this.registerForm.prop = '';
-      this.registerForm.pages = null;
-      this.registerForm.usage = null;
-      this.registerForm.comment = null;
+      this.registerForm.pages = '';
+      this.registerForm.usage = '';
+      this.registerForm.comment = '';
     },
     usageJudgement: function usageJudgement(usage) {
       var _this4 = this;
@@ -3854,7 +3856,7 @@ var render = function render() {
     }
   }, [_c("div", [_c("label", {
     attrs: {
-      "for": "prop"
+      "for": "prop_input"
     }
   }, [_vm._v("小道具")]), _vm._v(" "), _c("div", {
     staticClass: "form__button"
@@ -3868,7 +3870,7 @@ var render = function render() {
         return _vm.openModal_listProps();
       }
     }
-  }, [_vm._v("小道具リスト")])])]), _vm._v(" "), _vm.errors.prop !== null ? _c("div", [_vm._v(_vm._s(_vm.errors.prop))]) : _vm._e(), _vm._v(" "), _c("input", {
+  }, [_vm._v("小道具リスト")])])]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -3877,7 +3879,9 @@ var render = function render() {
     }],
     staticClass: "form__item",
     attrs: {
-      id: "prop"
+      type: "text",
+      id: "prop_input",
+      required: ""
     },
     domProps: {
       value: _vm.registerForm.prop
@@ -3901,8 +3905,10 @@ var render = function render() {
       expression: "registerForm.kana"
     }],
     attrs: {
+      type: "text",
       name: "furigana",
-      id: "furigana"
+      id: "furigana",
+      required: ""
     },
     domProps: {
       value: _vm.registerForm.kana
@@ -3954,7 +3960,7 @@ var render = function render() {
     }, [_vm._v("\n              " + _vm._s(owner.name) + "\n            ")]);
   })], 2), _vm._v(" "), _c("label", {
     attrs: {
-      "for": "comment"
+      "for": "comment_prop"
     }
   }, [_vm._v("コメント")]), _vm._v(" "), _c("textarea", {
     directives: [{
@@ -3965,7 +3971,7 @@ var render = function render() {
     }],
     staticClass: "form__item",
     attrs: {
-      id: "comment"
+      id: "comment_prop"
     },
     domProps: {
       value: _vm.registerForm.comment
@@ -4135,7 +4141,7 @@ var render = function render() {
     }, [_vm._v("\n          " + _vm._s(characters.name) + "\n        ")]) : _vm._e();
   })], 2), _vm._v(" "), _c("label", {
     attrs: {
-      "for": "prop"
+      "for": "prop_select"
     }
   }, [_vm._v("小道具")]), _vm._v(" "), _c("select", {
     directives: [{
@@ -4146,7 +4152,7 @@ var render = function render() {
     }],
     staticClass: "form__item",
     attrs: {
-      id: "prop",
+      id: "prop_select",
       required: ""
     },
     on: {
@@ -4225,7 +4231,12 @@ var render = function render() {
     }
   }), _vm._v(" "), _c("div", {
     staticClass: "form__check"
-  }, [_c("input", {
+  }, [_c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "usage_scene"
+    }
+  }, [_vm._v("中間発表での使用")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -4235,7 +4246,7 @@ var render = function render() {
     staticClass: "form__check__input",
     attrs: {
       type: "checkbox",
-      id: "usage",
+      id: "usage_scene",
       checked: ""
     },
     domProps: {
@@ -4261,14 +4272,9 @@ var render = function render() {
         }
       }
     }
-  }), _vm._v(" "), _c("label", {
-    staticClass: "form__check__label",
+  })]), _vm._v(" "), _c("label", {
     attrs: {
-      "for": "usage"
-    }
-  }, [_vm._v("中間発表での使用")])]), _vm._v(" "), _c("label", {
-    attrs: {
-      "for": "comment"
+      "for": "comment_scene"
     }
   }, [_vm._v("コメント")]), _vm._v(" "), _c("textarea", {
     directives: [{
@@ -4279,7 +4285,7 @@ var render = function render() {
     }],
     staticClass: "form__item",
     attrs: {
-      id: "comment"
+      id: "comment_scene"
     },
     domProps: {
       value: _vm.registerForm.comment

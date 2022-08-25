@@ -31,26 +31,108 @@ class SceneController extends Controller
     {
         DB::beginTransaction();
 
-        $first_page = $request->first_page !== 'null' ? $request->first_page : null; // nullで送ると文字列になる
-        $final_page = $request->final_page !== 'null' ? $request->final_page : null;
-        $usage = $request->usage !== 'null' ? 1 : null;
+        $first_page = !empty($request->first_page) ? $request->first_page : null; // nullで送ると文字列になる
+        $final_page = !empty($request->final_page) ? $request->final_page : null;
+        $usage = !empty($request->usage) ? 1 : null;
+
+        $exist = Scene::where([['character_id', '=', $request->character_id], 
+                              ['prop_id', '=', $request->prop_id], 
+                              ['first_page', '=', $first_page],
+                              ['final_page','=', $final_page]])
+            ->exists();
+        
+        $exist_update_first_page = Scene::where([['character_id', '=', $request->character_id], 
+                                                 ['prop_id', '=', $request->prop_id], 
+                                                 ['first_page', '=', null]])
+            ->first();
+
+        $exist_update_fianl_page_null = Scene::where([['character_id', '=', $request->character_id], 
+                                                      ['prop_id', '=', $request->prop_id], 
+                                                      ['first_page', '=', $first_page],
+                                                      ['final_page', '=', null]])
+            ->first();
+
+        if($final_page){
+            $exist_update_fianl_page_notnull = Scene::where([['character_id', '=', $request->character_id], 
+                                                             ['prop_id', '=', $request->prop_id], 
+                                                             ['first_page', '=', $first_page],
+                                                             ['final_page', '<', $final_page]])
+                ->first();
+        }else{
+            $exist_update_fianl_page_notnull = null;
+        }
+        
+        
 
         try {
-            $scene = Scene::create(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage]);
-            if($request->memo !== 'null'){
-                $scene_comment = Scenes_Comment::create(['scene_id' => $scene->id, 'memo' => $request->memo]);
-            }            
+            if(!is_null($exist_update_first_page) && $first_page){
+                // 登録済みが最初のページがnullだったので、更新
+                if($usage){
+                    // 使用するなら更新
+                    $scene = Scene::where('id', $exist_update_first_page->id)
+                        ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage]);
+                    if($request->memo){
+                        $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                    }
+                }else{
+                    // 使用しないなら更新しない
+                    $scene = Scene::where('id', $exist_update_first_page->id)
+                        ->update(['first_page' => $first_page, 'final_page' => $final_page]);
+                    if($request->memo){
+                        $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                    }
+                }
 
-            DB::commit();
+                DB::commit();
+                // リソースの新規作成なので
+                // レスポンスコードは201(CREATED)を返却する
+                return response($scene, 201);
+            }else if((!is_null($exist_update_fianl_page_null) || (!is_null($exist_update_fianl_page_notnull)) )){
+                // 登録済みが最初のページは一致するが、最後のページは一致しないかつより多くのページを含む場合
+                if(!is_null($exist_update_fianl_page_null)){
+                    $id = $exist_update_fianl_page_null->id;
+                }else{
+                    $id = $exist_update_fianl_page_notnull->id;
+                }
+                if($usage){
+                    // 使用するなら更新
+                    $scene = Scene::where('id', $id)
+                        ->update(['final_page' => $final_page, 'usage' => $usage]);
+                    if($request->memo){
+                        $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                    }
+                }else{
+                    // 使用しないなら更新しない
+                    $scene = Scene::where('id', $id)
+                        ->update(['final_page' => $final_page]);
+                    if($request->memo){
+                        $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                    }
+                }
+
+                DB::commit();
+                // リソースの新規作成なので
+                // レスポンスコードは201(CREATED)を返却する
+                return response($scene, 201);
+            }else if(!($exist)){
+                // 新規投稿
+                $scene = Scene::create(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage]);
+                if($request->memo){
+                    $scene_comment = Scenes_Comment::create(['scene_id' => $scene->id, 'memo' => $request->memo]);
+                }
+
+                DB::commit();
+                // リソースの新規作成なので
+                // レスポンスコードは201(CREATED)を返却する
+                return response($scene, 201);
+            }
         }catch (\Exception $exception) {
             DB::rollBack();
             
             throw $exception;
         }
 
-        // リソースの新規作成なので
-        // レスポンスコードは201(CREATED)を返却する
-        return response($scene, 201);
+        
     }
 
     /**

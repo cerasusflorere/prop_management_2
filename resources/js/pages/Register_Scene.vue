@@ -19,8 +19,8 @@
         </select>
 
         <!-- 小道具名 -->
-        <label for="prop">小道具</label>
-        <select id="prop" class="form__item"  v-model="registerForm.prop" required>
+        <label for="prop_select">小道具</label>
+        <select id="prop_select" class="form__item"  v-model="registerForm.prop" required>
           <option disabled value="">小道具一覧</option>
           <option v-for="prop in optionProps" 
             v-bind:value="prop.id">
@@ -39,13 +39,13 @@
 
         <!-- 使用するか -->
         <div class="form__check">
-          <input type="checkbox" id="usage" class="form__check__input" v-model="registerForm.usage" checked></input>
-          <label for="usage" class="form__check__label">中間発表での使用</label>
+          <label for="usage_scene" class="form__check__label">中間発表での使用</label>
+          <input type="checkbox" id="usage_scene" class="form__check__input" v-model="registerForm.usage" checked></input>          
         </div>
         
         <!-- コメント -->
-        <label for="comment">コメント</label>
-        <textarea class="form__item" id="comment" v-model="registerForm.comment"></textarea>
+        <label for="comment_scene">コメント</label>
+        <textarea class="form__item" id="comment_scene" v-model="registerForm.comment"></textarea>
 
         <!--- 送信ボタン -->
         <div class="form__button">
@@ -78,9 +78,9 @@ export default {
       registerForm: {
         character: '',
         prop: '',
-        pages: null,
-        usage: null,
-        comment: null
+        pages: '',
+        usage: '',
+        comment: ''
       }
     }
   },
@@ -146,26 +146,41 @@ export default {
     // 登録する
     register () {
       // ページを分割
-      let pages_before = this.registerForm.pages.split(/,|、|，|\s+/);
-      pages_before.forEach(page => {
-        page = page.replaceAll(/\s+/g, '');
-      });
-      let pages_after = pages_before.filter(Boolean);
-
-      let pattern = /-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/;
       let first_pages = [];
       let final_pages = [];
+      first_pages[0] = 0;
+      final_pages[0] = 0;
+      if(this.registerForm.pages){
+      let pages_before = this.registerForm.pages.split(/,|、|，|\s+/);
+        pages_before.forEach(page => {
+          page = page.replaceAll(/\s+/g, '');
+        });
+        let pages_after = pages_before.filter(Boolean);
+  
+        let pattern = /-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/;
 
-      pages_after.forEach(page => {
-        if ( pattern.test(page) ) {
-          let pages = this.first_finalDivide(page);
-          first_pages.push(parseInt(this.hankaku2Zenkaku(pages[0])));
-          final_pages.push(parseInt(this.hankaku2Zenkaku(pages[1])));
-        }else{
-          first_pages.push(parseInt(this.hankaku2Zenkaku(page)))
-          final_pages.push(null)
-        }
-      });
+        pages_after.forEach((page, index) => {
+          if(index === 0){
+            if ( pattern.test(page) ) {
+              let pages = this.first_finalDivide(page);
+              first_pages[index] = (parseInt(this.hankaku2Zenkaku(pages[0])));
+              final_pages[index] = (parseInt(this.hankaku2Zenkaku(pages[1])));
+            }else{
+              first_pages[index] = (parseInt(this.hankaku2Zenkaku(page)));
+              final_pages[index] = (0);
+            }
+          }else{
+            if ( pattern.test(page) ) {
+              let pages = this.first_finalDivide(page);
+              first_pages.push(parseInt(this.hankaku2Zenkaku(pages[0])));
+              final_pages.push(parseInt(this.hankaku2Zenkaku(pages[1])));
+            }else{
+              first_pages.push(parseInt(this.hankaku2Zenkaku(page)));
+              final_pages.push(0);
+            }
+          }          
+        });
+      }  
       
       const character = this.registerForm.character;
       const prop = this.registerForm.prop;
@@ -186,11 +201,12 @@ export default {
         this.usageJudgement(usage);
       }
 
+      this.selectedAttr = '';
       this.registerForm.character = '';
       this.registerForm.prop = '';
-      this.registerForm.pages = null;
-      this.registerForm.usage = null;
-      this.registerForm.comment = null;
+      this.registerForm.pages = '';
+      this.registerForm.usage = '';
+      this.registerForm.comment = '';
     },
     async usageJudgement (usage){
       const response = await axios.post('/api/props/'+ this.registerForm.prop, {
