@@ -6,11 +6,15 @@
         <label for="owner_edit">持ち主</label>
         <input type="text" id="owner_edit" class="form__item" v-model="editForm_owner.name" required>
 
-        <!--- 送信ボタン -->
+        <!--- 変更ボタン -->
         <div class="form__button">
-          <button type="submit" class="button button--inverse" @click="$emit('close')">変更</button>
+          <button type="submit" class="button button--inverse" @click="$emit('close')"><i class="fas fa-edit fa-fw"></i>変更</button>
         </div>
       </form>
+        <!--- 削除ボタン -->
+        <div class="form__button">
+          <button type="button" class="button button--inverse" @click="$emit('close')"><i class="fas fa-eraser fa-fw"></i>削除</button>
+        </div>
         
         <button type="button" @click="$emit('close')" class="button button--inverse">閉じる</button>
     </div>
@@ -86,8 +90,7 @@ export default {
         return false
       }
 
-      this.editForm_owner.id = null
-      this.editForm_owner.name = null
+      this.owner_edit.name = this.editForm_owner.name
 
       if (response.statusText !== 'Created') {
         this.$store.commit('error/setCode', response.status)

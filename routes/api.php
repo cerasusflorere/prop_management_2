@@ -30,6 +30,9 @@ Route::post('/informations/sections', 'App\Http\Controllers\InformationControlle
 // 区分更新
 Route::post('/informations/sections/{id}', 'App\Http\Controllers\InformationController@update_section')->name('imformation.update_section');
 
+// 区分削除
+Route::delete('/informations/sections/{id}', 'App\Http\Controllers\InformationController@destroy_section')->name('imformation.destroy_section');
+
 // 登場人物一覧取得
 Route::get('/informations/characters', 'App\Http\Controllers\InformationController@index_character')->name('imformation.index_character');
 

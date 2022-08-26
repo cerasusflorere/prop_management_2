@@ -15,11 +15,15 @@
         <!-- 名前 -->
         <input type="text" id="section_character" class="form__item" v-model="editForm_character.name" required>
 
-        <!--- 送信ボタン -->
+        <!--- 変更ボタン -->
         <div class="form__button">
-          <button type="submit" class="button button--inverse" @click="$emit('close')">変更</button>
+          <button type="submit" class="button button--inverse" @click="$emit('close')"><i class="fas fa-edit fa-fw"></i>変更</button>
         </div>
       </form>
+        <!--- 削除ボタン -->
+        <div class="form__button">
+          <button type="button" class="button button--inverse" @click="$emit('close')"><i class="fas fa-eraser fa-fw"></i>削除</button>
+        </div>
         
         <button type="button" @click="$emit('close')" class="button button--inverse">閉じる</button>
     </div>
@@ -48,6 +52,7 @@ export default {
       editForm_character: {
         id: null,
         section_id: null,
+        section: null,
         name: null
       }
     }
@@ -86,15 +91,12 @@ export default {
       this.character_edit = response.data
       this.editForm_character.id = this.character_edit.id
       this.editForm_character.section_id = this.character_edit.section.id
+      this.editForm_character.section = this.character_edit.section.section
       this.editForm_character.name = this.character_edit.name
     },
 
     // 確認する
     confirm_character () {
-      console.log(this.character_edit.section.id);
-      console.log(this.editForm_character.section_id);
-      console.log(this.character_edit.name);
-      console.log(this.editForm_character.name);
       if(this.character_edit.id === this.editForm_character.id && (this.character_edit.section.id !== this.editForm_character.section_id || this.character_edit.name !== this.editForm_character.name)){
         this.editCharacter()
       }else{
@@ -118,12 +120,9 @@ export default {
         return false
       }
 
-      this.character_edit.section = null
-      this.character_edit.id = null
-      this.character_edit.name = null
-      this.editForm_character.section_id = null
-      this.editForm_character.id = null
-      this.editForm_character.name = null
+      this.character_edit.section = this.editForm_character.section
+      this.character_edit.section_id = this.editForm_character.section_id
+      this.character_edit.name = this.editForm_character.name
 
       if (response.statusText !== 'Created') {
         this.$store.commit('error/setCode', response.status)

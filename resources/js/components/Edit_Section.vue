@@ -6,11 +6,15 @@
         <label for="section_edit">区分</label>
         <input type="text" id="section_edit" class="form__item" v-model="editForm_section.section" required>
 
-        <!--- 送信ボタン -->
+        <!--- 変更ボタン -->
         <div class="form__button">
-          <button type="submit" class="button button--inverse" @click="$emit('close')">変更</button>
+          <button type="submit" class="button button--inverse" @click="$emit('close')"><i class="fas fa-edit fa-fw"></i>変更</button>
         </div>
       </form>
+      <!--- 削除ボタン -->
+        <div class="form__button">
+          <button type="button" class="button button--inverse" @click="confirm_deletSection"><i class="fas fa-eraser fa-fw"></i>削除</button>
+        </div>
         
       <button type="button" @click="$emit('close')" class="button button--inverse">閉じる</button>
     </div>
@@ -19,6 +23,9 @@
 
 <script>
 import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util'
+
+// 確認ダイアログ
+import VuejsDialog from 'vuejs-dialog';
 
 export default {
   // モーダルとして表示
@@ -87,8 +94,6 @@ export default {
       }
 
       this.section_edit.section = this.editForm_section.section
-      this.editForm_section.id = null
-      this.editForm_section.section = null
 
       if (response.statusText !== 'Created') {
         this.$store.commit('error/setCode', response.status)
@@ -100,6 +105,54 @@ export default {
         content: '区分が変更されました！',
         timeout: 6000
       })
+    },
+
+    // 確認する
+    confirm_deletSection() {
+      console.log(this)
+      console.log(this.$dialog)
+      this.$dialog
+      .confirm({
+        title: '最終確認',
+        body: 'これを行うと、紐づけられてた登場人物も全て削除されます。/n本当に削除しますか？'
+      },{
+        okText: 'はい',
+        cancelText: 'キャンセル',
+      })
+      .then(function() {
+        console.log('実行しました');
+      })
+      .catch(function() {
+        console.log('実行はキャンセルされました');
+      });
+    },
+
+    // 削除する
+    async deletSection() {
+      const response = await axios.delete('/api/informations/sections/'+ this.section_edit.id)
+
+      if (response.statusText === 'Unprocessable Entity') {
+        this.errors.error = response.data.errors
+        return false
+      }
+
+      this.section_edit.id = null,
+      this.section_edit.section = null,
+      this.editForm_section.id = null
+      this.editForm_section.section = null
+
+      if (response.statusText !== 'Created') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '区分が1つ削除されました！',
+        timeout: 6000
+      })
+
+      this.$emit('close')
     }
   }
 }

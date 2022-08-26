@@ -180,7 +180,9 @@ export default {
       this.postSection = id;
     },
     // 区分編集のモーダル非表示
-    closeModal_sectionEdit() {
+    async closeModal_sectionEdit() {
+      await this.fetchSections()
+      await this.fetchCharacters()
       this.showContent_section = false
     },
 
@@ -190,7 +192,9 @@ export default {
       this.postCharacter = id;
     },
     // 登場人物編集のモーダル非表示
-    closeModal_characterEdit() {
+    async closeModal_characterEdit() {
+      await this.fetchSections() // なぜかこれをつけるとうまくいく
+      await this.fetchCharacters()
       this.showContent_character = false
     },
 
@@ -200,7 +204,9 @@ export default {
       this.postOwner = id;
     },
     // 持ち主編集のモーダル非表示
-    closeModal_ownerEdit() {
+    async closeModal_ownerEdit() {
+      await this.fetchSections() // なぜかこれをつけるとうまくいく
+      await this.fetchOwners()
       this.showContent_owner = false
     },
 

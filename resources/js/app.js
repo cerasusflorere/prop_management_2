@@ -5,9 +5,11 @@ import router from './router'
 // ルートコンポーネントをインポートする
 import App from './App.vue'
 import store from './store'
+// 確認ダイアログ
+import VuejsDialog from 'vuejs-dialog';
 
 
-
+Vue.use(VuejsDialog);
 
 new Vue({
   el: '#app',

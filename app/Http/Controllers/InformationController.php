@@ -179,8 +179,12 @@ class InformationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy_section($id)
     {
-        //
+        dd($id);
+        $section = Section::where('id', $id)
+                          ->delete();
+
+        return $section ?? abort(404);
     }
 }
