@@ -92,9 +92,40 @@ class InformationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show_section($id)
     {
-        //
+        $section = Section::where('id', $id)
+                      ->first();
+
+        return $section ?? abort(404);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show_character($id)
+    {
+        $character = Character::where('id', $id)
+                        ->with(['section'])->first();
+
+        return $character ?? abort(404);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show_owner($id)
+    {
+        $owner = Owner::where('id', $id)
+                    ->first();
+
+        return $owner ?? abort(404);
     }
 
     /**
@@ -104,9 +135,42 @@ class InformationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update_section(Request $request, $id)
     {
-        //
+        $section = Section::where('id', $id)
+                     ->update(['section' => $request->section]);
+
+        return $section;
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update_character(Request $request, $id)
+    {
+        $character = Character::where('id', $id)
+                          ->update(['section_id' => $request->section_id, 'name' => $request->name]);
+
+        return $character;
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update_owner(Request $request, $id)
+    {
+        $owner = Owner::where('id', $id)
+                          ->update(['name' => $request->name]);
+
+        return $owner;
     }
 
     /**

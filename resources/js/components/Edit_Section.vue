@@ -1,0 +1,132 @@
+<template>
+  <div id="overlay">
+    <div id="content" class="panel">
+      <form class="form"  @submit.prevent="confirm_section">
+        <!-- 区分 -->
+        <label for="section_edit">区分</label>
+        <input type="text" id="section_edit" class="form__item" v-model="editForm_section.section" required>
+
+        <!--- 送信ボタン -->
+        <div class="form__button">
+          <button type="submit" class="button button--inverse" @click="$emit('close')">変更</button>
+        </div>
+      </form>
+        
+      <button type="button" @click="$emit('close')" class="button button--inverse">閉じる</button>
+    </div>
+  </div>
+</template>
+
+<script>
+import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util'
+
+export default {
+  // モーダルとして表示
+  name: 'editSection',
+  props: {
+    getSection: {
+      type: Number,
+      required: true
+    }
+  },
+  // データ
+  data() {
+    return {
+      section_edit: [],
+      editForm_section: {
+        id: null,
+        section: null
+      }
+    }
+  },
+  watch: {
+    getSection: {
+      async handler(getSection) {
+        await this.fetchSection_edit()
+      },
+      immediate: true,
+    }
+  },
+  methods: {
+    // 区分の詳細を取得
+    async fetchSection_edit () {
+      const response = await axios.get('/api/informations/sections/'+ this.getSection)
+
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+
+      this.section_edit = response.data
+      this.editForm_section.id = this.section_edit.id
+      this.editForm_section.section = this.section_edit.section
+    },
+
+    // 確認する
+    confirm_section () {
+      if(this.section_edit.id === this.editForm_section.id && this.section_edit.section !== this.editForm_section.section){
+        this.edit_section()
+      }else{
+        // メッセージ登録
+        this.$store.commit('message/setContent', {
+          content: '元の区分名と同じです！変更するなら違う区分名にしてください！',
+          timeout: 6000
+        })
+      }
+    },
+
+    // 編集する
+    async edit_section () {      
+      const response = await axios.post('/api/informations/sections/'+ this.section_edit.id, {
+        section: this.editForm_section.section
+      })
+
+      if (response.statusText === 'Unprocessable Entity') {
+        this.errors.error = response.data.errors
+        return false
+      }
+
+      this.section_edit.section = this.editForm_section.section
+      this.editForm_section.id = null
+      this.editForm_section.section = null
+
+      if (response.statusText !== 'Created') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '区分が変更されました！',
+        timeout: 6000
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+#overlay{
+  overflow-y: scroll;
+  z-index: 9999;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#content {
+  z-index: 2;
+  background-color: white;
+  width: 80%;
+  aspect-ratio: 2 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+</style>

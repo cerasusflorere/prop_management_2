@@ -32,7 +32,7 @@ export default {
       props: [],
       // 小道具詳細
       showContent: false,
-      postProp: "",
+      postProp: ""
     }
   },
   methods: {
