@@ -9,7 +9,7 @@ class Owner extends Model
 {
     /** JSONに含める属性 */
     protected $visible = [
-        'id', 'name',
+        'id', 'name', 'props',
     ];
 
     /** 登録時にJSONに含める属性 */
@@ -21,7 +21,7 @@ class Owner extends Model
      * リレーションシップ - propsテーブル
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function prop()
+    public function props()
     {
         return $this->hasMany('App\Models\Prop')->orderBy('id', 'desc');
     }

@@ -45,6 +45,9 @@ Route::post('/informations/characters', 'App\Http\Controllers\InformationControl
 // 登場人物更新
 Route::post('/informations/characters/{id}', 'App\Http\Controllers\InformationController@update_character')->name('imformation.update_character');
 
+// 登場人物削除
+Route::delete('/informations/characters/{id}', 'App\Http\Controllers\InformationController@destroy_character')->name('imformation.destroy_character');
+
 // 持ち主一覧取得
 Route::get('/informations/owners', 'App\Http\Controllers\InformationController@index_owner')->name('information.index_owner');
 
@@ -57,6 +60,8 @@ Route::post('/informations/owners', 'App\Http\Controllers\InformationController@
 // 持ち主更新
 Route::post('/informations/owners/{id}', 'App\Http\Controllers\InformationController@update_owner')->name('information.update_owner');
 
+// 持ち主削除
+Route::delete('/informations/owners/{id}', 'App\Http\Controllers\InformationController@destroy_owner')->name('imformation.destroy_owner');
 
 // 小道具一覧取得
 Route::get('/props', 'App\Http\Controllers\PropController@index')->name('prop.index');

@@ -234,6 +234,8 @@ export default {
         content: '区分が登録されました！',
         timeout: 6000
       })
+
+      await this.fetchSections();
     },
 
     async register_character () {
@@ -260,6 +262,8 @@ export default {
         content: '登場人物が登録されました！',
         timeout: 6000
       })
+
+      await this.fetchCharacters();
     },
     
     async register_owner () {
@@ -285,6 +289,7 @@ export default {
         timeout: 6000
       })
       
+      await this.fetchOwners();
     }
   },
   watch: {

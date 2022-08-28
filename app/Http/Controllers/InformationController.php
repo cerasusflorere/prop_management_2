@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Cloudinary;
 use App\Models\Section;
 use App\Models\Character;
 use App\Models\Owner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InformationController extends Controller
 {
@@ -181,10 +183,59 @@ class InformationController extends Controller
      */
     public function destroy_section($id)
     {
-        dd($id);
         $section = Section::where('id', $id)
                           ->delete();
 
         return $section ?? abort(404);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy_character($id)
+    {
+        $character = Character::where('id', $id)
+                          ->delete();
+
+        return $character ?? abort(404);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy_owner($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $props = Owner::find($id)
+                        ->props->toArray();
+            $public_ids = array_column($props, 'public_id');
+
+            foreach($public_ids as $public_id){
+                // ない場合$public_id = null
+                if($public_id){
+                    Cloudinary::destroy($public_id);
+                }                    
+            }
+ 
+            $owner = Owner::where('id', $id)
+                        ->delete();      
+
+            DB::commit();
+        }catch (\Exception $exception) {
+            DB::rollBack();
+            
+            throw $exception;
+        }
+        
+
+        return $owner ?? abort(404);
     }
 }

@@ -2513,6 +2513,30 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  // モーダルとして表示
+  name: 'confirmDialog_Delete',
+  props: {
+    confirm_dialog_delete_message: {
+      type: String,
+      required: true
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js&":
 /*!******************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js& ***!
@@ -2627,7 +2651,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
-/* harmony import */ var vue_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-types */ "./node_modules/vue-types/dist/vue-types.modern.js");
+/* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
@@ -2641,6 +2665,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // モーダルとして表示
   name: 'editCharacter',
+  components: {
+    confirmDialog_Delete: _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
   props: {
     getCharacter: {
       type: Number,
@@ -2657,7 +2684,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         section_id: null,
         section: null,
         name: null
-      }
+      },
+      // 削除confirm
+      showContent_confirmDelete: false,
+      postMessage_Delete: ""
     };
   },
   watch: {
@@ -2832,6 +2862,98 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee4);
       }))();
+    },
+    // 削除confirmのモーダル表示 
+    openModal_confirmDelete: function openModal_confirmDelete() {
+      this.showContent_confirmDelete = true;
+      this.postMessage_Delete = 'これを行うと、この登場人物が小道具を使用シーンが全て削除されます。本当に削除しますか？';
+    },
+    // 削除confirmのモーダル非表示_OKの場合
+    closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
+      var _this5 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return _this5.deletCharacter();
+
+              case 2:
+                _this5.showContent_confirmDelete = false;
+
+              case 3:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
+      }))();
+    },
+    // 削除confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmDelete_Cancel: function closeModal_confirmDelete_Cancel() {
+      this.showContent_confirmDelete = false;
+    },
+    // 削除する
+    deletCharacter: function deletCharacter() {
+      var _this6 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.next = 2;
+                return axios["delete"]('/api/informations/characters/' + _this6.character_edit.id);
+
+              case 2:
+                response = _context6.sent;
+
+                if (!(response.statusText === 'Unprocessable Entity')) {
+                  _context6.next = 6;
+                  break;
+                }
+
+                _this6.errors.error = response.data.errors;
+                return _context6.abrupt("return", false);
+
+              case 6:
+                _this6.character_edit.id = null;
+                _this6.character_edit.name = null;
+                _this6.character_edit.section.id = null;
+                _this6.character_edit.section.section = null;
+                _this6.editForm_character.id = null;
+                _this6.editForm_character.name = null;
+                _this6.editForm_character.section_id = null;
+                _this6.editForm_character.section = null;
+
+                if (!(response.statusText !== 'Created')) {
+                  _context6.next = 17;
+                  break;
+                }
+
+                _this6.$store.commit('error/setCode', response.status);
+
+                return _context6.abrupt("return", false);
+
+              case 17:
+                // メッセージ登録
+                _this6.$store.commit('message/setContent', {
+                  content: '区分が1つ削除されました！',
+                  timeout: 6000
+                });
+
+                _this6.$emit('close');
+
+              case 19:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }))();
     }
   }
 });
@@ -2850,6 +2972,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
+/* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
@@ -2859,9 +2982,13 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // モーダルとして表示
   name: 'editOwner',
+  components: {
+    confirmDialog_Delete: _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
   props: {
     getOwner: {
       type: Number,
@@ -2875,7 +3002,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       editForm_owner: {
         id: null,
         name: null
-      }
+      },
+      // 削除confirm
+      showContent_confirmDelete: false,
+      postMessage_Delete: ""
     };
   },
   watch: {
@@ -3005,6 +3135,94 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee3);
       }))();
+    },
+    // 削除confirmのモーダル表示 
+    openModal_confirmDelete: function openModal_confirmDelete(id) {
+      this.showContent_confirmDelete = true;
+      this.postMessage_Delete = 'これを行うと、紐づけられてたこの方が所有するする小道具も全て削除されます。本当に削除しますか？';
+    },
+    // 削除confirmのモーダル非表示_OKの場合
+    closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return _this4.deletOwner();
+
+              case 2:
+                _this4.showContent_confirmDelete = false;
+
+                _this4.$emit('close');
+
+              case 4:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    // 削除confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmDelete_Cancel: function closeModal_confirmDelete_Cancel() {
+      this.showContent_confirmDelete = false;
+    },
+    // 削除する
+    deletOwner: function deletOwner() {
+      var _this5 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return axios["delete"]('/api/informations/owners/' + _this5.owner_edit.id);
+
+              case 2:
+                response = _context5.sent;
+
+                if (!(response.statusText === 'Unprocessable Entity')) {
+                  _context5.next = 6;
+                  break;
+                }
+
+                _this5.errors.error = response.data.errors;
+                return _context5.abrupt("return", false);
+
+              case 6:
+                _this5.owner_edit.id = null, _this5.owner_edit.name = null, _this5.editForm_owner.id = null;
+                _this5.editForm_owner.name = null;
+
+                if (!(response.statusText !== 'Created')) {
+                  _context5.next = 11;
+                  break;
+                }
+
+                _this5.$store.commit('error/setCode', response.status);
+
+                return _context5.abrupt("return", false);
+
+              case 11:
+                // メッセージ登録
+                _this5.$store.commit('message/setContent', {
+                  content: '持ち主が1つ削除されました！',
+                  timeout: 6000
+                });
+
+                _this5.$emit('close');
+
+              case 13:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
+      }))();
     }
   }
 });
@@ -3023,8 +3241,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
-/* harmony import */ var vuejs_dialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuejs-dialog */ "./node_modules/vuejs-dialog/dist/vuejs-dialog.min.js");
-/* harmony import */ var vuejs_dialog__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vuejs_dialog__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
@@ -3033,12 +3250,14 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
- // 確認ダイアログ
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // モーダルとして表示
   name: 'editSection',
+  components: {
+    confirmDialog_Delete: _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
   props: {
     getSection: {
       type: Number,
@@ -3052,7 +3271,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       editForm_section: {
         id: null,
         section: null
-      }
+      },
+      // 削除confirm
+      showContent_confirmDelete: false,
+      postMessage_Delete: ""
     };
   },
   watch: {
@@ -3118,7 +3340,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee2);
       }))();
     },
-    // 確認する
+    // 編集エラー
     confirm_section: function confirm_section() {
       if (this.section_edit.id === this.editForm_section.id && this.section_edit.section !== this.editForm_section.section) {
         this.edit_section();
@@ -3183,74 +3405,90 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee3);
       }))();
     },
-    // 確認する
-    confirm_deletSection: function confirm_deletSection() {
-      console.log(this);
-      console.log(this.$dialog);
-      this.$dialog.confirm({
-        title: '最終確認',
-        body: 'これを行うと、紐づけられてた登場人物も全て削除されます。/n本当に削除しますか？'
-      }, {
-        okText: 'はい',
-        cancelText: 'キャンセル'
-      }).then(function () {
-        console.log('実行しました');
-      })["catch"](function () {
-        console.log('実行はキャンセルされました');
-      });
+    // 削除confirmのモーダル表示 
+    openModal_confirmDelete: function openModal_confirmDelete(id) {
+      this.showContent_confirmDelete = true;
+      this.postMessage_Delete = 'これを行うと、紐づけられてた登場人物、その登場人物が小道具を使用するシーンもも全て削除されます。本当に削除しますか？';
     },
-    // 削除する
-    deletSection: function deletSection() {
+    // 削除confirmのモーダル非表示_OKの場合
+    closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-        var response;
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
                 _context4.next = 2;
-                return axios["delete"]('/api/informations/sections/' + _this4.section_edit.id);
+                return _this4.deletSection();
 
               case 2:
-                response = _context4.sent;
+                _this4.showContent_confirmDelete = false;
 
-                if (!(response.statusText === 'Unprocessable Entity')) {
-                  _context4.next = 6;
-                  break;
-                }
-
-                _this4.errors.error = response.data.errors;
-                return _context4.abrupt("return", false);
-
-              case 6:
-                _this4.section_edit.id = null, _this4.section_edit.section = null, _this4.editForm_section.id = null;
-                _this4.editForm_section.section = null;
-
-                if (!(response.statusText !== 'Created')) {
-                  _context4.next = 11;
-                  break;
-                }
-
-                _this4.$store.commit('error/setCode', response.status);
-
-                return _context4.abrupt("return", false);
-
-              case 11:
-                // メッセージ登録
-                _this4.$store.commit('message/setContent', {
-                  content: '区分が1つ削除されました！',
-                  timeout: 6000
-                });
-
-                _this4.$emit('close');
-
-              case 13:
+              case 3:
               case "end":
                 return _context4.stop();
             }
           }
         }, _callee4);
+      }))();
+    },
+    // 削除confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmDelete_Cancel: function closeModal_confirmDelete_Cancel() {
+      this.showContent_confirmDelete = false;
+    },
+    // 削除する
+    deletSection: function deletSection() {
+      var _this5 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return axios["delete"]('/api/informations/sections/' + _this5.section_edit.id);
+
+              case 2:
+                response = _context5.sent;
+
+                if (!(response.statusText === 'Unprocessable Entity')) {
+                  _context5.next = 6;
+                  break;
+                }
+
+                _this5.errors.error = response.data.errors;
+                return _context5.abrupt("return", false);
+
+              case 6:
+                _this5.section_edit.id = null, _this5.section_edit.section = null, _this5.editForm_section.id = null;
+                _this5.editForm_section.section = null;
+
+                if (!(response.statusText !== 'Created')) {
+                  _context5.next = 11;
+                  break;
+                }
+
+                _this5.$store.commit('error/setCode', response.status);
+
+                return _context5.abrupt("return", false);
+
+              case 11:
+                // メッセージ登録
+                _this5.$store.commit('message/setContent', {
+                  content: '区分が1つ削除されました！',
+                  timeout: 6000
+                });
+
+                _this5.$emit('close');
+
+              case 13:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
       }))();
     }
   }
@@ -4383,7 +4621,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   timeout: 6000
                 });
 
-              case 11:
+                _context7.next = 13;
+                return _this7.fetchSections();
+
+              case 13:
               case "end":
                 return _context7.stop();
             }
@@ -4437,7 +4678,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   timeout: 6000
                 });
 
-              case 12:
+                _context8.next = 14;
+                return _this8.fetchCharacters();
+
+              case 14:
               case "end":
                 return _context8.stop();
             }
@@ -4489,7 +4733,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   timeout: 6000
                 });
 
-              case 11:
+                _context9.next = 13;
+                return _this9.fetchOwners();
+
+              case 13:
               case "end":
                 return _context9.stop();
             }
@@ -4553,6 +4800,68 @@ var render = function render() {
   return _c("div", [_c("header", [_c("Navbar")], 1), _vm._v(" "), _c("main", [_c("div", {
     staticClass: "container"
   }, [_c("Message"), _vm._v(" "), _c("RouterView")], 1)]), _vm._v(" "), _c("Footer")], 1);
+};
+
+var staticRenderFns = [];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=template&id=3ce8ee68&scoped=true&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=template&id=3ce8ee68&scoped=true& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("div", {
+    attrs: {
+      id: "overlay"
+    }
+  }, [_c("div", {
+    staticClass: "panel",
+    attrs: {
+      id: "content"
+    }
+  }, [_c("div", {
+    attrs: {
+      id: "confirm_dialog_delete_title"
+    }
+  }, [_vm._v("\n      最終確認\n    ")]), _vm._v(" "), _c("div", {
+    attrs: {
+      id: "confirm_dialog_delete_message"
+    }
+  }, [_vm._v("\n      " + _vm._s(_vm.confirm_dialog_delete_message) + "\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.$emit("Cancel_Delete");
+      }
+    }
+  }, [_vm._v("キャンセル")]), _vm._v(" "), _c("button", {
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.$emit("OK_Delete");
+      }
+    }
+  }, [_vm._v("OK")])])]);
 };
 
 var staticRenderFns = [];
@@ -4744,13 +5053,25 @@ var render = function render() {
       type: "button"
     },
     on: {
-      click: function click($event) {
-        return _vm.$emit("close");
-      }
+      click: _vm.openModal_confirmDelete
     }
   }, [_c("i", {
     staticClass: "fas fa-eraser fa-fw"
-  }), _vm._v("削除")])]), _vm._v(" "), _c("button", {
+  }), _vm._v("削除")])]), _vm._v(" "), _c("confirmDialog_Delete", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_confirmDelete,
+      expression: "showContent_confirmDelete"
+    }],
+    attrs: {
+      confirm_dialog_delete_message: _vm.postMessage_Delete
+    },
+    on: {
+      Cancel_Delete: _vm.closeModal_confirmDelete_Cancel,
+      OK_Delete: _vm.closeModal_confirmDelete_OK
+    }
+  }), _vm._v(" "), _c("button", {
     staticClass: "button button--inverse",
     attrs: {
       type: "button"
@@ -4760,7 +5081,7 @@ var render = function render() {
         return _vm.$emit("close");
       }
     }
-  }, [_vm._v("閉じる")])])]);
+  }, [_vm._v("閉じる")])], 1)]);
 };
 
 var staticRenderFns = [];
@@ -4851,13 +5172,25 @@ var render = function render() {
       type: "button"
     },
     on: {
-      click: function click($event) {
-        return _vm.$emit("close");
-      }
+      click: _vm.openModal_confirmDelete
     }
   }, [_c("i", {
     staticClass: "fas fa-eraser fa-fw"
-  }), _vm._v("削除")])]), _vm._v(" "), _c("button", {
+  }), _vm._v("削除")])]), _vm._v(" "), _c("confirmDialog_Delete", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_confirmDelete,
+      expression: "showContent_confirmDelete"
+    }],
+    attrs: {
+      confirm_dialog_delete_message: _vm.postMessage_Delete
+    },
+    on: {
+      Cancel_Delete: _vm.closeModal_confirmDelete_Cancel,
+      OK_Delete: _vm.closeModal_confirmDelete_OK
+    }
+  }), _vm._v(" "), _c("button", {
     staticClass: "button button--inverse",
     attrs: {
       type: "button"
@@ -4867,7 +5200,7 @@ var render = function render() {
         return _vm.$emit("close");
       }
     }
-  }, [_vm._v("閉じる")])])]);
+  }, [_vm._v("閉じる")])], 1)]);
 };
 
 var staticRenderFns = [];
@@ -4958,11 +5291,25 @@ var render = function render() {
       type: "button"
     },
     on: {
-      click: _vm.confirm_deletSection
+      click: _vm.openModal_confirmDelete
     }
   }, [_c("i", {
     staticClass: "fas fa-eraser fa-fw"
-  }), _vm._v("削除")])]), _vm._v(" "), _c("button", {
+  }), _vm._v("削除")])]), _vm._v(" "), _c("confirmDialog_Delete", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_confirmDelete,
+      expression: "showContent_confirmDelete"
+    }],
+    attrs: {
+      confirm_dialog_delete_message: _vm.postMessage_Delete
+    },
+    on: {
+      Cancel_Delete: _vm.closeModal_confirmDelete_Cancel,
+      OK_Delete: _vm.closeModal_confirmDelete_OK
+    }
+  }), _vm._v(" "), _c("button", {
     staticClass: "button button--inverse",
     attrs: {
       type: "button"
@@ -4972,7 +5319,7 @@ var render = function render() {
         return _vm.$emit("close");
       }
     }
-  }, [_vm._v("閉じる")])])]);
+  }, [_vm._v("閉じる")])], 1)]);
 };
 
 var staticRenderFns = [];
@@ -8452,6 +8799,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".rnd-container[data-v-6bd65ecf]{positi
 
 /***/ }),
 
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n#overlay[data-v-3ce8ee68]{\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n#content[data-v-3ce8ee68] {\n  z-index: 2;\n  background-color: white;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=style&index=0&id=0d4e7d16&scoped=true&lang=css&":
 /*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=style&index=0&id=0d4e7d16&scoped=true&lang=css& ***!
@@ -8541,7 +8912,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#overlay[data-v-ca04a50a]{\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n#content[data-v-ca04a50a] {\n  z-index: 2;\n  background-color: white;\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#overlay[data-v-ca04a50a]{\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n#content[data-v-ca04a50a] {\n  z-index: 2;\n  background-color: white;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -8893,6 +9264,36 @@ var update = _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMP
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_vue_suggest_input_css__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_style_index_0_id_3ce8ee68_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_style_index_0_id_3ce8ee68_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_style_index_0_id_3ce8ee68_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
@@ -9400,6 +9801,47 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
 /* hot reload */
 if (false) { var api; }
 component.options.__file = "resources/js/App.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Confirm_Dialog_Delete.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/Confirm_Dialog_Delete.vue ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Confirm_Dialog_Delete_vue_vue_type_template_id_3ce8ee68_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue?vue&type=template&id=3ce8ee68&scoped=true& */ "./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=template&id=3ce8ee68&scoped=true&");
+/* harmony import */ var _Confirm_Dialog_Delete_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue?vue&type=script&lang=js& */ "./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=script&lang=js&");
+/* harmony import */ var _Confirm_Dialog_Delete_vue_vue_type_style_index_0_id_3ce8ee68_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css& */ "./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _Confirm_Dialog_Delete_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Confirm_Dialog_Delete_vue_vue_type_template_id_3ce8ee68_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _Confirm_Dialog_Delete_vue_vue_type_template_id_3ce8ee68_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "3ce8ee68",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Confirm_Dialog_Delete.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
@@ -10007,6 +10449,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Confirm_Dialog_Delete.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js&":
 /*!**************************************************************************!*\
   !*** ./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js& ***!
@@ -10180,6 +10638,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_template_id_f348271a___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_App_vue_vue_type_template_id_f348271a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./App.vue?vue&type=template&id=f348271a& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/App.vue?vue&type=template&id=f348271a&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=template&id=3ce8ee68&scoped=true&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=template&id=3ce8ee68&scoped=true& ***!
+  \******************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_template_id_3ce8ee68_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_template_id_3ce8ee68_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_template_id_3ce8ee68_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Confirm_Dialog_Delete.vue?vue&type=template&id=3ce8ee68&scoped=true& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=template&id=3ce8ee68&scoped=true&");
 
 
 /***/ }),
@@ -10435,6 +10910,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_System_vue_vue_type_template_id_3023295a___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_System_vue_vue_type_template_id_3023295a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./System.vue?vue&type=template&id=3023295a& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/errors/System.vue?vue&type=template&id=3023295a&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css&":
+/*!********************************************************************************************************************!*\
+  !*** ./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css& ***!
+  \********************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_style_index_0_id_3ce8ee68_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css&");
 
 
 /***/ }),
@@ -32185,96 +32673,6 @@ var index = {
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (index);
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-types/dist/vue-types.modern.js":
-/*!*********************************************************!*\
-  !*** ./node_modules/vue-types/dist/vue-types.modern.js ***!
-  \*********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "any": () => (/* binding */ w),
-/* harmony export */   "array": () => (/* binding */ q),
-/* harmony export */   "arrayOf": () => (/* binding */ Y),
-/* harmony export */   "bool": () => (/* binding */ x),
-/* harmony export */   "config": () => (/* binding */ n),
-/* harmony export */   "createTypes": () => (/* binding */ z),
-/* harmony export */   "custom": () => (/* binding */ D),
-/* harmony export */   "default": () => (/* binding */ C),
-/* harmony export */   "fromType": () => (/* binding */ T),
-/* harmony export */   "func": () => (/* binding */ P),
-/* harmony export */   "instanceOf": () => (/* binding */ B),
-/* harmony export */   "integer": () => (/* binding */ V),
-/* harmony export */   "nullable": () => (/* binding */ k),
-/* harmony export */   "number": () => (/* binding */ N),
-/* harmony export */   "object": () => (/* binding */ A),
-/* harmony export */   "objectOf": () => (/* binding */ I),
-/* harmony export */   "oneOf": () => (/* binding */ L),
-/* harmony export */   "oneOfType": () => (/* binding */ F),
-/* harmony export */   "shape": () => (/* binding */ J),
-/* harmony export */   "string": () => (/* binding */ E),
-/* harmony export */   "symbol": () => (/* binding */ S),
-/* harmony export */   "toType": () => (/* binding */ j),
-/* harmony export */   "toValidableType": () => (/* binding */ _),
-/* harmony export */   "validateType": () => (/* binding */ m)
-/* harmony export */ });
-/* harmony import */ var is_plain_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! is-plain-object */ "./node_modules/vue-types/node_modules/is-plain-object/dist/is-plain-object.mjs");
-function t(){return t=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var r=arguments[t];for(var n in r)Object.prototype.hasOwnProperty.call(r,n)&&(e[n]=r[n])}return e},t.apply(this,arguments)}function r(e,t){if(null==e)return{};var r,n,i={},o=Object.keys(e);for(n=0;n<o.length;n++)t.indexOf(r=o[n])>=0||(i[r]=e[r]);return i}const n={silent:!1,logLevel:"warn"},i=["validator"],o=Object.prototype,a=o.toString,s=o.hasOwnProperty,u=/^\s*function (\w+)/;function l(e){var t;const r=null!==(t=null==e?void 0:e.type)&&void 0!==t?t:e;if(r){const e=r.toString().match(u);return e?e[1]:""}return""}const c=is_plain_object__WEBPACK_IMPORTED_MODULE_0__.isPlainObject,f=e=>e;let d=f;if(true){const e="undefined"!=typeof console;d=e?function(e,t=n.logLevel){!1===n.silent&&console[t](`[VueTypes warn]: ${e}`)}:f}const p=(e,t)=>s.call(e,t),y=Number.isInteger||function(e){return"number"==typeof e&&isFinite(e)&&Math.floor(e)===e},v=Array.isArray||function(e){return"[object Array]"===a.call(e)},h=e=>"[object Function]"===a.call(e),b=e=>c(e)&&p(e,"_vueTypes_name"),g=e=>c(e)&&(p(e,"type")||["_vueTypes_name","validator","default","required"].some(t=>p(e,t)));function O(e,t){return Object.defineProperty(e.bind(t),"__original",{value:e})}function m(e,t,r=!1){let n,i=!0,o="";n=c(e)?e:{type:e};const a=b(n)?n._vueTypes_name+" - ":"";if(g(n)&&null!==n.type){if(void 0===n.type||!0===n.type)return i;if(!n.required&&void 0===t)return i;v(n.type)?(i=n.type.some(e=>!0===m(e,t,!0)),o=n.type.map(e=>l(e)).join(" or ")):(o=l(n),i="Array"===o?v(t):"Object"===o?c(t):"String"===o||"Number"===o||"Boolean"===o||"Function"===o?function(e){if(null==e)return"";const t=e.constructor.toString().match(u);return t?t[1]:""}(t)===o:t instanceof n.type)}if(!i){const e=`${a}value "${t}" should be of type "${o}"`;return!1===r?(d(e),!1):e}if(p(n,"validator")&&h(n.validator)){const e=d,o=[];if(d=e=>{o.push(e)},i=n.validator(t),d=e,!i){const e=(o.length>1?"* ":"")+o.join("\n* ");return o.length=0,!1===r?(d(e),i):e}}return i}function j(e,t){const r=Object.defineProperties(t,{_vueTypes_name:{value:e,writable:!0},isRequired:{get(){return this.required=!0,this}},def:{value(e){return void 0===e?(p(this,"default")&&delete this.default,this):h(e)||!0===m(this,e,!0)?(this.default=v(e)?()=>[...e]:c(e)?()=>Object.assign({},e):e,this):(d(`${this._vueTypes_name} - invalid default value: "${e}"`),this)}}}),{validator:n}=r;return h(n)&&(r.validator=O(n,r)),r}function _(e,t){const r=j(e,t);return Object.defineProperty(r,"validate",{value(e){return h(this.validator)&&d(`${this._vueTypes_name} - calling .validate() will overwrite the current custom validator function. Validator info:\n${JSON.stringify(this)}`),this.validator=O(e,this),this}})}function T(e,t,n){const o=function(e){const t={};return Object.getOwnPropertyNames(e).forEach(r=>{t[r]=Object.getOwnPropertyDescriptor(e,r)}),Object.defineProperties({},t)}(t);if(o._vueTypes_name=e,!c(n))return o;const{validator:a}=n,s=r(n,i);if(h(a)){let{validator:e}=o;e&&(e=null!==(l=(u=e).__original)&&void 0!==l?l:u),o.validator=O(e?function(t){return e.call(this,t)&&a.call(this,t)}:a,o)}var u,l;return Object.assign(o,s)}function $(e){return e.replace(/^(?!\s*$)/gm,"  ")}const w=()=>_("any",{}),P=()=>_("function",{type:Function}),x=()=>_("boolean",{type:Boolean}),E=()=>_("string",{type:String}),N=()=>_("number",{type:Number}),q=()=>_("array",{type:Array}),A=()=>_("object",{type:Object}),V=()=>j("integer",{type:Number,validator:e=>y(e)}),S=()=>j("symbol",{validator:e=>"symbol"==typeof e}),k=()=>({type:null});function D(e,t="custom validation failed"){if("function"!=typeof e)throw new TypeError("[VueTypes error]: You must provide a function as argument");return j(e.name||"<<anonymous function>>",{type:null,validator(r){const n=e(r);return n||d(`${this._vueTypes_name} - ${t}`),n}})}function L(e){if(!v(e))throw new TypeError("[VueTypes error]: You must provide an array as argument.");const t=`oneOf - value should be one of "${e.join('", "')}".`,r=e.reduce((e,t)=>{if(null!=t){const r=t.constructor;-1===e.indexOf(r)&&e.push(r)}return e},[]);return j("oneOf",{type:r.length>0?r:void 0,validator(r){const n=-1!==e.indexOf(r);return n||d(t),n}})}function F(e){if(!v(e))throw new TypeError("[VueTypes error]: You must provide an array as argument");let t=!1,r=[];for(let n=0;n<e.length;n+=1){const i=e[n];if(g(i)){if(b(i)&&"oneOf"===i._vueTypes_name&&i.type){r=r.concat(i.type);continue}if(h(i.validator)&&(t=!0),!0===i.type||!i.type){d('oneOfType - invalid usage of "true" or "null" as types.');continue}r=r.concat(i.type)}else r.push(i)}r=r.filter((e,t)=>r.indexOf(e)===t);const n=r.length>0?r:null;return j("oneOfType",t?{type:n,validator(t){const r=[],n=e.some(e=>{const n=m(b(e)&&"oneOf"===e._vueTypes_name?e.type||null:e,t,!0);return"string"==typeof n&&r.push(n),!0===n});return n||d(`oneOfType - provided value does not match any of the ${r.length} passed-in validators:\n${$(r.join("\n"))}`),n}}:{type:n})}function Y(e){return j("arrayOf",{type:Array,validator(t){let r="";const n=t.every(t=>(r=m(e,t,!0),!0===r));return n||d(`arrayOf - value validation error:\n${$(r)}`),n}})}function B(e){return j("instanceOf",{type:e})}function I(e){return j("objectOf",{type:Object,validator(t){let r="";const n=Object.keys(t).every(n=>(r=m(e,t[n],!0),!0===r));return n||d(`objectOf - value validation error:\n${$(r)}`),n}})}function J(e){const t=Object.keys(e),r=t.filter(t=>{var r;return!(null===(r=e[t])||void 0===r||!r.required)}),n=j("shape",{type:Object,validator(n){if(!c(n))return!1;const i=Object.keys(n);if(r.length>0&&r.some(e=>-1===i.indexOf(e))){const e=r.filter(e=>-1===i.indexOf(e));return d(1===e.length?`shape - required property "${e[0]}" is not defined.`:`shape - required properties "${e.join('", "')}" are not defined.`),!1}return i.every(r=>{if(-1===t.indexOf(r))return!0===this._vueTypes_isLoose||(d(`shape - shape definition does not include a "${r}" property. Allowed keys: "${t.join('", "')}".`),!1);const i=m(e[r],n[r],!0);return"string"==typeof i&&d(`shape - "${r}" property validation error:\n ${$(i)}`),!0===i})}});return Object.defineProperty(n,"_vueTypes_isLoose",{writable:!0,value:!1}),Object.defineProperty(n,"loose",{get(){return this._vueTypes_isLoose=!0,this}}),n}const M=["name","validate","getter"],R=/*#__PURE__*/(()=>{var e;return(e=class{static get any(){return w()}static get func(){return P().def(this.defaults.func)}static get bool(){return x().def(this.defaults.bool)}static get string(){return E().def(this.defaults.string)}static get number(){return N().def(this.defaults.number)}static get array(){return q().def(this.defaults.array)}static get object(){return A().def(this.defaults.object)}static get integer(){return V().def(this.defaults.integer)}static get symbol(){return S()}static get nullable(){return{type:null}}static extend(e){if(v(e))return e.forEach(e=>this.extend(e)),this;const{name:t,validate:n=!1,getter:i=!1}=e,o=r(e,M);if(p(this,t))throw new TypeError(`[VueTypes error]: Type "${t}" already defined`);const{type:a}=o;if(b(a))return delete o.type,Object.defineProperty(this,t,i?{get:()=>T(t,a,o)}:{value(...e){const r=T(t,a,o);return r.validator&&(r.validator=r.validator.bind(r,...e)),r}});let s;return s=i?{get(){const e=Object.assign({},o);return n?_(t,e):j(t,e)},enumerable:!0}:{value(...e){const r=Object.assign({},o);let i;return i=n?_(t,r):j(t,r),r.validator&&(i.validator=r.validator.bind(i,...e)),i},enumerable:!0},Object.defineProperty(this,t,s)}}).defaults={},e.sensibleDefaults=void 0,e.config=n,e.custom=D,e.oneOf=L,e.instanceOf=B,e.oneOfType=F,e.arrayOf=Y,e.objectOf=I,e.shape=J,e.utils={validate:(e,t)=>!0===m(t,e,!0),toType:(e,t,r=!1)=>r?_(e,t):j(e,t)},e})();function z(e={func:()=>{},bool:!0,string:"",number:0,array:()=>[],object:()=>({}),integer:0}){var r;return(r=class extends R{static get sensibleDefaults(){return t({},this.defaults)}static set sensibleDefaults(r){this.defaults=!1!==r?t({},!0!==r?r:e):{}}}).defaults=t({},e),r}class C extends(z()){}
-//# sourceMappingURL=vue-types.modern.js.map
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-types/node_modules/is-plain-object/dist/is-plain-object.mjs":
-/*!**************************************************************************************!*\
-  !*** ./node_modules/vue-types/node_modules/is-plain-object/dist/is-plain-object.mjs ***!
-  \**************************************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "isPlainObject": () => (/* binding */ isPlainObject)
-/* harmony export */ });
-/*!
- * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
- *
- * Copyright (c) 2014-2017, Jon Schlinkert.
- * Released under the MIT License.
- */
-
-function isObject(o) {
-  return Object.prototype.toString.call(o) === '[object Object]';
-}
-
-function isPlainObject(o) {
-  var ctor,prot;
-
-  if (isObject(o) === false) return false;
-
-  // If has modified constructor
-  ctor = o.constructor;
-  if (ctor === undefined) return true;
-
-  // If has modified prototype
-  prot = ctor.prototype;
-  if (isObject(prot) === false) return false;
-
-  // If constructor does not have an Object-specific method
-  if (prot.hasOwnProperty('isPrototypeOf') === false) {
-    return false;
-  }
-
-  // Most likely a plain Object
-  return true;
-}
-
 
 
 
