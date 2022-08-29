@@ -6,6 +6,7 @@ use Cloudinary;
 use App\Models\Section;
 use App\Models\Character;
 use App\Models\Owner;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -216,25 +217,28 @@ class InformationController extends Controller
         try {
             $props = Owner::find($id)
                         ->props->toArray();
-            $public_ids = array_column($props, 'public_id');
+            $public_ids_null = array_column($props, 'public_id'); // ない場合$public_id = null
+            $public_ids =  array_filter($public_ids_null);
 
-            foreach($public_ids as $public_id){
-                // ない場合$public_id = null
-                if($public_id){
-                    Cloudinary::destroy($public_id);
-                }                    
-            }
- 
             $owner = Owner::where('id', $id)
                         ->delete();      
 
             DB::commit();
+
+            if($owner === 0){
+                throw new Exception('意図されない処理が実行されました。');
+            }
+
+            foreach($public_ids as $public_id){
+                if($public_id){
+                    Cloudinary::destroy($public_id);
+                }                    
+            }
         }catch (\Exception $exception) {
             DB::rollBack();
             
             throw $exception;
         }
-        
 
         return $owner ?? abort(404);
     }
