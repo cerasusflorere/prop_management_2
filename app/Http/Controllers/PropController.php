@@ -41,7 +41,7 @@ class PropController extends Controller
             $url = null;
         }
         $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
-        $usage = !empty($request->usage) ? 1 : null;
+        $usage = !empty($request->usage) ? 1 : 0;
         
 
         DB::beginTransaction();
@@ -92,15 +92,123 @@ class PropController extends Controller
     public function update(Request $request, $id)
     {
         if($request->method == 'usage_change'){
+            // 小道具投稿時にしようとした場合
             $usage = Prop::where('id', $id)
               ->select('usage')->first();
-            if($usage !== 1){
+            if(!empty($usage)){
                 $affected = Prop::where('id', $id)
                    ->update(['usage' => 1]);
             }        
 
             return $affected;
+        }else if($request->method == 'photo_non_update'){
+            // 写真更新しない
+            $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
+            $usage = !empty($request->usage) ? 1 : 0;
+
+            $affected = Prop::where('id', $id)
+                   ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'usage' => $usage]);
+
+            return $affected;
+        }else if($request->method == 'photo_store'){
+            // 写真新規投稿
+            dump($request->photo);
+            if($request->photo){
+                // Cloudinaryにファイルを保存する
+                $result = $request->photo->storeOnCloudinary('prop_management');
+                $url = $result->getSecurePath(); 
+                $public_id = $result->getPublicId();
+            } else {
+                $public_id = null;
+                $url = null;
+            }
+
+            $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
+            $usage = !empty($request->usage) ? 1 : 0;
+
+            DB::beginTransaction();
+
+            try {
+                $affected = Prop::where('id', $id)
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage]);
+                
+                DB::commit();
+            }catch (\Exception $exception) {
+                DB::rollBack();
+                if($request->photo){
+                    // DBとの不整合を避けるためアップロードしたファイルを削除
+                    Cloudinary::destroy($public_id);
+                }
+                
+                throw $exception;
+            }
+
+            return $affected;
+        }else if($request->method == 'photo_delete'){
+            // 写真削除
+            $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
+            $usage = !empty($request->usage) ? 1 : 0;
+
+            DB::beginTransaction();
+
+            try {
+                $affected = Prop::where('id', $id)
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => null, 'url' => null, 'usage' => $usage]);
+                
+                DB::commit();
+
+                if(!$affected){
+                    throw new Exception('意図されない処理が実行されました。');
+                }
+    
+                if($request->public_id){
+                    Cloudinary::destroy($request->public_id);
+                }
+            }catch (\Exception $exception) {
+                DB::rollBack();
+                
+                throw $exception;
+            }
+
+            return $affected;
+        }if($request->method == 'photo_update'){
+            //写真アップデート
+            if($request->photo){
+                // Cloudinaryにファイルを保存する
+                $result = $request->photo->storeOnCloudinary('prop_management');
+                $url = $result->getSecurePath(); 
+                $public_id = $result->getPublicId();
+            } else {
+                $public_id = null;
+                $url = null;
+            }
+            $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
+            $usage = !empty($request->usage) ? 1 : 0;
+
+            DB::beginTransaction();
+
+            try {
+                $affected = Prop::where('id', $id)
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage]);
+                
+                DB::commit();
+
+                if(!$affected){
+                    throw new Exception('意図されない処理が実行されました。');
+                }
+    
+                if($request->public_id){
+                    Cloudinary::destroy($request->public_id);
+                }
+            }catch (\Exception $exception) {
+                DB::rollBack();
+                
+                throw $exception;
+            }
+
+            return $affected;
         }
+
     }
 
     /**
@@ -111,6 +219,31 @@ class PropController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $public_id = Prop::select('public_id')
+                            ->where('id', $id)->first()->toArray();
+
+            $prop = Prop::where('id', $id)
+                        ->delete();      
+
+            DB::commit();
+
+            if(!$prop){
+                throw new Exception('意図されない処理が実行されました。');
+            }
+
+            if($public_id['public_id']){
+                Cloudinary::destroy($public_id['public_id']);
+            }
+
+        }catch (\Exception $exception) {
+            DB::rollBack();
+            
+            throw $exception;
+        }
+
+        return $prop ?? abort(404);
     }
 }

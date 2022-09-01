@@ -13,7 +13,7 @@
           <div>
             <label for="prop_input">小道具</label>
             <div class="form__button">
-              <button type="button" @click="openModal_listProps()" class="button button--inverse">小道具リスト</button>
+              <button type="button" @click="openModal_listProps(1)" class="button button--inverse">小道具リスト</button>
             </div>
           </div>
          
@@ -46,7 +46,7 @@
             <button type="submit" class="button button--inverse">登録</button>
           </div>
         </form>
-        <listProps :val="postFlag" v-show="showContent" @close="closeModal_listProps" />
+        <listProps :postFlag="postFlag" v-show="showContent" @close="closeModal_listProps" />
         <!-- 登録- 使用シーンでは閉じるボタンを出現させる -->
         <button type="button" v-if="val===1" @click="$emit('close')" class="button button--inverse">閉じる</button>
     </div>
@@ -115,7 +115,7 @@ export default {
     autokana = AutoKana.bind('#prop_input');
   },
   methods: {
-      // 持ち主を取得
+    // 持ち主を取得
     async fetchOwners () {
       const response = await axios.get('/api/informations/owners')
 
@@ -144,13 +144,14 @@ export default {
     },
 
     // 小道具リストのモーダル表示 
-    openModal_listProps () {
+    openModal_listProps (number) {
       this.showContent = true
       this.postFlag = 1;
     },
     // 小道具リストのモーダル非表示
     closeModal_listProps (){
       this.showContent = false
+      this.postFlag = "";
     },
     
     // フォームでファイルが選択されたら実行される

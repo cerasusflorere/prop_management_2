@@ -5,7 +5,7 @@
         <li v-for="prop in props">
           <div type="button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</div>
         </li>
-        <detailProp :val="postProp" v-show="showContent" @close="closeModal_propDetail" />
+        <detailProp :postProp="postProp" v-show="showContent" @close="closeModal_propDetail" />
       </ul>
       <button type="button" @click="$emit('close')" class="button button--inverse">閉じる</button>
     </div>
@@ -24,6 +24,12 @@ export default {
   // このページの上で表示するコンポーネント
   components: {
     detailProp
+  },
+  props: {
+    postFlag: {
+      type: Number,
+      required: true
+    }
   },
   // データ
   data() {
@@ -54,13 +60,14 @@ export default {
       this.postProp = id;
     },
     // 小道具詳細のモーダル非表示
-    closeModal_propDetail() {
+    async closeModal_propDetail() {
       this.showContent = false
+      await this.fetchProps()
     },
   },
   watch: {
-    $route: {
-      async handler () {
+    postFlag: {
+      async handler (postFlag) {
         await this.fetchProps()
       },
       immediate: true

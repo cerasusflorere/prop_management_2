@@ -131,8 +131,6 @@ class SceneController extends Controller
             
             throw $exception;
         }
-
-        
     }
 
     /**

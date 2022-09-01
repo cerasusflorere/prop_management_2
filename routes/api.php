@@ -75,6 +75,9 @@ Route::post('/props', 'App\Http\Controllers\PropController@store')->name('prop.s
 // 小道具更新
 Route::post('/props/{id}', 'App\Http\Controllers\PropController@update')->name('prop.update');
 
+// 小道具削除
+Route::delete('/props/{id}', 'App\Http\Controllers\PropController@destroy')->name('prop.destroy');
+
 // 使用シーン一覧取得
 Route::get('/scenes', 'App\Http\Controllers\SceneController@index')->name('scene.index');
 
