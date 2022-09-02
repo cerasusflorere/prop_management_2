@@ -208,8 +208,15 @@ export default {
     },
     editPropMode_memo: {
       async handler(editPropMode_memo){
-        if(this.editPropMode_detail || this.editPropMode_memo){
+        if(this.editPropMode_detail === "change" || this.editPropMode_memo === "change"){
+          await this.fetchProp()
+          tab = 1
+        }else if(this.editPropMode_detail || this.editPropMode_memo){
           await this.openModal_confirmEdit()
+        }else if(this.editPropMode_detail === 0 && this.editPropMode_memo === 0){
+          alert('元のデータと同じです！変更してください')
+          this.editPropMode_detail = ""
+          this.editPropMode_memo = ""
         }
       },
       immediate: true,
@@ -238,7 +245,9 @@ export default {
       }else{
         this.editForm_prop.photo = 0 // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
       }
-    },
+      this.editPropMode_detail = ""
+      this.editPropMode_memo = ""
+      },
 
     // 持ち主を取得
     async fetchOwners () {
@@ -342,17 +351,19 @@ export default {
         this.editPropMode_detail = 0
       }
 
-      console.log(this.prop.prop_comments.length)
-
       if(this.prop.id === this.editForm_prop.id && !this.prop.prop_comments.length && this.editForm_prop.memo){
         // メモ新規投稿
         this.editPropMode_memo = 1 // 'memo_store'
-      }else if(this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && !this.editForm_prop.prop_comments[0].memo){
-        // メモ削除
-        this.editPropMode_memo = 2 //'memo_delete'
-      }else if(this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && this.prop.prop_comments[0].memo !== this.editForm_prop.prop_comments[0].memo){
-        // メモアップデート
-        this.editPropMode_memo = 3 // 'memo_update'
+      }else if(this.prop.id === this.editForm_prop.id && this.prop.prop_comments.length){
+        if(this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && !this.editForm_prop.prop_comments[0].memo){
+          // メモ削除
+          this.editPropMode_memo = 2 //'memo_delete'
+        }else if(this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && this.prop.prop_comments[0].memo !== this.editForm_prop.prop_comments[0].memo){
+          // メモアップデート
+          this.editPropMode_memo = 3 // 'memo_update'
+        }else{
+          this.editPropMode_memo = 0
+        }
       }else{
         this.editPropMode_memo = 0
       }
@@ -366,7 +377,6 @@ export default {
     // 編集confirmのモーダル非表示_OKの場合
     async closeModal_confirmEdit_OK() {
       this.showContent_confirmEdit = false
-      this.$emit('close')
       if(this.editPropMode_detail){
         await this.editProp()
       }
@@ -383,6 +393,7 @@ export default {
     async editProp () {
       if(this.editPropMode_detail === 1){
         // 写真は変更しない
+        this.editPropMode_detail = "change"
         const response = await axios.post('/api/props/'+ this.prop.id, {
           method: 'photo_non_update',
           name: this.editForm_prop.name,
@@ -407,9 +418,9 @@ export default {
           timeout: 6000
         })
 
-        this.editPropMode_detail = 0
       }else if(this.editPropMode_detail === 2){
         // 写真新規投稿
+        this.editPropMode_detail = "change"
         const formData = new FormData()
         formData.append('method', 'photo_store')
         formData.append('name', this.editForm_prop.name)
@@ -435,9 +446,9 @@ export default {
           timeout: 6000
         })
 
-        this.editPropMode_detail = 0
       }else if(this.editPropMode_detail === 3){
         // 写真削除
+        this.editPropMode_detail = "change"
         const response = await axios.post('/api/props/'+ this.prop.id, {
           method: 'photo_delete',
           name: this.editForm_prop.name,
@@ -463,9 +474,9 @@ export default {
           timeout: 6000
         })
 
-        this.editPropMode_detail = 0
       }if(this.editPropMode_detail === 4){
         // 写真アップデート
+        this.editPropMode_detail = "change"
         const formData = new FormData()
         formData.append('method', 'photo_update')
         formData.append('name', this.editForm_prop.name)
@@ -491,16 +502,13 @@ export default {
           content: '小道具が変更されました！',
           timeout: 6000
         })
-
-        this.editPropMode_detail = 0
       }
-      
-      this.fetchProps()
     },
     // メモを更新する
     async editProp_memo() {
       if(this.editPropMode_memo === 1){
         // メモ新規投稿
+        this.editPropMode_memo = "change"
         const response = await axios.post('/api/prop_comments', {
           prop_id: this.editForm_prop.id,
           memo: this.editForm_prop.memo
@@ -516,9 +524,9 @@ export default {
           return false
         }
 
-        this.editPropMode_memo = 0
       }else if(this.editPropMode_memo === 2){
         // メモ削除
+        this.editPropMode_memo = "change"
         const response = await axios.delete('/api/prop_comments/'+ this.prop.prop_comments[0].id)
 
         if (response.statusText === 'Unprocessable Entity') {
@@ -530,9 +538,9 @@ export default {
           this.$store.commit('error/setCode', response.status)
           return false
         }
-        this.editPropMode_memo = 0
       }else if(this.editPropMode_memo === 3){
-        // メモアップデート
+        // メモアップデート        
+        this.editPropMode_memo = "change"
         const response = await axios.post('/api/prop_comments/'+ this.prop.prop_comments[0].id, {
           memo: this.editForm_prop.prop_comments[0].memo
         })
@@ -546,7 +554,6 @@ export default {
           this.$store.commit('error/setCode', response.status)
           return false
         }
-        this.editPropMode_memo = 0
       }
     },
 

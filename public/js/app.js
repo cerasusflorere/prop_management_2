@@ -2674,15 +2674,40 @@ var autokana;
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
-                  if (!(_this2.editPropMode_detail || _this2.editPropMode_memo)) {
-                    _context2.next = 3;
+                  if (!(_this2.editPropMode_detail === "change" || _this2.editPropMode_memo === "change")) {
+                    _context2.next = 6;
                     break;
                   }
 
                   _context2.next = 3;
-                  return _this2.openModal_confirmEdit();
+                  return _this2.fetchProp();
 
                 case 3:
+                  tab = 1;
+                  _context2.next = 12;
+                  break;
+
+                case 6:
+                  if (!(_this2.editPropMode_detail || _this2.editPropMode_memo)) {
+                    _context2.next = 11;
+                    break;
+                  }
+
+                  _context2.next = 9;
+                  return _this2.openModal_confirmEdit();
+
+                case 9:
+                  _context2.next = 12;
+                  break;
+
+                case 11:
+                  if (_this2.editPropMode_detail === 0 && _this2.editPropMode_memo === 0) {
+                    alert('元のデータと同じです！変更してください');
+                    _this2.editPropMode_detail = "";
+                    _this2.editPropMode_memo = "";
+                  }
+
+                case 12:
                 case "end":
                   return _context2.stop();
               }
@@ -2735,7 +2760,10 @@ var autokana;
                   _this3.editForm_prop.photo = 0; // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
                 }
 
-              case 10:
+                _this3.editPropMode_detail = "";
+                _this3.editPropMode_memo = "";
+
+              case 12:
               case "end":
                 return _context3.stop();
             }
@@ -2888,17 +2916,19 @@ var autokana;
         this.editPropMode_detail = 0;
       }
 
-      console.log(this.prop.prop_comments.length);
-
       if (this.prop.id === this.editForm_prop.id && !this.prop.prop_comments.length && this.editForm_prop.memo) {
         // メモ新規投稿
         this.editPropMode_memo = 1; // 'memo_store'
-      } else if (this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && !this.editForm_prop.prop_comments[0].memo) {
-        // メモ削除
-        this.editPropMode_memo = 2; //'memo_delete'
-      } else if (this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && this.prop.prop_comments[0].memo !== this.editForm_prop.prop_comments[0].memo) {
-        // メモアップデート
-        this.editPropMode_memo = 3; // 'memo_update'
+      } else if (this.prop.id === this.editForm_prop.id && this.prop.prop_comments.length) {
+        if (this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && !this.editForm_prop.prop_comments[0].memo) {
+          // メモ削除
+          this.editPropMode_memo = 2; //'memo_delete'
+        } else if (this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && this.prop.prop_comments[0].memo !== this.editForm_prop.prop_comments[0].memo) {
+          // メモアップデート
+          this.editPropMode_memo = 3; // 'memo_update'
+        } else {
+          this.editPropMode_memo = 0;
+        }
       } else {
         this.editPropMode_memo = 0;
       }
@@ -2919,26 +2949,24 @@ var autokana;
               case 0:
                 _this7.showContent_confirmEdit = false;
 
-                _this7.$emit('close');
-
                 if (!_this7.editPropMode_detail) {
-                  _context6.next = 5;
+                  _context6.next = 4;
                   break;
                 }
 
-                _context6.next = 5;
+                _context6.next = 4;
                 return _this7.editProp();
 
-              case 5:
+              case 4:
                 if (!_this7.editPropMode_memo) {
-                  _context6.next = 8;
+                  _context6.next = 7;
                   break;
                 }
 
-                _context6.next = 8;
+                _context6.next = 7;
                 return _this7.editProp_memo();
 
-              case 8:
+              case 7:
               case "end":
                 return _context6.stop();
             }
@@ -2966,7 +2994,9 @@ var autokana;
                   break;
                 }
 
-                _context7.next = 3;
+                // 写真は変更しない
+                _this8.editPropMode_detail = "change";
+                _context7.next = 4;
                 return axios.post('/api/props/' + _this8.prop.id, {
                   method: 'photo_non_update',
                   name: _this8.editForm_prop.name,
@@ -2975,20 +3005,20 @@ var autokana;
                   usage: _this8.editForm_prop.usage
                 });
 
-              case 3:
+              case 4:
                 response = _context7.sent;
 
                 if (!(response.statusText === 'Unprocessable Entity')) {
-                  _context7.next = 7;
+                  _context7.next = 8;
                   break;
                 }
 
                 _this8.errors.error = response.data.errors;
                 return _context7.abrupt("return", false);
 
-              case 7:
+              case 8:
                 if (!(response.statusText !== 'Created')) {
-                  _context7.next = 10;
+                  _context7.next = 11;
                   break;
                 }
 
@@ -2996,14 +3026,13 @@ var autokana;
 
                 return _context7.abrupt("return", false);
 
-              case 10:
+              case 11:
                 // メッセージ登録
                 _this8.$store.commit('message/setContent', {
                   content: '小道具が変更されました！',
                   timeout: 6000
                 });
 
-                _this8.editPropMode_detail = 0;
                 _context7.next = 47;
                 break;
 
@@ -3014,6 +3043,7 @@ var autokana;
                 }
 
                 // 写真新規投稿
+                _this8.editPropMode_detail = "change";
                 formData = new FormData();
                 formData.append('method', 'photo_store');
                 formData.append('name', _this8.editForm_prop.name);
@@ -3021,23 +3051,23 @@ var autokana;
                 formData.append('owner_id', _this8.editForm_prop.owner_id);
                 formData.append('usage', _this8.editForm_prop.usage);
                 formData.append('photo', _this8.editForm_prop.photo);
-                _context7.next = 24;
+                _context7.next = 25;
                 return axios.post('/api/props/' + _this8.prop.id, formData);
 
-              case 24:
+              case 25:
                 _response = _context7.sent;
 
                 if (!(_response.statusText === 'Unprocessable Entity')) {
-                  _context7.next = 28;
+                  _context7.next = 29;
                   break;
                 }
 
                 _this8.errors.error = _response.data.errors;
                 return _context7.abrupt("return", false);
 
-              case 28:
+              case 29:
                 if (!(_response.statusText !== 'Created')) {
-                  _context7.next = 31;
+                  _context7.next = 32;
                   break;
                 }
 
@@ -3045,14 +3075,13 @@ var autokana;
 
                 return _context7.abrupt("return", false);
 
-              case 31:
+              case 32:
                 // メッセージ登録
                 _this8.$store.commit('message/setContent', {
                   content: '小道具が変更されました！',
                   timeout: 6000
                 });
 
-                _this8.editPropMode_detail = 0;
                 _context7.next = 47;
                 break;
 
@@ -3062,7 +3091,9 @@ var autokana;
                   break;
                 }
 
-                _context7.next = 38;
+                // 写真削除
+                _this8.editPropMode_detail = "change";
+                _context7.next = 39;
                 return axios.post('/api/props/' + _this8.prop.id, {
                   method: 'photo_delete',
                   name: _this8.editForm_prop.name,
@@ -3072,20 +3103,20 @@ var autokana;
                   usage: _this8.editForm_prop.usage
                 });
 
-              case 38:
+              case 39:
                 _response2 = _context7.sent;
 
                 if (!(_response2.statusText === 'Unprocessable Entity')) {
-                  _context7.next = 42;
+                  _context7.next = 43;
                   break;
                 }
 
                 _this8.errors.error = _response2.data.errors;
                 return _context7.abrupt("return", false);
 
-              case 42:
+              case 43:
                 if (!(_response2.statusText !== 'Created')) {
-                  _context7.next = 45;
+                  _context7.next = 46;
                   break;
                 }
 
@@ -3093,14 +3124,12 @@ var autokana;
 
                 return _context7.abrupt("return", false);
 
-              case 45:
+              case 46:
                 // メッセージ登録
                 _this8.$store.commit('message/setContent', {
                   content: '小道具が変更されました！',
                   timeout: 6000
                 });
-
-                _this8.editPropMode_detail = 0;
 
               case 47:
                 if (!(_this8.editPropMode_detail === 4)) {
@@ -3109,6 +3138,7 @@ var autokana;
                 }
 
                 // 写真アップデート
+                _this8.editPropMode_detail = "change";
                 _formData = new FormData();
 
                 _formData.append('method', 'photo_update');
@@ -3125,23 +3155,23 @@ var autokana;
 
                 _formData.append('photo', _this8.editForm_prop.photo);
 
-                _context7.next = 58;
+                _context7.next = 59;
                 return axios.post('/api/props/' + _this8.prop.id, _formData);
 
-              case 58:
+              case 59:
                 _response3 = _context7.sent;
 
                 if (!(_response3.statusText === 'Unprocessable Entity')) {
-                  _context7.next = 62;
+                  _context7.next = 63;
                   break;
                 }
 
                 _this8.errors.error = _response3.data.errors;
                 return _context7.abrupt("return", false);
 
-              case 62:
+              case 63:
                 if (!(_response3.statusText !== 'Created')) {
-                  _context7.next = 65;
+                  _context7.next = 66;
                   break;
                 }
 
@@ -3149,19 +3179,14 @@ var autokana;
 
                 return _context7.abrupt("return", false);
 
-              case 65:
+              case 66:
                 // メッセージ登録
                 _this8.$store.commit('message/setContent', {
                   content: '小道具が変更されました！',
                   timeout: 6000
                 });
 
-                _this8.editPropMode_detail = 0;
-
               case 67:
-                _this8.fetchProps();
-
-              case 68:
               case "end":
                 return _context7.stop();
             }
@@ -3185,26 +3210,28 @@ var autokana;
                   break;
                 }
 
-                _context8.next = 3;
+                // メモ新規投稿
+                _this9.editPropMode_memo = "change";
+                _context8.next = 4;
                 return axios.post('/api/prop_comments', {
                   prop_id: _this9.editForm_prop.id,
                   memo: _this9.editForm_prop.memo
                 });
 
-              case 3:
+              case 4:
                 response = _context8.sent;
 
                 if (!(response.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 7;
+                  _context8.next = 8;
                   break;
                 }
 
                 _this9.errors.error = response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 7:
+              case 8:
                 if (!(response.statusText !== 'Created')) {
-                  _context8.next = 10;
+                  _context8.next = 11;
                   break;
                 }
 
@@ -3212,8 +3239,7 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 10:
-                _this9.editPropMode_memo = 0;
+              case 11:
                 _context8.next = 37;
                 break;
 
@@ -3223,23 +3249,25 @@ var autokana;
                   break;
                 }
 
-                _context8.next = 16;
+                // メモ削除
+                _this9.editPropMode_memo = "change";
+                _context8.next = 17;
                 return axios["delete"]('/api/prop_comments/' + _this9.prop.prop_comments[0].id);
 
-              case 16:
+              case 17:
                 _response4 = _context8.sent;
 
                 if (!(_response4.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 20;
+                  _context8.next = 21;
                   break;
                 }
 
                 _this9.errors.error = _response4.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 20:
+              case 21:
                 if (!(_response4.statusText !== 'Created')) {
-                  _context8.next = 23;
+                  _context8.next = 24;
                   break;
                 }
 
@@ -3247,8 +3275,7 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 23:
-                _this9.editPropMode_memo = 0;
+              case 24:
                 _context8.next = 37;
                 break;
 
@@ -3258,34 +3285,33 @@ var autokana;
                   break;
                 }
 
-                _context8.next = 29;
+                // メモアップデート        
+                _this9.editPropMode_memo = "change";
+                _context8.next = 30;
                 return axios.post('/api/prop_comments/' + _this9.prop.prop_comments[0].id, {
                   memo: _this9.editForm_prop.prop_comments[0].memo
                 });
 
-              case 29:
+              case 30:
                 _response5 = _context8.sent;
 
                 if (!(_response5.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 33;
+                  _context8.next = 34;
                   break;
                 }
 
                 _this9.errors.error = _response5.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 33:
+              case 34:
                 if (!(_response5.statusText !== 'Created')) {
-                  _context8.next = 36;
+                  _context8.next = 37;
                   break;
                 }
 
                 _this9.$store.commit('error/setCode', _response5.status);
 
                 return _context8.abrupt("return", false);
-
-              case 36:
-                _this9.editPropMode_memo = 0;
 
               case 37:
               case "end":
