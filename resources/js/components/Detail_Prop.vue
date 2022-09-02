@@ -100,12 +100,12 @@
             <div>
               <label for="prop_comment_edit">メモ:</label>
               <ul v-if="editForm_prop.prop_comments.length" >
-                <li v-for="comment in editForm_prop.prop_comments">
-                  <textarea>{{ comment.memo }}</textarea>
+                <li v-for="(comment, index) in editForm_prop.prop_comments">
+                  <textarea v-model="editForm_prop.prop_comments[index].memo">{{ comment.memo }}</textarea>
                 </li>
               </ul>
               <div v-else>
-                <textarea id="prop_comment_edit" class="form__item" v-model="editForm_prop.prop_comments[0].memo"></textarea>
+                <textarea id="prop_comment_edit" class="form__item" v-model="editForm_prop.memo"></textarea>
               </div>
             </div>
 
@@ -190,7 +190,8 @@ export default {
       showContent_confirmEdit: false,
       postMessage_Edit: "",
       // 編集範囲
-      editPropMode: "",
+      editPropMode_detail: "",
+      editPropMode_memo: "",
       // 削除confirm
       showContent_confirmDelete: false,
       postMessage_Delete: ""
@@ -202,6 +203,14 @@ export default {
         await this.fetchProp()
         await this.fetchOwners()
         await this.fetchProps()
+      },
+      immediate: true,
+    },
+    editPropMode_memo: {
+      async handler(editPropMode_memo){
+        if(this.editPropMode_detail || this.editPropMode_memo){
+          await this.openModal_confirmEdit()
+        }
       },
       immediate: true,
     }
@@ -320,29 +329,32 @@ export default {
       if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.usage !== this.editForm_prop.usage) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
         // 写真をアップデートしない
         this.editPropMode_detail = 1 // 'photo_non_update'
-        this.openModal_confirmEdit()
       }else if(this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo){
         // 写真新規
         this.editPropMode_detail = 2 // 'photo_store'
-        this.openModal_confirmEdit()
       }else if(this.prop.id === this.editForm_prop.id && this.prop.public_id && !this.editForm_prop.photo){
         // 写真削除
         this.editPropMode_detail = 3 //'photo_delete'
-        this.openModal_confirmEdit()
       }else if(this.prop.id === this.editForm_prop.id && this.prop.public_id && this.editForm_prop.photo){
         // 写真アップデート
         this.editPropMode_detail = 4 //'photo_update'
-        this.openModal_confirmEdit()
+      }else{
+        this.editPropMode_detail = 0
       }
 
-      if(this.prop.id === this.editForm_prop.id && !this.prop.prop_comments[0].id){
+      console.log(this.prop.prop_comments.length)
+
+      if(this.prop.id === this.editForm_prop.id && !this.prop.prop_comments.length && this.editForm_prop.memo){
         // メモ新規投稿
         this.editPropMode_memo = 1 // 'memo_store'
-        await this.editProp_memo()
+      }else if(this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && !this.editForm_prop.prop_comments[0].memo){
+        // メモ削除
+        this.editPropMode_memo = 2 //'memo_delete'
       }else if(this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && this.prop.prop_comments[0].memo !== this.editForm_prop.prop_comments[0].memo){
         // メモアップデート
-        this.editPropMode_memo = 2 // 'memo_update'
-        await this.editProp_memo()
+        this.editPropMode_memo = 3 // 'memo_update'
+      }else{
+        this.editPropMode_memo = 0
       }
     },
 
@@ -355,14 +367,19 @@ export default {
     async closeModal_confirmEdit_OK() {
       this.showContent_confirmEdit = false
       this.$emit('close')
-      await this.editProp()
+      if(this.editPropMode_detail){
+        await this.editProp()
+      }
+      if(this.editPropMode_memo){
+        await this.editProp_memo()
+      }
     },
     // 編集confirmのモーダル非表示_Cancelの場合
     closeModal_confirmEdit_Cancel() {
       this.showContent_confirmEdit= false
     },
 
-    // 編集する
+    // 基本情報を編集する
     async editProp () {
       if(this.editPropMode_detail === 1){
         // 写真は変更しない
@@ -479,6 +496,58 @@ export default {
       }
       
       this.fetchProps()
+    },
+    // メモを更新する
+    async editProp_memo() {
+      if(this.editPropMode_memo === 1){
+        // メモ新規投稿
+        const response = await axios.post('/api/prop_comments', {
+          prop_id: this.editForm_prop.id,
+          memo: this.editForm_prop.memo
+        })
+
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors
+          return false
+        }
+
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status)
+          return false
+        }
+
+        this.editPropMode_memo = 0
+      }else if(this.editPropMode_memo === 2){
+        // メモ削除
+        const response = await axios.delete('/api/prop_comments/'+ this.prop.prop_comments[0].id)
+
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors
+          return false
+        }
+
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status)
+          return false
+        }
+        this.editPropMode_memo = 0
+      }else if(this.editPropMode_memo === 3){
+        // メモアップデート
+        const response = await axios.post('/api/prop_comments/'+ this.prop.prop_comments[0].id, {
+          memo: this.editForm_prop.prop_comments[0].memo
+        })
+
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors
+          return false
+        }
+
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status)
+          return false
+        }
+        this.editPropMode_memo = 0
+      }
     },
 
     // 削除confirmのモーダル表示 

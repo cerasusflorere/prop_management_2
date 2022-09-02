@@ -78,6 +78,15 @@ Route::post('/props/{id}', 'App\Http\Controllers\PropController@update')->name('
 // 小道具削除
 Route::delete('/props/{id}', 'App\Http\Controllers\PropController@destroy')->name('prop.destroy');
 
+// 小道具メモ投稿
+Route::post('/prop_comments', 'App\Http\Controllers\Prop_CommentController@store')->name('prop_comment.store');
+
+// 小道具メモ更新
+Route::post('/prop_comments/{id}', 'App\Http\Controllers\Prop_CommentController@update')->name('prop_comments.update');
+
+// 小道具メモ削除
+Route::delete('/prop_comments/{id}', 'App\Http\Controllers\Prop_CommentController@destroy')->name('prop_comment.destroy');
+
 // 使用シーン一覧取得
 Route::get('/scenes', 'App\Http\Controllers\SceneController@index')->name('scene.index');
 

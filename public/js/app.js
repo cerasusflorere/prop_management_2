@@ -2537,13 +2537,861 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  // モーダルとして表示
+  name: 'confirmDialog_Edit',
+  props: {
+    confirm_dialog_edit_message: {
+      type: String,
+      required: true
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js&":
 /*!******************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js& ***!
   \******************************************************************************************************************************************************************************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\xampp\\htdocs\\laravel\\prop_management_2\\resources\\js\\components\\Detail_Prop.vue: Unexpected token (192:61)\n\n\u001b[0m \u001b[90m 190 |\u001b[39m       }\u001b[0m\n\u001b[0m \u001b[90m 191 |\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 192 |\u001b[39m       \u001b[36mif\u001b[39m(\u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mprop\u001b[33m.\u001b[39mid \u001b[33m===\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39meditForm_prop\u001b[33m.\u001b[39mid \u001b[33m&&\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mprop\u001b[33m.\u001b[39m)\u001b[0m\n\u001b[0m \u001b[90m     |\u001b[39m                                                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 193 |\u001b[39m     }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 194 |\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 195 |\u001b[39m     \u001b[90m// 編集confirmのモーダル表示 \u001b[39m\u001b[0m\n    at instantiate (C:\\xampp\\htdocs\\laravel\\prop_management_2\\node_modules\\@babel\\parser\\lib\\index.js:72:32)\n    at constructor (C:\\xampp\\htdocs\\laravel\\prop_management_2\\node_modules\\@babel\\parser\\lib\\index.js:366:12)\n    at Parser.raise (C:\\xampp\\htdocs\\laravel\\prop_management_2\\node_modules\\@babel\\parser\\lib\\index.js:3453:19)\n    at Parser.unexpected (C:\\xampp\\htdocs\\laravel\\prop_management_2\\node_modules\\@babel\\parser\\lib\\index.js:3491:16)\n    at Parser.parseIdentifierName (C:\\xampp\\htdocs\\laravel\\prop_management_2\\node_modules\\@babel\\parser\\lib\\index.js:14219:18)\n    at Parser.parseIdentifier (C:\\xampp\\htdocs\\laravel\\prop_management_2\\node_modules\\@babel\\parser\\lib\\index.js:14199:23)\n    at Parser.parseMember (C:\\xampp\\htdocs\\laravel\\prop_management_2\\node_modules\\@babel\\parser\\lib\\index.js:12864:28)\n    at Parser.parseSubscript (C:\\xampp\\htdocs\\laravel\\prop_management_2\\node_modules\\@babel\\parser\\lib\\index.js:12838:21)\n    at Parser.parseSubscripts (C:\\xampp\\htdocs\\laravel\\prop_management_2\\node_modules\\@babel\\parser\\lib\\index.js:12802:19)\n    at Parser.parseExprSubscripts (C:\\xampp\\htdocs\\laravel\\prop_management_2\\node_modules\\@babel\\parser\\lib\\index.js:12791:17)");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
+/* harmony import */ var _Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Edit.vue */ "./resources/js/components/Confirm_Dialog_Edit.vue");
+/* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
+/* harmony import */ var vanilla_autokana__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vanilla-autokana */ "./node_modules/vanilla-autokana/dist/autokana.js");
+/* harmony import */ var vanilla_autokana__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vanilla_autokana__WEBPACK_IMPORTED_MODULE_3__);
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+ // ふりがな
+
+
+var autokana;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  // モーダルとして表示
+  name: 'detailProp',
+  components: {
+    confirmDialog_Edit: _Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    confirmDialog_Delete: _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
+  props: {
+    postProp: {
+      type: Number,
+      required: true
+    }
+  },
+  // データ
+  data: function data() {
+    return {
+      // 表示する小道具のデータ
+      prop: [],
+      // 編集データ
+      editForm_prop: [],
+      // 取得するデータ
+      optionOwners: [],
+      props: [],
+      // タブ
+      tab: 1,
+      // 写真プレビュー
+      preview: null,
+      // エラー
+      errors: {
+        photo: null,
+        error: null
+      },
+      // 編集confirm
+      showContent_confirmEdit: false,
+      postMessage_Edit: "",
+      // 編集範囲
+      editPropMode_detail: "",
+      editPropMode_memo: "",
+      // 削除confirm
+      showContent_confirmDelete: false,
+      postMessage_Delete: ""
+    };
+  },
+  watch: {
+    postProp: {
+      handler: function handler(postProp) {
+        var _this = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return _this.fetchProp();
+
+                case 2:
+                  _context.next = 4;
+                  return _this.fetchOwners();
+
+                case 4:
+                  _context.next = 6;
+                  return _this.fetchProps();
+
+                case 6:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }))();
+      },
+      immediate: true
+    },
+    editPropMode_memo: {
+      handler: function handler(editPropMode_memo) {
+        var _this2 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  if (!(_this2.editPropMode_detail || _this2.editPropMode_memo)) {
+                    _context2.next = 3;
+                    break;
+                  }
+
+                  _context2.next = 3;
+                  return _this2.openModal_confirmEdit();
+
+                case 3:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2);
+        }))();
+      },
+      immediate: true
+    }
+  },
+  mounted: function mounted() {
+    // ふりがなのinput要素のidは省略可能
+    // 使用シーン登録時のid=propと被るから
+    autokana = vanilla_autokana__WEBPACK_IMPORTED_MODULE_3__.bind('#prop_furigana_edit');
+  },
+  methods: {
+    // 小道具の詳細を取得
+    fetchProp: function fetchProp() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _this3.tab = 1;
+                _context3.next = 3;
+                return axios.get('/api/props/' + _this3.postProp);
+
+              case 3:
+                response = _context3.sent;
+
+                if (!(response.statusText !== 'OK')) {
+                  _context3.next = 7;
+                  break;
+                }
+
+                _this3.$store.commit('error/setCode', response.status);
+
+                return _context3.abrupt("return", false);
+
+              case 7:
+                _this3.prop = response.data;
+                _this3.editForm_prop = JSON.parse(JSON.stringify(_this3.prop)); // そのままコピーするとコピー元も変更される
+
+                if (_this3.editForm_prop.public_id) {
+                  _this3.editForm_prop.photo = 1; // 写真が登録されている（可能性：1のまま、0に変更（この時public_idは存在する）、写真バイナリ代入（この時public_idは存在する））
+                } else {
+                  _this3.editForm_prop.photo = 0; // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
+                }
+
+              case 10:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    // 持ち主を取得
+    fetchOwners: function fetchOwners() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return axios.get('/api/informations/owners');
+
+              case 2:
+                response = _context4.sent;
+
+                if (!(response.statusText !== 'OK')) {
+                  _context4.next = 6;
+                  break;
+                }
+
+                _this4.$store.commit('error/setCode', response.status);
+
+                return _context4.abrupt("return", false);
+
+              case 6:
+                _this4.optionOwners = response.data;
+
+              case 7:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    // 小道具一覧を取得
+    fetchProps: function fetchProps() {
+      var _this5 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return axios.get('/api/props');
+
+              case 2:
+                response = _context5.sent;
+
+                if (!(response.statusText !== 'OK')) {
+                  _context5.next = 6;
+                  break;
+                }
+
+                _this5.$store.commit('error/setCode', response.status);
+
+                return _context5.abrupt("return", false);
+
+              case 6:
+                _this5.props = response.data;
+
+              case 7:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
+      }))();
+    },
+    handleNameInput: function handleNameInput() {
+      this.editForm_prop.kana = autokana.getFurigana();
+    },
+    // タブ切り替え
+    alterTab: function alterTab() {
+      if (this.tab === 1) {
+        this.tab = 2;
+      } else {
+        this.tab = 1;
+      }
+    },
+    // 写真を見せない
+    deletePhoto: function deletePhoto() {
+      this.editForm_prop.photo = 0;
+    },
+    // フォームでファイルが選択されたら実行される
+    onFileChange: function onFileChange(event) {
+      var _this6 = this;
+
+      this.errors.photo = null; // 何も選択されていなかったら処理中断
+
+      if (event.target.files.length === 0) {
+        this.reset_photo();
+        return false;
+      } // ファイルが画像ではなかったら処理中断
+
+
+      if (!event.target.files[0].type.match('image.*')) {
+        this.reset_photo();
+        this.errors.photo = '写真データを選択してください';
+        return false;
+      } // FileReaderクラスのインスタンスを取得
+
+
+      var reader = new FileReader(); // ファイルを読み込み終わったタイミングで実行する処理
+
+      reader.onload = function (e) {
+        // previewに読み込み結果（データURL）を代入する
+        // previewに値が入ると<output>につけたv-ifがtrueと判定される
+        // また<output>内部の<img>のsrc属性はpreviewの値を参照しているので
+        // 結果として画像が表示される
+        _this6.preview = e.target.result;
+      }; // ファイルを読み込む
+      // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
+
+
+      reader.readAsDataURL(event.target.files[0]);
+      this.editForm_prop.photo = event.target.files[0];
+    },
+    // 画像をクリアするメソッド
+    resetPhoto: function resetPhoto() {
+      this.preview = null;
+      this.editForm_prop.photo = 0;
+      this.$el.querySelector('input[type="file"]').value = null;
+    },
+    // 編集エラー
+    confirmProp: function confirmProp() {
+      if (this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.usage !== this.editForm_prop.usage) && (this.prop.public_id && this.editForm_prop.photo === 1 || !this.prop.public_id && !this.editForm_prop.photo)) {
+        // 写真をアップデートしない
+        this.editPropMode_detail = 1; // 'photo_non_update'
+      } else if (this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo) {
+        // 写真新規
+        this.editPropMode_detail = 2; // 'photo_store'
+      } else if (this.prop.id === this.editForm_prop.id && this.prop.public_id && !this.editForm_prop.photo) {
+        // 写真削除
+        this.editPropMode_detail = 3; //'photo_delete'
+      } else if (this.prop.id === this.editForm_prop.id && this.prop.public_id && this.editForm_prop.photo) {
+        // 写真アップデート
+        this.editPropMode_detail = 4; //'photo_update'
+      } else {
+        this.editPropMode_detail = 0;
+      }
+
+      console.log(this.prop.prop_comments.length);
+
+      if (this.prop.id === this.editForm_prop.id && !this.prop.prop_comments.length && this.editForm_prop.memo) {
+        // メモ新規投稿
+        this.editPropMode_memo = 1; // 'memo_store'
+      } else if (this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && !this.editForm_prop.prop_comments[0].memo) {
+        // メモ削除
+        this.editPropMode_memo = 2; //'memo_delete'
+      } else if (this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && this.prop.prop_comments[0].memo !== this.editForm_prop.prop_comments[0].memo) {
+        // メモアップデート
+        this.editPropMode_memo = 3; // 'memo_update'
+      } else {
+        this.editPropMode_memo = 0;
+      }
+    },
+    // 編集confirmのモーダル表示 
+    openModal_confirmEdit: function openModal_confirmEdit() {
+      this.showContent_confirmEdit = true;
+      this.postMessage_Edit = '以下のように編集します。';
+    },
+    // 編集confirmのモーダル非表示_OKの場合
+    closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
+      var _this7 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _this7.showContent_confirmEdit = false;
+
+                _this7.$emit('close');
+
+                if (!_this7.editPropMode_detail) {
+                  _context6.next = 5;
+                  break;
+                }
+
+                _context6.next = 5;
+                return _this7.editProp();
+
+              case 5:
+                if (!_this7.editPropMode_memo) {
+                  _context6.next = 8;
+                  break;
+                }
+
+                _context6.next = 8;
+                return _this7.editProp_memo();
+
+              case 8:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }))();
+    },
+    // 編集confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmEdit_Cancel: function closeModal_confirmEdit_Cancel() {
+      this.showContent_confirmEdit = false;
+    },
+    // 基本情報を編集する
+    editProp: function editProp() {
+      var _this8 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+        var response, formData, _response, _response2, _formData, _response3;
+
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                if (!(_this8.editPropMode_detail === 1)) {
+                  _context7.next = 14;
+                  break;
+                }
+
+                _context7.next = 3;
+                return axios.post('/api/props/' + _this8.prop.id, {
+                  method: 'photo_non_update',
+                  name: _this8.editForm_prop.name,
+                  kana: _this8.editForm_prop.kana,
+                  owner_id: _this8.editForm_prop.owner_id,
+                  usage: _this8.editForm_prop.usage
+                });
+
+              case 3:
+                response = _context7.sent;
+
+                if (!(response.statusText === 'Unprocessable Entity')) {
+                  _context7.next = 7;
+                  break;
+                }
+
+                _this8.errors.error = response.data.errors;
+                return _context7.abrupt("return", false);
+
+              case 7:
+                if (!(response.statusText !== 'Created')) {
+                  _context7.next = 10;
+                  break;
+                }
+
+                _this8.$store.commit('error/setCode', response.status);
+
+                return _context7.abrupt("return", false);
+
+              case 10:
+                // メッセージ登録
+                _this8.$store.commit('message/setContent', {
+                  content: '小道具が変更されました！',
+                  timeout: 6000
+                });
+
+                _this8.editPropMode_detail = 0;
+                _context7.next = 47;
+                break;
+
+              case 14:
+                if (!(_this8.editPropMode_detail === 2)) {
+                  _context7.next = 35;
+                  break;
+                }
+
+                // 写真新規投稿
+                formData = new FormData();
+                formData.append('method', 'photo_store');
+                formData.append('name', _this8.editForm_prop.name);
+                formData.append('kana', _this8.editForm_prop.kana);
+                formData.append('owner_id', _this8.editForm_prop.owner_id);
+                formData.append('usage', _this8.editForm_prop.usage);
+                formData.append('photo', _this8.editForm_prop.photo);
+                _context7.next = 24;
+                return axios.post('/api/props/' + _this8.prop.id, formData);
+
+              case 24:
+                _response = _context7.sent;
+
+                if (!(_response.statusText === 'Unprocessable Entity')) {
+                  _context7.next = 28;
+                  break;
+                }
+
+                _this8.errors.error = _response.data.errors;
+                return _context7.abrupt("return", false);
+
+              case 28:
+                if (!(_response.statusText !== 'Created')) {
+                  _context7.next = 31;
+                  break;
+                }
+
+                _this8.$store.commit('error/setCode', _response.status);
+
+                return _context7.abrupt("return", false);
+
+              case 31:
+                // メッセージ登録
+                _this8.$store.commit('message/setContent', {
+                  content: '小道具が変更されました！',
+                  timeout: 6000
+                });
+
+                _this8.editPropMode_detail = 0;
+                _context7.next = 47;
+                break;
+
+              case 35:
+                if (!(_this8.editPropMode_detail === 3)) {
+                  _context7.next = 47;
+                  break;
+                }
+
+                _context7.next = 38;
+                return axios.post('/api/props/' + _this8.prop.id, {
+                  method: 'photo_delete',
+                  name: _this8.editForm_prop.name,
+                  kana: _this8.editForm_prop.kana,
+                  owner_id: _this8.editForm_prop.owner_id,
+                  public_id: _this8.editForm_prop.public_id,
+                  usage: _this8.editForm_prop.usage
+                });
+
+              case 38:
+                _response2 = _context7.sent;
+
+                if (!(_response2.statusText === 'Unprocessable Entity')) {
+                  _context7.next = 42;
+                  break;
+                }
+
+                _this8.errors.error = _response2.data.errors;
+                return _context7.abrupt("return", false);
+
+              case 42:
+                if (!(_response2.statusText !== 'Created')) {
+                  _context7.next = 45;
+                  break;
+                }
+
+                _this8.$store.commit('error/setCode', _response2.status);
+
+                return _context7.abrupt("return", false);
+
+              case 45:
+                // メッセージ登録
+                _this8.$store.commit('message/setContent', {
+                  content: '小道具が変更されました！',
+                  timeout: 6000
+                });
+
+                _this8.editPropMode_detail = 0;
+
+              case 47:
+                if (!(_this8.editPropMode_detail === 4)) {
+                  _context7.next = 67;
+                  break;
+                }
+
+                // 写真アップデート
+                _formData = new FormData();
+
+                _formData.append('method', 'photo_update');
+
+                _formData.append('name', _this8.editForm_prop.name);
+
+                _formData.append('kana', _this8.editForm_prop.kana);
+
+                _formData.append('owner_id', _this8.editForm_prop.owner_id);
+
+                _formData.append('public_id', _this8.editForm_prop.public_id);
+
+                _formData.append('usage', _this8.editForm_prop.usage);
+
+                _formData.append('photo', _this8.editForm_prop.photo);
+
+                _context7.next = 58;
+                return axios.post('/api/props/' + _this8.prop.id, _formData);
+
+              case 58:
+                _response3 = _context7.sent;
+
+                if (!(_response3.statusText === 'Unprocessable Entity')) {
+                  _context7.next = 62;
+                  break;
+                }
+
+                _this8.errors.error = _response3.data.errors;
+                return _context7.abrupt("return", false);
+
+              case 62:
+                if (!(_response3.statusText !== 'Created')) {
+                  _context7.next = 65;
+                  break;
+                }
+
+                _this8.$store.commit('error/setCode', _response3.status);
+
+                return _context7.abrupt("return", false);
+
+              case 65:
+                // メッセージ登録
+                _this8.$store.commit('message/setContent', {
+                  content: '小道具が変更されました！',
+                  timeout: 6000
+                });
+
+                _this8.editPropMode_detail = 0;
+
+              case 67:
+                _this8.fetchProps();
+
+              case 68:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7);
+      }))();
+    },
+    // メモを更新する
+    editProp_memo: function editProp_memo() {
+      var _this9 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+        var response, _response4, _response5;
+
+        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                if (!(_this9.editPropMode_memo === 1)) {
+                  _context8.next = 13;
+                  break;
+                }
+
+                _context8.next = 3;
+                return axios.post('/api/prop_comments', {
+                  prop_id: _this9.editForm_prop.id,
+                  memo: _this9.editForm_prop.memo
+                });
+
+              case 3:
+                response = _context8.sent;
+
+                if (!(response.statusText === 'Unprocessable Entity')) {
+                  _context8.next = 7;
+                  break;
+                }
+
+                _this9.errors.error = response.data.errors;
+                return _context8.abrupt("return", false);
+
+              case 7:
+                if (!(response.statusText !== 'Created')) {
+                  _context8.next = 10;
+                  break;
+                }
+
+                _this9.$store.commit('error/setCode', response.status);
+
+                return _context8.abrupt("return", false);
+
+              case 10:
+                _this9.editPropMode_memo = 0;
+                _context8.next = 37;
+                break;
+
+              case 13:
+                if (!(_this9.editPropMode_memo === 2)) {
+                  _context8.next = 26;
+                  break;
+                }
+
+                _context8.next = 16;
+                return axios["delete"]('/api/prop_comments/' + _this9.prop.prop_comments[0].id);
+
+              case 16:
+                _response4 = _context8.sent;
+
+                if (!(_response4.statusText === 'Unprocessable Entity')) {
+                  _context8.next = 20;
+                  break;
+                }
+
+                _this9.errors.error = _response4.data.errors;
+                return _context8.abrupt("return", false);
+
+              case 20:
+                if (!(_response4.statusText !== 'Created')) {
+                  _context8.next = 23;
+                  break;
+                }
+
+                _this9.$store.commit('error/setCode', _response4.status);
+
+                return _context8.abrupt("return", false);
+
+              case 23:
+                _this9.editPropMode_memo = 0;
+                _context8.next = 37;
+                break;
+
+              case 26:
+                if (!(_this9.editPropMode_memo === 3)) {
+                  _context8.next = 37;
+                  break;
+                }
+
+                _context8.next = 29;
+                return axios.post('/api/prop_comments/' + _this9.prop.prop_comments[0].id, {
+                  memo: _this9.editForm_prop.prop_comments[0].memo
+                });
+
+              case 29:
+                _response5 = _context8.sent;
+
+                if (!(_response5.statusText === 'Unprocessable Entity')) {
+                  _context8.next = 33;
+                  break;
+                }
+
+                _this9.errors.error = _response5.data.errors;
+                return _context8.abrupt("return", false);
+
+              case 33:
+                if (!(_response5.statusText !== 'Created')) {
+                  _context8.next = 36;
+                  break;
+                }
+
+                _this9.$store.commit('error/setCode', _response5.status);
+
+                return _context8.abrupt("return", false);
+
+              case 36:
+                _this9.editPropMode_memo = 0;
+
+              case 37:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8);
+      }))();
+    },
+    // 削除confirmのモーダル表示 
+    openModal_confirmDelete: function openModal_confirmDelete(id) {
+      this.showContent_confirmDelete = true;
+      this.postMessage_Delete = 'これを行うと、紐づけられてたこの小道具を使用するシーンも全て削除されます。本当に削除しますか？';
+    },
+    // 削除confirmのモーダル非表示_OKの場合
+    closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
+      var _this10 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                _this10.showContent_confirmDelete = false;
+
+                _this10.$emit('close');
+
+                _context9.next = 4;
+                return _this10.deletProp();
+
+              case 4:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9);
+      }))();
+    },
+    // 削除confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmDelete_Cancel: function closeModal_confirmDelete_Cancel() {
+      this.showContent_confirmDelete = false;
+    },
+    // 削除する
+    deletProp: function deletProp() {
+      var _this11 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+          while (1) {
+            switch (_context10.prev = _context10.next) {
+              case 0:
+                _context10.next = 2;
+                return axios["delete"]('/api/props/' + _this11.prop.id);
+
+              case 2:
+                response = _context10.sent;
+
+                if (!(response.statusText === 'Unprocessable Entity')) {
+                  _context10.next = 6;
+                  break;
+                }
+
+                _this11.errors.error = response.data.errors;
+                return _context10.abrupt("return", false);
+
+              case 6:
+                _this11.prop.id = null;
+                _this11.prop.kana = null;
+                _this11.prop.name = null;
+                _this11.prop.owner_id = null;
+                _this11.prop.owner = null;
+                _this11.prop.public_id = null;
+                _this11.prop.url = null;
+                _this11.prop.usage = null;
+                _this11.prop.prop_comments = null;
+                _this11.prop.scenes = null;
+
+                if (!(response.statusText !== 'Created')) {
+                  _context10.next = 19;
+                  break;
+                }
+
+                _this11.$store.commit('error/setCode', response.status);
+
+                return _context10.abrupt("return", false);
+
+              case 19:
+                // メッセージ登録
+                _this11.$store.commit('message/setContent', {
+                  content: '小道具が1つ削除されました！',
+                  timeout: 6000
+                });
+
+                _this11.$emit('close');
+
+              case 21:
+              case "end":
+                return _context10.stop();
+            }
+          }
+        }, _callee10);
+      }))();
+    }
+  }
+});
 
 /***/ }),
 
@@ -4802,6 +5650,68 @@ render._withStripped = true;
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=template&id=635f3487&scoped=true&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=template&id=635f3487&scoped=true& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("div", {
+    attrs: {
+      id: "overlay"
+    }
+  }, [_c("div", {
+    staticClass: "panel",
+    attrs: {
+      id: "content"
+    }
+  }, [_c("div", {
+    attrs: {
+      id: "confirm_dialog_edit_title"
+    }
+  }, [_vm._v("\n      編集\n    ")]), _vm._v(" "), _c("div", {
+    attrs: {
+      id: "confirm_dialog_edit_message"
+    }
+  }, [_vm._v("\n      " + _vm._s(_vm.confirm_dialog_edit_message) + "\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.$emit("Cancel_Edit");
+      }
+    }
+  }, [_vm._v("キャンセル")]), _vm._v(" "), _c("button", {
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.$emit("OK_Edit");
+      }
+    }
+  }, [_vm._v("OK")])])]);
+};
+
+var staticRenderFns = [];
+render._withStripped = true;
+
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=template&id=0d4e7d16&scoped=true&":
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=template&id=0d4e7d16&scoped=true& ***!
@@ -5110,27 +6020,44 @@ var render = function render() {
     attrs: {
       "for": "prop_comment_edit"
     }
-  }, [_vm._v("メモ:")]), _vm._v(" "), _vm.editForm_prop.prop_comments.length ? _c("ul", _vm._l(_vm.editForm_prop.prop_comments, function (comment) {
-    return _c("li", [_c("textarea", [_vm._v(_vm._s(comment.memo))])]);
+  }, [_vm._v("メモ:")]), _vm._v(" "), _vm.editForm_prop.prop_comments.length ? _c("ul", _vm._l(_vm.editForm_prop.prop_comments, function (comment, index) {
+    return _c("li", [_c("textarea", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.editForm_prop.prop_comments[index].memo,
+        expression: "editForm_prop.prop_comments[index].memo"
+      }],
+      domProps: {
+        value: _vm.editForm_prop.prop_comments[index].memo
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+
+          _vm.$set(_vm.editForm_prop.prop_comments[index], "memo", $event.target.value);
+        }
+      }
+    }, [_vm._v(_vm._s(comment.memo))])]);
   }), 0) : _c("div", [_c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.editForm_prop.prop_comments[0].memo,
-      expression: "editForm_prop.prop_comments[0].memo"
+      value: _vm.editForm_prop.memo,
+      expression: "editForm_prop.memo"
     }],
     staticClass: "form__item",
     attrs: {
       id: "prop_comment_edit"
     },
     domProps: {
-      value: _vm.editForm_prop.prop_comments[0].memo
+      value: _vm.editForm_prop.memo
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
 
-        _vm.$set(_vm.editForm_prop.prop_comments[0], "memo", $event.target.value);
+        _vm.$set(_vm.editForm_prop, "memo", $event.target.value);
       }
     }
   })])]), _vm._v(" "), _c("div", [_c("label", [_vm._v("シーン:")]), _vm._v(" "), _vm.editForm_prop.scenes.length ? _c("ol", _vm._l(_vm.editForm_prop.scenes, function (scene) {
@@ -9082,6 +10009,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, "\n#overlay[data-v-3ce8ee68]{\n  overfl
 
 /***/ }),
 
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css&":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n#overlay[data-v-635f3487]{\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n#content[data-v-635f3487] {\n  z-index: 2;\n  background-color: white;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=style&index=0&id=0d4e7d16&scoped=true&lang=css&":
 /*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=style&index=0&id=0d4e7d16&scoped=true&lang=css& ***!
@@ -9553,6 +10504,36 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_style_index_0_id_3ce8ee68_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Edit_vue_vue_type_style_index_0_id_635f3487_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Edit_vue_vue_type_style_index_0_id_635f3487_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Edit_vue_vue_type_style_index_0_id_635f3487_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
@@ -10105,6 +11086,47 @@ component.options.__file = "resources/js/components/Confirm_Dialog_Delete.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/Confirm_Dialog_Edit.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/Confirm_Dialog_Edit.vue ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Confirm_Dialog_Edit_vue_vue_type_template_id_635f3487_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Confirm_Dialog_Edit.vue?vue&type=template&id=635f3487&scoped=true& */ "./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=template&id=635f3487&scoped=true&");
+/* harmony import */ var _Confirm_Dialog_Edit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Edit.vue?vue&type=script&lang=js& */ "./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=script&lang=js&");
+/* harmony import */ var _Confirm_Dialog_Edit_vue_vue_type_style_index_0_id_635f3487_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css& */ "./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _Confirm_Dialog_Edit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Confirm_Dialog_Edit_vue_vue_type_template_id_635f3487_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _Confirm_Dialog_Edit_vue_vue_type_template_id_635f3487_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "635f3487",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Confirm_Dialog_Edit.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/Detail_Prop.vue":
 /*!*************************************************!*\
   !*** ./resources/js/components/Detail_Prop.vue ***!
@@ -10118,9 +11140,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Detail_Prop_vue_vue_type_template_id_0d4e7d16_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Detail_Prop.vue?vue&type=template&id=0d4e7d16&scoped=true& */ "./resources/js/components/Detail_Prop.vue?vue&type=template&id=0d4e7d16&scoped=true&");
 /* harmony import */ var _Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Detail_Prop.vue?vue&type=script&lang=js& */ "./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[__WEBPACK_IMPORT_KEY__]
-/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony import */ var _Detail_Prop_vue_vue_type_style_index_0_id_0d4e7d16_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Detail_Prop.vue?vue&type=style&index=0&id=0d4e7d16&scoped=true&lang=css& */ "./resources/js/components/Detail_Prop.vue?vue&type=style&index=0&id=0d4e7d16&scoped=true&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
@@ -10727,6 +11746,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Edit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Confirm_Dialog_Edit.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Edit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js&":
 /*!**************************************************************************!*\
   !*** ./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js& ***!
@@ -10739,11 +11774,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Detail_Prop.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
-/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0___default())); 
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
@@ -10921,6 +11952,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_template_id_3ce8ee68_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_template_id_3ce8ee68_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Confirm_Dialog_Delete.vue?vue&type=template&id=3ce8ee68&scoped=true& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=template&id=3ce8ee68&scoped=true&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=template&id=635f3487&scoped=true&":
+/*!****************************************************************************************************!*\
+  !*** ./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=template&id=635f3487&scoped=true& ***!
+  \****************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Edit_vue_vue_type_template_id_635f3487_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Edit_vue_vue_type_template_id_635f3487_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Edit_vue_vue_type_template_id_635f3487_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Confirm_Dialog_Edit.vue?vue&type=template&id=635f3487&scoped=true& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=template&id=635f3487&scoped=true&");
 
 
 /***/ }),
@@ -11189,6 +12237,19 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Delete_vue_vue_type_style_index_0_id_3ce8ee68_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Delete.vue?vue&type=style&index=0&id=3ce8ee68&scoped=true&lang=css&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css&":
+/*!******************************************************************************************************************!*\
+  !*** ./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css& ***!
+  \******************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Edit_vue_vue_type_style_index_0_id_635f3487_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=style&index=0&id=635f3487&scoped=true&lang=css&");
 
 
 /***/ }),

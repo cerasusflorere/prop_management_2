@@ -112,7 +112,6 @@ class PropController extends Controller
             return $affected;
         }else if($request->method == 'photo_store'){
             // 写真新規投稿
-            dump($request->photo);
             if($request->photo){
                 // Cloudinaryにファイルを保存する
                 $result = $request->photo->storeOnCloudinary('prop_management');
