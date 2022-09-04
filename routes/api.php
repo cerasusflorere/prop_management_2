@@ -66,6 +66,9 @@ Route::delete('/informations/owners/{id}', 'App\Http\Controllers\InformationCont
 // 小道具一覧取得
 Route::get('/props', 'App\Http\Controllers\PropController@index')->name('prop.index');
 
+// 小道具一覧詳細込み取得
+Route::get('/props_all', 'App\Http\Controllers\PropController@index_all')->name('prop.index_all');
+
 // 小道具詳細取得
 Route::get('/props/{id}', 'App\Http\Controllers\PropController@show')->name('prop.show');
 

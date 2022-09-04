@@ -24,6 +24,18 @@ class PropController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index_all()
+    {
+        $props = Prop::with('owner', 'prop_comments')->orderBy('kana')->get();
+
+        return $props;
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param StorePhoto $request_photo
@@ -77,7 +89,7 @@ class PropController extends Controller
     public function show($id)
     {
         $prop = Prop::where('id', $id)
-              ->with(['owner', 'prop_comments', 'scenes', 'scenes.character', 'scenes.scene_comments'])->first();
+              ->with(['owner', 'prop_comments', 'scenes', 'scenes.character', 'scenes.character.section', 'scenes.scene_comments'])->first();
 
         return $prop ?? abort(404);
     }

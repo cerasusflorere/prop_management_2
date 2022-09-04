@@ -100,8 +100,8 @@
             <div>
               <label for="prop_comment_edit">メモ:</label>
               <ul v-if="editForm_prop.prop_comments.length" >
-                <li v-for="(comment, index) in editForm_prop.prop_comments">
-                  <textarea v-model="editForm_prop.prop_comments[index].memo">{{ comment.memo }}</textarea>
+                <li v-for="comment in editForm_prop.prop_comments">
+                  <textarea v-model="comment.memo">{{ comment.memo }}</textarea>
                 </li>
               </ul>
               <div v-else>
@@ -109,27 +109,90 @@
               </div>
             </div>
 
-            <div>
+            <!-- <div>
               <label>シーン:</label>
-              <ol v-if="editForm_prop.scenes.length">
-                <li v-for="scene in editForm_prop.scenes">
-                  <!-- 名前 -->
-                  <span>{{ scene.character.name }}</span>
-                  <!-- 何ページ -->
-                  <span v-if="scene !== null && scene.first_page !== null"> : p. {{ scene.first_page }} 
-                    <span v-if="scene !== null && scene.final_page !== null"> ~ p. {{ scene.final_page}}</span>
-                  </span>
-                  <!-- メモ -->
-                  <div>
-                    <ul v-if="scene.scene_comments.length">
-                      <li v-for="comment in scene.scene_comments">
-                        <div>{{ comment.memo }}</div>
-                      </li>
-                    </ul>
-                  </div>
-                </li>                  
-              </ol>
-            </div> 
+              <div v-if="editForm_prop.scenes.length && editForm_prop.scenes[0].id">
+                <ol>
+                  <li v-for="(scene, index) in editForm_prop.scenes"> -->
+                    <!-- 名前 -->
+                    <!-- <label for="character_attr">登場人物</label>
+                    <select class="form__item" v-model="scene.section" v-on:change="selected(index)">
+                      <option disabled value="">登場人物属性</option>
+                      <option v-for="(value, key) in optionCharacters">
+                        {{ key }}
+                      </option>
+                    </select>
+
+                    <select class="form__item" v-model="scene.character_id" required>
+                      <option disabled value="">登場人物一覧</option>
+                        <option v-if="selectedCharacters" v-for="characters in selectedCharacters[index]"
+                         v-bind:value="characters.id">
+                          {{ characters.name }}
+                        </option>
+                    </select> -->
+
+                    <!-- ページ数 -->
+                    <!-- <label>ページ数</label>
+                    <div> p. <input class="form__item" v-model="scene.first_page">
+                       ~ p. <input class="form__item" v-model="scene.final_page">
+                    </div> -->
+
+                    <!-- 使用するか -->
+                    <!-- <div>
+                      <label>中間発表での使用</label>
+                      <input type="checkbox" class="form__check__input" v-model="scene.usage"></input>          
+                    </div> -->
+        
+                    <!-- コメント -->
+                    <!-- <label for="comment_scene">コメント</label>
+                    <div>
+                      <ul v-if="scene.scene_comments.length">
+                        <li v-for="comment in scene.scene_comments">
+                          <textarea class="form__item" v-model="comment.memo"></textarea>
+                        </li>
+                      </ul>
+                      <div v-else>
+                        <textarea class="form__item" v-model="scene.memo"></textarea>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+
+              <div v-else> -->
+                <!-- 登場人物 -->
+                <!-- <label>登場人物</label>
+                <select class="form__item" v-model="editForm_prop.scenes[0].section" v-on:change="selected(0)">
+                  <option disabled value="">登場人物属性</option>
+                  <option v-for="(value, key) in optionCharacters">
+                    {{ key }}
+                  </option>
+                </select>
+
+                <select class="form__item" v-model="editForm_prop.scenes[0].character_id" required>
+                  <option disabled value="">登場人物一覧</option>
+                  <option v-if="selectedCharacters" v-for="characters in selectedCharacters"
+                   v-bind:value="characters.id">
+                    {{ characters.name }}
+                  </option>
+                </select> -->
+
+                <!-- ページ数 -->
+                <!-- <label for="page">ページ数</label>
+                <small>例) 22, 24-25</small>
+                <input type="text"  id="page" class="form__item" v-model="editForm_prop.scenes[0].pages"> -->
+
+                <!-- 使用するか -->
+                <!-- <div class="form__check">
+                  <label for="usage_scene" class="form__check__label">中間発表での使用</label>
+                  <input type="checkbox" id="usage_scene" class="form__check__input" v-model="editForm_prop.scenes[0].usage" checked></input>          
+                </div> -->
+        
+                <!-- コメント -->
+                <!-- <label for="comment_scene">コメント</label>
+                <textarea class="form__item" id="comment_scene" v-model="editForm_prop.scenes[0].scene_comments[0].memo"></textarea>
+              </div>
+            </div>  -->
           </div>
           <!--- 送信ボタン -->
           <div class="form__button">
@@ -175,8 +238,11 @@ export default {
       // 編集データ
       editForm_prop: [],
       // 取得するデータ
-      optionOwners: [],
       props: [],
+      optionOwners: [],
+      // 連動プルダウン
+      selectedCharacters: [],
+      optionCharacters: [],
       // タブ
       tab: 1,
       // 写真プレビュー
@@ -200,6 +266,7 @@ export default {
   watch: {
     postProp: {
       async handler(postProp) {
+        await this.fetchCharacters() // 最初にしないと間に合わない
         await this.fetchProp()
         await this.fetchOwners()
         await this.fetchProps()
@@ -241,13 +308,22 @@ export default {
       this.prop = response.data
       this.editForm_prop = JSON.parse(JSON.stringify(this.prop)) // そのままコピーするとコピー元も変更される
       if(this.editForm_prop.public_id){
-        this.editForm_prop.photo = 1 // 写真が登録されている（可能性：1のまま、0に変更（この時public_idは存在する）、写真バイナリ代入（この時public_idは存在する））
+        this.$set(this.editForm_prop, 'photo', 1) // 写真が登録されている（可能性：1のまま、0に変更（この時public_idは存在する）、写真バイナリ代入（この時public_idは存在する））
       }else{
-        this.editForm_prop.photo = 0 // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
+        this.$set(this.editForm_prop, 'photo', 0) // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
       }
+      // if(!this.editForm_prop.scenes.length){
+      //   this.editForm_prop.scenes[0] = Object.assign({}, this.editForm_prop.scenes[0], {character_id: null, section: '' , page: '', usage: '', scene_comments: []})
+      //   this.editForm_prop.scenes[0].scene_comments[0] = Object.assign({}, this.editForm_prop.scenes[0].scene_comments[0], {memo: null})
+      // }else{
+      //   this.editForm_prop.scenes.forEach((scene,index) => {
+      //     this.editForm_prop.scenes[index] = Object.assign({}, this.editForm_prop.scenes[index], {section: this.editForm_prop.scenes[index].character.section.section})
+      //     this.selected(index)
+      //   })
+      // }
       this.editPropMode_detail = ""
       this.editPropMode_memo = ""
-      },
+    },
 
     // 持ち主を取得
     async fetchOwners () {
@@ -259,6 +335,30 @@ export default {
       }
 
       this.optionOwners = response.data
+    },
+
+    // 登場人物を取得
+    async fetchCharacters () {
+      const response = await axios.get('/api/informations/characters')
+
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+
+      this.characters = response.data
+
+      // 区分と登場人物をオブジェクトに変換する
+      let sections = new Object();
+      this.characters.forEach(function(section){
+        sections[section.section] = section.characters
+      })
+      this.optionCharacters = sections
+    },
+
+    // 連動プルダウン
+    selected(index) {
+      this.selectedCharacters[index] = this.optionCharacters[this.editForm_prop.scenes[index].section];
     },
 
     // 小道具一覧を取得

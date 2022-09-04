@@ -2,7 +2,7 @@
   <div id="overlay">
     <div id="content" class="panel">
       <ul>
-        <li v-for="prop in props">
+        <li v-for="prop in props_list">
           <div type="button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</div>
         </li>
         <detailProp :postProp="postProp" v-show="showContent" @close="closeModal_propDetail" />
@@ -35,10 +35,18 @@ export default {
   data() {
     return {
       // 小道具リスト
-      props: [],
+      props_list: [],
       // 小道具詳細
       showContent: false,
       postProp: ""
+    }
+  },
+  watch: {
+    postFlag: {
+      async handler (postFlag) {
+        await this.fetchProps()
+      },
+      immediate: true
     }
   },
   methods: {
@@ -51,7 +59,7 @@ export default {
         return false
       }
 
-      this.props = response.data
+      this.props_list = response.data
     },
 
     // 小道具詳細のモーダル表示 
@@ -64,14 +72,6 @@ export default {
       this.showContent = false
       await this.fetchProps()
     },
-  },
-  watch: {
-    postFlag: {
-      async handler (postFlag) {
-        await this.fetchProps()
-      },
-      immediate: true
-    }
   }
 }
 </script>

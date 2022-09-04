@@ -137,6 +137,16 @@ export default {
       registerForm_owner: null
     }
   },
+  watch: {
+    $route: {
+      async handler () {
+        await this.fetchSections()
+        await this.fetchCharacters()
+        await this.fetchOwners()
+      },
+      immediate: true
+    }
+  },
   methods: {
     // 区分を取得
     async fetchSections () {
@@ -290,16 +300,6 @@ export default {
       })
       
       await this.fetchOwners();
-    }
-  },
-  watch: {
-    $route: {
-      async handler () {
-        await this.fetchSections()
-        await this.fetchCharacters()
-        await this.fetchOwners()
-      },
-      immediate: true
     }
   }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -11,7 +12,7 @@ class Prop extends Model
     /** 取得時にJSONに含める属性 */
     protected $visible = [
         'id', 'name', 'kana', 'owner_id', 'public_id',
-        'url', 'usage', 'owner', 'prop_comments', 'scenes',
+        'url', 'usage', 'created_at', 'owner', 'prop_comments', 'scenes',
     ];
  
     /** 登録時にJSONに含める属性 */
@@ -19,6 +20,11 @@ class Prop extends Model
         'name', 'kana', 'owner_id', 'public_id',
         'url', 'usage',
     ];
+
+    public function getCreatedAtAttribute()
+    {
+        return Carbon::parse($this->attributes['created_at'])->format('Y/m/d H:i');
+    }
 
     /**
      * リレーションシップ - ownersテーブル
