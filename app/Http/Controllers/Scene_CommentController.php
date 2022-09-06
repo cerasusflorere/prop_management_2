@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Props_Comment;
+use App\Models\Scenes_Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class Prop_CommentController extends Controller
+class Scene_CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,13 +15,13 @@ class Prop_CommentController extends Controller
      */
     public function index()
     {
-        
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param StorePhoto $request_photo
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -29,7 +29,7 @@ class Prop_CommentController extends Controller
         DB::beginTransaction();
 
         try {
-            $prop_comment = Props_Comment::create(['prop_id' => $request->prop_id, 'memo' => $request->memo]);
+            $scene_comment = Scenes_Comment::create(['scene_id' => $request->scene_id, 'memo' => $request->memo]);
             DB::commit();
         }catch (\Exception $exception) {
             DB::rollBack();
@@ -39,7 +39,7 @@ class Prop_CommentController extends Controller
 
         // リソースの新規作成なので
         // レスポンスコードは201(CREATED)を返却する
-        return response($prop_comment, 201);
+        return response($scene_comment, 201);
     }
 
     /**
@@ -50,7 +50,7 @@ class Prop_CommentController extends Controller
      */
     public function show($id)
     {
-        
+        //
     }
 
     /**
@@ -65,7 +65,7 @@ class Prop_CommentController extends Controller
         DB::beginTransaction();
 
         try {
-            $affected = Props_Comment::where('id', $id)
+            $affected = Scenes_Comment::where('id', $id)
                 ->update(['memo' => $request->memo]);
                 
             DB::commit();
@@ -90,7 +90,7 @@ class Prop_CommentController extends Controller
         DB::beginTransaction();
 
         try {
-            $prop_comment = Props_Comment::where('id', $id)
+            $scene_comment = Scenes_Comment::where('id', $id)
                         ->delete();      
 
             DB::commit();
@@ -101,6 +101,6 @@ class Prop_CommentController extends Controller
             throw $exception;
         }
 
-        return response($prop_comment, 204) ?? abort(404);
+        return response($scene_comment, 204) ?? abort(404);
     }
 }

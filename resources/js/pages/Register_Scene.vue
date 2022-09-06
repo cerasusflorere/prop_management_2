@@ -207,7 +207,7 @@ export default {
           usage: usage,
           memo: comment
         })
-        console.log(response);
+        
         if (response.statusText === 'Unprocessable Entity') {
           this.errors.error = response.data.errors
           return false
@@ -220,17 +220,17 @@ export default {
         if(index === first_pages.length-1){
           if(response.statusText === 'Created' && usage){
             // 小道具の使用有無変更
-            const response = axios.post('/api/props/'+ prop, {
+            const response_prop = axios.post('/api/props/'+ prop, {
               method: 'usage_change',
               usage: usage
             })
 
-            if (response.statusText === 'Unprocessable Entity') {
+            if (response_prop.statusText === 'Unprocessable Entity') {
               this.errors.error = response.data.errors
               return false
             }
 
-            if (response.statusText !== 'Created') {
+            if (response_prop.statusText !== 'No Content') {
               this.$store.commit('error/setCode', response.status)
               return false
             }

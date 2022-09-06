@@ -16,7 +16,7 @@ class SceneController extends Controller
      */
     public function index()
     {
-        $scenes = Scene::with(['characters, props'])->get();
+        $scenes = Scene::with(['character', 'prop', 'scene_comments'])->orderBy('first_page')->get();
 
         return $scenes;
     }
@@ -60,9 +60,7 @@ class SceneController extends Controller
                 ->first();
         }else{
             $exist_update_fianl_page_notnull = null;
-        }
-        
-        
+        }     
 
         try {
             if(!is_null($exist_update_first_page) && $first_page){
@@ -114,6 +112,7 @@ class SceneController extends Controller
                 // リソースの新規作成なので
                 // レスポンスコードは201(CREATED)を返却する
                 return response($scene, 201);
+
             }else if(!($exist)){
                 // 新規投稿
                 $scene = Scene::create(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage]);
@@ -142,7 +141,7 @@ class SceneController extends Controller
     public function show($id)
     {
         $scene = Scene::where('id', $id)
-            ->with(['scene_comment'])->first();
+            ->with(['character', 'character.section', 'prop', 'prop.owner', 'prop.prop_comments', 'scene_comments'])->first();
 
         return $scene ?? abort(404);
     }
@@ -156,7 +155,24 @@ class SceneController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        DB::beginTransaction();
+
+        $first_page = !empty($request->first_page) ? $request->first_page : null; // nullで送ると文字列になる
+        $final_page = !empty($request->final_page) ? $request->final_page : null;
+        $usage = !empty($request->usage) ? 1 : null;
+
+        try {
+            $affected = Scene::where('id', $id)
+                   ->update(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage]);
+            DB::commit();
+        }catch (\Exception $exception) {
+            DB::rollBack();
+            
+            throw $exception;
+        }
+
+        // レスポンスコードは204(No Content)を返却する
+        return response($affected, 204) ?? abort(404);
     }
 
     /**
@@ -167,6 +183,19 @@ class SceneController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $scene = Scene::where('id', $id)
+                        ->delete();      
+            DB::commit();
+        }catch (\Exception $exception) {
+            DB::rollBack();
+            
+            throw $exception;
+        }
+
+        // レスポンスコードは204(No Content)を返却する
+        return response($scene, 204) ?? abort(404);
     }
 }

@@ -81,6 +81,9 @@ Route::post('/props/{id}', 'App\Http\Controllers\PropController@update')->name('
 // 小道具削除
 Route::delete('/props/{id}', 'App\Http\Controllers\PropController@destroy')->name('prop.destroy');
 
+// 小道具一覧ダウンロード
+Route::post('/props_list', 'App\Http\Controllers\PropController@down')->name('prop.down');
+
 // 小道具メモ投稿
 Route::post('/prop_comments', 'App\Http\Controllers\Prop_CommentController@store')->name('prop_comment.store');
 
@@ -94,7 +97,22 @@ Route::delete('/prop_comments/{id}', 'App\Http\Controllers\Prop_CommentControlle
 Route::get('/scenes', 'App\Http\Controllers\SceneController@index')->name('scene.index');
 
 // 使用シーン詳細取得
-Route::get('/scenes/{id}', 'App\Http\Controllers\SceneController@index')->name('scene.index');
+Route::get('/scenes/{id}', 'App\Http\Controllers\SceneController@show')->name('scene.show');
 
 // 使用シーン投稿
 Route::post('/scenes', 'App\Http\Controllers\SceneController@store')->name('scene.store');
+
+// 使用シーン更新
+Route::post('/scenes/{id}', 'App\Http\Controllers\SceneController@update')->name('scene.update');
+
+// 使用シーン削除
+Route::delete('/scenes/{id}', 'App\Http\Controllers\SceneController@destroy')->name('scene.destroy');
+
+// 使用シーンメモ投稿
+Route::post('/scene_comments', 'App\Http\Controllers\Scene_CommentController@store')->name('scene_comment.store');
+
+// 使用シーンメモ更新
+Route::post('/scene_comments/{id}', 'App\Http\Controllers\Scene_CommentController@update')->name('scene_comments.update');
+
+// 使用シーンメモ削除
+Route::delete('/scene_comments/{id}', 'App\Http\Controllers\Scene_CommentController@destroy')->name('scene_comment.destroy');

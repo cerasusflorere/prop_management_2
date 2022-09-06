@@ -275,9 +275,13 @@ export default {
     },
     editPropMode_memo: {
       async handler(editPropMode_memo){
-        if(this.editPropMode_detail === "change" || this.editPropMode_memo === "change"){
+        if(this.editPropMode_detail === 100 || this.editPropMode_memo === 100){
           await this.fetchProp()
-          tab = 1
+          // メッセージ登録
+          this.$store.commit('message/setContent', {
+            content: '小道具が変更されました！',
+            timeout: 6000
+          })   
         }else if(this.editPropMode_detail || this.editPropMode_memo){
           await this.openModal_confirmEdit()
         }else if(this.editPropMode_detail === 0 && this.editPropMode_memo === 0){
@@ -438,13 +442,13 @@ export default {
       if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.usage !== this.editForm_prop.usage) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
         // 写真をアップデートしない
         this.editPropMode_detail = 1 // 'photo_non_update'
-      }else if(this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo){
+      }else if(this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo && this.editForm_prop.photo !== 1){
         // 写真新規
         this.editPropMode_detail = 2 // 'photo_store'
       }else if(this.prop.id === this.editForm_prop.id && this.prop.public_id && !this.editForm_prop.photo){
         // 写真削除
         this.editPropMode_detail = 3 //'photo_delete'
-      }else if(this.prop.id === this.editForm_prop.id && this.prop.public_id && this.editForm_prop.photo){
+      }else if(this.prop.id === this.editForm_prop.id && this.prop.public_id && this.editForm_prop.photo && this.editForm_prop.photo !== 1){
         // 写真アップデート
         this.editPropMode_detail = 4 //'photo_update'
       }else{
@@ -493,7 +497,6 @@ export default {
     async editProp () {
       if(this.editPropMode_detail === 1){
         // 写真は変更しない
-        this.editPropMode_detail = "change"
         const response = await axios.post('/api/props/'+ this.prop.id, {
           method: 'photo_non_update',
           name: this.editForm_prop.name,
@@ -502,25 +505,24 @@ export default {
           usage: this.editForm_prop.usage
         })
 
+        
+        this.editPropMode_detail = 100
+        if(this.editPropMode_memo === 0){
+          this.editPropMode_memo = 100
+        }
+
         if (response.statusText === 'Unprocessable Entity') {
           this.errors.error = response.data.errors
           return false
         }
 
-        if (response.statusText !== 'Created') {
+        if (response.statusText !== 'No Content') {
           this.$store.commit('error/setCode', response.status)
           return false
-        }
-
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '小道具が変更されました！',
-          timeout: 6000
-        })
+        }      
 
       }else if(this.editPropMode_detail === 2){
         // 写真新規投稿
-        this.editPropMode_detail = "change"
         const formData = new FormData()
         formData.append('method', 'photo_store')
         formData.append('name', this.editForm_prop.name)
@@ -530,25 +532,23 @@ export default {
         formData.append('photo', this.editForm_prop.photo)
         const response = await axios.post('/api/props/'+ this.prop.id, formData)
 
+        this.editPropMode_detail = 100
+        if(this.editPropMode_memo === 0){
+          this.editPropMode_memo = 100
+        }
+
         if (response.statusText === 'Unprocessable Entity') {
           this.errors.error = response.data.errors
           return false
         }
 
-        if (response.statusText !== 'Created') {
+        if (response.statusText !== 'No Content') {
           this.$store.commit('error/setCode', response.status)
           return false
         }
 
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '小道具が変更されました！',
-          timeout: 6000
-        })
-
       }else if(this.editPropMode_detail === 3){
         // 写真削除
-        this.editPropMode_detail = "change"
         const response = await axios.post('/api/props/'+ this.prop.id, {
           method: 'photo_delete',
           name: this.editForm_prop.name,
@@ -558,25 +558,23 @@ export default {
           usage: this.editForm_prop.usage
         })
 
+        this.editPropMode_detail = 100
+        if(this.editPropMode_memo === 0){
+          this.editPropMode_memo = 100
+        }
+
         if (response.statusText === 'Unprocessable Entity') {
           this.errors.error = response.data.errors
           return false
         }
 
-        if (response.statusText !== 'Created') {
+        if (response.statusText !== 'No Content') {
           this.$store.commit('error/setCode', response.status)
           return false
         }
 
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '小道具が変更されました！',
-          timeout: 6000
-        })
-
       }if(this.editPropMode_detail === 4){
         // 写真アップデート
-        this.editPropMode_detail = "change"
         const formData = new FormData()
         formData.append('method', 'photo_update')
         formData.append('name', this.editForm_prop.name)
@@ -587,33 +585,34 @@ export default {
         formData.append('photo', this.editForm_prop.photo)
         const response = await axios.post('/api/props/'+ this.prop.id, formData)
 
+        this.editPropMode_detail = 100
+        if(this.editPropMode_memo === 0){
+          this.editPropMode_memo = 100
+        }
+
         if (response.statusText === 'Unprocessable Entity') {
           this.errors.error = response.data.errors
           return false
         }
 
-        if (response.statusText !== 'Created') {
+        if (response.statusText !== 'No Content') {
           this.$store.commit('error/setCode', response.status)
           return false
         }
 
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '小道具が変更されました！',
-          timeout: 6000
-        })
       }
     },
     // メモを更新する
     async editProp_memo() {
       if(this.editPropMode_memo === 1){
         // メモ新規投稿
-        this.editPropMode_memo = "change"
         const response = await axios.post('/api/prop_comments', {
           prop_id: this.editForm_prop.id,
           memo: this.editForm_prop.memo
         })
 
+        this.editPropMode_memo = 100
+
         if (response.statusText === 'Unprocessable Entity') {
           this.errors.error = response.data.errors
           return false
@@ -623,34 +622,35 @@ export default {
           this.$store.commit('error/setCode', response.status)
           return false
         }
-
       }else if(this.editPropMode_memo === 2){
         // メモ削除
-        this.editPropMode_memo = "change"
         const response = await axios.delete('/api/prop_comments/'+ this.prop.prop_comments[0].id)
+
+        this.editPropMode_memo = 100
 
         if (response.statusText === 'Unprocessable Entity') {
           this.errors.error = response.data.errors
           return false
         }
 
-        if (response.statusText !== 'Created') {
+        if (response.statusText !== 'No Content') {
           this.$store.commit('error/setCode', response.status)
           return false
         }
       }else if(this.editPropMode_memo === 3){
-        // メモアップデート        
-        this.editPropMode_memo = "change"
+        // メモアップデート
         const response = await axios.post('/api/prop_comments/'+ this.prop.prop_comments[0].id, {
           memo: this.editForm_prop.prop_comments[0].memo
         })
+
+        this.editPropMode_memo = 100
 
         if (response.statusText === 'Unprocessable Entity') {
           this.errors.error = response.data.errors
           return false
         }
 
-        if (response.statusText !== 'Created') {
+        if (response.statusText !== 'No Content') {
           this.$store.commit('error/setCode', response.status)
           return false
         }
@@ -694,7 +694,7 @@ export default {
       this.prop.scenes = null
       
 
-      if (response.statusText !== 'Created') {
+      if (response.statusText !== 'No Content') {
         this.$store.commit('error/setCode', response.status)
         return false
       }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +11,7 @@ class Scene extends Model
     /** 取得時にJSONに含める属性 */
     protected $visible = [
         'id', 'character_id', 'prop_id', 
-        'first_page', 'final_page', 'usage', 'character', 'scene_comments'
+        'first_page', 'final_page', 'usage', 'created_at', 'character', 'prop', 'scene_comments',
     ];
 
     /** JSONに含める属性 */
@@ -18,6 +19,11 @@ class Scene extends Model
         'character_id', 'prop_id', 
         'first_page', 'final_page', 'usage',
     ];
+
+    public function getCreatedAtAttribute()
+    {
+        return Carbon::parse($this->attributes['created_at'])->format('Y/m/d H:i');
+    }
 
     /**
      * リレーションシップ - charactersテーブル

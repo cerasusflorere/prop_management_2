@@ -2681,7 +2681,7 @@ var autokana;
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
-                  if (!(_this2.editPropMode_detail === "change" || _this2.editPropMode_memo === "change")) {
+                  if (!(_this2.editPropMode_detail === 100 || _this2.editPropMode_memo === 100)) {
                     _context2.next = 6;
                     break;
                   }
@@ -2690,7 +2690,12 @@ var autokana;
                   return _this2.fetchProp();
 
                 case 3:
-                  tab = 1;
+                  // メッセージ登録
+                  _this2.$store.commit('message/setContent', {
+                    content: '小道具が変更されました！',
+                    timeout: 6000
+                  });
+
                   _context2.next = 12;
                   break;
 
@@ -2969,13 +2974,13 @@ var autokana;
       if (this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.usage !== this.editForm_prop.usage) && (this.prop.public_id && this.editForm_prop.photo === 1 || !this.prop.public_id && !this.editForm_prop.photo)) {
         // 写真をアップデートしない
         this.editPropMode_detail = 1; // 'photo_non_update'
-      } else if (this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo) {
+      } else if (this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo && this.editForm_prop.photo !== 1) {
         // 写真新規
         this.editPropMode_detail = 2; // 'photo_store'
       } else if (this.prop.id === this.editForm_prop.id && this.prop.public_id && !this.editForm_prop.photo) {
         // 写真削除
         this.editPropMode_detail = 3; //'photo_delete'
-      } else if (this.prop.id === this.editForm_prop.id && this.prop.public_id && this.editForm_prop.photo) {
+      } else if (this.prop.id === this.editForm_prop.id && this.prop.public_id && this.editForm_prop.photo && this.editForm_prop.photo !== 1) {
         // 写真アップデート
         this.editPropMode_detail = 4; //'photo_update'
       } else {
@@ -3060,9 +3065,7 @@ var autokana;
                   break;
                 }
 
-                // 写真は変更しない
-                _this9.editPropMode_detail = "change";
-                _context8.next = 4;
+                _context8.next = 3;
                 return axios.post('/api/props/' + _this9.prop.id, {
                   method: 'photo_non_update',
                   name: _this9.editForm_prop.name,
@@ -3071,20 +3074,25 @@ var autokana;
                   usage: _this9.editForm_prop.usage
                 });
 
-              case 4:
+              case 3:
                 response = _context8.sent;
+                _this9.editPropMode_detail = 100;
+
+                if (_this9.editPropMode_memo === 0) {
+                  _this9.editPropMode_memo = 100;
+                }
 
                 if (!(response.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 8;
+                  _context8.next = 9;
                   break;
                 }
 
                 _this9.errors.error = response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 8:
-                if (!(response.statusText !== 'Created')) {
-                  _context8.next = 11;
+              case 9:
+                if (!(response.statusText !== 'No Content')) {
+                  _context8.next = 12;
                   break;
                 }
 
@@ -3092,13 +3100,7 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 11:
-                // メッセージ登録
-                _this9.$store.commit('message/setContent', {
-                  content: '小道具が変更されました！',
-                  timeout: 6000
-                });
-
+              case 12:
                 _context8.next = 47;
                 break;
 
@@ -3109,7 +3111,6 @@ var autokana;
                 }
 
                 // 写真新規投稿
-                _this9.editPropMode_detail = "change";
                 formData = new FormData();
                 formData.append('method', 'photo_store');
                 formData.append('name', _this9.editForm_prop.name);
@@ -3117,23 +3118,28 @@ var autokana;
                 formData.append('owner_id', _this9.editForm_prop.owner_id);
                 formData.append('usage', _this9.editForm_prop.usage);
                 formData.append('photo', _this9.editForm_prop.photo);
-                _context8.next = 25;
+                _context8.next = 24;
                 return axios.post('/api/props/' + _this9.prop.id, formData);
 
-              case 25:
+              case 24:
                 _response = _context8.sent;
+                _this9.editPropMode_detail = 100;
+
+                if (_this9.editPropMode_memo === 0) {
+                  _this9.editPropMode_memo = 100;
+                }
 
                 if (!(_response.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 29;
+                  _context8.next = 30;
                   break;
                 }
 
                 _this9.errors.error = _response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 29:
-                if (!(_response.statusText !== 'Created')) {
-                  _context8.next = 32;
+              case 30:
+                if (!(_response.statusText !== 'No Content')) {
+                  _context8.next = 33;
                   break;
                 }
 
@@ -3141,13 +3147,7 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 32:
-                // メッセージ登録
-                _this9.$store.commit('message/setContent', {
-                  content: '小道具が変更されました！',
-                  timeout: 6000
-                });
-
+              case 33:
                 _context8.next = 47;
                 break;
 
@@ -3157,9 +3157,7 @@ var autokana;
                   break;
                 }
 
-                // 写真削除
-                _this9.editPropMode_detail = "change";
-                _context8.next = 39;
+                _context8.next = 38;
                 return axios.post('/api/props/' + _this9.prop.id, {
                   method: 'photo_delete',
                   name: _this9.editForm_prop.name,
@@ -3169,33 +3167,31 @@ var autokana;
                   usage: _this9.editForm_prop.usage
                 });
 
-              case 39:
+              case 38:
                 _response2 = _context8.sent;
+                _this9.editPropMode_detail = 100;
+
+                if (_this9.editPropMode_memo === 0) {
+                  _this9.editPropMode_memo = 100;
+                }
 
                 if (!(_response2.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 43;
+                  _context8.next = 44;
                   break;
                 }
 
                 _this9.errors.error = _response2.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 43:
-                if (!(_response2.statusText !== 'Created')) {
-                  _context8.next = 46;
+              case 44:
+                if (!(_response2.statusText !== 'No Content')) {
+                  _context8.next = 47;
                   break;
                 }
 
                 _this9.$store.commit('error/setCode', _response2.status);
 
                 return _context8.abrupt("return", false);
-
-              case 46:
-                // メッセージ登録
-                _this9.$store.commit('message/setContent', {
-                  content: '小道具が変更されました！',
-                  timeout: 6000
-                });
 
               case 47:
                 if (!(_this9.editPropMode_detail === 4)) {
@@ -3204,7 +3200,6 @@ var autokana;
                 }
 
                 // 写真アップデート
-                _this9.editPropMode_detail = "change";
                 _formData = new FormData();
 
                 _formData.append('method', 'photo_update');
@@ -3221,36 +3216,34 @@ var autokana;
 
                 _formData.append('photo', _this9.editForm_prop.photo);
 
-                _context8.next = 59;
+                _context8.next = 58;
                 return axios.post('/api/props/' + _this9.prop.id, _formData);
 
-              case 59:
+              case 58:
                 _response3 = _context8.sent;
+                _this9.editPropMode_detail = 100;
+
+                if (_this9.editPropMode_memo === 0) {
+                  _this9.editPropMode_memo = 100;
+                }
 
                 if (!(_response3.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 63;
+                  _context8.next = 64;
                   break;
                 }
 
                 _this9.errors.error = _response3.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 63:
-                if (!(_response3.statusText !== 'Created')) {
-                  _context8.next = 66;
+              case 64:
+                if (!(_response3.statusText !== 'No Content')) {
+                  _context8.next = 67;
                   break;
                 }
 
                 _this9.$store.commit('error/setCode', _response3.status);
 
                 return _context8.abrupt("return", false);
-
-              case 66:
-                // メッセージ登録
-                _this9.$store.commit('message/setContent', {
-                  content: '小道具が変更されました！',
-                  timeout: 6000
-                });
 
               case 67:
               case "end":
@@ -3276,16 +3269,15 @@ var autokana;
                   break;
                 }
 
-                // メモ新規投稿
-                _this10.editPropMode_memo = "change";
-                _context9.next = 4;
+                _context9.next = 3;
                 return axios.post('/api/prop_comments', {
                   prop_id: _this10.editForm_prop.id,
                   memo: _this10.editForm_prop.memo
                 });
 
-              case 4:
+              case 3:
                 response = _context9.sent;
+                _this10.editPropMode_memo = 100;
 
                 if (!(response.statusText === 'Unprocessable Entity')) {
                   _context9.next = 8;
@@ -3315,13 +3307,12 @@ var autokana;
                   break;
                 }
 
-                // メモ削除
-                _this10.editPropMode_memo = "change";
-                _context9.next = 17;
+                _context9.next = 16;
                 return axios["delete"]('/api/prop_comments/' + _this10.prop.prop_comments[0].id);
 
-              case 17:
+              case 16:
                 _response4 = _context9.sent;
+                _this10.editPropMode_memo = 100;
 
                 if (!(_response4.statusText === 'Unprocessable Entity')) {
                   _context9.next = 21;
@@ -3332,7 +3323,7 @@ var autokana;
                 return _context9.abrupt("return", false);
 
               case 21:
-                if (!(_response4.statusText !== 'Created')) {
+                if (!(_response4.statusText !== 'No Content')) {
                   _context9.next = 24;
                   break;
                 }
@@ -3351,15 +3342,14 @@ var autokana;
                   break;
                 }
 
-                // メモアップデート        
-                _this10.editPropMode_memo = "change";
-                _context9.next = 30;
+                _context9.next = 29;
                 return axios.post('/api/prop_comments/' + _this10.prop.prop_comments[0].id, {
                   memo: _this10.editForm_prop.prop_comments[0].memo
                 });
 
-              case 30:
+              case 29:
                 _response5 = _context9.sent;
+                _this10.editPropMode_memo = 100;
 
                 if (!(_response5.statusText === 'Unprocessable Entity')) {
                   _context9.next = 34;
@@ -3370,7 +3360,7 @@ var autokana;
                 return _context9.abrupt("return", false);
 
               case 34:
-                if (!(_response5.statusText !== 'Created')) {
+                if (!(_response5.statusText !== 'No Content')) {
                   _context9.next = 37;
                   break;
                 }
@@ -3456,7 +3446,7 @@ var autokana;
                 _this12.prop.prop_comments = null;
                 _this12.prop.scenes = null;
 
-                if (!(response.statusText !== 'Created')) {
+                if (!(response.statusText !== 'No Content')) {
                   _context11.next = 19;
                   break;
                 }
@@ -3475,6 +3465,963 @@ var autokana;
                 _this12.$emit('close');
 
               case 21:
+              case "end":
+                return _context11.stop();
+            }
+          }
+        }, _callee11);
+      }))();
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
+/* harmony import */ var _pages_Register_Prop_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../pages/Register_Prop.vue */ "./resources/js/pages/Register_Prop.vue");
+/* harmony import */ var _Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Confirm_Dialog_Edit.vue */ "./resources/js/components/Confirm_Dialog_Edit.vue");
+/* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  // モーダルとして表示
+  name: 'detailScene',
+  components: {
+    registerProp: _pages_Register_Prop_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    confirmDialog_Edit: _Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
+    confirmDialog_Delete: _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+  },
+  props: {
+    postScene: {
+      type: Number,
+      required: true
+    }
+  },
+  // データ
+  data: function data() {
+    return {
+      // 表示する小道具のデータ
+      scene: [],
+      // 編集データ
+      editForm_scene: {
+        id: null,
+        character_id: null,
+        character: {
+          name: null,
+          section: {
+            section: null
+          }
+        },
+        prop_id: null,
+        prop: {
+          name: null,
+          owner_id: '',
+          owner: {
+            name: ''
+          },
+          url: '',
+          prop_comments: ''
+        },
+        first_page: '',
+        final_page: '',
+        pages: '',
+        usage: 0,
+        scene_comments: [],
+        memo: ''
+      },
+      // 取得するデータ
+      optionProps: [],
+      // 連動プルダウン
+      selectedCharacters: [],
+      optionCharacters: [],
+      // タブ
+      tab_scene: 1,
+      // 小道具登録
+      showContent: false,
+      postFlag: "",
+      // エラー
+      errors: {
+        error: null
+      },
+      // 編集confirm
+      showContent_confirmEdit: false,
+      postMessage_Edit: "",
+      // 編集範囲
+      editSceneMode_detail: "",
+      editSceneMode_memo: "",
+      // 削除confirm
+      showContent_confirmDelete: false,
+      postMessage_Delete: ""
+    };
+  },
+  watch: {
+    postScene: {
+      handler: function handler(postScene) {
+        var _this = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  if (!_this.postScene) {
+                    _context.next = 7;
+                    break;
+                  }
+
+                  _context.next = 3;
+                  return _this.fetchCharacters();
+
+                case 3:
+                  _context.next = 5;
+                  return _this.fetchScene();
+
+                case 5:
+                  _context.next = 7;
+                  return _this.fetchProps();
+
+                case 7:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }))();
+      },
+      immediate: true
+    },
+    editSceneMode_memo: {
+      handler: function handler(editSceneMode_memo) {
+        var _this2 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  if (!(_this2.editSceneMode_detail === 100 || _this2.editSceneMode_memo === 100)) {
+                    _context2.next = 6;
+                    break;
+                  }
+
+                  _context2.next = 3;
+                  return _this2.fetchScene();
+
+                case 3:
+                  // メッセージ登録
+                  _this2.$store.commit('message/setContent', {
+                    content: '小道具が変更されました！',
+                    timeout: 6000
+                  });
+
+                  _context2.next = 12;
+                  break;
+
+                case 6:
+                  if (!(_this2.editSceneMode_detail || _this2.editSceneMode_memo)) {
+                    _context2.next = 11;
+                    break;
+                  }
+
+                  _context2.next = 9;
+                  return _this2.openModal_confirmEdit();
+
+                case 9:
+                  _context2.next = 12;
+                  break;
+
+                case 11:
+                  if (_this2.editSceneMode_detail === 0 && _this2.editSceneMode_memo === 0) {
+                    alert('元のデータと同じです！変更してください');
+                    _this2.editSceneMode_detail = "";
+                    _this2.editSceneMode_memo = "";
+                  }
+
+                case 12:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2);
+        }))();
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    // シーンの詳細を取得
+    fetchScene: function fetchScene() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _this3.tab_scene = 1;
+                _context3.next = 3;
+                return axios.get('/api/scenes/' + _this3.postScene);
+
+              case 3:
+                response = _context3.sent;
+
+                if (!(response.statusText !== 'OK')) {
+                  _context3.next = 7;
+                  break;
+                }
+
+                _this3.$store.commit('error/setCode', response.status);
+
+                return _context3.abrupt("return", false);
+
+              case 7:
+                _this3.scene = response.data;
+                _this3.editForm_scene.id = _this3.scene.id;
+                _this3.editForm_scene.character_id = _this3.scene.character_id;
+                _this3.editForm_scene.character.name = _this3.scene.character.name;
+                _this3.editForm_scene.character.section.section = _this3.scene.character.section.section;
+
+                _this3.selected();
+
+                _this3.editForm_scene.prop_id = _this3.scene.prop_id;
+                _this3.editForm_scene.prop.name = _this3.scene.prop.name;
+                _this3.editForm_scene.prop.owner_id = _this3.scene.prop.owner_id;
+                _this3.editForm_scene.prop.owner.name = _this3.scene.prop.owner.name;
+                _this3.editForm_scene.prop.url = _this3.scene.prop.url;
+                _this3.editForm_scene.prop.prop_comments = _this3.scene.prop.prop_comments;
+                _this3.editForm_scene.first_page = _this3.scene.first_page;
+                _this3.editForm_scene.final_page = _this3.scene.final_page;
+                _this3.editForm_scene.usage = _this3.scene.usage;
+
+                if (_this3.scene.scene_comments.length) {
+                  _this3.scene.scene_comments.forEach(function (comment, index) {
+                    _this3.editForm_scene.scene_comments[index] = Object.assign({}, _this3.editForm_scene.scene_comments, {
+                      id: comment.id
+                    }, {
+                      memo: comment.memo
+                    }, {
+                      scene_id: comment.scene_id
+                    });
+                  });
+                }
+
+                _this3.editSceneMode_detail = "";
+                _this3.editSceneMode_memo = "";
+
+              case 25:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    // 登場人物を取得
+    fetchCharacters: function fetchCharacters() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var response, sections;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return axios.get('/api/informations/characters');
+
+              case 2:
+                response = _context4.sent;
+
+                if (!(response.statusText !== 'OK')) {
+                  _context4.next = 6;
+                  break;
+                }
+
+                _this4.$store.commit('error/setCode', response.status);
+
+                return _context4.abrupt("return", false);
+
+              case 6:
+                _this4.characters = response.data; // 区分と登場人物をオブジェクトに変換する
+
+                sections = new Object();
+
+                _this4.characters.forEach(function (section) {
+                  sections[section.section] = section.characters;
+                });
+
+                _this4.optionCharacters = sections;
+
+              case 10:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    // 小道具一覧を取得
+    fetchProps: function fetchProps() {
+      var _this5 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return axios.get('/api/props');
+
+              case 2:
+                response = _context5.sent;
+
+                if (!(response.statusText !== 'OK')) {
+                  _context5.next = 6;
+                  break;
+                }
+
+                _this5.$store.commit('error/setCode', response.status);
+
+                return _context5.abrupt("return", false);
+
+              case 6:
+                _this5.optionProps = response.data;
+
+              case 7:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
+      }))();
+    },
+    // タブ切り替え
+    alterTab: function alterTab() {
+      if (this.tab_scene === 1) {
+        this.tab_scene = 2;
+      } else {
+        this.tab_scene = 1;
+      }
+    },
+    // 連動プルダウン
+    selected: function selected() {
+      this.selectedCharacters = this.optionCharacters[this.editForm_scene.character.section.section];
+    },
+    // 小道具登録のモーダル表示 
+    openModal_register: function openModal_register() {
+      this.showContent = true;
+      this.postFlag = 1;
+    },
+    // 小道具登録のモーダル非表示
+    closeModal_register: function closeModal_register() {
+      this.showContent = false;
+    },
+    // 編集エラー
+    confirmScene: function confirmScene() {
+      if (this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.usage !== this.editForm_scene.usage) && !this.editForm_scene.pages) {
+        // 元々何ページから何ページと指定があった // これはupdateだけでいい
+        this.editSceneMode_detail = 1; // 'page_update'
+      } else if (this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.usage !== this.editForm_scene.usage) || this.editForm_scene.pages) {
+        // 新たにページ数追加 // これはupdateだけじゃだめ
+        this.editSceneMode_detail = 2; // 'page_store'
+      } else {
+        this.editSceneMode_detail = 0;
+      }
+
+      if (this.scene.id === this.editForm_scene.id && !this.scene.scene_comments.length && this.editForm_scene.memo) {
+        // メモ新規投稿
+        this.editSceneMode_memo = 1; // 'memo_store'
+      } else if (this.scene.id === this.editForm_scene.id && this.scene.scene_comments.length) {
+        if (this.scene.id === this.editForm_scene.id && this.scene.scene_comments[0].id && !this.editForm_scene.scene_comments[0].memo) {
+          // メモ削除
+          this.editSceneMode_memo = 2; //'memo_delete'
+        } else if (this.scene.id === this.editForm_scene.id && this.scene.scene_comments[0].id && this.scene.scene_comments[0].memo !== this.editForm_scene.scene_comments[0].memo) {
+          // メモアップデート
+          this.editSceneMode_memo = 3; // 'memo_update'
+        } else {
+          this.editSceneMode_memo = 0;
+        }
+      } else {
+        this.editSceneMode_memo = 0;
+      }
+    },
+    // 編集confirmのモーダル表示 
+    openModal_confirmEdit: function openModal_confirmEdit() {
+      this.showContent_confirmEdit = true;
+      this.postMessage_Edit = '以下のように編集します。';
+    },
+    // 編集confirmのモーダル非表示_OKの場合
+    closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
+      var _this6 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _this6.showContent_confirmEdit = false;
+
+                if (!_this6.editSceneMode_detail) {
+                  _context6.next = 4;
+                  break;
+                }
+
+                _context6.next = 4;
+                return _this6.editScene();
+
+              case 4:
+                if (!_this6.editSceneMode_memo) {
+                  _context6.next = 7;
+                  break;
+                }
+
+                _context6.next = 7;
+                return _this6.editScene_memo();
+
+              case 7:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }))();
+    },
+    // 編集confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmEdit_Cancel: function closeModal_confirmEdit_Cancel() {
+      this.showContent_confirmEdit = false;
+    },
+    // first_pageとfinal_pageに分割する
+    first_finalDivide: function first_finalDivide(str) {
+      return str.split(/-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/);
+    },
+    // 全角→半角
+    hankaku2Zenkaku: function hankaku2Zenkaku(str) {
+      return str.replace(/[０-９]/g, function (s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+    },
+    // 基本情報を編集する
+    editScene: function editScene() {
+      var _this7 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+        var response, _response, first_pages, final_pages, pages_before, pages_after, pattern, memo, last_flag;
+
+        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                if (!(_this7.editSceneMode_detail === 1)) {
+                  _context8.next = 23;
+                  break;
+                }
+
+                // 元々ページ数の指定があった
+                _this7.editSceneMode_detail = "change";
+                _context8.next = 4;
+                return axios.post('/api/scenes/' + _this7.scene.id, {
+                  character_id: _this7.editForm_scene.character_id,
+                  prop_id: _this7.editForm_scene.prop_id,
+                  first_page: _this7.editForm_scene.first_page,
+                  final_page: _this7.editForm_scene.final_page,
+                  usage: _this7.editForm_scene.usage
+                });
+
+              case 4:
+                response = _context8.sent;
+                _this7.editSceneMode_detail = 100;
+
+                if (_this7.editSceneMode_memo === 0) {
+                  _this7.editSceneMode_memo = 100;
+                }
+
+                if (!(response.statusText === 'No Content' && _this7.editForm_scene.usage)) {
+                  _context8.next = 15;
+                  break;
+                }
+
+                // 小道具の使用有無変更
+                _response = axios.post('/api/props/' + _this7.editForm_scene.prop_id, {
+                  method: 'usage_change',
+                  usage: _this7.editForm_scene.usage
+                });
+
+                if (!(_response.statusText === 'Unprocessable Entity')) {
+                  _context8.next = 12;
+                  break;
+                }
+
+                _this7.errors.error = _response.data.errors;
+                return _context8.abrupt("return", false);
+
+              case 12:
+                if (!(_response.statusText !== 'No Content')) {
+                  _context8.next = 15;
+                  break;
+                }
+
+                _this7.$store.commit('error/setCode', _response.status);
+
+                return _context8.abrupt("return", false);
+
+              case 15:
+                if (!(response.statusText === 'Unprocessable Entity')) {
+                  _context8.next = 18;
+                  break;
+                }
+
+                _this7.errors.error = response.data.errors;
+                return _context8.abrupt("return", false);
+
+              case 18:
+                if (!(response.statusText !== 'No Content')) {
+                  _context8.next = 21;
+                  break;
+                }
+
+                _this7.$store.commit('error/setCode', response.status);
+
+                return _context8.abrupt("return", false);
+
+              case 21:
+                _context8.next = 24;
+                break;
+
+              case 23:
+                if (_this7.editSceneMode_detail === 2) {
+                  // ページ数を新たに指定
+                  _this7.editSceneMode_detail = "change"; // ページを分割
+
+                  first_pages = [];
+                  final_pages = [];
+                  first_pages[0] = 0;
+                  final_pages[0] = 0;
+
+                  if (_this7.editForm_scene.pages) {
+                    pages_before = _this7.editForm_scene.pages.split(/,|、|，|\s+/);
+                    pages_before.forEach(function (page) {
+                      page = page.replaceAll(/\s+/g, '');
+                    });
+                    pages_after = pages_before.filter(Boolean);
+                    pattern = /-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/;
+                    pages_after.forEach(function (page, index) {
+                      if (index === 0) {
+                        if (pattern.test(page)) {
+                          var pages = _this7.first_finalDivide(page);
+
+                          first_pages[index] = parseInt(_this7.hankaku2Zenkaku(pages[0]));
+                          final_pages[index] = parseInt(_this7.hankaku2Zenkaku(pages[1]));
+                        } else {
+                          first_pages[index] = parseInt(_this7.hankaku2Zenkaku(page));
+                          final_pages[index] = 0;
+                        }
+                      } else {
+                        if (pattern.test(page)) {
+                          var _pages = _this7.first_finalDivide(page);
+
+                          first_pages.push(parseInt(_this7.hankaku2Zenkaku(_pages[0])));
+                          final_pages.push(parseInt(_this7.hankaku2Zenkaku(_pages[1])));
+                        } else {
+                          first_pages.push(parseInt(_this7.hankaku2Zenkaku(page)));
+                          final_pages.push(0);
+                        }
+                      }
+                    });
+                  }
+
+                  memo = '';
+
+                  if (_this7.editForm_scene.memo) {
+                    memo = _this7.editForm_scene.memo;
+                  } else if (_this7.editForm_scene.scene_comments.length) {
+                    memo = _this7.editForm_scene.scene_comments[0].memo;
+                  }
+
+                  last_flag = false;
+                  first_pages.forEach( /*#__PURE__*/function () {
+                    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(page, index) {
+                      var _response2, _response3, _response4;
+
+                      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+                        while (1) {
+                          switch (_context7.prev = _context7.next) {
+                            case 0:
+                              if (!(index === 0)) {
+                                _context7.next = 21;
+                                break;
+                              }
+
+                              _context7.next = 3;
+                              return axios.post('/api/scenes/' + this.scene.id, {
+                                character_id: this.editForm_scene.character_id,
+                                prop_id: this.editForm_scene.prop_id,
+                                first_page: page,
+                                final_page: final_pages[index],
+                                usage: this.editForm_scene.usage
+                              });
+
+                            case 3:
+                              _response2 = _context7.sent;
+
+                              if (index === first_pages.length - 1) {
+                                this.editSceneMode_detail = 100;
+
+                                if (this.editSceneMode_memo === 0) {
+                                  this.editSceneMode_memo = 100;
+                                }
+                              }
+
+                              if (!(_response2.statusText === 'No Content' && this.editForm_scene.usage)) {
+                                _context7.next = 13;
+                                break;
+                              }
+
+                              // 小道具の使用有無変更
+                              _response3 = axios.post('/api/props/' + this.editForm_scene.prop_id, {
+                                method: 'usage_change',
+                                usage: this.editForm_scene.usage
+                              });
+
+                              if (!(_response3.statusText === 'Unprocessable Entity')) {
+                                _context7.next = 10;
+                                break;
+                              }
+
+                              this.errors.error = _response3.data.errors;
+                              return _context7.abrupt("return", false);
+
+                            case 10:
+                              if (!(_response3.statusText !== 'No Content')) {
+                                _context7.next = 13;
+                                break;
+                              }
+
+                              this.$store.commit('error/setCode', _response3.status);
+                              return _context7.abrupt("return", false);
+
+                            case 13:
+                              if (!(_response2.statusText === 'Unprocessable Entity')) {
+                                _context7.next = 16;
+                                break;
+                              }
+
+                              this.errors.error = _response2.data.errors;
+                              return _context7.abrupt("return", false);
+
+                            case 16:
+                              if (!(_response2.statusText !== 'No Content')) {
+                                _context7.next = 19;
+                                break;
+                              }
+
+                              this.$store.commit('error/setCode', _response2.status);
+                              return _context7.abrupt("return", false);
+
+                            case 19:
+                              _context7.next = 31;
+                              break;
+
+                            case 21:
+                              _context7.next = 23;
+                              return axios.post('/api/scenes', {
+                                character_id: this.editForm_scene.character_id,
+                                prop_id: this.editForm_scene.prop_id,
+                                first_page: page,
+                                final_page: final_pages[index],
+                                usage: this.editForm_scene.usage,
+                                memo: memo
+                              });
+
+                            case 23:
+                              _response4 = _context7.sent;
+
+                              if (index === first_pages.length - 1) {
+                                this.editSceneMode_detail = 100;
+
+                                if (this.editSceneMode_memo === 0) {
+                                  this.editSceneMode_memo = 100;
+                                }
+                              }
+
+                              if (!(_response4.statusText === 'Unprocessable Entity')) {
+                                _context7.next = 28;
+                                break;
+                              }
+
+                              this.errors.error = _response4.data.errors;
+                              return _context7.abrupt("return", false);
+
+                            case 28:
+                              if (!(_response4.statusText !== 'Created')) {
+                                _context7.next = 31;
+                                break;
+                              }
+
+                              this.$store.commit('error/setCode', _response4.status);
+                              return _context7.abrupt("return", false);
+
+                            case 31:
+                            case "end":
+                              return _context7.stop();
+                          }
+                        }
+                      }, _callee7, this);
+                    }));
+
+                    return function (_x, _x2) {
+                      return _ref.apply(this, arguments);
+                    };
+                  }(), _this7);
+                }
+
+              case 24:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8);
+      }))();
+    },
+    // メモを更新する
+    editScene_memo: function editScene_memo() {
+      var _this8 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+        var response, _response5, _response6;
+
+        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                if (!(_this8.editSceneMode_memo === 1)) {
+                  _context9.next = 13;
+                  break;
+                }
+
+                _context9.next = 3;
+                return axios.post('/api/scene_comments', {
+                  scene_id: _this8.editForm_scene.id,
+                  memo: _this8.editForm_scene.memo
+                });
+
+              case 3:
+                response = _context9.sent;
+                _this8.editSceneMode_memo = 100;
+
+                if (!(response.statusText === 'Unprocessable Entity')) {
+                  _context9.next = 8;
+                  break;
+                }
+
+                _this8.errors.error = response.data.errors;
+                return _context9.abrupt("return", false);
+
+              case 8:
+                if (!(response.statusText !== 'Created')) {
+                  _context9.next = 11;
+                  break;
+                }
+
+                _this8.$store.commit('error/setCode', response.status);
+
+                return _context9.abrupt("return", false);
+
+              case 11:
+                _context9.next = 37;
+                break;
+
+              case 13:
+                if (!(_this8.editSceneMode_memo === 2)) {
+                  _context9.next = 26;
+                  break;
+                }
+
+                _context9.next = 16;
+                return axios["delete"]('/api/scene_comments/' + _this8.scene.scene_comments[0].id);
+
+              case 16:
+                _response5 = _context9.sent;
+                _this8.editSceneMode_memo = 100;
+
+                if (!(_response5.statusText === 'Unprocessable Entity')) {
+                  _context9.next = 21;
+                  break;
+                }
+
+                _this8.errors.error = _response5.data.errors;
+                return _context9.abrupt("return", false);
+
+              case 21:
+                if (!(_response5.statusText !== 'No Content')) {
+                  _context9.next = 24;
+                  break;
+                }
+
+                _this8.$store.commit('error/setCode', _response5.status);
+
+                return _context9.abrupt("return", false);
+
+              case 24:
+                _context9.next = 37;
+                break;
+
+              case 26:
+                if (!(_this8.editSceneMode_memo === 3)) {
+                  _context9.next = 37;
+                  break;
+                }
+
+                _context9.next = 29;
+                return axios.post('/api/scene_comments/' + _this8.scene.scene_comments[0].id, {
+                  memo: _this8.editForm_scene.scene_comments[0].memo
+                });
+
+              case 29:
+                _response6 = _context9.sent;
+                _this8.editSceneMode_memo = 100;
+
+                if (!(_response6.statusText === 'Unprocessable Entity')) {
+                  _context9.next = 34;
+                  break;
+                }
+
+                _this8.errors.error = _response6.data.errors;
+                return _context9.abrupt("return", false);
+
+              case 34:
+                if (!(_response6.statusText !== 'No Content')) {
+                  _context9.next = 37;
+                  break;
+                }
+
+                _this8.$store.commit('error/setCode', _response6.status);
+
+                return _context9.abrupt("return", false);
+
+              case 37:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9);
+      }))();
+    },
+    // 削除confirmのモーダル表示 
+    openModal_confirmDelete: function openModal_confirmDelete(id) {
+      this.showContent_confirmDelete = true;
+      this.postMessage_Delete = '本当に削除しますか？';
+    },
+    // 削除confirmのモーダル非表示_OKの場合
+    closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
+      var _this9 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+          while (1) {
+            switch (_context10.prev = _context10.next) {
+              case 0:
+                _this9.showContent_confirmDelete = false;
+
+                _this9.$emit('close');
+
+                _context10.next = 4;
+                return _this9.deletScene();
+
+              case 4:
+              case "end":
+                return _context10.stop();
+            }
+          }
+        }, _callee10);
+      }))();
+    },
+    // 削除confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmDelete_Cancel: function closeModal_confirmDelete_Cancel() {
+      this.showContent_confirmDelete = false;
+    },
+    // 削除する
+    deletScene: function deletScene() {
+      var _this10 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+          while (1) {
+            switch (_context11.prev = _context11.next) {
+              case 0:
+                _context11.next = 2;
+                return axios["delete"]('/api/scenes/' + _this10.scene.id);
+
+              case 2:
+                response = _context11.sent;
+
+                if (!(response.statusText === 'Unprocessable Entity')) {
+                  _context11.next = 6;
+                  break;
+                }
+
+                _this10.errors.error = response.data.errors;
+                return _context11.abrupt("return", false);
+
+              case 6:
+                _this10.scene = null;
+                _this10.editForm_scene.id = null;
+                _this10.editForm_scene.character_id = null;
+                _this10.editForm_scene.character.name = null;
+                _this10.editForm_scene.character.section.section = null;
+                _this10.editForm_scene.prop_id = null;
+                _this10.editForm_scene.prop.name = null;
+                _this10.editForm_scene.prop.owner_id = '';
+                _this10.editForm_scene.prop.owner.name = '';
+                _this10.editForm_scene.prop.url = '';
+                _this10.editForm_scene.prop.prop_comments = '';
+                _this10.editForm_scene.first_page = '';
+                _this10.editForm_scene.final_page = '';
+                _this10.editForm_scene.usage = 0;
+                _this10.editForm_scene.scene_comments = [];
+
+                if (!(response.statusText !== 'No Content')) {
+                  _context11.next = 24;
+                  break;
+                }
+
+                _this10.$store.commit('error/setCode', response.status);
+
+                return _context11.abrupt("return", false);
+
+              case 24:
+                // メッセージ登録
+                _this10.$store.commit('message/setContent', {
+                  content: '使用シーンが1つ削除されました！',
+                  timeout: 6000
+                });
+
+                _this10.$emit('close');
+
+              case 26:
               case "end":
                 return _context11.stop();
             }
@@ -5057,8 +6004,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var last_flag = false;
       first_pages.forEach( /*#__PURE__*/function () {
         var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(page, index) {
-          var response, _response;
-
+          var response, response_prop;
           return _regeneratorRuntime().wrap(function _callee3$(_context3) {
             while (1) {
               switch (_context3.prev = _context3.next) {
@@ -5075,60 +6021,59 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 case 2:
                   response = _context3.sent;
-                  console.log(response);
 
                   if (!(response.statusText === 'Unprocessable Entity')) {
-                    _context3.next = 7;
+                    _context3.next = 6;
                     break;
                   }
 
                   this.errors.error = response.data.errors;
                   return _context3.abrupt("return", false);
 
-                case 7:
+                case 6:
                   if (!(response.statusText !== 'Created')) {
-                    _context3.next = 10;
+                    _context3.next = 9;
                     break;
                   }
 
                   this.$store.commit('error/setCode', response.status);
                   return _context3.abrupt("return", false);
 
-                case 10:
+                case 9:
                   if (!(index === first_pages.length - 1)) {
-                    _context3.next = 19;
+                    _context3.next = 18;
                     break;
                   }
 
                   if (!(response.statusText === 'Created' && usage)) {
-                    _context3.next = 19;
+                    _context3.next = 18;
                     break;
                   }
 
                   // 小道具の使用有無変更
-                  _response = axios.post('/api/props/' + prop, {
+                  response_prop = axios.post('/api/props/' + prop, {
                     method: 'usage_change',
                     usage: usage
                   });
 
-                  if (!(_response.statusText === 'Unprocessable Entity')) {
-                    _context3.next = 16;
+                  if (!(response_prop.statusText === 'Unprocessable Entity')) {
+                    _context3.next = 15;
                     break;
                   }
 
-                  this.errors.error = _response.data.errors;
+                  this.errors.error = response.data.errors;
                   return _context3.abrupt("return", false);
 
-                case 16:
-                  if (!(_response.statusText !== 'Created')) {
-                    _context3.next = 19;
+                case 15:
+                  if (!(response_prop.statusText !== 'No Content')) {
+                    _context3.next = 18;
                     break;
                   }
 
-                  this.$store.commit('error/setCode', _response.status);
+                  this.$store.commit('error/setCode', response.status);
                   return _context3.abrupt("return", false);
 
-                case 19:
+                case 18:
                 case "end":
                   return _context3.stop();
               }
@@ -5684,9 +6629,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       // タブ切り替え
-      tab: 1,
+      tabProp: 1,
       // 取得するデータ
       props: [],
+      // 表示するデータ
+      showProps: [],
       // 小道具詳細
       showContent: false,
       postProp: ""
@@ -5743,15 +6690,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context2.abrupt("return", false);
 
               case 6:
-                _this2.props = response.data;
+                _this2.props = response.data; // オリジナルデータ
 
-              case 7:
+                _this2.showProps = JSON.parse(JSON.stringify(_this2.props));
+
+              case 8:
               case "end":
                 return _context2.stop();
             }
           }
         }, _callee2);
       }))();
+    },
+    // 表示切替
+    switchDisplay_prop: function switchDisplay_prop() {
+      if (this.tabProp === 1) {
+        this.tabProp = 2;
+      } else {
+        this.tabProp = 1;
+      }
     },
     // 小道具詳細のモーダル表示 
     openModal_propDetail: function openModal_propDetail(id) {
@@ -5780,7 +6737,146 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     // ダウンロード
-    downloadProps: function downloadProps() {}
+    downloadProps: function downloadProps() {
+      var response = axios.post('/api/props_list', this.showProps);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Show_Scene.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Show_Scene.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
+/* harmony import */ var _components_Detail_Scene_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Detail_Scene.vue */ "./resources/js/components/Detail_Scene.vue");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  // このページの上で表示するコンポーネント
+  components: {
+    detailScene: _components_Detail_Scene_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  data: function data() {
+    return {
+      // 取得するデータ
+      scenes: [],
+      // 表示するデータ
+      showScenes: [],
+      // シーン詳細
+      showContent: false,
+      postScene: ""
+    };
+  },
+  watch: {
+    $route: {
+      handler: function handler() {
+        var _this = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return _this.fetchScenes();
+
+                case 2:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }))();
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    // 使用シーン一覧を取得
+    fetchScenes: function fetchScenes() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return axios.get('/api/scenes');
+
+              case 2:
+                response = _context2.sent;
+
+                if (!(response.statusText !== 'OK')) {
+                  _context2.next = 6;
+                  break;
+                }
+
+                _this2.$store.commit('error/setCode', response.status);
+
+                return _context2.abrupt("return", false);
+
+              case 6:
+                _this2.scenes = response.data; // オリジナルデータ
+
+                _this2.showScenes = JSON.parse(JSON.stringify(_this2.scenes));
+
+              case 8:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    // 使用シーン詳細のモーダル表示 
+    openModal_sceneDetail: function openModal_sceneDetail(id) {
+      this.showContent = true;
+      this.postScene = id;
+    },
+    // 使用シーン詳細のモーダル非表示
+    closeModal_sceneDetail: function closeModal_sceneDetail() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _this3.showContent = false;
+                _context3.next = 3;
+                return _this3.fetchScenes();
+
+              case 3:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    // ダウンロード
+    downloadScenes: function downloadScenes() {
+      var response = axios.post('/api/scenes_list', this.showScenes);
+    }
   }
 });
 
@@ -6283,6 +7379,458 @@ var render = function render() {
         if ($event.target.composing) return;
 
         _vm.$set(_vm.editForm_prop, "memo", $event.target.value);
+      }
+    }
+  })])])]), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("confirmDialog_Edit", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_confirmEdit,
+      expression: "showContent_confirmEdit"
+    }],
+    attrs: {
+      confirm_dialog_edit_message: _vm.postMessage_Edit
+    },
+    on: {
+      Cancel_Edit: _vm.closeModal_confirmEdit_Cancel,
+      OK_Edit: _vm.closeModal_confirmEdit_OK
+    }
+  })], 1), _vm._v(" "), _c("button", {
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.$emit("close");
+      }
+    }
+  }, [_vm._v("閉じる")])])]);
+};
+
+var staticRenderFns = [function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("div", {
+    staticClass: "form__button"
+  }, [_c("button", {
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "submit"
+    }
+  }, [_vm._v("編集")])]);
+}];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=template&id=319b27e9&scoped=true&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=template&id=319b27e9&scoped=true& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("div", {
+    attrs: {
+      id: "overlay"
+    }
+  }, [_c("div", {
+    staticClass: "panel",
+    attrs: {
+      id: "content"
+    }
+  }, [_c("div", {
+    staticClass: "form__button"
+  }, [_c("button", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.tab_scene === 1,
+      expression: "tab_scene === 1"
+    }],
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.alterTab
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-edit fa-fw"
+  }), _vm._v("編集")]), _vm._v(" "), _c("button", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.tab_scene === 2,
+      expression: "tab_scene === 2"
+    }],
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.alterTab
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-eye fa-fw"
+  }), _vm._v("閲覧")])]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.tab_scene === 1,
+      expression: "tab_scene === 1"
+    }]
+  }, [_c("div", {
+    staticClass: "detail-box"
+  }, [_c("div", [_c("img", {
+    attrs: {
+      src: _vm.scene.prop.url,
+      alt: _vm.scene.prop.name
+    }
+  })]), _vm._v(" "), _c("div", [_c("div", {
+    staticClass: "form__button"
+  }, [_c("button", {
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.openModal_confirmDelete
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-eraser fa-fw"
+  }), _vm._v("削除")])]), _vm._v(" "), _c("confirmDialog_Delete", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_confirmDelete,
+      expression: "showContent_confirmDelete"
+    }],
+    attrs: {
+      confirm_dialog_delete_message: _vm.postMessage_Delete
+    },
+    on: {
+      Cancel_Delete: _vm.closeModal_confirmDelete_Cancel,
+      OK_Delete: _vm.closeModal_confirmDelete_OK
+    }
+  }), _vm._v(" "), _c("div", [_c("h1", {
+    staticStyle: {
+      display: "inline"
+    }
+  }, [_vm._v(_vm._s(_vm.scene.character.name))]), _vm._v(" "), _vm.scene.usage ? _c("div", [_c("i", {
+    staticClass: "fas fa-tag"
+  })]) : _vm._e()]), _vm._v(" "), _vm.scene !== null && _vm.scene.first_page !== null ? _c("span", [_vm._v("p. " + _vm._s(_vm.scene.first_page) + " \n            "), _vm.scene !== null && _vm.scene.final_page !== null ? _c("span", [_vm._v(" ~ p. " + _vm._s(_vm.scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", [_vm._v("小道具：" + _vm._s(_vm.scene.prop.name))]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.scene.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.scene.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.scene.prop.prop_comments.length ? _c("ul", _vm._l(_vm.scene.prop.prop_comments, function (comment) {
+    return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
+  }), 0) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.scene.scene_comments.length ? _c("ul", _vm._l(_vm.scene.scene_comments, function (comment) {
+    return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
+  }), 0) : _vm._e()])], 1)])]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.tab_scene === 2,
+      expression: "tab_scene === 2"
+    }]
+  }, [_c("form", {
+    staticClass: "detail-box",
+    on: {
+      submit: function submit($event) {
+        $event.preventDefault();
+        return _vm.confirmScene.apply(null, arguments);
+      }
+    }
+  }, [_c("div", [_c("img", {
+    attrs: {
+      src: _vm.scene.prop.url,
+      alt: _vm.scene.prop.name
+    }
+  })]), _vm._v(" "), _c("div", [_c("div", [_c("label", {
+    attrs: {
+      "for": "character_attr"
+    }
+  }, [_vm._v("登場人物")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.character.section.section,
+      expression: "editForm_scene.character.section.section"
+    }],
+    staticClass: "form__item",
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+
+        _vm.$set(_vm.editForm_scene.character.section, "section", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }, _vm.selected]
+    }
+  }, [_c("option", {
+    attrs: {
+      disabled: "",
+      value: ""
+    }
+  }, [_vm._v("登場人物属性")]), _vm._v(" "), _vm._l(_vm.optionCharacters, function (value, key) {
+    return _c("option", [_vm._v("\n                " + _vm._s(key) + "\n              ")]);
+  })], 2), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.character_id,
+      expression: "editForm_scene.character_id"
+    }],
+    staticClass: "form__item",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+
+        _vm.$set(_vm.editForm_scene, "character_id", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      disabled: "",
+      value: ""
+    }
+  }, [_vm._v("登場人物一覧")]), _vm._v(" "), _vm._l(_vm.selectedCharacters, function (characters) {
+    return _vm.selectedCharacters ? _c("option", {
+      domProps: {
+        value: characters.id
+      }
+    }, [_vm._v("\n                " + _vm._s(characters.name) + "\n              ")]) : _vm._e();
+  })], 2)]), _vm._v(" "), _c("div", {
+    staticClass: "form__check"
+  }, [_c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "scene_usage_scene_edit"
+    }
+  }, [_vm._v("中間発表での使用")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.usage,
+      expression: "editForm_scene.usage"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "scene_usage_scene_edit",
+      checked: ""
+    },
+    domProps: {
+      checked: Array.isArray(_vm.editForm_scene.usage) ? _vm._i(_vm.editForm_scene.usage, null) > -1 : _vm.editForm_scene.usage
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.editForm_scene.usage,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.editForm_scene, "usage", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.editForm_scene, "usage", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.editForm_scene, "usage", $$c);
+        }
+      }
+    }
+  })]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "page"
+    }
+  }, [_vm._v("ページ数")]), _vm._v(" "), _c("small", [_vm._v("例) 22, 24-25")]), _vm._v(" "), _vm.scene.first_page ? _c("div", [_vm._v("\n            p. "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.first_page,
+      expression: "editForm_scene.first_page"
+    }],
+    staticClass: "form__item",
+    domProps: {
+      value: _vm.editForm_scene.first_page
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+
+        _vm.$set(_vm.editForm_scene, "first_page", $event.target.value);
+      }
+    }
+  }), _vm._v("\n            ~ p. "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.final_page,
+      expression: "editForm_scene.final_page"
+    }],
+    staticClass: "form__item",
+    domProps: {
+      value: _vm.editForm_scene.final_page
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+
+        _vm.$set(_vm.editForm_scene, "final_page", $event.target.value);
+      }
+    }
+  })]) : _c("div", [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.pages,
+      expression: "editForm_scene.pages"
+    }],
+    staticClass: "form__item",
+    attrs: {
+      type: "text",
+      id: "page"
+    },
+    domProps: {
+      value: _vm.editForm_scene.pages
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+
+        _vm.$set(_vm.editForm_scene, "pages", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", [_c("label", {
+    attrs: {
+      "for": "scene_prop_select_edit"
+    }
+  }, [_vm._v("小道具")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.prop_id,
+      expression: "editForm_scene.prop_id"
+    }],
+    staticClass: "form__item",
+    attrs: {
+      id: "scene_prop_select_edit",
+      required: ""
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+
+        _vm.$set(_vm.editForm_scene, "prop_id", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      disabled: "",
+      value: ""
+    }
+  }, [_vm._v("小道具一覧")]), _vm._v(" "), _vm._l(_vm.optionProps, function (prop) {
+    return _c("option", {
+      domProps: {
+        value: prop.id
+      }
+    }, [_vm._v("\n                " + _vm._s(prop.name) + "\n              ")]);
+  })], 2), _vm._v(" "), _c("div", {
+    staticClass: "form__button"
+  }, [_c("button", {
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.openModal_register();
+      }
+    }
+  }, [_vm._v("新たな小道具追加")])]), _vm._v(" "), _c("registerProp", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent,
+      expression: "showContent"
+    }],
+    attrs: {
+      val: _vm.postFlag
+    },
+    on: {
+      close: _vm.closeModal_register
+    }
+  })], 1), _vm._v(" "), _c("div", [_c("label", {
+    attrs: {
+      "for": "scene_comment_edit"
+    }
+  }, [_vm._v("メモ:")]), _vm._v(" "), _vm.editForm_scene.scene_comments.length ? _c("ul", _vm._l(_vm.editForm_scene.scene_comments, function (comment) {
+    return _c("li", [_c("textarea", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: comment.memo,
+        expression: "comment.memo"
+      }],
+      domProps: {
+        value: comment.memo
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+
+          _vm.$set(comment, "memo", $event.target.value);
+        }
+      }
+    }, [_vm._v(_vm._s(comment.memo))])]);
+  }), 0) : _c("div", [_c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.memo,
+      expression: "editForm_scene.memo"
+    }],
+    staticClass: "form__item",
+    attrs: {
+      id: "prop_comment_edit"
+    },
+    domProps: {
+      value: _vm.editForm_scene.memo
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+
+        _vm.$set(_vm.editForm_scene, "memo", $event.target.value);
       }
     }
   })])])]), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("confirmDialog_Edit", {
@@ -7786,12 +9334,44 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("div", {
+  return _c("div", [_c("div", [_c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: _vm.tab === 1,
-      expression: "tab === 1"
+      value: _vm.tabProp === 1,
+      expression: "tabProp === 1"
+    }]
+  }, [_c("button", {
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.switchDisplay_prop
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-th fa-fw"
+  }), _vm._v("写真ブロック")])]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.tabProp === 2,
+      expression: "tabProp === 2"
+    }]
+  }, [_c("button", {
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.switchDisplay_prop
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-list-ul fa-fw"
+  }), _vm._v("リスト")])])]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.tabProp === 1,
+      expression: "tabProp === 1"
     }]
   }, [_c("div", [_c("button", {
     attrs: {
@@ -7800,8 +9380,8 @@ var render = function render() {
     on: {
       click: _vm.downloadProps
     }
-  }, [_vm._v("ダウンロード")])]), _vm._v(" "), _c("table", [_vm._m(0), _vm._v(" "), _vm.props.length ? _c("tbody", _vm._l(_vm.props, function (prop) {
-    return _c("tr", [_c("td", {
+  }, [_vm._v("ダウンロード")])]), _vm._v(" "), _c("table", [_vm._m(0), _vm._v(" "), _vm.showProps.length ? _c("tbody", _vm._l(_vm.showProps, function (prop, index) {
+    return _c("tr", [_c("td", [_vm._v(_vm._s(index + 1))]), _vm._v(" "), _c("td", {
       attrs: {
         type: "button"
       },
@@ -7815,6 +9395,42 @@ var render = function render() {
     })]) : _c("td"), _vm._v(" "), prop.prop_comments.length ? _c("td", _vm._l(prop.prop_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.created_at))])]);
+  }), 0) : _vm._e()])]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.tabProp === 2,
+      expression: "tabProp === 2"
+    }],
+    staticClass: "photo-list"
+  }, [_vm.showProps.length ? _c("div", {
+    staticClass: "grid"
+  }, _vm._l(_vm.showProps, function (prop) {
+    return _c("div", {
+      staticClass: "grid__item"
+    }, [_c("div", {
+      staticClass: "photo"
+    }, [_c("figure", {
+      staticClass: "photo__wrapper",
+      attrs: {
+        type: "button"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.openModal_propDetail(prop.id);
+        }
+      }
+    }, [_c("img", {
+      staticClass: "photo__image",
+      attrs: {
+        src: prop.url,
+        alt: prop.name
+      }
+    })]), _vm._v(" "), _c("div", [_c("div", [_vm._v("\n              " + _vm._s(prop.name) + "\n            ")]), _vm._v(" "), prop.owner ? _c("div", [_vm._v("\n              " + _vm._s(prop.owner.name) + "\n            ")]) : _vm._e(), _vm._v(" "), prop.usage ? _c("div", [_c("i", {
+      staticClass: "fas fa-tag"
+    })]) : _vm._e(), _vm._v(" "), prop.prop_comments.length ? _c("div", _vm._l(prop.prop_comments, function (memo) {
+      return _c("div", [_vm._v("\n                " + _vm._s(memo.memo) + "\n              ")]);
+    }), 0) : _vm._e()])])]);
   }), 0) : _vm._e()]), _vm._v(" "), _c("detailProp", {
     directives: [{
       name: "show",
@@ -7835,7 +9451,7 @@ var staticRenderFns = [function () {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("thead", [_c("tr", [_c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("使用状況")]), _vm._v(" "), _c("th", [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")])])]);
+  return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("使用状況")]), _vm._v(" "), _c("th", [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")])])]);
 }];
 render._withStripped = true;
 
@@ -7858,10 +9474,50 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("h1", [_vm._v("Photo List")]);
+  return _c("div", [_c("div", [_c("button", {
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.downloadScenes
+    }
+  }, [_vm._v("ダウンロード")])]), _vm._v(" "), _c("table", [_vm._m(0), _vm._v(" "), _vm.showScenes.length ? _c("tbody", _vm._l(_vm.showScenes, function (scene, index) {
+    return _c("tr", [_c("td", {
+      attrs: {
+        type: "button"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.openModal_sceneDetail(scene.id);
+        }
+      }
+    }, [_vm._v(_vm._s(index + 1))]), _vm._v(" "), scene.first_page ? _c("td", [_vm._v(_vm._s(scene.first_page))]) : _c("td"), _vm._v(" "), scene.final_page ? _c("td", [_vm._v(_vm._s(scene.final_page))]) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.prop.name))]), _vm._v(" "), scene.scene_comments.length ? _c("td", _vm._l(scene.scene_comments, function (memo) {
+      return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
+    }), 0) : _c("td"), _vm._v(" "), scene.usage ? _c("td", [_c("i", {
+      staticClass: "fas fa-check fa-fw"
+    })]) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.created_at))])]);
+  }), 0) : _vm._e()]), _vm._v(" "), _c("detailScene", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent,
+      expression: "showContent"
+    }],
+    attrs: {
+      postScene: _vm.postScene
+    },
+    on: {
+      close: _vm.closeModal_sceneDetail
+    }
+  })], 1);
 };
 
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("何ページから")]), _vm._v(" "), _c("th", [_vm._v("何ページまで")]), _vm._v(" "), _c("th", [_vm._v("登場人物")]), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("使用状況")]), _vm._v(" "), _c("th", [_vm._v("登録日時")])])]);
+}];
 render._withStripped = true;
 
 
@@ -10325,6 +11981,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, "\n#overlay[data-v-0d4e7d16]{\n  overfl
 
 /***/ }),
 
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n#overlay[data-v-319b27e9]{\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n#content[data-v-319b27e9] {\n  z-index: 2;\n  background-color: white;\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n.detail-box[data-v-319b27e9] {\n  display: flex;\n  height: 80%;\n}\n.detail-box>div[data-v-319b27e9] {\n  width:50%;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Edit_Character.vue?vue&type=style&index=0&id=0906803f&scoped=true&lang=css&":
 /*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Edit_Character.vue?vue&type=style&index=0&id=0906803f&scoped=true&lang=css& ***!
@@ -10462,7 +12142,31 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;\n}\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\ntable th::before{\n  content: \"\";\n  position: absolute;\n  top: -1px;\n  left: -1px;\n  width: 100%;\n  height: 100%;\n  border: 1px 1px black;\n}\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;\n}\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;\n}\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10859,6 +12563,36 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Scene_vue_vue_type_style_index_0_id_319b27e9_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Scene_vue_vue_type_style_index_0_id_319b27e9_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Scene_vue_vue_type_style_index_0_id_319b27e9_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Edit_Character.vue?vue&type=style&index=0&id=0906803f&scoped=true&lang=css&":
 /*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Edit_Character.vue?vue&type=style&index=0&id=0906803f&scoped=true&lang=css& ***!
@@ -11036,6 +12770,36 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Show_Prop_vue_vue_type_style_index_0_id_18ce59cc_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Show_Scene_vue_vue_type_style_index_0_id_d3d23c1a_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Show_Scene_vue_vue_type_style_index_0_id_d3d23c1a_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Show_Scene_vue_vue_type_style_index_0_id_d3d23c1a_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
@@ -11486,6 +13250,47 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
 /* hot reload */
 if (false) { var api; }
 component.options.__file = "resources/js/components/Detail_Prop.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Detail_Scene.vue":
+/*!**************************************************!*\
+  !*** ./resources/js/components/Detail_Scene.vue ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Detail_Scene_vue_vue_type_template_id_319b27e9_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Detail_Scene.vue?vue&type=template&id=319b27e9&scoped=true& */ "./resources/js/components/Detail_Scene.vue?vue&type=template&id=319b27e9&scoped=true&");
+/* harmony import */ var _Detail_Scene_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Detail_Scene.vue?vue&type=script&lang=js& */ "./resources/js/components/Detail_Scene.vue?vue&type=script&lang=js&");
+/* harmony import */ var _Detail_Scene_vue_vue_type_style_index_0_id_319b27e9_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css& */ "./resources/js/components/Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _Detail_Scene_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Detail_Scene_vue_vue_type_template_id_319b27e9_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _Detail_Scene_vue_vue_type_template_id_319b27e9_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "319b27e9",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Detail_Scene.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
@@ -11941,15 +13746,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _Show_Scene_vue_vue_type_template_id_d3d23c1a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Show_Scene.vue?vue&type=template&id=d3d23c1a& */ "./resources/js/pages/Show_Scene.vue?vue&type=template&id=d3d23c1a&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _Show_Scene_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Show_Scene.vue?vue&type=script&lang=js& */ "./resources/js/pages/Show_Scene.vue?vue&type=script&lang=js&");
+/* harmony import */ var _Show_Scene_vue_vue_type_style_index_0_id_d3d23c1a_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css& */ "./resources/js/pages/Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
-var script = {}
+
+
+;
 
 
 /* normalize component */
-;
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
-  script,
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _Show_Scene_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _Show_Scene_vue_vue_type_template_id_d3d23c1a___WEBPACK_IMPORTED_MODULE_0__.render,
   _Show_Scene_vue_vue_type_template_id_d3d23c1a___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
   false,
@@ -12101,6 +13910,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Detail_Prop.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Prop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Detail_Scene.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/components/Detail_Scene.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Scene_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Detail_Scene.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Scene_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
@@ -12264,6 +14089,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/pages/Show_Scene.vue?vue&type=script&lang=js&":
+/*!********************************************************************!*\
+  !*** ./resources/js/pages/Show_Scene.vue?vue&type=script&lang=js& ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Show_Scene_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Show_Scene.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Show_Scene.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Show_Scene_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/App.vue?vue&type=template&id=f348271a&":
 /*!*************************************************************!*\
   !*** ./resources/js/App.vue?vue&type=template&id=f348271a& ***!
@@ -12328,6 +14169,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Prop_vue_vue_type_template_id_0d4e7d16_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Prop_vue_vue_type_template_id_0d4e7d16_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Detail_Prop.vue?vue&type=template&id=0d4e7d16&scoped=true& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=template&id=0d4e7d16&scoped=true&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Detail_Scene.vue?vue&type=template&id=319b27e9&scoped=true&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/Detail_Scene.vue?vue&type=template&id=319b27e9&scoped=true& ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Scene_vue_vue_type_template_id_319b27e9_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Scene_vue_vue_type_template_id_319b27e9_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Scene_vue_vue_type_template_id_319b27e9_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Detail_Scene.vue?vue&type=template&id=319b27e9&scoped=true& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=template&id=319b27e9&scoped=true&");
 
 
 /***/ }),
@@ -12609,6 +14467,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css&":
+/*!***********************************************************************************************************!*\
+  !*** ./resources/js/components/Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css& ***!
+  \***********************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Detail_Scene_vue_vue_type_style_index_0_id_319b27e9_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Scene.vue?vue&type=style&index=0&id=319b27e9&scoped=true&lang=css&");
+
+
+/***/ }),
+
 /***/ "./resources/js/components/Edit_Character.vue?vue&type=style&index=0&id=0906803f&scoped=true&lang=css&":
 /*!*************************************************************************************************************!*\
   !*** ./resources/js/components/Edit_Character.vue?vue&type=style&index=0&id=0906803f&scoped=true&lang=css& ***!
@@ -12683,6 +14554,19 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Show_Prop_vue_vue_type_style_index_0_id_18ce59cc_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Show_Prop.vue?vue&type=style&index=0&id=18ce59cc&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Show_Prop.vue?vue&type=style&index=0&id=18ce59cc&lang=css&");
+
+
+/***/ }),
+
+/***/ "./resources/js/pages/Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/pages/Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css& ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_8_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_8_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Show_Scene_vue_vue_type_style_index_0_id_d3d23c1a_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-8.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-8.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Show_Scene.vue?vue&type=style&index=0&id=d3d23c1a&lang=css&");
 
 
 /***/ }),

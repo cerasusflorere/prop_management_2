@@ -8,6 +8,12 @@ use App\Models\Props_Comment;
 use App\Http\Requests\StorePhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+
 
 class PropController extends Controller
 {
@@ -110,9 +116,11 @@ class PropController extends Controller
             if(!empty($usage)){
                 $affected = Prop::where('id', $id)
                    ->update(['usage' => 1]);
-            }        
+            }
 
-            return $affected;
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
         }else if($request->method == 'photo_non_update'){
             // 写真更新しない
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
@@ -121,7 +129,9 @@ class PropController extends Controller
             $affected = Prop::where('id', $id)
                    ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'usage' => $usage]);
 
-            return $affected;
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
         }else if($request->method == 'photo_store'){
             // 写真新規投稿
             if($request->photo){
@@ -154,7 +164,9 @@ class PropController extends Controller
                 throw $exception;
             }
 
-            return $affected;
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
         }else if($request->method == 'photo_delete'){
             // 写真削除
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
@@ -181,8 +193,9 @@ class PropController extends Controller
                 throw $exception;
             }
 
-            return $affected;
-        }if($request->method == 'photo_update'){
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'photo_update'){
             //写真アップデート
             if($request->photo){
                 // Cloudinaryにファイルを保存する
@@ -216,8 +229,9 @@ class PropController extends Controller
                 
                 throw $exception;
             }
-
-            return $affected;
+            
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204) ?? abort(404);
         }
 
     }
@@ -255,6 +269,118 @@ class PropController extends Controller
             throw $exception;
         }
 
-        return $prop ?? abort(404);
+        return response($prop, 204) ?? abort(404);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function down(Request $request)
+    {
+        $origin_datas = $request->toArray();
+        $download_data = [];
+        foreach($origin_datas as $data){
+            $name = $data['name'];
+            if($data['owner']){
+                $owner = $data['owner']['name'];
+            }else{
+                $owner = null;
+            }
+            if($data['usage']){
+                $usage = '〇';
+            }else{
+                $usage = null;
+            }
+            if($data['prop_comments']){
+                foreach($data['prop_comments'] as $key => $comment){
+                    if($key === 0){
+                        $memo = $comment['memo'];
+                    }else{
+                        $memo .= PHP_EOL.$comment['memo'];
+                    }                    
+                }
+            }else{
+                $memo = null;
+            }
+            $download_data[] = ['name' => $name, 'owner' => $owner, 'usage' => $usage, 'prop_comments' => $memo];
+        };
+        // Spreadsheetオブジェクト生成
+        $objSpreadsheet = new Spreadsheet();
+        // シート設定
+        $objSheet = $objSpreadsheet->getActiveSheet();
+    
+        // ウィンドウ固定
+        $objSheet->freezePane('A2');
+
+        // スタイルオブジェクト取得([A1:D1]セル)
+        $objStyle = $objSheet->getStyle('A1:D1');
+        $objBorders = $objStyle->getBorders();
+        $objBorders->getBottom()->setBorderStyle(Border::BORDER_THICK);
+
+        // 見出しを緑色をバックに緑色の字に([A1:D1]セル)
+        $objStyle = $objSheet->getStyle('A1:D1');
+        $objStyle->getFont()->getColor()->setARGB('169b62');
+        $objFill = $objStyle->getFill();
+        $objFill->setFillType(Fill::FILL_SOLID);
+        $objFill->getStartColor()->setARGB('ddefe3');
+
+        // 罫線をつける([A1:D1]セル)
+        $objStyle = $objSheet->getStyle('A1:D1');  
+        $arrStyle = array(
+            'borders' => array(
+                'allBorders' => array(
+                                    'borderStyle' => Border::BORDER_THICK,
+                                    'color' => array( 'rgb' => 'dcdcdc' )
+                                )
+            )
+        );
+        //  セルの罫線スタイル設定
+        $objStyle->applyFromArray($arrStyle);
+
+        // [A1]セルに 小道具名
+        $objSheet->setCellValue('A1', '小道具名');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(12);
+        $objSheet->getStyle('A') ->getAlignment() ->setHorizontal('center');
+        $objSheet->getStyle('A') ->getAlignment() ->setVertical('center');
+
+        // [B1]セルに 持ち主名
+        $objSheet->setCellValue('B1', '持ち主');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(12);
+        $objSheet->getStyle('B') ->getAlignment() ->setHorizontal('center');
+        $objSheet->getStyle('B') ->getAlignment() ->setVertical('center');  
+        
+        // [C1]セルに 使用状況
+        $objSheet->setCellValue('C1', '使用するか');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(12);
+        $objSheet->getStyle('C') ->getAlignment() ->setHorizontal('center');
+        $objSheet->getStyle('C') ->getAlignment() ->setVertical('center');
+
+        // [D1]セルに メモ
+        $objSheet->setCellValue('D1', 'メモ');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(24);
+        $objSheet->getStyle('D') ->getAlignment() ->setHorizontal('center');
+        $objSheet->getStyle('D') ->getAlignment() ->setVertical('center');
+
+        // データを表示
+        $objSheet->fromArray($download_data, null, 'A2');
+
+        
+        // $writer = new Xlsx($objSpreadsheet);
+        // $writer->save('hello world.xlsx');
+
+        $writer = new XlsxWriter($objSpreadsheet);
+$fileName = 'test.xlsx';
+header("Content-Description: File Transfer");
+header('Content-Disposition: attachment; filename="'.$fileName.'"');
+header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+header('Content-Transfer-Encoding: binary');
+header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+header('Expires: 0');
+ob_end_clean();
+$writer->save('php://output');
+die;
     }
 }
