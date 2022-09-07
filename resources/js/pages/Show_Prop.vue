@@ -91,6 +91,7 @@
   import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util'
 
   import detailProp from '../components/Detail_Prop.vue'
+  import ExcelJS from 'exceljs';
 
   export default {
     // このページの上で表示するコンポーネント
@@ -153,8 +154,115 @@
       },
 
       // ダウンロード
-      downloadProps() {
-        const response = axios.post('/api/props_list', this.showProps);
+      // downloadProps() {
+      //   const response = axios.post('/api/props_list', this.showProps);
+      // }
+      // ダウンロード
+      async downloadProps() {
+        // ①初期化
+        const workbook = new ExcelJS.Workbook(); // workbookを作成
+        workbook.addWorksheet('Sheet1'); // worksheetを追加
+        const worksheet = workbook.getWorksheet('Sheet1'); // 追加したworksheetを取得
+
+        // ②データを用意
+        // 各列のヘッダー
+        worksheet.columns = [
+          { header: '小道具名', key: 'name' },
+          { header: '持ち主', key: 'owner' },
+          { header: '使用するか', key: 'usage' },
+          { header: 'メモ', key: 'memo'},
+        ];
+        // worksheet.addRows = [];
+        // 各行のデータ（worksheet.columnsのkeyがオブジェクトのキーと同じになる）
+        this.showProps.forEach((prop, index) => {
+          let datas = [];
+          datas.push(prop.name);
+
+          if(prop.owner){
+            datas.push(prop.owner.name);
+          }else{
+            datas.push(null);
+          }
+
+          if(prop.usage){
+            datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(prop.prop_comments.length){
+            prop.prop_comments.forEach((comment, index_comment) => {
+              if(index_comment){
+                const remove_data = datas.splice(datas.length-1, datas.length-1, datas[datas.length-1]+'<br>'+comment.memo)
+              }else{
+                datas.push(comment.memo);
+              }
+            })
+          }
+
+          //行を取得
+          let sheet_row = worksheet.getRow( index + 2 ) ;
+ 
+          //列を取得し値を設定
+          datas.forEach((data, index_data) => {
+            sheet_row.getCell( index_data + 1 ).value = data ;
+          })
+ 
+          // worksheet.addRows.push(Object.assign({}, {name: prop.name, owner: owner_name, usage: usage, memo: memo}));
+        })
+        
+
+      //   console.log(addRows_2);
+      //   // 各行のデータ（worksheet.columnsのkeyがオブジェクトのキーと同じになる）
+      // worksheet.addRows([
+      //   {
+      //     id: 1,
+      //     name: 'りんご',
+      //     price: 200,
+      //   },
+      //   {
+      //     id: 2,
+      //     name: 'ぶとう',
+      //     price: 150,
+      //   },
+      //   {
+      //     id: 3,
+      //     name: 'ばなな',
+      //     price: 180,
+      //   }
+      // ]);
+      // const addRows =([
+      //   {
+      //     id: 1,
+      //     name: 'りんご',
+      //     price: 200,
+      //   },
+      //   {
+      //     id: 2,
+      //     name: 'ぶとう',
+      //     price: 150,
+      //   },
+      //   {
+      //     id: 3,
+      //     name: 'ばなな',
+      //     price: 180,
+      //   }
+      // ]);
+      // console.log(addRows);
+      
+      // console.log(typeof addRows);
+
+      // console.log(worksheet.addRows)
+
+        // ③ファイル生成
+        const uint8Array = await workbook.xlsx.writeBuffer() // xlsxの場合
+        const blob = new Blob([uint8Array], { type: 'application/octet-binary' });
+        const a = document.createElement('a');
+        a.href = (window.URL || window.webkitURL).createObjectURL(blob);
+        a.download = 'output.xlsx';
+        a.click();
+        a.remove()
+        
       }
     }
   }  
