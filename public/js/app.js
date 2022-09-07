@@ -6748,7 +6748,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-        var workbook, worksheet, uint8Array, blob, a;
+        var workbook, worksheet, font, fill, uint8Array, blob, a;
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -6764,18 +6764,71 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 worksheet.columns = [{
                   header: '小道具名',
-                  key: 'name'
+                  key: 'name',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
                 }, {
                   header: '持ち主',
-                  key: 'owner'
+                  key: 'owner',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
                 }, {
                   header: '使用するか',
-                  key: 'usage'
+                  key: 'usage',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
                 }, {
                   header: 'メモ',
-                  key: 'memo'
-                }]; // worksheet.addRows = [];
-                // 各行のデータ（worksheet.columnsのkeyがオブジェクトのキーと同じになる）
+                  key: 'memo',
+                  width: 24,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }];
+                worksheet.views = [{
+                  state: 'frozen',
+                  xSplit: 0,
+                  ySplit: 1,
+                  activeCell: 'A1'
+                }];
+                font = {
+                  color: {
+                    argb: '169b62'
+                  }
+                };
+                fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: {
+                    argb: 'ddefe3'
+                  }
+                };
+                worksheet.getCell('A1').font = font;
+                worksheet.getCell('A1').fill = fill;
+                worksheet.getCell('B1').font = font;
+                worksheet.getCell('B1').fill = fill;
+                worksheet.getCell('C1').font = font;
+                worksheet.getCell('C1').fill = fill;
+                worksheet.getCell('D1').font = font;
+                worksheet.getCell('D1').fill = fill;
 
                 _this4.showProps.forEach(function (prop, index) {
                   var datas = [];
@@ -6808,53 +6861,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   datas.forEach(function (data, index_data) {
                     sheet_row.getCell(index_data + 1).value = data;
-                  }); // worksheet.addRows.push(Object.assign({}, {name: prop.name, owner: owner_name, usage: usage, memo: memo}));
-                }); //   console.log(addRows_2);
-                //   // 各行のデータ（worksheet.columnsのkeyがオブジェクトのキーと同じになる）
-                // worksheet.addRows([
-                //   {
-                //     id: 1,
-                //     name: 'りんご',
-                //     price: 200,
-                //   },
-                //   {
-                //     id: 2,
-                //     name: 'ぶとう',
-                //     price: 150,
-                //   },
-                //   {
-                //     id: 3,
-                //     name: 'ばなな',
-                //     price: 180,
-                //   }
-                // ]);
-                // const addRows =([
-                //   {
-                //     id: 1,
-                //     name: 'りんご',
-                //     price: 200,
-                //   },
-                //   {
-                //     id: 2,
-                //     name: 'ぶとう',
-                //     price: 150,
-                //   },
-                //   {
-                //     id: 3,
-                //     name: 'ばなな',
-                //     price: 180,
-                //   }
-                // ]);
-                // console.log(addRows);
-                // console.log(typeof addRows);
-                // console.log(worksheet.addRows)
-                // ③ファイル生成
+                  });
+                }); // ③ファイル生成
 
 
-                _context4.next = 7;
+                _context4.next = 18;
                 return workbook.xlsx.writeBuffer();
 
-              case 7:
+              case 18:
                 uint8Array = _context4.sent;
                 // xlsxの場合
                 blob = new Blob([uint8Array], {
@@ -6866,7 +6880,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 a.click();
                 a.remove();
 
-              case 14:
+              case 25:
               case "end":
                 return _context4.stop();
             }

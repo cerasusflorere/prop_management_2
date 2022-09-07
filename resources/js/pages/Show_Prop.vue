@@ -167,13 +167,26 @@
         // ②データを用意
         // 各列のヘッダー
         worksheet.columns = [
-          { header: '小道具名', key: 'name' },
-          { header: '持ち主', key: 'owner' },
-          { header: '使用するか', key: 'usage' },
-          { header: 'メモ', key: 'memo'},
+          { header: '小道具名', key: 'name', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '持ち主', key: 'owner', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '使用するか', key: 'usage', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: 'メモ', key: 'memo', width: 24, style: { alignment: {vertical: "middle", horizontal: "center" }}},
         ];
-        // worksheet.addRows = [];
-        // 各行のデータ（worksheet.columnsのkeyがオブジェクトのキーと同じになる）
+
+        worksheet.views = [
+          {state: 'frozen', xSplit: 0, ySplit: 1, activeCell: 'A1'}  // ウィンドウ固定
+        ];
+        const font =  { color: { argb: '169b62' }}; // 文字
+        const fill =  { type: 'pattern', pattern:'solid', fgColor: { argb:'ddefe3' }}; // 背景色
+        worksheet.getCell('A1').font = font;
+        worksheet.getCell('A1').fill = fill;
+        worksheet.getCell('B1').font = font;
+        worksheet.getCell('B1').fill = fill;
+        worksheet.getCell('C1').font = font;
+        worksheet.getCell('C1').fill = fill;
+        worksheet.getCell('D1').font = font;
+        worksheet.getCell('D1').fill = fill;
+
         this.showProps.forEach((prop, index) => {
           let datas = [];
           datas.push(prop.name);
@@ -208,51 +221,8 @@
             sheet_row.getCell( index_data + 1 ).value = data ;
           })
  
-          // worksheet.addRows.push(Object.assign({}, {name: prop.name, owner: owner_name, usage: usage, memo: memo}));
+          
         })
-        
-
-      //   console.log(addRows_2);
-      //   // 各行のデータ（worksheet.columnsのkeyがオブジェクトのキーと同じになる）
-      // worksheet.addRows([
-      //   {
-      //     id: 1,
-      //     name: 'りんご',
-      //     price: 200,
-      //   },
-      //   {
-      //     id: 2,
-      //     name: 'ぶとう',
-      //     price: 150,
-      //   },
-      //   {
-      //     id: 3,
-      //     name: 'ばなな',
-      //     price: 180,
-      //   }
-      // ]);
-      // const addRows =([
-      //   {
-      //     id: 1,
-      //     name: 'りんご',
-      //     price: 200,
-      //   },
-      //   {
-      //     id: 2,
-      //     name: 'ぶとう',
-      //     price: 150,
-      //   },
-      //   {
-      //     id: 3,
-      //     name: 'ばなな',
-      //     price: 180,
-      //   }
-      // ]);
-      // console.log(addRows);
-      
-      // console.log(typeof addRows);
-
-      // console.log(worksheet.addRows)
 
         // ③ファイル生成
         const uint8Array = await workbook.xlsx.writeBuffer() // xlsxの場合
