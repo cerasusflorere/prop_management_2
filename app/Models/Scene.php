@@ -11,18 +11,24 @@ class Scene extends Model
     /** 取得時にJSONに含める属性 */
     protected $visible = [
         'id', 'character_id', 'prop_id', 
-        'first_page', 'final_page', 'usage', 'created_at', 'character', 'prop', 'scene_comments',
+        'first_page', 'final_page', 'usage', 'usage_guraduation', 'usage_left', 'usage_right', 'created_at', 'updated_at',
+        'character', 'prop', 'scene_comments',
     ];
 
     /** JSONに含める属性 */
     protected $fillable = [
         'character_id', 'prop_id', 
-        'first_page', 'final_page', 'usage',
+        'first_page', 'final_page', 'usage', 'usage_guraduation', 'usage_left', 'usage_right'
     ];
 
     public function getCreatedAtAttribute()
     {
         return Carbon::parse($this->attributes['created_at'])->format('Y/m/d H:i');
+    }
+
+    public function getUpdatedAtAttribute()
+    {
+        return Carbon::parse($this->attributes['updated_at'])->format('Y/m/d H:i');
     }
 
     /**

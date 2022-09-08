@@ -5717,27 +5717,30 @@ var autokana;
                 formData.append('owner_id', _this4.registerForm.owner);
                 formData.append('memo', _this4.registerForm.comment);
                 formData.append('usage', '');
+                formData.append('usage_guraduation', '');
+                formData.append('usage_left', '');
+                formData.append('usage_right', '');
                 formData.append('photo', _this4.registerForm.photo);
-                _context3.next = 9;
+                _context3.next = 12;
                 return axios.post('/api/props', formData);
 
-              case 9:
+              case 12:
                 response = _context3.sent;
 
                 if (!(response.statusText === 'Unprocessable Entity')) {
-                  _context3.next = 13;
+                  _context3.next = 16;
                   break;
                 }
 
                 _this4.errors.error = response.data.errors;
                 return _context3.abrupt("return", false);
 
-              case 13:
+              case 16:
                 // // 諸々データ削除        
                 _this4.reset();
 
                 if (!(response.statusText !== 'Created')) {
-                  _context3.next = 17;
+                  _context3.next = 20;
                   break;
                 }
 
@@ -5745,7 +5748,7 @@ var autokana;
 
                 return _context3.abrupt("return", false);
 
-              case 17:
+              case 20:
                 // メッセージ登録
                 _this4.$store.commit('message/setContent', {
                   content: '小道具が投稿されました！',
@@ -5753,7 +5756,7 @@ var autokana;
                 }); // this.$router.push('')
 
 
-              case 18:
+              case 21:
               case "end":
                 return _context3.stop();
             }
@@ -5830,6 +5833,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       selectedAttr: '',
       selectedCharacters: '',
       optionCharacters: null,
+      // 中間公演or卒業公演
+      season: null,
+      season_tag: null,
+      // 卒業公演
+      guradutaion_tag: 0,
       // 小道具登録
       showContent: false,
       postFlag: "",
@@ -5839,6 +5847,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         prop: '',
         pages: '',
         usage: '',
+        usage_guraduation: 0,
+        usage_stage: null,
         comment: ''
       }
     };
@@ -5928,6 +5938,149 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     selected: function selected() {
       this.selectedCharacters = this.optionCharacters[this.selectedAttr];
     },
+    // どちらの公演か取得
+    choicePerformance: function choicePerformance() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var today, month, day, year, passo_day, _year, guraduation_day;
+
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                today = new Date();
+                month = today.getMonth() + 1;
+                day = today.getDate();
+
+                if (!(3 < month && month < 11)) {
+                  _context3.next = 7;
+                  break;
+                }
+
+                _this3.season = "passo";
+                _context3.next = 25;
+                break;
+
+              case 7:
+                if (!(month === 11)) {
+                  _context3.next = 15;
+                  break;
+                }
+
+                year = today.getFullYear();
+                _context3.next = 11;
+                return _this3.getDateFromWeek(year, month, 1, 0);
+
+              case 11:
+                passo_day = _context3.sent;
+
+                // 11月第1日曜日
+                if (passo_day <= day) {
+                  _this3.season = "passo";
+                } else {
+                  _this3.season = "guradutaion";
+                }
+
+                _context3.next = 25;
+                break;
+
+              case 15:
+                if (!(month > 11 && month < 3)) {
+                  _context3.next = 19;
+                  break;
+                }
+
+                _this3.season = "guradutaion";
+                _context3.next = 25;
+                break;
+
+              case 19:
+                if (!(month === 3)) {
+                  _context3.next = 25;
+                  break;
+                }
+
+                _year = today.getFullYear();
+                _context3.next = 23;
+                return _this3.getDateFromWeek(_year, month, 1, 0);
+
+              case 23:
+                guraduation_day = _context3.sent;
+
+                // 11月第1日曜日
+                if (guraduation_day <= day) {
+                  _this3.season = "guradutaion";
+                } else {
+                  _this3.season = "passo";
+                }
+
+              case 25:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    // 第1日曜日の日付を返す
+    getDateFromWeek: function getDateFromWeek(year, month_origin, turn, weekday) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var month, firstDateOfMonth, firstDayOfWeek, firstWeekdayDate, firstWeekDay, specifiedDate;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                month = month_origin - 1; // 月初の日
+
+                firstDateOfMonth = new Date(year, month, 1); // 月初の曜日
+
+                firstDayOfWeek = firstDateOfMonth.getDay(); // 指定された曜日が最初に出現する日付を求める
+
+                firstWeekdayDate = null;
+
+                if (firstDayOfWeek == weekday) {
+                  // 月初の曜日が指定曜日の時
+                  firstWeekdayDate = new Date(year, month, 1);
+                } else if (firstDayOfWeek < weekday) {
+                  // 月初の曜日 < 指定の曜日の時
+                  firstWeekdayDate = new Date(year, month, 1 + (weekday - firstDayOfWeek));
+                } else if (weekday < firstDayOfWeek) {
+                  // 指定の曜日 < 月初の曜日の時
+                  firstWeekdayDate = new Date(year, month, 1 + (7 - (firstDayOfWeek - weekday)));
+                } // 第○の指定の分だけ日数を足す
+
+
+                firstWeekDay = firstWeekdayDate.getDate();
+                specifiedDate = new Date(year, month, firstWeekDay + 7 * (turn - 1)); // yyyy年mm月dd日
+
+                if (!(specifiedDate.getMonth() != month)) {
+                  _context4.next = 9;
+                  break;
+                }
+
+                return _context4.abrupt("return", null);
+
+              case 9:
+                return _context4.abrupt("return", firstWeekDay + 7 * (turn - 1));
+
+              case 10:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    // 卒業公演の使用にチェックが付いたか
+    selectGuraduation: function selectGuraduation() {
+      if (!this.guradutaion_tag) {
+        this.guradutaion_tag = 1;
+      } else {
+        this.guradutaion_tag = 0;
+        this.registerForm.usage_stage = null;
+      }
+    },
     // 小道具登録のモーダル表示 
     openModal_register: function openModal_register() {
       this.showContent = true;
@@ -5943,7 +6096,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.registerForm.prop = '';
       this.registerForm.pages = '';
       this.registerForm.usage = '';
+      this.registerForm.usage_guraduation = '';
+      this.registerForm.usage_stage = null;
       this.registerForm.comment = '';
+      this.season_tag = null;
+      this.guradutaion_tag = 0;
+      this.choicePerformance();
     },
     // first_pageとfinal_pageに分割する
     first_finalDivide: function first_finalDivide(str) {
@@ -5957,7 +6115,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 登録する
     register: function register() {
-      var _this3 = this;
+      var _this4 = this;
 
       // ページを分割
       var first_pages = [];
@@ -5975,118 +6133,233 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         pages_after.forEach(function (page, index) {
           if (index === 0) {
             if (pattern.test(page)) {
-              var pages = _this3.first_finalDivide(page);
+              var pages = _this4.first_finalDivide(page);
 
-              first_pages[index] = parseInt(_this3.hankaku2Zenkaku(pages[0]));
-              final_pages[index] = parseInt(_this3.hankaku2Zenkaku(pages[1]));
+              first_pages[index] = parseInt(_this4.hankaku2Zenkaku(pages[0]));
+              final_pages[index] = parseInt(_this4.hankaku2Zenkaku(pages[1]));
             } else {
-              first_pages[index] = parseInt(_this3.hankaku2Zenkaku(page));
+              first_pages[index] = parseInt(_this4.hankaku2Zenkaku(page));
               final_pages[index] = 0;
             }
           } else {
             if (pattern.test(page)) {
-              var _pages = _this3.first_finalDivide(page);
+              var _pages = _this4.first_finalDivide(page);
 
-              first_pages.push(parseInt(_this3.hankaku2Zenkaku(_pages[0])));
-              final_pages.push(parseInt(_this3.hankaku2Zenkaku(_pages[1])));
+              first_pages.push(parseInt(_this4.hankaku2Zenkaku(_pages[0])));
+              final_pages.push(parseInt(_this4.hankaku2Zenkaku(_pages[1])));
             } else {
-              first_pages.push(parseInt(_this3.hankaku2Zenkaku(page)));
+              first_pages.push(parseInt(_this4.hankaku2Zenkaku(page)));
               final_pages.push(0);
             }
           }
         });
       }
 
-      var character = this.registerForm.character;
-      var prop = this.registerForm.prop;
-      var usage = this.registerForm.usage;
-      var comment = this.registerForm.comment;
+      var usage_left = 0;
+      var usage_right = 0;
+
+      if (this.registerForm.usage_stage === "usage_left") {
+        usage_left = 1;
+      } else if (this.registerForm.usage_stage === "usage_right") {
+        usage_right = 1;
+      }
+
       var last_flag = false;
       first_pages.forEach( /*#__PURE__*/function () {
-        var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(page, index) {
-          var response, response_prop;
-          return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(page, index) {
+          var response, prop, usage, usage_guraduation, response_prop, _response_prop, _response_prop2, _response_prop3;
+
+          return _regeneratorRuntime().wrap(function _callee5$(_context5) {
             while (1) {
-              switch (_context3.prev = _context3.next) {
+              switch (_context5.prev = _context5.next) {
                 case 0:
-                  _context3.next = 2;
+                  _context5.next = 2;
                   return axios.post('/api/scenes', {
-                    character_id: character,
-                    prop_id: prop,
+                    character_id: this.registerForm.character,
+                    prop_id: this.registerForm.prop,
                     first_page: page,
                     final_page: final_pages[index],
-                    usage: usage,
-                    memo: comment
+                    usage: this.registerForm.usage,
+                    usage_guraduation: this.registerForm.usage_guraduation,
+                    usage_left: usage_left,
+                    usage_right: usage_right,
+                    memo: this.registerForm.comment
                   });
 
                 case 2:
-                  response = _context3.sent;
+                  response = _context5.sent;
 
                   if (!(response.statusText === 'Unprocessable Entity')) {
-                    _context3.next = 6;
+                    _context5.next = 6;
                     break;
                   }
 
                   this.errors.error = response.data.errors;
-                  return _context3.abrupt("return", false);
+                  return _context5.abrupt("return", false);
 
                 case 6:
                   if (!(response.statusText !== 'Created')) {
-                    _context3.next = 9;
+                    _context5.next = 9;
                     break;
                   }
 
                   this.$store.commit('error/setCode', response.status);
-                  return _context3.abrupt("return", false);
+                  return _context5.abrupt("return", false);
 
                 case 9:
                   if (!(index === first_pages.length - 1)) {
-                    _context3.next = 18;
+                    _context5.next = 51;
                     break;
                   }
 
-                  if (!(response.statusText === 'Created' && usage)) {
-                    _context3.next = 18;
+                  prop = this.registerForm.prop;
+                  usage = this.registerForm.usage;
+                  usage_guraduation = this.registerForm.usage_guraduation; // 諸々データ削除
+
+                  this.reset();
+
+                  if (!(response.statusText === 'Created' && (usage || usage_guraduation))) {
+                    _context5.next = 51;
                     break;
                   }
 
-                  // 小道具の使用有無変更
+                  if (!usage) {
+                    _context5.next = 23;
+                    break;
+                  }
+
+                  // 中間発表で使用
                   response_prop = axios.post('/api/props/' + prop, {
                     method: 'usage_change',
                     usage: usage
                   });
 
                   if (!(response_prop.statusText === 'Unprocessable Entity')) {
-                    _context3.next = 15;
+                    _context5.next = 20;
                     break;
                   }
 
                   this.errors.error = response.data.errors;
-                  return _context3.abrupt("return", false);
+                  return _context5.abrupt("return", false);
 
-                case 15:
+                case 20:
                   if (!(response_prop.statusText !== 'No Content')) {
-                    _context3.next = 18;
+                    _context5.next = 23;
                     break;
                   }
 
                   this.$store.commit('error/setCode', response.status);
-                  return _context3.abrupt("return", false);
+                  return _context5.abrupt("return", false);
 
-                case 18:
+                case 23:
+                  if (!usage_guraduation) {
+                    _context5.next = 51;
+                    break;
+                  }
+
+                  if (!usage_left) {
+                    _context5.next = 34;
+                    break;
+                  }
+
+                  // 上手で使用
+                  _response_prop = axios.post('/api/props/' + prop, {
+                    method: 'usage_left_change',
+                    usage_guraduation: usage_guraduation,
+                    usage_left: usage_left
+                  });
+
+                  if (!(_response_prop.statusText === 'Unprocessable Entity')) {
+                    _context5.next = 29;
+                    break;
+                  }
+
+                  this.errors.error = response.data.errors;
+                  return _context5.abrupt("return", false);
+
+                case 29:
+                  if (!(_response_prop.statusText !== 'No Content')) {
+                    _context5.next = 32;
+                    break;
+                  }
+
+                  this.$store.commit('error/setCode', response.status);
+                  return _context5.abrupt("return", false);
+
+                case 32:
+                  _context5.next = 51;
+                  break;
+
+                case 34:
+                  if (!usage_right) {
+                    _context5.next = 44;
+                    break;
+                  }
+
+                  // 下手で使用
+                  _response_prop2 = axios.post('/api/props/' + prop, {
+                    method: 'usage_right_change',
+                    usage_guraduation: usage_guraduation,
+                    usage_right: usage_right
+                  });
+
+                  if (!(_response_prop2.statusText === 'Unprocessable Entity')) {
+                    _context5.next = 39;
+                    break;
+                  }
+
+                  this.errors.error = response.data.errors;
+                  return _context5.abrupt("return", false);
+
+                case 39:
+                  if (!(_response_prop2.statusText !== 'No Content')) {
+                    _context5.next = 42;
+                    break;
+                  }
+
+                  this.$store.commit('error/setCode', response.status);
+                  return _context5.abrupt("return", false);
+
+                case 42:
+                  _context5.next = 51;
+                  break;
+
+                case 44:
+                  // とりあえず卒業公演で使用
+                  _response_prop3 = axios.post('/api/props/' + prop, {
+                    method: 'usage_guraduation_change',
+                    usage_guraduation: usage_guraduation
+                  });
+
+                  if (!(_response_prop3.statusText === 'Unprocessable Entity')) {
+                    _context5.next = 48;
+                    break;
+                  }
+
+                  this.errors.error = response.data.errors;
+                  return _context5.abrupt("return", false);
+
+                case 48:
+                  if (!(_response_prop3.statusText !== 'No Content')) {
+                    _context5.next = 51;
+                    break;
+                  }
+
+                  this.$store.commit('error/setCode', response.status);
+                  return _context5.abrupt("return", false);
+
+                case 51:
                 case "end":
-                  return _context3.stop();
+                  return _context5.stop();
               }
             }
-          }, _callee3, this);
+          }, _callee5, this);
         }));
 
         return function (_x, _x2) {
           return _ref.apply(this, arguments);
         };
-      }()); // 諸々データ削除        
-
-      this.reset(); // メッセージ登録
+      }(), this); // メッセージ登録
 
       this.$store.commit('message/setContent', {
         content: '使用シーンが投稿されました！',
@@ -6097,26 +6370,55 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   watch: {
     $route: {
       handler: function handler() {
-        var _this4 = this;
+        var _this5 = this;
 
-        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-          return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+          return _regeneratorRuntime().wrap(function _callee6$(_context6) {
             while (1) {
-              switch (_context4.prev = _context4.next) {
+              switch (_context6.prev = _context6.next) {
                 case 0:
-                  _context4.next = 2;
-                  return _this4.fetchCharacters();
+                  _context6.next = 2;
+                  return _this5.fetchCharacters();
 
                 case 2:
-                  _context4.next = 4;
-                  return _this4.fetchProps();
+                  _context6.next = 4;
+                  return _this5.fetchProps();
 
                 case 4:
+                  _context6.next = 6;
+                  return _this5.choicePerformance();
+
+                case 6:
                 case "end":
-                  return _context4.stop();
+                  return _context6.stop();
               }
             }
-          }, _callee4);
+          }, _callee6);
+        }))();
+      },
+      immediate: true
+    },
+    season: {
+      handler: function handler(season) {
+        var _this6 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+          return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+            while (1) {
+              switch (_context7.prev = _context7.next) {
+                case 0:
+                  if (_this6.season === "passo") {
+                    _this6.season_tag = 1;
+                  } else if (_this6.season === "guradution") {
+                    _this6.season_tag = 2;
+                  }
+
+                case 1:
+                case "end":
+                  return _context7.stop();
+              }
+            }
+          }, _callee7);
         }))();
       },
       immediate: true
@@ -6748,7 +7050,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-        var workbook, worksheet, font, fill, uint8Array, blob, a;
+        var workbook, worksheet, font, fill, uint8Array, blob, a, today, filename;
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -6808,19 +7110,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   xSplit: 0,
                   ySplit: 1,
                   activeCell: 'A1'
-                }];
+                } // ウィンドウ固定
+                ];
                 font = {
                   color: {
                     argb: '169b62'
                   }
-                };
+                }; // 文字
+
                 fill = {
                   type: 'pattern',
                   pattern: 'solid',
                   fgColor: {
                     argb: 'ddefe3'
                   }
-                };
+                }; // 背景色
+
                 worksheet.getCell('A1').font = font;
                 worksheet.getCell('A1').fill = fill;
                 worksheet.getCell('B1').font = font;
@@ -6876,17 +7181,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
                 a = document.createElement('a');
                 a.href = (window.URL || window.webkitURL).createObjectURL(blob);
-                a.download = 'output.xlsx';
+                today = _this4.formatDate(new Date());
+                filename = 'Props_list_' + 'all' + '_' + today + '.xlsx';
+                a.download = filename;
                 a.click();
                 a.remove();
 
-              case 25:
+              case 27:
               case "end":
                 return _context4.stop();
             }
           }
         }, _callee4);
       }))();
+    },
+    // 日付をyyyy-mm-ddで返す
+    formatDate: function formatDate(dt) {
+      var y = dt.getFullYear();
+      var m = ('00' + (dt.getMonth() + 1)).slice(-2);
+      var d = ('00' + dt.getDate()).slice(-2);
+      return y + '-' + m + '-' + d;
     }
   }
 });
@@ -6906,6 +7220,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
 /* harmony import */ var _components_Detail_Scene_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Detail_Scene.vue */ "./resources/js/components/Detail_Scene.vue");
+/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! exceljs */ "./node_modules/exceljs/dist/exceljs.min.js");
+/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(exceljs__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
@@ -6913,6 +7229,7 @@ function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyri
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 
 
@@ -7021,9 +7338,187 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee3);
       }))();
     },
+    // // ダウンロード
+    // downloadScenes() {
+    //   const response = axios.post('/api/scenes_list', this.showScenes);
+    // }
     // ダウンロード
     downloadScenes: function downloadScenes() {
-      var response = axios.post('/api/scenes_list', this.showScenes);
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var workbook, worksheet, font, fill, uint8Array, blob, a, today, filename;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                // ①初期化
+                workbook = new (exceljs__WEBPACK_IMPORTED_MODULE_2___default().Workbook)(); // workbookを作成
+
+                workbook.addWorksheet('Sheet1'); // worksheetを追加
+
+                worksheet = workbook.getWorksheet('Sheet1'); // 追加したworksheetを取得
+                // ②データを用意
+                // 各列のヘッダー
+
+                worksheet.columns = [{
+                  header: '何ページから',
+                  key: 'first_page',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: '何ページまで',
+                  key: 'final_page',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: '登場人物',
+                  key: 'character',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: '小道具',
+                  key: 'prop',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: '使用するか',
+                  key: 'usage',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: 'メモ',
+                  key: 'memo',
+                  width: 24,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }];
+                worksheet.views = [{
+                  state: 'frozen',
+                  xSplit: 0,
+                  ySplit: 1,
+                  activeCell: 'A1'
+                } // ウィンドウ固定
+                ];
+                font = {
+                  color: {
+                    argb: '169b62'
+                  }
+                }; // 文字
+
+                fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: {
+                    argb: 'ddefe3'
+                  }
+                }; // 背景色
+
+                worksheet.getCell('A1').font = font;
+                worksheet.getCell('A1').fill = fill;
+                worksheet.getCell('B1').font = font;
+                worksheet.getCell('B1').fill = fill;
+                worksheet.getCell('C1').font = font;
+                worksheet.getCell('C1').fill = fill;
+                worksheet.getCell('D1').font = font;
+                worksheet.getCell('D1').fill = fill;
+                worksheet.getCell('E1').font = font;
+                worksheet.getCell('E1').fill = fill;
+                worksheet.getCell('F1').font = font;
+                worksheet.getCell('F1').fill = fill;
+
+                _this4.showScenes.forEach(function (scene, index) {
+                  var datas = [];
+                  datas.push(scene.first_page);
+                  datas.push(scene.final_page);
+                  datas.push(scene.character.name);
+                  datas.push(scene.prop.name);
+
+                  if (scene.usage) {
+                    datas.push('〇');
+                  } else {
+                    datas.push(null);
+                  }
+
+                  if (scene.scene_comments.length) {
+                    scene.scene_comments.forEach(function (comment, index_comment) {
+                      if (index_comment) {
+                        var remove_data = datas.splice(datas.length - 1, datas.length - 1, datas[datas.length - 1] + '<br>' + comment.memo);
+                      } else {
+                        datas.push(comment.memo);
+                      }
+                    });
+                  } //行を取得
+
+
+                  var sheet_row = worksheet.getRow(index + 2); //列を取得し値を設定
+
+                  datas.forEach(function (data, index_data) {
+                    sheet_row.getCell(index_data + 1).value = data;
+                  });
+                }); // ③ファイル生成
+
+
+                _context4.next = 22;
+                return workbook.xlsx.writeBuffer();
+
+              case 22:
+                uint8Array = _context4.sent;
+                // xlsxの場合
+                blob = new Blob([uint8Array], {
+                  type: 'application/octet-binary'
+                });
+                a = document.createElement('a');
+                a.href = (window.URL || window.webkitURL).createObjectURL(blob);
+                today = _this4.formatDate(new Date());
+                filename = 'Scenes_list_' + 'all' + '_' + today + '.xlsx';
+                a.download = filename;
+                a.click();
+                a.remove();
+
+              case 31:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    // 日付をyyyy-mm-ddで返す
+    formatDate: function formatDate(dt) {
+      var y = dt.getFullYear();
+      var m = ('00' + (dt.getMonth() + 1)).slice(-2);
+      var d = ('00' + dt.getDate()).slice(-2);
+      return y + '-' + m + '-' + d;
     }
   }
 });
@@ -8713,7 +9208,7 @@ var render = function render() {
         _vm.$set(_vm.registerForm, "prop", $event.target.value);
       }, _vm.handleNameInput]
     }
-  }), _vm._v(" "), _c("lavel", {
+  }), _vm._v(" "), _c("label", {
     attrs: {
       "for": "furigana"
     }
@@ -8826,7 +9321,7 @@ var render = function render() {
       src: _vm.preview,
       alt: ""
     }
-  })]) : _vm._e(), _vm._v(" "), _vm._m(0)], 1), _vm._v(" "), _c("listProps", {
+  })]) : _vm._e(), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("listProps", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -8888,7 +9383,55 @@ var render = function render() {
 
   return _c("div", {
     staticClass: "panel"
-  }, [_c("form", {
+  }, [_c("div", [_c("div", [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.season,
+      expression: "season"
+    }],
+    attrs: {
+      type: "radio",
+      id: "passo",
+      value: "passo"
+    },
+    domProps: {
+      checked: _vm._q(_vm.season, "passo")
+    },
+    on: {
+      change: function change($event) {
+        _vm.season = "passo";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "passo"
+    }
+  }, [_vm._v("中間公演")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.season,
+      expression: "season"
+    }],
+    attrs: {
+      type: "radio",
+      id: "guraduation",
+      value: "guradution"
+    },
+    domProps: {
+      checked: _vm._q(_vm.season, "guradution")
+    },
+    on: {
+      change: function change($event) {
+        _vm.season = "guradution";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "guraduation"
+    }
+  }, [_vm._v("卒業公演")])]), _vm._v(" "), _c("form", {
     staticClass: "form",
     on: {
       submit: function submit($event) {
@@ -9052,6 +9595,13 @@ var render = function render() {
     }
   }), _vm._v(" "), _c("div", {
     staticClass: "form__check"
+  }, [_c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.season_tag === 1,
+      expression: "season_tag === 1"
+    }]
   }, [_c("label", {
     staticClass: "form__check__label",
     attrs: {
@@ -9067,8 +9617,7 @@ var render = function render() {
     staticClass: "form__check__input",
     attrs: {
       type: "checkbox",
-      id: "usage_scene",
-      checked: ""
+      id: "usage_scene"
     },
     domProps: {
       checked: Array.isArray(_vm.registerForm.usage) ? _vm._i(_vm.registerForm.usage, null) > -1 : _vm.registerForm.usage
@@ -9093,7 +9642,105 @@ var render = function render() {
         }
       }
     }
-  })]), _vm._v(" "), _c("label", {
+  })]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.season_tag === 2,
+      expression: "season_tag === 2"
+    }]
+  }, [_c("div", [_c("label", {
+    attrs: {
+      "for": "usage_scene_guradutaion"
+    }
+  }, [_vm._v("卒業公演での使用")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.usage_guraduation,
+      expression: "registerForm.usage_guraduation"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "usage_scene_guradutaion"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.registerForm.usage_guraduation) ? _vm._i(_vm.registerForm.usage_guraduation, null) > -1 : _vm.registerForm.usage_guraduation
+    },
+    on: {
+      change: [function ($event) {
+        var $$a = _vm.registerForm.usage_guraduation,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.registerForm, "usage_guraduation", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.registerForm, "usage_guraduation", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.registerForm, "usage_guraduation", $$c);
+        }
+      }, _vm.selectGuraduation]
+    }
+  })]), _vm._v(" "), _vm.guradutaion_tag ? _c("div", [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.usage_stage,
+      expression: "registerForm.usage_stage"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "radio",
+      id: "usage_scene_left",
+      value: "usage_left"
+    },
+    domProps: {
+      checked: _vm._q(_vm.registerForm.usage_stage, "usage_left")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.registerForm, "usage_stage", "usage_left");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "usage_scene_left"
+    }
+  }, [_vm._v("上手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.usage_stage,
+      expression: "registerForm.usage_stage"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "radio",
+      id: "usage_scene_right",
+      value: "usage_right"
+    },
+    domProps: {
+      checked: _vm._q(_vm.registerForm.usage_stage, "usage_right")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.registerForm, "usage_stage", "usage_right");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "usage_scene_right"
+    }
+  }, [_vm._v("下手")])]) : _vm._e()])]), _vm._v(" "), _c("label", {
     attrs: {
       "for": "comment_scene"
     }
@@ -9118,7 +9765,7 @@ var render = function render() {
         _vm.$set(_vm.registerForm, "comment", $event.target.value);
       }
     }
-  }), _vm._v(" "), _vm._m(0)], 1)]);
+  }), _vm._v(" "), _vm._m(0)], 1)])]);
 };
 
 var staticRenderFns = [function () {
@@ -9542,7 +10189,7 @@ var render = function render() {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td"), _vm._v(" "), prop.prop_comments.length ? _c("td", _vm._l(prop.prop_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
-    }), 0) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.created_at))])]);
+    }), 0) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.created_at))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.updated_at))])]);
   }), 0) : _vm._e()])]), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
@@ -9599,7 +10246,7 @@ var staticRenderFns = [function () {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("使用状況")]), _vm._v(" "), _c("th", [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")])])]);
+  return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("使用状況")]), _vm._v(" "), _c("th", [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]);
 }];
 render._withStripped = true;
 
@@ -9643,7 +10290,7 @@ var render = function render() {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td"), _vm._v(" "), scene.usage ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
-    })]) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.created_at))])]);
+    })]) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.created_at))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.updated_at))])]);
   }), 0) : _vm._e()]), _vm._v(" "), _c("detailScene", {
     directives: [{
       name: "show",
@@ -9664,7 +10311,7 @@ var staticRenderFns = [function () {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("何ページから")]), _vm._v(" "), _c("th", [_vm._v("何ページまで")]), _vm._v(" "), _c("th", [_vm._v("登場人物")]), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("使用状況")]), _vm._v(" "), _c("th", [_vm._v("登録日時")])])]);
+  return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("何ページから")]), _vm._v(" "), _c("th", [_vm._v("何ページまで")]), _vm._v(" "), _c("th", [_vm._v("登場人物")]), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("使用状況")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]);
 }];
 render._withStripped = true;
 

@@ -33,7 +33,10 @@ class SceneController extends Controller
 
         $first_page = !empty($request->first_page) ? $request->first_page : null; // nullで送ると文字列になる
         $final_page = !empty($request->final_page) ? $request->final_page : null;
-        $usage = !empty($request->usage) ? 1 : null;
+        $usage = !empty($request->usage) ? 1 : 0;
+        $usage_guraduation  = !empty($request->usage_guraduation) ? 1 : 0;
+        $usage_left = !empty($request->usage_left) ? 1 : 0;
+        $usage_right = !empty($request->usage_right) ? 1 : 0;
 
         $exist = Scene::where([['character_id', '=', $request->character_id], 
                               ['prop_id', '=', $request->prop_id], 
@@ -60,17 +63,100 @@ class SceneController extends Controller
                 ->first();
         }else{
             $exist_update_fianl_page_notnull = null;
-        }     
+        }
 
         try {
-            if(!is_null($exist_update_first_page) && $first_page){
+            if(!is_null($exist_update_first_page)){
                 // 登録済みが最初のページがnullだったので、更新
-                if($usage){
+                if($usage || $usage_guraduation || $usage_left || $usage_right){
                     // 使用するなら更新
-                    $scene = Scene::where('id', $exist_update_first_page->id)
-                        ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage]);
-                    if($request->memo){
-                        $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                    $confirm = $exist_update_first_page -> toArray();
+                    if(!$confirm['usage'] && !$confirm['usage_guraduation']){
+                        // 全て0だったので、全部更新
+                        $scene = Scene::where('id', $exist_update_first_page->id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                        if($request->memo){
+                            $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                        }
+                    }else if($confirm['usage'] && $confirm['usage_guraduation']){
+                        // 中間公演が1→1、卒業公演が1→1
+                        if(!$confirm['usage_left'] && $usage_left){
+                            // 上手が0→1
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage_left' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                            }
+                        }else if(!$confirm['usage_right'] && $usage_right){
+                            // 下手が0→1
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage_right' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                            }
+                        }else{
+                            // 更新する必要がなかった
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                ->update(['first_page' => $first_page, 'final_page' => $final_page]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                            }
+                        }
+                    }else if(!$confirm['usage'] && $usage){
+                        // 中間公演が0→1、卒業公演が1→1
+                        if(!$confirm['usage_left'] && $usage_left){
+                            // 中間公演が0→1、上手が0→1
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage' => 1, 'usage_left' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                            }
+                        }else if(!$confirm['usage_right'] && $usage_right){
+                            // 中間公演が0→1、下手が0→1
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage' => 1, 'usage_right' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                            }
+                        }else{
+                            // 中間公演が0→1
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                            }
+                        }
+                    }else if(!$confirm['usage_guraduation'] && $usage_guraduation){
+                        // 中間公演が1→1、卒業公演が0→1
+                        if(!$confirm['usage_left'] && $usage_left){
+                            // 卒業公演が0→1、上手が0→1
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage_guraduation' => 1, 'usage_left' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                            }
+                        }else if(!$confirm['usage_right'] && $usage_right){
+                            // 卒業公演が0→1、下手が0→1
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage_guraduation' => 1, 'usage_right' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                            }
+                        }else{
+                            // 卒業公演が0→1
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage_guraduation' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                            }
+                        }
+                    }else{
+                        // 更新する必要がなかった
+                        $scene = Scene::where('id', $exist_update_first_page->id)
+                            ->update(['first_page' => $first_page, 'final_page' => $final_page]);
+                        if($request->memo){
+                            $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                        }
                     }
                 }else{
                     // 使用しないなら更新しない
@@ -89,15 +175,70 @@ class SceneController extends Controller
                 // 登録済みが最初のページは一致するが、最後のページは一致しないかつより多くのページを含む場合
                 if(!is_null($exist_update_fianl_page_null)){
                     $id = $exist_update_fianl_page_null->id;
+                    $confirm = $exist_update_fianl_page_null -> toArray();
                 }else{
                     $id = $exist_update_fianl_page_notnull->id;
+                    $confirm = $exist_update_fianl_page_notnull -> toArray();
                 }
-                if($usage){
-                    // 使用するなら更新
-                    $scene = Scene::where('id', $id)
-                        ->update(['final_page' => $final_page, 'usage' => $usage]);
-                    if($request->memo){
-                        $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                if($usage || $usage_guraduation || $usage_left || $usage_right){
+                    if(!$confirm['usage'] && !$confirm['usage_guraduation']){
+                        // 全て0だったので、全部更新
+                        $scene = Scene::where('id', $id)
+                                     ->update(['final_page' => $final_page, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                        if($request->memo){
+                            $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                        }
+                    }else if($confirm['usage'] && $confirm['usage_guraduation']){
+                        // 中間公演が1→1、卒業公演が1→1
+                        if(!$confirm['usage_left'] && $usage_left){
+                            // 上手が0→1
+                            $scene = Scene::where('id', $id)
+                                     ->update(['final_page' => $final_page, 'usage_left' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                            }
+                        }else if(!$confirm['usage_right'] && $usage_right){
+                            // 下手が0→1
+                            $scene = Scene::where('id', $eid)
+                                     ->update(['final_page' => $final_page, 'usage_right' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                            }
+                        }
+                    }else if(!$confirm['usage'] && $usage){
+                        // 中間公演が0→1、卒業公演が1→1
+                        if(!$confirm['usage_left'] && $usage_left){
+                            // 中間公演が0→1、上手が0→1
+                            $scene = Scene::where('id', $id)
+                                     ->update(['final_page' => $final_page, 'usage' => 1, 'usage_left' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                            }
+                        }else if(!$confirm['usage_right'] && $usage_right){
+                            // 中間公演が0→1、下手が0→1
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'usage' => 1, 'usage_right' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                            }
+                        }
+                    }else if(!$confirm['usage_guraduation'] && $usage_guraduation){
+                        // 中間公演が1→1、卒業公演が0→1
+                        if(!$confirm['usage_left'] && $usage_left){
+                            // 卒業公演が0→1、上手が0→1
+                            $scene = Scene::where('id', $id)
+                                     ->update(['final_page' => $final_page, 'usage_guraduation' => 1, 'usage_left' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                            }
+                        }else if(!$confirm['usage_right'] && $usage_right){
+                            // 卒業公演が0→1、下手が0→1
+                            $scene = Scene::where('id', $id)
+                                     ->update(['final_page' => $final_page, 'usage_guraduation' => 1, 'usage_right' => 1]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $eid, 'memo' => $request->memo]);
+                            }
+                        }
                     }
                 }else{
                     // 使用しないなら更新しない
@@ -115,7 +256,7 @@ class SceneController extends Controller
 
             }else if(!($exist)){
                 // 新規投稿
-                $scene = Scene::create(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage]);
+                $scene = Scene::create(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 if($request->memo){
                     $scene_comment = Scenes_Comment::create(['scene_id' => $scene->id, 'memo' => $request->memo]);
                 }

@@ -16,6 +16,7 @@
           <th>メモ</th>
           <th>使用状況</th>
           <th>登録日時</th>
+          <th>更新日時</th>
         </tr>
       </thead>
       <tbody v-if="showScenes.length">
@@ -42,6 +43,8 @@
             <td v-else></td>            
             <!-- 登録日時 -->
             <td>{{ scene.created_at }}</td>
+            <!-- 更新日時 -->
+            <td>{{ scene.updated_at }}</td>
         </tr>
       </tbody>      
     </table>
@@ -51,9 +54,10 @@
 </template>
 
 <script>
-  import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util'
+  import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util';
 
-  import detailScene from '../components/Detail_Scene.vue'
+  import detailScene from '../components/Detail_Scene.vue';
+  import ExcelJS from 'exceljs';
 
   export default {
     // このページの上で表示するコンポーネント
@@ -104,9 +108,102 @@
         await this.fetchScenes()
       },
 
+      // // ダウンロード
+      // downloadScenes() {
+      //   const response = axios.post('/api/scenes_list', this.showScenes);
+      // }
+
       // ダウンロード
-      downloadScenes() {
-        const response = axios.post('/api/scenes_list', this.showScenes);
+      async downloadScenes() {
+        // ①初期化
+        const workbook = new ExcelJS.Workbook(); // workbookを作成
+        workbook.addWorksheet('Sheet1'); // worksheetを追加
+        const worksheet = workbook.getWorksheet('Sheet1'); // 追加したworksheetを取得
+
+        // ②データを用意
+        // 各列のヘッダー
+        worksheet.columns = [
+          { header: '何ページから', key: 'first_page', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '何ページまで', key: 'final_page', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '登場人物', key: 'character', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '小道具', key: 'prop', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '使用するか', key: 'usage', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: 'メモ', key: 'memo', width: 24, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+        ];
+
+        worksheet.views = [
+          {state: 'frozen', xSplit: 0, ySplit: 1, activeCell: 'A1'}  // ウィンドウ固定
+        ];
+        const font =  { color: { argb: '169b62' }}; // 文字
+        const fill =  { type: 'pattern', pattern:'solid', fgColor: { argb:'ddefe3' }}; // 背景色
+        worksheet.getCell('A1').font = font;
+        worksheet.getCell('A1').fill = fill;
+        worksheet.getCell('B1').font = font;
+        worksheet.getCell('B1').fill = fill;
+        worksheet.getCell('C1').font = font;
+        worksheet.getCell('C1').fill = fill;
+        worksheet.getCell('D1').font = font;
+        worksheet.getCell('D1').fill = fill;
+        worksheet.getCell('E1').font = font;
+        worksheet.getCell('E1').fill = fill;
+        worksheet.getCell('F1').font = font;
+        worksheet.getCell('F1').fill = fill;
+
+        this.showScenes.forEach((scene, index) => {
+          let datas = [];
+          datas.push(scene.first_page);
+          datas.push(scene.final_page);
+
+          datas.push(scene.character.name);
+
+          datas.push(scene.prop.name);
+
+          if(scene.usage){
+            datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(scene.scene_comments.length){
+            scene.scene_comments.forEach((comment, index_comment) => {
+              if(index_comment){
+                const remove_data = datas.splice(datas.length-1, datas.length-1, datas[datas.length-1]+'<br>'+comment.memo)
+              }else{
+                datas.push(comment.memo);
+              }
+            })
+          }
+
+          //行を取得
+          let sheet_row = worksheet.getRow( index + 2 ) ;
+ 
+          //列を取得し値を設定
+          datas.forEach((data, index_data) => {
+            sheet_row.getCell( index_data + 1 ).value = data ;
+          })
+ 
+          
+        })
+
+        // ③ファイル生成
+        const uint8Array = await workbook.xlsx.writeBuffer() // xlsxの場合
+        const blob = new Blob([uint8Array], { type: 'application/octet-binary' });
+        const a = document.createElement('a');
+        a.href = (window.URL || window.webkitURL).createObjectURL(blob);
+        const today = this.formatDate(new Date());
+        const filename = 'Scenes_list_' + 'all' + '_' + today + '.xlsx';
+        a.download = filename;
+        a.click();
+        a.remove()
+        
+      },
+
+      // 日付をyyyy-mm-ddで返す
+      formatDate(dt) {
+        const y = dt.getFullYear();
+        const m = ('00' + (dt.getMonth()+1)).slice(-2);
+        const d = ('00' + dt.getDate()).slice(-2);
+        return (y + '-' + m + '-' + d);
       }
     }
   }  

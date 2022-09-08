@@ -18,7 +18,7 @@
           </div>
          
           <input type="text" class="form__item" id="prop_input" v-model="registerForm.prop" @input="handleNameInput" required>
-          <lavel for="furigana">ふりがな</lavel>
+          <label for="furigana">ふりがな</label>
           <input type="text" name="furigana" id="furigana" v-model="registerForm.kana" required>
 
           <!-- 所有者 -->
@@ -216,6 +216,9 @@ export default {
       formData.append('owner_id', this.registerForm.owner)
       formData.append('memo', this.registerForm.comment)
       formData.append('usage', '')
+      formData.append('usage_guraduation', '')
+      formData.append('usage_left', '')
+      formData.append('usage_right', '')
       formData.append('photo', this.registerForm.photo)
       const response = await axios.post('/api/props', formData)
 

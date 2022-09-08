@@ -27,6 +27,7 @@
             <th>使用状況</th>
             <th>メモ</th>
             <th>登録日時</th>
+            <th>更新日時</th>
           </tr>
         </thead>
         <tbody v-if="showProps.length">
@@ -47,6 +48,8 @@
             <td v-else></td>
             <!-- 登録日時 -->
             <td>{{ prop.created_at }}</td>
+            <!-- 更新日時 -->
+            <td>{{ prop.updated_at }}</td>
           </tr>
         </tbody>      
       </table>
@@ -88,9 +91,9 @@
 </template>
 
 <script>
-  import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util'
+  import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util';
 
-  import detailProp from '../components/Detail_Prop.vue'
+  import detailProp from '../components/Detail_Prop.vue';
   import ExcelJS from 'exceljs';
 
   export default {
@@ -229,10 +232,20 @@
         const blob = new Blob([uint8Array], { type: 'application/octet-binary' });
         const a = document.createElement('a');
         a.href = (window.URL || window.webkitURL).createObjectURL(blob);
-        a.download = 'output.xlsx';
+        const today = this.formatDate(new Date());
+        const filename = 'Props_list_' + 'all' + '_' + today + '.xlsx';
+        a.download = filename;
         a.click();
         a.remove()
         
+      },
+
+      // 日付をyyyy-mm-ddで返す
+      formatDate(dt) {
+        const y = dt.getFullYear();
+        const m = ('00' + (dt.getMonth()+1)).slice(-2);
+        const d = ('00' + dt.getDate()).slice(-2);
+        return (y + '-' + m + '-' + d);
       }
     }
   }  

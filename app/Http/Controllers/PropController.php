@@ -60,12 +60,14 @@ class PropController extends Controller
         }
         $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
         $usage = !empty($request->usage) ? 1 : 0;
-        
+        $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
+        $usage_left = !empty($request->usage_left) ? 1 : 0;
+        $usage_right = !empty($request->usage_right) ? 1 : 0;
 
         DB::beginTransaction();
 
         try {
-            $prop = Prop::create(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage]);
+            $prop = Prop::create(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
             if($request->memo){
                 $prop_comment = Props_Comment::create(['prop_id' => $prop->id, 'memo' => $request->memo]);
             }            
@@ -112,10 +114,46 @@ class PropController extends Controller
         if($request->method == 'usage_change'){
             // 小道具投稿時にしようとした場合
             $usage = Prop::where('id', $id)
-              ->select('usage')->first();
+                    ->select('usage')->first();
             if(!empty($usage)){
                 $affected = Prop::where('id', $id)
                    ->update(['usage' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_left_change'){
+            // 小道具投稿時にしようとした場合
+            $usage_left = Prop::where('id', $id)
+                   ->select('usage_left')->first();
+            if(!empty($usage_left)){
+                $affected = Prop::where('id', $id)
+                   ->update(['usage_guraduation' => 1, 'usage_left' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_right_change'){
+            // 小道具投稿時にしようとした場合
+            $usage_right = Prop::where('id', $id)
+                   ->select('usage_right')->first();
+            if(!empty($usage_right)){
+                $affected = Prop::where('id', $id)
+                   ->update(['usage_guraduation' => 1, 'usage_right' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_guraduation_change'){
+            // 小道具投稿時にしようとした場合
+            $usage_guraduation = Prop::where('id', $id)
+                   ->select('usage_guraduation')->first();
+            if(!empty($usage_guraduation)){
+                $affected = Prop::where('id', $id)
+                   ->update(['usage_guraduation' => 1]);
             }
 
             // レスポンスコードは204(No Content)を返却する
@@ -278,109 +316,109 @@ class PropController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function down(Request $request)
-    {
-        $origin_datas = $request->toArray();
-        $download_data = [];
-        foreach($origin_datas as $data){
-            $name = $data['name'];
-            if($data['owner']){
-                $owner = $data['owner']['name'];
-            }else{
-                $owner = null;
-            }
-            if($data['usage']){
-                $usage = '〇';
-            }else{
-                $usage = null;
-            }
-            if($data['prop_comments']){
-                foreach($data['prop_comments'] as $key => $comment){
-                    if($key === 0){
-                        $memo = $comment['memo'];
-                    }else{
-                        $memo .= PHP_EOL.$comment['memo'];
-                    }                    
-                }
-            }else{
-                $memo = null;
-            }
-            $download_data[] = ['name' => $name, 'owner' => $owner, 'usage' => $usage, 'prop_comments' => $memo];
-        };
-        // Spreadsheetオブジェクト生成
-        $objSpreadsheet = new Spreadsheet();
-        // シート設定
-        $objSheet = $objSpreadsheet->getActiveSheet();
+//     public function down(Request $request)
+//     {
+//         $origin_datas = $request->toArray();
+//         $download_data = [];
+//         foreach($origin_datas as $data){
+//             $name = $data['name'];
+//             if($data['owner']){
+//                 $owner = $data['owner']['name'];
+//             }else{
+//                 $owner = null;
+//             }
+//             if($data['usage']){
+//                 $usage = '〇';
+//             }else{
+//                 $usage = null;
+//             }
+//             if($data['prop_comments']){
+//                 foreach($data['prop_comments'] as $key => $comment){
+//                     if($key === 0){
+//                         $memo = $comment['memo'];
+//                     }else{
+//                         $memo .= PHP_EOL.$comment['memo'];
+//                     }                    
+//                 }
+//             }else{
+//                 $memo = null;
+//             }
+//             $download_data[] = ['name' => $name, 'owner' => $owner, 'usage' => $usage, 'prop_comments' => $memo];
+//         };
+//         // Spreadsheetオブジェクト生成
+//         $objSpreadsheet = new Spreadsheet();
+//         // シート設定
+//         $objSheet = $objSpreadsheet->getActiveSheet();
     
-        // ウィンドウ固定
-        $objSheet->freezePane('A2');
+//         // ウィンドウ固定
+//         $objSheet->freezePane('A2');
 
-        // スタイルオブジェクト取得([A1:D1]セル)
-        $objStyle = $objSheet->getStyle('A1:D1');
-        $objBorders = $objStyle->getBorders();
-        $objBorders->getBottom()->setBorderStyle(Border::BORDER_THICK);
+//         // スタイルオブジェクト取得([A1:D1]セル)
+//         $objStyle = $objSheet->getStyle('A1:D1');
+//         $objBorders = $objStyle->getBorders();
+//         $objBorders->getBottom()->setBorderStyle(Border::BORDER_THICK);
 
-        // 見出しを緑色をバックに緑色の字に([A1:D1]セル)
-        $objStyle = $objSheet->getStyle('A1:D1');
-        $objStyle->getFont()->getColor()->setARGB('169b62');
-        $objFill = $objStyle->getFill();
-        $objFill->setFillType(Fill::FILL_SOLID);
-        $objFill->getStartColor()->setARGB('ddefe3');
+//         // 見出しを緑色をバックに緑色の字に([A1:D1]セル)
+//         $objStyle = $objSheet->getStyle('A1:D1');
+//         $objStyle->getFont()->getColor()->setARGB('169b62');
+//         $objFill = $objStyle->getFill();
+//         $objFill->setFillType(Fill::FILL_SOLID);
+//         $objFill->getStartColor()->setARGB('ddefe3');
 
-        // 罫線をつける([A1:D1]セル)
-        $objStyle = $objSheet->getStyle('A1:D1');  
-        $arrStyle = array(
-            'borders' => array(
-                'allBorders' => array(
-                                    'borderStyle' => Border::BORDER_THICK,
-                                    'color' => array( 'rgb' => 'dcdcdc' )
-                                )
-            )
-        );
-        //  セルの罫線スタイル設定
-        $objStyle->applyFromArray($arrStyle);
+//         // 罫線をつける([A1:D1]セル)
+//         $objStyle = $objSheet->getStyle('A1:D1');  
+//         $arrStyle = array(
+//             'borders' => array(
+//                 'allBorders' => array(
+//                                     'borderStyle' => Border::BORDER_THICK,
+//                                     'color' => array( 'rgb' => 'dcdcdc' )
+//                                 )
+//             )
+//         );
+//         //  セルの罫線スタイル設定
+//         $objStyle->applyFromArray($arrStyle);
 
-        // [A1]セルに 小道具名
-        $objSheet->setCellValue('A1', '小道具名');
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(12);
-        $objSheet->getStyle('A') ->getAlignment() ->setHorizontal('center');
-        $objSheet->getStyle('A') ->getAlignment() ->setVertical('center');
+//         // [A1]セルに 小道具名
+//         $objSheet->setCellValue('A1', '小道具名');
+//         $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(12);
+//         $objSheet->getStyle('A') ->getAlignment() ->setHorizontal('center');
+//         $objSheet->getStyle('A') ->getAlignment() ->setVertical('center');
 
-        // [B1]セルに 持ち主名
-        $objSheet->setCellValue('B1', '持ち主');
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(12);
-        $objSheet->getStyle('B') ->getAlignment() ->setHorizontal('center');
-        $objSheet->getStyle('B') ->getAlignment() ->setVertical('center');  
+//         // [B1]セルに 持ち主名
+//         $objSheet->setCellValue('B1', '持ち主');
+//         $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(12);
+//         $objSheet->getStyle('B') ->getAlignment() ->setHorizontal('center');
+//         $objSheet->getStyle('B') ->getAlignment() ->setVertical('center');  
         
-        // [C1]セルに 使用状況
-        $objSheet->setCellValue('C1', '使用するか');
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(12);
-        $objSheet->getStyle('C') ->getAlignment() ->setHorizontal('center');
-        $objSheet->getStyle('C') ->getAlignment() ->setVertical('center');
+//         // [C1]セルに 使用状況
+//         $objSheet->setCellValue('C1', '使用するか');
+//         $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(12);
+//         $objSheet->getStyle('C') ->getAlignment() ->setHorizontal('center');
+//         $objSheet->getStyle('C') ->getAlignment() ->setVertical('center');
 
-        // [D1]セルに メモ
-        $objSheet->setCellValue('D1', 'メモ');
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(24);
-        $objSheet->getStyle('D') ->getAlignment() ->setHorizontal('center');
-        $objSheet->getStyle('D') ->getAlignment() ->setVertical('center');
+//         // [D1]セルに メモ
+//         $objSheet->setCellValue('D1', 'メモ');
+//         $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(24);
+//         $objSheet->getStyle('D') ->getAlignment() ->setHorizontal('center');
+//         $objSheet->getStyle('D') ->getAlignment() ->setVertical('center');
 
-        // データを表示
-        $objSheet->fromArray($download_data, null, 'A2');
+//         // データを表示
+//         $objSheet->fromArray($download_data, null, 'A2');
 
         
-        // $writer = new Xlsx($objSpreadsheet);
-        // $writer->save('hello world.xlsx');
+//         // $writer = new Xlsx($objSpreadsheet);
+//         // $writer->save('hello world.xlsx');
 
-        $writer = new XlsxWriter($objSpreadsheet);
-$fileName = 'test.xlsx';
-header("Content-Description: File Transfer");
-header('Content-Disposition: attachment; filename="'.$fileName.'"');
-header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Transfer-Encoding: binary');
-header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-header('Expires: 0');
-ob_end_clean();
-$writer->save('php://output');
-die;
-    }
+//         $writer = new XlsxWriter($objSpreadsheet);
+// $fileName = 'test.xlsx';
+// header("Content-Description: File Transfer");
+// header('Content-Disposition: attachment; filename="'.$fileName.'"');
+// header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+// header('Content-Transfer-Encoding: binary');
+// header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+// header('Expires: 0');
+// ob_end_clean();
+// $writer->save('php://output');
+// die;
+//     }
 }

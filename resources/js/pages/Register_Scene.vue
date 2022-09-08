@@ -1,5 +1,14 @@
 <template>
   <div class="panel">
+    <div>
+      <div>
+        <input type="radio" id="passo" v-model="season" value="passo">
+        <label for="passo">中間公演</label>
+
+        <input type="radio" id="guraduation" v-model="season" value="guradution">
+        <label for="guraduation">卒業公演</label>
+         
+      </div>
       <form class="form"  @submit.prevent="register">
         <!-- 登場人物 -->
         <label for="character_attr">登場人物</label>
@@ -39,8 +48,24 @@
 
         <!-- 使用するか -->
         <div class="form__check">
-          <label for="usage_scene" class="form__check__label">中間発表での使用</label>
-          <input type="checkbox" id="usage_scene" class="form__check__input" v-model="registerForm.usage" checked></input>          
+          <div v-show="season_tag === 1">
+            <label for="usage_scene" class="form__check__label">中間発表での使用</label>
+            <input type="checkbox" id="usage_scene" class="form__check__input" v-model="registerForm.usage"></input>    
+          </div>
+          <div v-show="season_tag === 2">
+            <div>
+              <label for="usage_scene_guradutaion">卒業公演での使用</label>
+              <input type="checkbox" id="usage_scene_guradutaion" class="form__check__input" v-model="registerForm.usage_guraduation" @change="selectGuraduation">
+            </div>
+            <div v-if="guradutaion_tag">
+              <input type="radio" id="usage_scene_left" class="form__check__input" value="usage_left" v-model="registerForm.usage_stage">            
+              <label for="usage_scene_left" class="form__check__label">上手</label>
+
+              <input type="radio" id="usage_scene_right" class="form__check__input" value="usage_right" v-model="registerForm.usage_stage">
+              <label for="usage_scene_right" class="form__check__label">下手</label>
+            </div>
+          </div>
+      
         </div>
         
         <!-- コメント -->
@@ -52,6 +77,7 @@
           <button type="submit" class="button button--inverse">登録</button>
         </div>
       </form>
+    </div>
   </div>
 </template>
 
@@ -73,6 +99,11 @@ export default {
       selectedAttr: '',
       selectedCharacters: '',
       optionCharacters: null,
+      // 中間公演or卒業公演
+      season: null,
+      season_tag: null,
+      // 卒業公演
+      guradutaion_tag: 0,
       // 小道具登録
       showContent: false,
       postFlag: "",
@@ -82,6 +113,8 @@ export default {
         prop: '',
         pages: '',
         usage: '',
+        usage_guraduation: 0,
+        usage_stage: null,
         comment: ''
       }
     }
@@ -123,6 +156,74 @@ export default {
       this.selectedCharacters = this.optionCharacters[this.selectedAttr];
     },
 
+    // どちらの公演か取得
+    async choicePerformance() {
+      let today = new Date();
+      const month = today.getMonth()+1;
+      const day = today.getDate();
+      if(3 < month && month < 11){
+        this.season = "passo"
+      }else if(month === 11){
+        const year = today.getFullYear();
+        const passo_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
+        if(passo_day <= day){
+          this.season = "passo"
+        }else{
+          this.season = "guradutaion"
+        }
+      }else if(month > 11 && month < 3){
+        this.season = "guradutaion"
+      }else if(month === 3){
+        const year = today.getFullYear();
+        const guraduation_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
+        if(guraduation_day <= day){          
+          this.season = "guradutaion"
+        }else{
+          this.season = "passo"
+        }
+      }
+    },
+
+    // 第1日曜日の日付を返す
+    async getDateFromWeek(year, month_origin, turn, weekday) {
+      const month = month_origin - 1;
+      // 月初の日
+      const firstDateOfMonth = new Date(year, month, 1);
+      // 月初の曜日
+      const firstDayOfWeek = firstDateOfMonth.getDay();
+ 
+      // 指定された曜日が最初に出現する日付を求める
+      let firstWeekdayDate = null;
+      if (firstDayOfWeek == weekday) {
+        // 月初の曜日が指定曜日の時
+        firstWeekdayDate = new Date(year, month, 1);
+      } else if (firstDayOfWeek < weekday) {
+        // 月初の曜日 < 指定の曜日の時
+        firstWeekdayDate = new Date(year, month, 1 + (weekday - firstDayOfWeek));
+      } else if (weekday < firstDayOfWeek) {
+        // 指定の曜日 < 月初の曜日の時
+        firstWeekdayDate = new Date(year, month, 1 + (7 - (firstDayOfWeek - weekday)));
+      }
+
+      // 第○の指定の分だけ日数を足す
+      const firstWeekDay = firstWeekdayDate.getDate();
+      const specifiedDate = new Date(year, month, firstWeekDay + 7 * (turn - 1)); // yyyy年mm月dd日
+      if (specifiedDate.getMonth() != month) {
+        return null;
+      }
+      return firstWeekDay + 7 * (turn - 1);
+    },
+
+    // 卒業公演の使用にチェックが付いたか
+    selectGuraduation() {
+      if(!this.guradutaion_tag){
+        this.guradutaion_tag = 1;
+      }else{
+        this.guradutaion_tag = 0;
+        this.registerForm.usage_stage = null;
+      }
+    },
+
     // 小道具登録のモーダル表示 
     openModal_register () {
       this.showContent = true
@@ -139,7 +240,12 @@ export default {
       this.registerForm.prop = '';
       this.registerForm.pages = '';
       this.registerForm.usage = '';
+      this.registerForm.usage_guraduation = '';
+      this.registerForm.usage_stage = null;
       this.registerForm.comment = '';
+      this.season_tag = null;
+      this.guradutaion_tag = 0;
+      this.choicePerformance();
     },
 
     // first_pageとfinal_pageに分割する
@@ -193,19 +299,25 @@ export default {
         });
       }  
       
-      const character = this.registerForm.character;
-      const prop = this.registerForm.prop;
-      const usage = this.registerForm.usage;
-      const comment = this.registerForm.comment;
+      let usage_left = 0;
+      let usage_right = 0;
+      if(this.registerForm.usage_stage === "usage_left"){
+        usage_left = 1;
+      }else if(this.registerForm.usage_stage ==="usage_right"){
+        usage_right = 1;
+      }
       let last_flag = false;
       first_pages.forEach(async function(page, index) {
         const response = await axios.post('/api/scenes', {
-          character_id: character,
-          prop_id: prop,
+          character_id: this.registerForm.character,
+          prop_id: this.registerForm.prop,
           first_page: page,
           final_page: final_pages[index],
-          usage: usage,
-          memo: comment
+          usage: this.registerForm.usage,
+          usage_guraduation: this.registerForm.usage_guraduation,
+          usage_left: usage_left,
+          usage_right: usage_right,
+          memo: this.registerForm.comment
         })
         
         if (response.statusText === 'Unprocessable Entity') {
@@ -218,28 +330,87 @@ export default {
           return false
         }
         if(index === first_pages.length-1){
-          if(response.statusText === 'Created' && usage){
+          const prop = this.registerForm.prop;
+          const usage = this.registerForm.usage;
+          const usage_guraduation = this.registerForm.usage_guraduation;
+          // 諸々データ削除
+          this.reset();
+          if(response.statusText === 'Created' && (usage || usage_guraduation)){
             // 小道具の使用有無変更
-            const response_prop = axios.post('/api/props/'+ prop, {
-              method: 'usage_change',
-              usage: usage
-            })
+            if(usage){
+              // 中間発表で使用
+              const response_prop = axios.post('/api/props/'+ prop, {
+                method: 'usage_change',
+                usage: usage
+              })
 
-            if (response_prop.statusText === 'Unprocessable Entity') {
-              this.errors.error = response.data.errors
-              return false
+              if (response_prop.statusText === 'Unprocessable Entity') {
+                this.errors.error = response.data.errors
+                return false
+              }
+
+              if (response_prop.statusText !== 'No Content') {
+                this.$store.commit('error/setCode', response.status)
+                return false
+              }
             }
+            if(usage_guraduation){
+              if(usage_left){
+                // 上手で使用
+                const response_prop = axios.post('/api/props/'+ prop, {
+                  method: 'usage_left_change',
+                  usage_guraduation: usage_guraduation,
+                  usage_left: usage_left
+                })
 
-            if (response_prop.statusText !== 'No Content') {
-              this.$store.commit('error/setCode', response.status)
-              return false
+                if (response_prop.statusText === 'Unprocessable Entity') {
+                  this.errors.error = response.data.errors
+                  return false
+                }
+
+                if (response_prop.statusText !== 'No Content') {
+                  this.$store.commit('error/setCode', response.status)
+                  return false
+                }
+              }else if(usage_right){
+                // 下手で使用
+                const response_prop = axios.post('/api/props/'+ prop, {
+                  method: 'usage_right_change',
+                  usage_guraduation: usage_guraduation,
+                  usage_right: usage_right
+                })
+                if (response_prop.statusText === 'Unprocessable Entity') {
+                  this.errors.error = response.data.errors
+                  return false
+                }
+
+                if (response_prop.statusText !== 'No Content') {
+                  this.$store.commit('error/setCode', response.status)
+                  return false
+                }
+              }else{
+                // とりあえず卒業公演で使用
+                const response_prop = axios.post('/api/props/'+ prop, {
+                  method: 'usage_guraduation_change',
+                  usage_guraduation: usage_guraduation
+                })
+                if (response_prop.statusText === 'Unprocessable Entity') {
+                  this.errors.error = response.data.errors
+                  return false
+                }
+
+                if (response_prop.statusText !== 'No Content') {
+                  this.$store.commit('error/setCode', response.status)
+                  return false
+                }
+              }
             }
           }
+          
         }        
-      });
+      }, this);
 
-      // 諸々データ削除        
-      this.reset()
+      
       
       // メッセージ登録
       this.$store.commit('message/setContent', {
@@ -251,8 +422,19 @@ export default {
   watch: {
     $route: {
       async handler () {
-        await this.fetchCharacters()
-        await this.fetchProps()
+        await this.fetchCharacters();
+        await this.fetchProps();
+        await this.choicePerformance();
+      },
+      immediate: true
+    },
+    season: {
+      async handler(season) {
+        if(this.season === "passo"){
+          this.season_tag = 1;
+        }else if(this.season === "guradution"){
+          this.season_tag = 2;
+        }
       },
       immediate: true
     }
