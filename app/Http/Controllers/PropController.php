@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Cloudinary;
 use App\Models\Prop;
 use App\Models\Props_Comment;
+use App\Models\Scene;
 use App\Http\Requests\StorePhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -271,7 +272,206 @@ class PropController extends Controller
             // レスポンスコードは204(No Content)を返却する
             return response($affected, 204) ?? abort(404);
         }
+    }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update_deep(Request $request, $id)
+    {
+        if($request->method == 'usage_0_change'){
+            // 小道具編集時にしようとした場合
+            $usage = Scene::where('id', '<>', $request->id)
+                        ->where('prop_id', $id)->where('usage', 1)->first();
+            if(empty($usage)){
+                $affected = Prop::where('id', $id)
+                   ->update(['usage' => 0]);
+            }else{
+                $affected = 0;
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_guraduation_left_to_right_change'){
+            // 小道具編集時にしようとした場合
+            $usage_left = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_left', 1)->get();
+            if(empty($usage_left)){
+                $affected = Prop::where('id', $id)
+                   ->update(['usage_guraduation' => 1, 'usage_left' => 0, 'usage_right' => 1]);
+            }else{
+                $affected = Prop::where('id', $id)
+                   ->update(['usage_guraduation' => 1, 'usage_right' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_guraduation_right_to_left_change'){
+            // 小道具編集時にしようとした場合
+            $usage_right = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_right', 1)->get();
+            if(empty($usage_right)){
+                $affected = Prop::where('id', $id)
+                   ->update(['usage_guraduation' => 1, 'usage_left' => 1, 'usage_right' => 0]);
+            }else{
+                $affected = Prop::where('id', $id)
+                   ->update(['usage_guraduation' => 1, 'usage_left' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_guraduation_1_left_0_change'){
+            // 小道具編集時にしようとした場合
+            $usage_left = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_left', 1)->get();
+            if(empty($usage_left)){
+                $affected = Prop::where('id', $id)
+                   ->update(['usage_guraduation' => 1, 'usage_left' => 0]);
+            }else{
+                $affected = Prop::where('id', $id)
+                   ->update(['usage_guraduation' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_guraduation_1_right_0_change'){
+            // 小道具編集時にしようとした場合
+            $usage_right = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_right', 1)->get();
+            if(empty($usage_right)){
+                $affected = Prop::where('id', $id)
+                   ->update(['usage_guraduation' => 1, 'usage_right' => 0]);
+            }else{
+                $affected = Prop::where('id', $id)
+                   ->update(['usage_guraduation' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_guraduation_0_left_0_change'){
+            // 小道具編集時にしようとした場合
+            $usage_guraduation = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_guraduation', 1)->get();
+            $usage_left = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_left', 1)->get();
+            if(empty($usage_guraduation) || empty($usage_left)){
+                if(empty($usage_guraduation)){
+                    $affected = Prop::where('id', $id)
+                        ->update(['usage_guraduation' => 0, 'usage_left' => 0]);
+                }else{
+                    $affected = Prop::where('id', $id)
+                        ->update(['usage_left' => 0]);
+                }
+            }else{
+                $affected = 0;
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_guraduation_0_right_0_change'){
+            // 小道具編集時にしようとした場合
+            $usage_guraduation = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_guraduation', 1)->get();
+            $usage_right = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_right', 1)->get();
+            if(empty($usage_guraduation) || empty($usage_right)){
+                if(empty($usage_guraduation)){
+                    $affected = Prop::where('id', $id)
+                        ->update(['usage_guraduation' => 0, 'usage_right' => 0]);
+                }else{
+                    $affected = Prop::where('id', $id)
+                        ->update(['usage_right' => 0]);
+                }
+            }else{
+                $affected = 0;
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_guraduation_0_change'){
+            // 小道具編集時にしようとした場合
+            $usage_guraduation = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_guraduation', 1)->get();
+            if(empty($usage_guraduation)){
+                $affected = Prop::where('id', $id)
+                    ->update(['usage_guraduation' => 0]);
+            }else{
+                $affected = 0;
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_left_to_right_change'){
+            // 小道具編集時にしようとした場合
+            $usage_left = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_left', 1)->get();
+            if(empty($usage_left)){
+                $affected = Prop::where('id', $id)
+                    ->update(['usage_left' => 0, 'usage_right' => 1]);
+            }else{
+                $affected = Prop::where('id', $id)
+                    ->update(['usage_right' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_right_to_left_change'){
+            // 小道具編集時にしようとした場合
+            $usage_right = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_right', 1)->get();
+            if(empty($usage_right)){
+                $affected = Prop::where('id', $id)
+                    ->update(['usage_left' => 1, 'usage_right' => 0]);
+            }else{
+                $affected = Prop::where('id', $id)
+                    ->update(['usage_left' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_left_0_change'){
+            // 小道具編集時にしようとした場合
+            $usage_left = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_left', 1)->get();
+            if(empty($usage_left)){
+                $affected = Prop::where('id', $id)
+                    ->update(['usage_left' => 0]);
+            }else{
+                $affected = 0;
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }else if($request->method == 'usage_right_0_change'){
+            // 小道具編集時にしようとした場合
+            $usage_right = Scene::where('id', '<>', $request->id)
+                    ->where('prop_id', $id)->where('usage_right', 1)->get();
+            if(empty($usage_right)){
+                $affected = Prop::where('id', $id)
+                    ->update(['usage_right' => 0]);
+            }else{
+                $affected = 0;
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+
+        }
     }
 
     /**

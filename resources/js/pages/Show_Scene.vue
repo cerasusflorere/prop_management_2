@@ -12,9 +12,12 @@
           <th>何ページから</th>
           <th>何ページまで</th>
           <th>登場人物</th>
-          <th>小道具名</th>          
+          <th>小道具名</th> 
+          <th>中間発表</th>
+          <th>卒業公演</th>
+          <th>上手</th>
+          <th>下手</th>         
           <th>メモ</th>
-          <th>使用状況</th>
           <th>登録日時</th>
           <th>更新日時</th>
         </tr>
@@ -33,14 +36,23 @@
             <td>{{ scene.character.name }}</td>
             <!-- 小道具名 -->
             <td>{{ scene.prop.name }}</td>
+            <!-- 中間発表 -->
+            <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td> 
+            <!-- 卒業公演 -->
+            <td v-if="scene.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
+            <!-- 上手 -->
+            <td v-if="scene.usage_left"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
+            <!-- 下手 -->
+            <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
             <!-- メモ -->
             <td v-if="scene.scene_comments.length">
               <div v-for="memo in scene.scene_comments"> {{ memo.memo }}</div>
             </td>
             <td v-else></td>
-            <!-- 使用状況 -->
-            <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
-            <td v-else></td>            
             <!-- 登録日時 -->
             <td>{{ scene.created_at }}</td>
             <!-- 更新日時 -->
@@ -127,7 +139,10 @@
           { header: '何ページまで', key: 'final_page', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '登場人物', key: 'character', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '小道具', key: 'prop', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
-          { header: '使用するか', key: 'usage', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '中間発表', key: 'usage', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '卒業公演', key: 'usage_guraduation', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '上手', key: 'usage_left', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '下手', key: 'usage_right', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: 'メモ', key: 'memo', width: 24, style: { alignment: {vertical: "middle", horizontal: "center" }}},
         ];
 
@@ -148,6 +163,12 @@
         worksheet.getCell('E1').fill = fill;
         worksheet.getCell('F1').font = font;
         worksheet.getCell('F1').fill = fill;
+        worksheet.getCell('G1').font = font;
+        worksheet.getCell('G1').fill = fill;
+        worksheet.getCell('H1').font = font;
+        worksheet.getCell('H1').fill = fill;
+        worksheet.getCell('I1').font = font;
+        worksheet.getCell('I1').fill = fill;
 
         this.showScenes.forEach((scene, index) => {
           let datas = [];
@@ -159,6 +180,24 @@
           datas.push(scene.prop.name);
 
           if(scene.usage){
+            datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(scene.usage_guraduation){
+            datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(scene.usage_left){
+            datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(scene.usage_right){
             datas.push('〇');
           }else{
             datas.push(null);

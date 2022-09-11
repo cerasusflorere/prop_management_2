@@ -300,11 +300,14 @@ class SceneController extends Controller
 
         $first_page = !empty($request->first_page) ? $request->first_page : null; // nullで送ると文字列になる
         $final_page = !empty($request->final_page) ? $request->final_page : null;
-        $usage = !empty($request->usage) ? 1 : null;
+        $usage = !empty($request->usage) ? 1 : 0;
+        $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
+        $usage_left = !empty($request->usage_left) ? 1 : 0;
+        $usage_right = !empty($request->usage_right) ? 1 : 0;
 
         try {
             $affected = Scene::where('id', $id)
-                   ->update(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage]);
+                   ->update(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
             DB::commit();
         }catch (\Exception $exception) {
             DB::rollBack();

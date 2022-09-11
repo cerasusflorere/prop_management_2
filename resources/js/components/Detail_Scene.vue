@@ -21,10 +21,13 @@
             </div>
             <confirmDialog_Delete :confirm_dialog_delete_message="postMessage_Delete" v-show="showContent_confirmDelete" @Cancel_Delete="closeModal_confirmDelete_Cancel" @OK_Delete="closeModal_confirmDelete_OK"/>
             
-            <!-- 登場人物 -->
+            <!-- 登場人物と使用状況 -->
             <div>
               <h1 style="display: inline">{{ scene.character.name }}</h1>
-              <div v-if="scene.usage"><i class="fas fa-tag"></i></div>
+              <div v-if="scene.usage">Ⓟ</div>
+              <div v-if="scene.usage_guraduation">Ⓖ</div>
+              <div v-if="scene.usage_left">㊤</div>
+              <div v-if="scene.usage_right">㊦</div>
             </div>
 
             <!-- 何ページ -->
@@ -89,7 +92,20 @@
             <!-- 使用するか -->
             <div class="form__check">
               <label for="scene_usage_scene_edit" class="form__check__label">中間発表での使用</label>
-              <input type="checkbox" id="scene_usage_scene_edit" class="form__check__input" v-model="editForm_scene.usage" checked></input>          
+              <input type="checkbox" id="scene_usage_scene_edit" class="form__check__input" v-model="editForm_scene.usage">
+              
+              <label for="scene_usage_guraduation_scene_edit" class="form__check__label">卒業公演での使用</label>
+              <input type="checkbox" id="scene_usage_guraduation_scene_edit" class="form__check__input" v-model="editForm_scene.usage_guraduation" @change="selectGuraduation">
+
+              <div v-if="guradutaion_tag">
+                <input type="radio" id="scene_usage_left_scene_edit" class="form__check__input" value="left" v-model="editForm_scene.usage_stage">
+                <label for="scene_usage_left_scene_edit" class="form__check__label">上手</label>
+
+                <input type="radio" id="scene_usage_right_scene_edit" class="form__check__input" value="right" v-model="editForm_scene.usage_stage"></input>
+                <label for="scene_usage_right_scene_edit" class="form__check__label">下手</label>                
+              </div>
+
+              
             </div>
 
             <!-- ページ数 -->
@@ -194,6 +210,8 @@
           final_page: '',
           pages: '',
           usage: 0,
+          usage_guraduation: 0,
+          usage_stage: null,
           scene_comments: [],
           memo: ''
         },
@@ -204,6 +222,8 @@
         optionCharacters: [],
         // タブ
         tab_scene: 1,
+        // 卒業公演
+        guradutaion_tag: 0,
         // 小道具登録
         showContent: false,
         postFlag: "",
@@ -217,6 +237,7 @@
         // 編集範囲
         editSceneMode_detail: "",
         editSceneMode_memo: "",
+        editSceneMode_prop: "",
         // 削除confirm
         showContent_confirmDelete: false,
         postMessage_Delete: ""
@@ -228,18 +249,18 @@
           if(this.postScene){
             await this.fetchCharacters() // 最初にしないと間に合わない
             await this.fetchScene()
-            await this.fetchProps()
-          }                    
+            await this.fetchProps()  
+          }       
         },
         immediate: true,
       },
-      editSceneMode_memo: {
-        async handler(editSceneMode_memo){
-          if(this.editSceneMode_detail === 100 || this.editSceneMode_memo === 100){
+      editSceneMode_prop: {
+        async handler(editSceneMode_prop){
+          if(this.editSceneMode_prop === 100){
             await this.fetchScene()
             // メッセージ登録
             this.$store.commit('message/setContent', {
-              content: '小道具が変更されました！',
+              content: '使用シーンが変更されました！',
               timeout: 6000
             })
   
@@ -249,14 +270,26 @@
             alert('元のデータと同じです！変更してください')
             this.editSceneMode_detail = ""
             this.editSceneMode_memo = ""
+            this.editSceneMode_prop = ""
+          }
+        },
+        immediate: true,
+      },
+      editSceneMode_detail: {
+        async handler(editSceneMode_detail){
+          if(this.editSceneMode_detail === 100 && this.editSceneMode_prop === 1){
+            await this.editProp_usage(this.editForm_scene.prop_id);
           }
         },
         immediate: true,
       }
     },
+    // たまにページ消える
+    // 中間発表のみ変えたらページ遷移しない
     methods: {
       // シーンの詳細を取得
-      async fetchScene () {
+      async fetchScene () {        
+        this.resetScene();
         this.tab_scene = 1
         const response = await axios.get('/api/scenes/'+ this.postScene)
   
@@ -280,6 +313,15 @@
         this.editForm_scene.first_page = this.scene.first_page
         this.editForm_scene.final_page = this.scene.final_page
         this.editForm_scene.usage = this.scene.usage
+        this.editForm_scene.usage_guraduation = this.scene.usage_guraduation
+        if(this.scene.usage_guraduation){
+          this.guradutaion_tag = 1;
+        }
+        if(this.scene.usage_left){
+          this.editForm_scene.usage_stage = "left";
+        }else if(this.scene.usage_right){
+          this.editForm_scene.usage_stage = "right";
+        }
         if(this.scene.scene_comments.length){
           this.scene.scene_comments.forEach((comment, index) => {
             this.editForm_scene.scene_comments[index] = Object.assign({}, this.editForm_scene.scene_comments, {id: comment.id}, {memo: comment.memo}, {scene_id: comment.scene_id});
@@ -287,6 +329,7 @@
         }
         this.editSceneMode_detail = ""
         this.editSceneMode_memo = ""
+        this.editSceneMode_prop = ""
       },
   
       // 登場人物を取得
@@ -334,6 +377,16 @@
         this.selectedCharacters = this.optionCharacters[this.editForm_scene.character.section.section];
       },
 
+      // 卒業公演の使用にチェックが付いたか
+      selectGuraduation() {
+        if(!this.guradutaion_tag){
+          this.guradutaion_tag = 1;
+        }else{
+          this.guradutaion_tag = 0;
+          this.editForm_scene.usage_stage = null;
+        }
+      },
+
       // 小道具登録のモーダル表示 
       openModal_register () {
         this.showContent = true
@@ -343,34 +396,83 @@
       closeModal_register (){
         this.showContent = false
       },
+
+      // 諸々リセット
+      resetScene() {
+        this.scene = [];
+        this.editForm_scene.id = null,
+        this.editForm_scene.character_id = null;
+        this.editForm_scene.character.name = null;
+        this.editForm_scene.character.section.section = null;
+        this.editForm_scene.prop_id = null;
+        this.editForm_scene.prop.name = null;
+        this.editForm_scene.prop.owner_id = '';
+        this.editForm_scene.prop.owner.name = '';
+        this.editForm_scene.prop.url = '';
+        this.editForm_scene.prop.prop_comments = '';
+        this.editForm_scene.first_page = '';
+        this.editForm_scene.final_page = '';
+        this.editForm_scene.pages = '';
+        this.editForm_scene.usage = 0;
+        this.editForm_scene.usage_guraduation = 0;
+        this.editForm_scene.usage_stage = null;
+        this.editForm_scene.scene_comments = [];
+        this.editForm_scene.memo = '';
+        // 卒業公演
+        this.guradutaion_tag = 0;
+      },
   
       // 編集エラー
       confirmScene () {
-        if(this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.usage !== this.editForm_scene.usage) && !this.editForm_scene.pages){
+        if(this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || ((!this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage) || ((this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage === "right") || ((!this.scene.usage_left && this.scene.usage_right) && this.editForm_scene.usage_stage === "left") || ((this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage))&& !this.editForm_scene.pages){
           // 元々何ページから何ページと指定があった // これはupdateだけでいい
           this.editSceneMode_detail = 1 // 'page_update'
+
+          if(this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || ((!this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage) || ((this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage === "right") || ((!this.scene.usage_left && this.scene.usage_right) && this.editForm_scene.usage_stage === "left") ||  ((this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage)){
+            // 小道具を更新する
+            this.editSceneMode_prop = 1; // 'prop_update'
+          }else{
+            this.editSceneMode_prop = 0;
+          }
         }else if(this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.usage !== this.editForm_scene.usage) || (this.editForm_scene.pages)){
           // 新たにページ数追加 // これはupdateだけじゃだめ
           this.editSceneMode_detail = 2 // 'page_store'
+          this.editSceneMode_prop = 0;
         }else{
           this.editSceneMode_detail = 0
+          this.editSceneMode_prop = 0;
         }
   
         if(this.scene.id === this.editForm_scene.id && !this.scene.scene_comments.length && this.editForm_scene.memo){
           // メモ新規投稿
           this.editSceneMode_memo = 1 // 'memo_store'
+          if(this.editSceneMode_prop !== 1){
+            this.editSceneMode_prop = 0;
+          }
         }else if(this.scene.id === this.editForm_scene.id && this.scene.scene_comments.length){
           if(this.scene.id === this.editForm_scene.id && this.scene.scene_comments[0].id && !this.editForm_scene.scene_comments[0].memo){
             // メモ削除
             this.editSceneMode_memo = 2 //'memo_delete'
+            if(this.editSceneMode_prop !== 1){
+            this.editSceneMode_prop = 0;
+          }
           }else if(this.scene.id === this.editForm_scene.id && this.scene.scene_comments[0].id && this.scene.scene_comments[0].memo !== this.editForm_scene.scene_comments[0].memo){
             // メモアップデート
             this.editSceneMode_memo = 3 // 'memo_update'
+            if(this.editSceneMode_prop !== 1){
+            this.editSceneMode_prop = 0;
+          }
           }else{
             this.editSceneMode_memo = 0
+            if(this.editSceneMode_prop !== 1){
+            this.editSceneMode_prop = 0;
+          }
           }
         }else{
           this.editSceneMode_memo = 0
+          if(this.editSceneMode_prop !== 1){
+            this.editSceneMode_prop = 0;
+          }
         }
       },
   
@@ -383,10 +485,10 @@
       async closeModal_confirmEdit_OK() {
         this.showContent_confirmEdit = false
         if(this.editSceneMode_detail){
-          await this.editScene()
+          await this.editScene();
         }
         if(this.editSceneMode_memo){
-          await this.editScene_memo()
+          await this.editScene_memo();
         }
       },
       // 編集confirmのモーダル非表示_Cancelの場合
@@ -408,6 +510,13 @@
   
       // 基本情報を編集する
       async editScene () {
+        let usage_left = '';
+        let usage_right = '';
+        if(this.editForm_scene.usage_stage === "left"){
+          usage_left = 1;
+        }else if(this.editForm_scene.usage_stage === "right"){
+          usage_right = 1;
+        }
         if(this.editSceneMode_detail === 1){
           // 元々ページ数の指定があった
           this.editSceneMode_detail = "change"
@@ -416,30 +525,16 @@
             prop_id: this.editForm_scene.prop_id,
             first_page: this.editForm_scene.first_page,
             final_page: this.editForm_scene.final_page,
-            usage: this.editForm_scene.usage
+            usage: this.editForm_scene.usage,
+            usage_guraduation: this.editForm_scene.usage_guraduation,
+            usage_left: usage_left,
+            usage_right: usage_right
           })
 
           this.editSceneMode_detail = 100
-          if(this.editSceneMode_memo === 0){
+          if(this.editSceneMode_memo === 0 && this.editSceneMode_prop === 0){
             this.editSceneMode_memo = 100
-          }
-
-          if(response.statusText === 'No Content' && this.editForm_scene.usage){
-            // 小道具の使用有無変更
-            const response = axios.post('/api/props/'+ this.editForm_scene.prop_id, {
-              method: 'usage_change',
-              usage: this.editForm_scene.usage
-            })
-
-            if (response.statusText === 'Unprocessable Entity') {
-              this.errors.error = response.data.errors
-              return false
-            }
-
-            if (response.statusText !== 'No Content') {
-              this.$store.commit('error/setCode', response.status)
-              return false
-            }
+            this.editSceneMode_prop = 100
           }
   
           if (response.statusText === 'Unprocessable Entity') {
@@ -508,31 +603,16 @@
                 prop_id: this.editForm_scene.prop_id,
                 first_page: page,
                 final_page: final_pages[index],
-                usage: this.editForm_scene.usage
+                usage: this.editForm_scene.usage,
+                usage_left: usage_left,
+                usage_right: usage_right
               })
 
               if(index === first_pages.length-1){
                 this.editSceneMode_detail = 100
-                if(this.editSceneMode_memo === 0){
+                if(this.editSceneMode_memo === 0 && this.editSceneMode_prop === 0){
                   this.editSceneMode_memo = 100
-                }
-              }
-
-              if(response.statusText === 'No Content' && this.editForm_scene.usage){
-                // 小道具の使用有無変更
-                const response = axios.post('/api/props/'+ this.editForm_scene.prop_id, {
-                  method: 'usage_change',
-                  usage: this.editForm_scene.usage
-                })
-
-                if (response.statusText === 'Unprocessable Entity') {
-                  this.errors.error = response.data.errors
-                  return false
-                }
-
-                if (response.statusText !== 'No Content') {
-                  this.$store.commit('error/setCode', response.status)
-                  return false
+                  this.editSceneMode_prop = 100
                 }
               }
 
@@ -554,13 +634,16 @@
                 first_page: page,
                 final_page: final_pages[index],
                 usage: this.editForm_scene.usage,
+                usage_left: usage_left,
+                usage_right: usage_right,
                 memo: memo
               })
 
               if(index === first_pages.length-1){
                 this.editSceneMode_detail = 100
-                if(this.editSceneMode_memo === 0){
+                if(this.editSceneMode_memo === 0 && this.editSceneMode_prop === 0){
                   this.editSceneMode_memo = 100
+                  this.editSceneMode_prop = 100
                 }
               }
 
@@ -576,7 +659,6 @@
               
             }
           }, this);
-  
         }
       },
       // メモを更新する
@@ -589,6 +671,9 @@
           })
 
           this.editSceneMode_memo = 100
+          if(this.editSceneMode_prop === 0){
+            this.editSceneMode_prop = 100
+          }
   
           if (response.statusText === 'Unprocessable Entity') {
             this.errors.error = response.data.errors
@@ -605,6 +690,9 @@
           const response = await axios.delete('/api/scene_comments/'+ this.scene.scene_comments[0].id)
           
           this.editSceneMode_memo = 100
+          if(this.editSceneMode_prop === 0){
+            this.editSceneMode_prop = 100
+          }
   
           if (response.statusText === 'Unprocessable Entity') {
             this.errors.error = response.data.errors
@@ -622,6 +710,9 @@
           })
           
           this.editSceneMode_memo = 100
+          if(this.editSceneMode_prop === 0){
+            this.editSceneMode_prop = 100
+          }
   
           if (response.statusText === 'Unprocessable Entity') {
             this.errors.error = response.data.errors
@@ -631,6 +722,386 @@
           if (response.statusText !== 'No Content') {
             this.$store.commit('error/setCode', response.status)
             return false
+          }
+        }
+      },
+
+      // 小道具を更新する
+      async editProp_usage() {
+        // 同時に行う
+        if(this.scene.usage != this.editForm_scene.usage){
+          await this.editProp_usage_passo();
+        }
+        if(this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || this.editForm_scene.usage_guraduation){
+          await this.editProp_usage_guraduation();
+        }
+      },
+      async editProp_usage_passo() {
+        if(this.editForm_scene.usage){
+          // 中間発表0→1
+          const response_prop = axios.post('/api/props/'+ this.editForm_scene.prop_id, {
+            method: 'usage_change',
+            usage: 1
+          })
+          
+          if(this.scene.usage_guraduation == this.editForm_scene.usage_guraduation && ((this.scene.usage_left && this.editForm_scene.usage_stage === "left") || (this.scene.usage_right && this.editForm_scene.usage_stage === "right") || ((!this.scene.usage_left && !this.scene.usage_right) && !this.editForm_scene.usage_stage))) {
+            this.editSceneMode_prop = 100;
+          }
+
+          if (response_prop.statusText === 'Unprocessable Entity') {
+            this.errors.error = response_prop.data.errors
+            return false
+          }
+ 
+          if (response_prop.statusText !== 'No Content') {
+            this.$store.commit('error/setCode', response_prop.status)
+            return false
+          }
+        }else{
+          // 中間発表1→0
+          const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+            method: 'usage_0_change',
+            id: this.scene.id,
+            usage: 0
+          })
+        
+          if(this.scene.usage_guraduation == this.editForm_scene.usage_guraduation && ((this.scene.usage_left && this.editForm_scene.usage_stage === "left") || (this.scene.usage_right && this.editForm_scene.usage_stage === "right") || ((!this.scene.usage_left && !this.scene.usage_right) && !this.editForm_scene.usage_stage))) {
+            this.editSceneMode_prop = 100;
+          }
+
+          if (response_prop.statusText === 'Unprocessable Entity') {
+            this.errors.error = response.data.errors
+            return false
+          }
+ 
+          if (response_prop.statusText !== 'No Content') {
+            this.$store.commit('error/setCode', response_prop.status)
+            return false
+          }
+        }          
+      },
+      async editProp_usage_guraduation() {
+        if(this.scene.usage_guraduation != this.editForm_scene.usage_guraduation){
+          if(!this.scene.usage_guraduation && this.editForm_scene.usage_guraduation){
+            // 卒業公演0→1
+            if(this.scene.usage_left && this.editForm_scene.usage_stage === "right"){
+              // 卒業公演0→1、上手→下手で使用
+              const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+                method: 'usage_guraduation_left_to_right_change',
+                id: this.scene.id,
+                usage_guraduation: 1,
+                usage_left: 0,
+                usage_right: 1,
+              })
+
+              this.editSceneMode_prop = 100;
+
+              if (response_prop.statusText === 'Unprocessable Entity') {
+                this.errors.error = response_prop.data.errors
+                return false
+              }
+
+              if (response_prop.statusText !== 'No Content') {
+                this.$store.commit('error/setCode', response_prop.status)
+                return false
+              }
+            }else if(this.scene.usage_right && this.editForm_scene.usage_stage === "left"){
+              // 卒業公演0→1、下手→上手で使用
+              const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+                method: 'usage_guraduation_right_to_left_change',
+                id: this.scene.id,
+                usage_guraduation: 1,
+                usage_left: 1,
+                usage_right: 0
+              })
+             
+              this.editSceneMode_prop = 100;
+      
+              if (response_prop.statusText === 'Unprocessable Entity') {
+                this.errors.error = response_prop.data.errors
+                return false
+              }
+
+              if (response_prop.statusText !== 'No Content') {
+                this.$store.commit('error/setCode', response_prop.status)
+                return false
+              }
+            }else if(!this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage === "left"){
+              // 卒業公演0→1、上手0→1
+              const response_prop = axios.post('/api/props/'+ this.editForm_scene.prop_id, {
+                method: 'usage_left_change',
+                usage_guraduation: 1,
+                usage_left: 1,
+              })
+
+              this.editSceneMode_prop = 100;
+
+              if (response_prop.statusText === 'Unprocessable Entity') {
+                this.errors.error = response_prop.data.errors
+                return false
+              }
+
+              if (response_prop.statusText !== 'No Content') {
+                this.$store.commit('error/setCode', response_prop.status)
+                return false
+              }              
+            }else if(!this.scene.usage_left && this.editForm_scene.usage_stage === "right"){
+              // 卒業公演0→1、下手0→1
+              const response_prop = axios.post('/api/props/'+ this.editForm_scene.prop_id, {
+                method: 'usage_right_change',
+                usage_guraduation: 1,
+                usage_right: 1,
+              })
+
+              this.editSceneMode_prop = 100;
+
+              if (response_prop.statusText === 'Unprocessable Entity') {
+                this.errors.error = response_prop.data.errors
+                return false
+              }
+
+              if (response_prop.statusText !== 'No Content') {
+                this.$store.commit('error/setCode', response_prop.status)
+                return false
+              }
+            }else if(this.scene.usage_left && !this.editForm_scene.usage_stage){
+              // 卒業公演0→1、上手1→0
+              const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+                method: 'usage_guraduation_1_left_0_change',
+                id: this.scene.id,
+                usage_guraduation: 1,
+                usage_left: 0,
+              })
+              
+              this.editSceneMode_prop = 100;
+
+              if (response_prop.statusText === 'Unprocessable Entity') {
+                this.errors.error = response_prop.data.errors
+                return false
+              }
+
+              if (response_prop.statusText !== 'No Content') {
+                this.$store.commit('error/setCode', response_prop.status)
+                return false
+              }
+            }else if(this.scene.usage_right && !this.editForm_scene.usage_stage){
+              // 卒業公演0→1、下手1→0
+              const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+                method: 'usage_guraduation_1_right_0_change',
+                id: this.scene.id,
+                usage_guraduation: 1,
+                usage_right: 0,
+              })
+
+              this.editSceneMode_prop = 100;
+
+              if (response_prop.statusText === 'Unprocessable Entity') {
+                this.errors.error = response_prop.data.errors
+                return false
+              }
+
+              if (response_prop.statusText !== 'No Content') {
+                this.$store.commit('error/setCode', response_prop.status)
+                return false
+              }
+            }else{
+              // 卒業公演0→1
+              const response_prop = axios.post('/api/props/'+ this.editForm_scene.prop_id, {
+                method: 'usage_guraduation_change',
+                usage_guraduation: 1
+              })
+
+              this.editSceneMode_prop = 100;
+
+              if (response_prop.statusText === 'Unprocessable Entity') {
+                this.errors.error = response_prop.data.errors
+                return false
+              }
+
+              if (response_prop.statusText !== 'No Content') {
+                this.$store.commit('error/setCode', response_prop.status)
+                return false
+              }
+            }
+          }else{
+            // 卒業公演1→0
+            if(this.scene.usage_left && !this.editForm_scene.usage_stage){
+              // 卒業公演1→0、上手1→0
+              const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+                method: 'usage_guraduation_0_left_0_change',
+                id: this.scene.id,
+                usage_guraduation: 0,
+                usage_left: 0
+              })
+
+              this.editSceneMode_prop = 100;
+
+              if (response_prop.statusText === 'Unprocessable Entity') {
+                this.errors.error = response_prop.data.errors
+                return false
+              }
+
+              if (response_prop.statusText !== 'No Content') {
+                this.$store.commit('error/setCode', response_prop.status)
+                return false
+              }
+            }else if(this.scene.usage_right && !this.editForm_scene.usage_stage){
+              // 卒業公演1→0、下手1→0
+              const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+                method: 'usage_guraduation_0_right_0_change',
+                id: this.scene.id,
+                usage_guraduation: 0,
+                usage_right: 0
+              })
+
+              this.editSceneMode_prop = 100;
+
+              if (response_prop.statusText === 'Unprocessable Entity') {
+                this.errors.error = response_prop.data.errors
+                return false
+              }
+
+              if (response_prop.statusText !== 'No Content') {
+                this.$store.commit('error/setCode', response_prop.status)
+                return false
+              }
+            }else if(this.scene.usage_guraduation && !this.editForm_scene.usage_guraduation){
+              // 卒業公演1→0
+              const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+                method: 'usage_guraduation_0_change',
+                id: this.scene.id,
+                usage_guraduation: 0
+              })
+
+              this.editSceneMode_prop = 100;
+
+              if (response_prop.statusText === 'Unprocessable Entity') {
+                this.errors.error = response_prop.data.errors
+                return false
+              }
+
+              if (response_prop.statusText !== 'No Content') {
+                this.$store.commit('error/setCode', response_prop.status)
+                return false
+              }
+            }
+          }
+        }else if(this.editForm_scene.usage_guraduation){
+          // 卒業公演1→1
+          if(this.scene.usage_left && this.editForm_scene.usage_stage === "right"){
+            // 上手→下手
+            const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+              method: 'usage_left_to_right_change',
+              id: this.scene.id,
+              usage_left: 0,
+              usage_right: 1
+            })            
+
+            this.editSceneMode_prop = 100;
+
+            if (response_prop.statusText === 'Unprocessable Entity') {
+              this.errors.error = response.data_prop.errors
+              return false
+            }
+
+            if (response_prop.statusText !== 'No Content') {
+              this.$store.commit('error/setCode', response_prop.status)
+              return false
+            }
+          }else if(this.scene.usage_right && this.editForm_scene.usage_stage === "left"){
+            // 下手→上手
+            const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+              method: 'usage_right_to_left_change',
+              id: this.scene.id,
+              usage_left: 1,
+              usage_right: 0
+            })
+
+            this.editSceneMode_prop = 100;
+            
+            if (response_prop.statusText === 'Unprocessable Entity') {
+              this.errors.error = response_prop.data.errors
+              return false
+            }
+
+            if (response_prop.statusText !== 'No Content') {
+              this.$store.commit('error/setCode', response_prop.status)
+              return false
+            }
+          }else if(!this.scene.usage_left && this.editForm_scene.usage_stage === "left"){
+            // 上手0→1
+            const response_prop = axios.post('/api/props/'+ this.editForm_scene.prop_id, {
+              method: 'usage_left_change',
+              usage_left: 1
+            })
+
+            this.editSceneMode_prop = 100;
+
+            if (response_prop.statusText === 'Unprocessable Entity') {
+              this.errors.error = response_prop.data.errors
+              return false
+            }
+
+            if (response_prop.statusText !== 'No Content') {
+              this.$store.commit('error/setCode', response_prop.status)
+              return false
+            }
+          }else if(!this.scene.usage_right && this.editForm_scene.usage_stage === "right"){
+            // 下手0→1
+            const response_prop = axios.post('/api/props/'+ this.editForm_scene.prop_id, {
+              method: 'usage_right_change',
+              usage_right: 1
+            })
+
+            this.editSceneMode_prop = 100;
+
+            if (response_prop.statusText === 'Unprocessable Entity') {
+              this.errors.error = response_prop.data.errors
+              return false
+            }
+
+            if (response_prop.statusText !== 'No Content') {
+              this.$store.commit('error/setCode', response_prop.status)
+              return false
+            }
+          }else if(this.scene.usage_left && !this.editForm_scene.usage_stage){
+            // 上手1→0
+            const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+              method: 'usage_left_0_change',
+              id: this.scene.id,
+              usage_left: 0
+            })
+
+            this.editSceneMode_prop = 100;
+
+            if (response_prop.statusText === 'Unprocessable Entity') {
+              this.errors.error = response_prop.data.errors
+              return false
+            }
+
+            if (response_prop.statusText !== 'No Content') {
+              this.$store.commit('error/setCode', response_prop.status)
+              return false
+            }
+          }else if(this.scene.usage_right && !this.editForm_scene.usage_stage){
+            // 下手1→0
+            const response_prop = axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
+              method: 'usage_right_0_change',
+              id: this.scene.id,
+              usage_right: 0
+            })
+
+            this.editSceneMode_prop = 100;
+
+            if (response_prop.statusText === 'Unprocessable Entity') {
+              this.errors.error = response_prop.data.errors
+              return false
+            }
+
+            if (response_prop.statusText !== 'No Content') {
+              this.$store.commit('error/setCode', response_prop.status)
+              return false
+            }
           }
         }
       },
@@ -660,21 +1131,7 @@
           return false
         }
   
-        this.scene = null
-        this.editForm_scene.id = null
-        this.editForm_scene.character_id = null
-        this.editForm_scene.character.name = null
-        this.editForm_scene.character.section.section = null
-        this.editForm_scene.prop_id = null
-        this.editForm_scene.prop.name = null
-        this.editForm_scene.prop.owner_id = ''
-        this.editForm_scene.prop.owner.name = ''
-        this.editForm_scene.prop.url = ''
-        this.editForm_scene.prop.prop_comments = ''
-        this.editForm_scene.first_page = ''
-        this.editForm_scene.final_page = ''
-        this.editForm_scene.usage = 0
-        this.editForm_scene.scene_comments = []
+        this.resetScene();
         
   
         if (response.statusText !== 'No Content') {

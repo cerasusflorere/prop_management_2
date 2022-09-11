@@ -24,7 +24,10 @@
             <th></th>
             <th>小道具名</th>
             <th>持ち主</th>
-            <th>使用状況</th>
+            <th>中間発表</th>
+            <th>卒業公演</th>
+            <th>上手</th>
+            <th>下手</th>
             <th>メモ</th>
             <th>登録日時</th>
             <th>更新日時</th>
@@ -38,8 +41,17 @@
             <!-- 持ち主 -->
             <td v-if="prop.owner">{{ prop.owner.name }}</td>
             <td v-else></td>
-            <!-- 使用状況 -->
+            <!-- 中間発表-->
             <td v-if="prop.usage"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
+            <!-- 卒業公演-->
+            <td v-if="prop.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
+            <!-- 上手-->
+            <td v-if="prop.usage_left"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
+            <!-- 下手-->
+            <td v-if="prop.usage_right"><i class="fas fa-check fa-fw"></i></td>
             <td v-else></td>
             <!-- メモ -->
             <td v-if="prop.prop_comments.length">
@@ -67,15 +79,31 @@
               >
             </figure>
             <div>
+              <!-- 小道具名 -->
               <div>
                 {{ prop.name}}
               </div>
+              <!-- 持ち主 -->
               <div v-if="prop.owner">
                 {{ prop.owner.name }}
               </div>
+              <!-- 中間発表 -->
               <div v-if="prop.usage">
                 <i class="fas fa-tag"></i>
               </div>
+              <!-- 卒業公演 -->
+              <div v-if="prop.usage_guraduation">
+                <i class="fas fa-tag"></i>
+              </div>
+              <!-- 上手 -->
+              <div v-if="prop.usage_left">
+                <i class="fas fa-tag"></i>
+              </div>
+              <!-- 下手 -->
+              <div v-if="prop.right">
+                <i class="fas fa-tag"></i>
+              </div>
+              <!-- メモ -->
               <div v-if="prop.prop_comments.length">
                 <div v-for="memo in prop.prop_comments">
                   {{ memo.memo }}
@@ -172,13 +200,17 @@
         worksheet.columns = [
           { header: '小道具名', key: 'name', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '持ち主', key: 'owner', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
-          { header: '使用するか', key: 'usage', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '中間発表', key: 'usage', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '卒業公演', key: 'usage_guraduation', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '上手', key: 'usage_left', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '下手', key: 'usage_right', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: 'メモ', key: 'memo', width: 24, style: { alignment: {vertical: "middle", horizontal: "center" }}},
         ];
 
         worksheet.views = [
           {state: 'frozen', xSplit: 0, ySplit: 1, activeCell: 'A1'}  // ウィンドウ固定
         ];
+
         const font =  { color: { argb: '169b62' }}; // 文字
         const fill =  { type: 'pattern', pattern:'solid', fgColor: { argb:'ddefe3' }}; // 背景色
         worksheet.getCell('A1').font = font;
@@ -189,6 +221,12 @@
         worksheet.getCell('C1').fill = fill;
         worksheet.getCell('D1').font = font;
         worksheet.getCell('D1').fill = fill;
+        worksheet.getCell('E1').font = font;
+        worksheet.getCell('E1').fill = fill;
+        worksheet.getCell('F1').font = font;
+        worksheet.getCell('F1').fill = fill;
+        worksheet.getCell('G1').font = font;
+        worksheet.getCell('G1').fill = fill;
 
         this.showProps.forEach((prop, index) => {
           let datas = [];
@@ -201,6 +239,24 @@
           }
 
           if(prop.usage){
+            datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(prop.usage_guraduation){
+            datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(prop.usage_left){
+            datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(prop.usage_right){
             datas.push('〇');
           }else{
             datas.push(null);

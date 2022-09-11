@@ -3547,6 +3547,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         final_page: '',
         pages: '',
         usage: 0,
+        usage_guraduation: 0,
+        usage_stage: null,
         scene_comments: [],
         memo: ''
       },
@@ -3557,6 +3559,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       optionCharacters: [],
       // タブ
       tab_scene: 1,
+      // 卒業公演
+      guradutaion_tag: 0,
       // 小道具登録
       showContent: false,
       postFlag: "",
@@ -3570,6 +3574,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       // 編集範囲
       editSceneMode_detail: "",
       editSceneMode_memo: "",
+      editSceneMode_prop: "",
       // 削除confirm
       showContent_confirmDelete: false,
       postMessage_Delete: ""
@@ -3611,8 +3616,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       },
       immediate: true
     },
-    editSceneMode_memo: {
-      handler: function handler(editSceneMode_memo) {
+    editSceneMode_prop: {
+      handler: function handler(editSceneMode_prop) {
         var _this2 = this;
 
         return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
@@ -3620,7 +3625,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
-                  if (!(_this2.editSceneMode_detail === 100 || _this2.editSceneMode_memo === 100)) {
+                  if (!(_this2.editSceneMode_prop === 100)) {
                     _context2.next = 6;
                     break;
                   }
@@ -3631,7 +3636,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 case 3:
                   // メッセージ登録
                   _this2.$store.commit('message/setContent', {
-                    content: '小道具が変更されました！',
+                    content: '使用シーンが変更されました！',
                     timeout: 6000
                   });
 
@@ -3656,6 +3661,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     alert('元のデータと同じです！変更してください');
                     _this2.editSceneMode_detail = "";
                     _this2.editSceneMode_memo = "";
+                    _this2.editSceneMode_prop = "";
                   }
 
                 case 12:
@@ -3667,57 +3673,99 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }))();
       },
       immediate: true
+    },
+    editSceneMode_detail: {
+      handler: function handler(editSceneMode_detail) {
+        var _this3 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+          return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  if (!(_this3.editSceneMode_detail === 100 && _this3.editSceneMode_prop === 1)) {
+                    _context3.next = 3;
+                    break;
+                  }
+
+                  _context3.next = 3;
+                  return _this3.editProp_usage(_this3.editForm_scene.prop_id);
+
+                case 3:
+                case "end":
+                  return _context3.stop();
+              }
+            }
+          }, _callee3);
+        }))();
+      },
+      immediate: true
     }
   },
+  // たまにページ消える
+  // 中間発表のみ変えたらページ遷移しない
   methods: {
     // シーンの詳細を取得
     fetchScene: function fetchScene() {
-      var _this3 = this;
+      var _this4 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                _this3.tab_scene = 1;
-                _context3.next = 3;
-                return axios.get('/api/scenes/' + _this3.postScene);
+                _this4.resetScene();
 
-              case 3:
-                response = _context3.sent;
+                _this4.tab_scene = 1;
+                _context4.next = 4;
+                return axios.get('/api/scenes/' + _this4.postScene);
+
+              case 4:
+                response = _context4.sent;
 
                 if (!(response.statusText !== 'OK')) {
-                  _context3.next = 7;
+                  _context4.next = 8;
                   break;
                 }
 
-                _this3.$store.commit('error/setCode', response.status);
+                _this4.$store.commit('error/setCode', response.status);
 
-                return _context3.abrupt("return", false);
+                return _context4.abrupt("return", false);
 
-              case 7:
-                _this3.scene = response.data;
-                _this3.editForm_scene.id = _this3.scene.id;
-                _this3.editForm_scene.character_id = _this3.scene.character_id;
-                _this3.editForm_scene.character.name = _this3.scene.character.name;
-                _this3.editForm_scene.character.section.section = _this3.scene.character.section.section;
+              case 8:
+                _this4.scene = response.data;
+                _this4.editForm_scene.id = _this4.scene.id;
+                _this4.editForm_scene.character_id = _this4.scene.character_id;
+                _this4.editForm_scene.character.name = _this4.scene.character.name;
+                _this4.editForm_scene.character.section.section = _this4.scene.character.section.section;
 
-                _this3.selected();
+                _this4.selected();
 
-                _this3.editForm_scene.prop_id = _this3.scene.prop_id;
-                _this3.editForm_scene.prop.name = _this3.scene.prop.name;
-                _this3.editForm_scene.prop.owner_id = _this3.scene.prop.owner_id;
-                _this3.editForm_scene.prop.owner.name = _this3.scene.prop.owner.name;
-                _this3.editForm_scene.prop.url = _this3.scene.prop.url;
-                _this3.editForm_scene.prop.prop_comments = _this3.scene.prop.prop_comments;
-                _this3.editForm_scene.first_page = _this3.scene.first_page;
-                _this3.editForm_scene.final_page = _this3.scene.final_page;
-                _this3.editForm_scene.usage = _this3.scene.usage;
+                _this4.editForm_scene.prop_id = _this4.scene.prop_id;
+                _this4.editForm_scene.prop.name = _this4.scene.prop.name;
+                _this4.editForm_scene.prop.owner_id = _this4.scene.prop.owner_id;
+                _this4.editForm_scene.prop.owner.name = _this4.scene.prop.owner.name;
+                _this4.editForm_scene.prop.url = _this4.scene.prop.url;
+                _this4.editForm_scene.prop.prop_comments = _this4.scene.prop.prop_comments;
+                _this4.editForm_scene.first_page = _this4.scene.first_page;
+                _this4.editForm_scene.final_page = _this4.scene.final_page;
+                _this4.editForm_scene.usage = _this4.scene.usage;
+                _this4.editForm_scene.usage_guraduation = _this4.scene.usage_guraduation;
 
-                if (_this3.scene.scene_comments.length) {
-                  _this3.scene.scene_comments.forEach(function (comment, index) {
-                    _this3.editForm_scene.scene_comments[index] = Object.assign({}, _this3.editForm_scene.scene_comments, {
+                if (_this4.scene.usage_guraduation) {
+                  _this4.guradutaion_tag = 1;
+                }
+
+                if (_this4.scene.usage_left) {
+                  _this4.editForm_scene.usage_stage = "left";
+                } else if (_this4.scene.usage_right) {
+                  _this4.editForm_scene.usage_stage = "right";
+                }
+
+                if (_this4.scene.scene_comments.length) {
+                  _this4.scene.scene_comments.forEach(function (comment, index) {
+                    _this4.editForm_scene.scene_comments[index] = Object.assign({}, _this4.editForm_scene.scene_comments, {
                       id: comment.id
                     }, {
                       memo: comment.memo
@@ -3727,54 +3775,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   });
                 }
 
-                _this3.editSceneMode_detail = "";
-                _this3.editSceneMode_memo = "";
+                _this4.editSceneMode_detail = "";
+                _this4.editSceneMode_memo = "";
+                _this4.editSceneMode_prop = "";
 
-              case 25:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }))();
-    },
-    // 登場人物を取得
-    fetchCharacters: function fetchCharacters() {
-      var _this4 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-        var response, sections;
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                _context4.next = 2;
-                return axios.get('/api/informations/characters');
-
-              case 2:
-                response = _context4.sent;
-
-                if (!(response.statusText !== 'OK')) {
-                  _context4.next = 6;
-                  break;
-                }
-
-                _this4.$store.commit('error/setCode', response.status);
-
-                return _context4.abrupt("return", false);
-
-              case 6:
-                _this4.characters = response.data; // 区分と登場人物をオブジェクトに変換する
-
-                sections = new Object();
-
-                _this4.characters.forEach(function (section) {
-                  sections[section.section] = section.characters;
-                });
-
-                _this4.optionCharacters = sections;
-
-              case 10:
+              case 30:
               case "end":
                 return _context4.stop();
             }
@@ -3782,18 +3787,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee4);
       }))();
     },
-    // 小道具一覧を取得
-    fetchProps: function fetchProps() {
+    // 登場人物を取得
+    fetchCharacters: function fetchCharacters() {
       var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        var response;
+        var response, sections;
         return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
                 _context5.next = 2;
-                return axios.get('/api/props');
+                return axios.get('/api/informations/characters');
 
               case 2:
                 response = _context5.sent;
@@ -3808,14 +3813,58 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context5.abrupt("return", false);
 
               case 6:
-                _this5.optionProps = response.data;
+                _this5.characters = response.data; // 区分と登場人物をオブジェクトに変換する
 
-              case 7:
+                sections = new Object();
+
+                _this5.characters.forEach(function (section) {
+                  sections[section.section] = section.characters;
+                });
+
+                _this5.optionCharacters = sections;
+
+              case 10:
               case "end":
                 return _context5.stop();
             }
           }
         }, _callee5);
+      }))();
+    },
+    // 小道具一覧を取得
+    fetchProps: function fetchProps() {
+      var _this6 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.next = 2;
+                return axios.get('/api/props');
+
+              case 2:
+                response = _context6.sent;
+
+                if (!(response.statusText !== 'OK')) {
+                  _context6.next = 6;
+                  break;
+                }
+
+                _this6.$store.commit('error/setCode', response.status);
+
+                return _context6.abrupt("return", false);
+
+              case 6:
+                _this6.optionProps = response.data;
+
+              case 7:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
       }))();
     },
     // タブ切り替え
@@ -3830,6 +3879,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     selected: function selected() {
       this.selectedCharacters = this.optionCharacters[this.editForm_scene.character.section.section];
     },
+    // 卒業公演の使用にチェックが付いたか
+    selectGuraduation: function selectGuraduation() {
+      if (!this.guradutaion_tag) {
+        this.guradutaion_tag = 1;
+      } else {
+        this.guradutaion_tag = 0;
+        this.editForm_scene.usage_stage = null;
+      }
+    },
     // 小道具登録のモーダル表示 
     openModal_register: function openModal_register() {
       this.showContent = true;
@@ -3839,33 +3897,86 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     closeModal_register: function closeModal_register() {
       this.showContent = false;
     },
+    // 諸々リセット
+    resetScene: function resetScene() {
+      this.scene = [];
+      this.editForm_scene.id = null, this.editForm_scene.character_id = null;
+      this.editForm_scene.character.name = null;
+      this.editForm_scene.character.section.section = null;
+      this.editForm_scene.prop_id = null;
+      this.editForm_scene.prop.name = null;
+      this.editForm_scene.prop.owner_id = '';
+      this.editForm_scene.prop.owner.name = '';
+      this.editForm_scene.prop.url = '';
+      this.editForm_scene.prop.prop_comments = '';
+      this.editForm_scene.first_page = '';
+      this.editForm_scene.final_page = '';
+      this.editForm_scene.pages = '';
+      this.editForm_scene.usage = 0;
+      this.editForm_scene.usage_guraduation = 0;
+      this.editForm_scene.usage_stage = null;
+      this.editForm_scene.scene_comments = [];
+      this.editForm_scene.memo = ''; // 卒業公演
+
+      this.guradutaion_tag = 0;
+    },
     // 編集エラー
     confirmScene: function confirmScene() {
-      if (this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.usage !== this.editForm_scene.usage) && !this.editForm_scene.pages) {
+      if (this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || !this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage || this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage === "right" || !this.scene.usage_left && this.scene.usage_right && this.editForm_scene.usage_stage === "left" || (this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage) && !this.editForm_scene.pages) {
         // 元々何ページから何ページと指定があった // これはupdateだけでいい
         this.editSceneMode_detail = 1; // 'page_update'
+
+        if (this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || !this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage || this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage === "right" || !this.scene.usage_left && this.scene.usage_right && this.editForm_scene.usage_stage === "left" || (this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage) {
+          // 小道具を更新する
+          this.editSceneMode_prop = 1; // 'prop_update'
+        } else {
+          this.editSceneMode_prop = 0;
+        }
       } else if (this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.usage !== this.editForm_scene.usage) || this.editForm_scene.pages) {
         // 新たにページ数追加 // これはupdateだけじゃだめ
         this.editSceneMode_detail = 2; // 'page_store'
+
+        this.editSceneMode_prop = 0;
       } else {
         this.editSceneMode_detail = 0;
+        this.editSceneMode_prop = 0;
       }
 
       if (this.scene.id === this.editForm_scene.id && !this.scene.scene_comments.length && this.editForm_scene.memo) {
         // メモ新規投稿
         this.editSceneMode_memo = 1; // 'memo_store'
+
+        if (this.editSceneMode_prop !== 1) {
+          this.editSceneMode_prop = 0;
+        }
       } else if (this.scene.id === this.editForm_scene.id && this.scene.scene_comments.length) {
         if (this.scene.id === this.editForm_scene.id && this.scene.scene_comments[0].id && !this.editForm_scene.scene_comments[0].memo) {
           // メモ削除
           this.editSceneMode_memo = 2; //'memo_delete'
+
+          if (this.editSceneMode_prop !== 1) {
+            this.editSceneMode_prop = 0;
+          }
         } else if (this.scene.id === this.editForm_scene.id && this.scene.scene_comments[0].id && this.scene.scene_comments[0].memo !== this.editForm_scene.scene_comments[0].memo) {
           // メモアップデート
           this.editSceneMode_memo = 3; // 'memo_update'
+
+          if (this.editSceneMode_prop !== 1) {
+            this.editSceneMode_prop = 0;
+          }
         } else {
           this.editSceneMode_memo = 0;
+
+          if (this.editSceneMode_prop !== 1) {
+            this.editSceneMode_prop = 0;
+          }
         }
       } else {
         this.editSceneMode_memo = 0;
+
+        if (this.editSceneMode_prop !== 1) {
+          this.editSceneMode_prop = 0;
+        }
       }
     },
     // 編集confirmのモーダル表示 
@@ -3875,38 +3986,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
-      var _this6 = this;
+      var _this7 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
-        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
-                _this6.showContent_confirmEdit = false;
+                _this7.showContent_confirmEdit = false;
 
-                if (!_this6.editSceneMode_detail) {
-                  _context6.next = 4;
+                if (!_this7.editSceneMode_detail) {
+                  _context7.next = 4;
                   break;
                 }
 
-                _context6.next = 4;
-                return _this6.editScene();
+                _context7.next = 4;
+                return _this7.editScene();
 
               case 4:
-                if (!_this6.editSceneMode_memo) {
-                  _context6.next = 7;
+                if (!_this7.editSceneMode_memo) {
+                  _context7.next = 7;
                   break;
                 }
 
-                _context6.next = 7;
-                return _this6.editScene_memo();
+                _context7.next = 7;
+                return _this7.editScene_memo();
 
               case 7:
               case "end":
-                return _context6.stop();
+                return _context7.stop();
             }
           }
-        }, _callee6);
+        }, _callee7);
       }))();
     },
     // 編集confirmのモーダル非表示_Cancelの場合
@@ -3925,103 +4036,86 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 基本情報を編集する
     editScene: function editScene() {
-      var _this7 = this;
+      var _this8 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
-        var response, _response, first_pages, final_pages, pages_before, pages_after, pattern, memo, last_flag;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+        var usage_left, usage_right, _response, first_pages, final_pages, pages_before, pages_after, pattern, memo, last_flag;
 
-        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context8.prev = _context8.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
-                if (!(_this7.editSceneMode_detail === 1)) {
-                  _context8.next = 23;
+                usage_left = '';
+                usage_right = '';
+
+                if (_this8.editForm_scene.usage_stage === "left") {
+                  usage_left = 1;
+                } else if (_this8.editForm_scene.usage_stage === "right") {
+                  usage_right = 1;
+                }
+
+                if (!(_this8.editSceneMode_detail === 1)) {
+                  _context9.next = 18;
                   break;
                 }
 
                 // 元々ページ数の指定があった
-                _this7.editSceneMode_detail = "change";
-                _context8.next = 4;
-                return axios.post('/api/scenes/' + _this7.scene.id, {
-                  character_id: _this7.editForm_scene.character_id,
-                  prop_id: _this7.editForm_scene.prop_id,
-                  first_page: _this7.editForm_scene.first_page,
-                  final_page: _this7.editForm_scene.final_page,
-                  usage: _this7.editForm_scene.usage
+                _this8.editSceneMode_detail = "change";
+                _context9.next = 7;
+                return axios.post('/api/scenes/' + _this8.scene.id, {
+                  character_id: _this8.editForm_scene.character_id,
+                  prop_id: _this8.editForm_scene.prop_id,
+                  first_page: _this8.editForm_scene.first_page,
+                  final_page: _this8.editForm_scene.final_page,
+                  usage: _this8.editForm_scene.usage,
+                  usage_guraduation: _this8.editForm_scene.usage_guraduation,
+                  usage_left: usage_left,
+                  usage_right: usage_right
                 });
 
-              case 4:
-                response = _context8.sent;
-                _this7.editSceneMode_detail = 100;
+              case 7:
+                _response = _context9.sent;
+                _this8.editSceneMode_detail = 100;
 
-                if (_this7.editSceneMode_memo === 0) {
-                  _this7.editSceneMode_memo = 100;
+                if (_this8.editSceneMode_memo === 0 && _this8.editSceneMode_prop === 0) {
+                  _this8.editSceneMode_memo = 100;
+                  _this8.editSceneMode_prop = 100;
                 }
-
-                if (!(response.statusText === 'No Content' && _this7.editForm_scene.usage)) {
-                  _context8.next = 15;
-                  break;
-                }
-
-                // 小道具の使用有無変更
-                _response = axios.post('/api/props/' + _this7.editForm_scene.prop_id, {
-                  method: 'usage_change',
-                  usage: _this7.editForm_scene.usage
-                });
 
                 if (!(_response.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 12;
+                  _context9.next = 13;
                   break;
                 }
 
-                _this7.errors.error = _response.data.errors;
-                return _context8.abrupt("return", false);
+                _this8.errors.error = _response.data.errors;
+                return _context9.abrupt("return", false);
 
-              case 12:
+              case 13:
                 if (!(_response.statusText !== 'No Content')) {
-                  _context8.next = 15;
+                  _context9.next = 16;
                   break;
                 }
 
-                _this7.$store.commit('error/setCode', _response.status);
+                _this8.$store.commit('error/setCode', _response.status);
 
-                return _context8.abrupt("return", false);
+                return _context9.abrupt("return", false);
 
-              case 15:
-                if (!(response.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 18;
-                  break;
-                }
-
-                _this7.errors.error = response.data.errors;
-                return _context8.abrupt("return", false);
-
-              case 18:
-                if (!(response.statusText !== 'No Content')) {
-                  _context8.next = 21;
-                  break;
-                }
-
-                _this7.$store.commit('error/setCode', response.status);
-
-                return _context8.abrupt("return", false);
-
-              case 21:
-                _context8.next = 24;
+              case 16:
+                _context9.next = 19;
                 break;
 
-              case 23:
-                if (_this7.editSceneMode_detail === 2) {
+              case 18:
+                if (_this8.editSceneMode_detail === 2) {
                   // ページ数を新たに指定
-                  _this7.editSceneMode_detail = "change"; // ページを分割
+                  _this8.editSceneMode_detail = "change"; // ページを分割
 
                   first_pages = [];
                   final_pages = [];
                   first_pages[0] = 0;
                   final_pages[0] = 0;
 
-                  if (_this7.editForm_scene.pages) {
-                    pages_before = _this7.editForm_scene.pages.split(/,|、|，|\s+/);
+                  if (_this8.editForm_scene.pages) {
+                    pages_before = _this8.editForm_scene.pages.split(/,|、|，|\s+/);
                     pages_before.forEach(function (page) {
                       page = page.replaceAll(/\s+/g, '');
                     });
@@ -4030,22 +4124,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     pages_after.forEach(function (page, index) {
                       if (index === 0) {
                         if (pattern.test(page)) {
-                          var pages = _this7.first_finalDivide(page);
+                          var pages = _this8.first_finalDivide(page);
 
-                          first_pages[index] = parseInt(_this7.hankaku2Zenkaku(pages[0]));
-                          final_pages[index] = parseInt(_this7.hankaku2Zenkaku(pages[1]));
+                          first_pages[index] = parseInt(_this8.hankaku2Zenkaku(pages[0]));
+                          final_pages[index] = parseInt(_this8.hankaku2Zenkaku(pages[1]));
                         } else {
-                          first_pages[index] = parseInt(_this7.hankaku2Zenkaku(page));
+                          first_pages[index] = parseInt(_this8.hankaku2Zenkaku(page));
                           final_pages[index] = 0;
                         }
                       } else {
                         if (pattern.test(page)) {
-                          var _pages = _this7.first_finalDivide(page);
+                          var _pages = _this8.first_finalDivide(page);
 
-                          first_pages.push(parseInt(_this7.hankaku2Zenkaku(_pages[0])));
-                          final_pages.push(parseInt(_this7.hankaku2Zenkaku(_pages[1])));
+                          first_pages.push(parseInt(_this8.hankaku2Zenkaku(_pages[0])));
+                          final_pages.push(parseInt(_this8.hankaku2Zenkaku(_pages[1])));
                         } else {
-                          first_pages.push(parseInt(_this7.hankaku2Zenkaku(page)));
+                          first_pages.push(parseInt(_this8.hankaku2Zenkaku(page)));
                           final_pages.push(0);
                         }
                       }
@@ -4054,279 +4148,1003 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   memo = '';
 
-                  if (_this7.editForm_scene.memo) {
-                    memo = _this7.editForm_scene.memo;
-                  } else if (_this7.editForm_scene.scene_comments.length) {
-                    memo = _this7.editForm_scene.scene_comments[0].memo;
+                  if (_this8.editForm_scene.memo) {
+                    memo = _this8.editForm_scene.memo;
+                  } else if (_this8.editForm_scene.scene_comments.length) {
+                    memo = _this8.editForm_scene.scene_comments[0].memo;
                   }
 
                   last_flag = false;
                   first_pages.forEach( /*#__PURE__*/function () {
-                    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(page, index) {
-                      var _response2, _response3, _response4;
+                    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(page, index) {
+                      var _response2, _response3;
 
-                      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+                      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
                         while (1) {
-                          switch (_context7.prev = _context7.next) {
+                          switch (_context8.prev = _context8.next) {
                             case 0:
                               if (!(index === 0)) {
-                                _context7.next = 21;
+                                _context8.next = 13;
                                 break;
                               }
 
-                              _context7.next = 3;
+                              _context8.next = 3;
                               return axios.post('/api/scenes/' + this.scene.id, {
                                 character_id: this.editForm_scene.character_id,
                                 prop_id: this.editForm_scene.prop_id,
                                 first_page: page,
                                 final_page: final_pages[index],
-                                usage: this.editForm_scene.usage
+                                usage: this.editForm_scene.usage,
+                                usage_left: usage_left,
+                                usage_right: usage_right
                               });
 
                             case 3:
-                              _response2 = _context7.sent;
+                              _response2 = _context8.sent;
 
                               if (index === first_pages.length - 1) {
                                 this.editSceneMode_detail = 100;
 
-                                if (this.editSceneMode_memo === 0) {
+                                if (this.editSceneMode_memo === 0 && this.editSceneMode_prop === 0) {
                                   this.editSceneMode_memo = 100;
+                                  this.editSceneMode_prop = 100;
                                 }
                               }
 
-                              if (!(_response2.statusText === 'No Content' && this.editForm_scene.usage)) {
-                                _context7.next = 13;
-                                break;
-                              }
-
-                              // 小道具の使用有無変更
-                              _response3 = axios.post('/api/props/' + this.editForm_scene.prop_id, {
-                                method: 'usage_change',
-                                usage: this.editForm_scene.usage
-                              });
-
-                              if (!(_response3.statusText === 'Unprocessable Entity')) {
-                                _context7.next = 10;
-                                break;
-                              }
-
-                              this.errors.error = _response3.data.errors;
-                              return _context7.abrupt("return", false);
-
-                            case 10:
-                              if (!(_response3.statusText !== 'No Content')) {
-                                _context7.next = 13;
-                                break;
-                              }
-
-                              this.$store.commit('error/setCode', _response3.status);
-                              return _context7.abrupt("return", false);
-
-                            case 13:
                               if (!(_response2.statusText === 'Unprocessable Entity')) {
-                                _context7.next = 16;
+                                _context8.next = 8;
                                 break;
                               }
 
                               this.errors.error = _response2.data.errors;
-                              return _context7.abrupt("return", false);
+                              return _context8.abrupt("return", false);
 
-                            case 16:
+                            case 8:
                               if (!(_response2.statusText !== 'No Content')) {
-                                _context7.next = 19;
+                                _context8.next = 11;
                                 break;
                               }
 
                               this.$store.commit('error/setCode', _response2.status);
-                              return _context7.abrupt("return", false);
+                              return _context8.abrupt("return", false);
 
-                            case 19:
-                              _context7.next = 31;
+                            case 11:
+                              _context8.next = 23;
                               break;
 
-                            case 21:
-                              _context7.next = 23;
+                            case 13:
+                              _context8.next = 15;
                               return axios.post('/api/scenes', {
                                 character_id: this.editForm_scene.character_id,
                                 prop_id: this.editForm_scene.prop_id,
                                 first_page: page,
                                 final_page: final_pages[index],
                                 usage: this.editForm_scene.usage,
+                                usage_left: usage_left,
+                                usage_right: usage_right,
                                 memo: memo
                               });
 
-                            case 23:
-                              _response4 = _context7.sent;
+                            case 15:
+                              _response3 = _context8.sent;
 
                               if (index === first_pages.length - 1) {
                                 this.editSceneMode_detail = 100;
 
-                                if (this.editSceneMode_memo === 0) {
+                                if (this.editSceneMode_memo === 0 && this.editSceneMode_prop === 0) {
                                   this.editSceneMode_memo = 100;
+                                  this.editSceneMode_prop = 100;
                                 }
                               }
 
-                              if (!(_response4.statusText === 'Unprocessable Entity')) {
-                                _context7.next = 28;
+                              if (!(_response3.statusText === 'Unprocessable Entity')) {
+                                _context8.next = 20;
                                 break;
                               }
 
-                              this.errors.error = _response4.data.errors;
-                              return _context7.abrupt("return", false);
+                              this.errors.error = _response3.data.errors;
+                              return _context8.abrupt("return", false);
 
-                            case 28:
-                              if (!(_response4.statusText !== 'Created')) {
-                                _context7.next = 31;
+                            case 20:
+                              if (!(_response3.statusText !== 'Created')) {
+                                _context8.next = 23;
                                 break;
                               }
 
-                              this.$store.commit('error/setCode', _response4.status);
-                              return _context7.abrupt("return", false);
+                              this.$store.commit('error/setCode', _response3.status);
+                              return _context8.abrupt("return", false);
 
-                            case 31:
+                            case 23:
                             case "end":
-                              return _context7.stop();
+                              return _context8.stop();
                           }
                         }
-                      }, _callee7, this);
+                      }, _callee8, this);
                     }));
 
                     return function (_x, _x2) {
                       return _ref.apply(this, arguments);
                     };
-                  }(), _this7);
+                  }(), _this8);
                 }
 
-              case 24:
-              case "end":
-                return _context8.stop();
-            }
-          }
-        }, _callee8);
-      }))();
-    },
-    // メモを更新する
-    editScene_memo: function editScene_memo() {
-      var _this8 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
-        var response, _response5, _response6;
-
-        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
-          while (1) {
-            switch (_context9.prev = _context9.next) {
-              case 0:
-                if (!(_this8.editSceneMode_memo === 1)) {
-                  _context9.next = 13;
-                  break;
-                }
-
-                _context9.next = 3;
-                return axios.post('/api/scene_comments', {
-                  scene_id: _this8.editForm_scene.id,
-                  memo: _this8.editForm_scene.memo
-                });
-
-              case 3:
-                response = _context9.sent;
-                _this8.editSceneMode_memo = 100;
-
-                if (!(response.statusText === 'Unprocessable Entity')) {
-                  _context9.next = 8;
-                  break;
-                }
-
-                _this8.errors.error = response.data.errors;
-                return _context9.abrupt("return", false);
-
-              case 8:
-                if (!(response.statusText !== 'Created')) {
-                  _context9.next = 11;
-                  break;
-                }
-
-                _this8.$store.commit('error/setCode', response.status);
-
-                return _context9.abrupt("return", false);
-
-              case 11:
-                _context9.next = 37;
-                break;
-
-              case 13:
-                if (!(_this8.editSceneMode_memo === 2)) {
-                  _context9.next = 26;
-                  break;
-                }
-
-                _context9.next = 16;
-                return axios["delete"]('/api/scene_comments/' + _this8.scene.scene_comments[0].id);
-
-              case 16:
-                _response5 = _context9.sent;
-                _this8.editSceneMode_memo = 100;
-
-                if (!(_response5.statusText === 'Unprocessable Entity')) {
-                  _context9.next = 21;
-                  break;
-                }
-
-                _this8.errors.error = _response5.data.errors;
-                return _context9.abrupt("return", false);
-
-              case 21:
-                if (!(_response5.statusText !== 'No Content')) {
-                  _context9.next = 24;
-                  break;
-                }
-
-                _this8.$store.commit('error/setCode', _response5.status);
-
-                return _context9.abrupt("return", false);
-
-              case 24:
-                _context9.next = 37;
-                break;
-
-              case 26:
-                if (!(_this8.editSceneMode_memo === 3)) {
-                  _context9.next = 37;
-                  break;
-                }
-
-                _context9.next = 29;
-                return axios.post('/api/scene_comments/' + _this8.scene.scene_comments[0].id, {
-                  memo: _this8.editForm_scene.scene_comments[0].memo
-                });
-
-              case 29:
-                _response6 = _context9.sent;
-                _this8.editSceneMode_memo = 100;
-
-                if (!(_response6.statusText === 'Unprocessable Entity')) {
-                  _context9.next = 34;
-                  break;
-                }
-
-                _this8.errors.error = _response6.data.errors;
-                return _context9.abrupt("return", false);
-
-              case 34:
-                if (!(_response6.statusText !== 'No Content')) {
-                  _context9.next = 37;
-                  break;
-                }
-
-                _this8.$store.commit('error/setCode', _response6.status);
-
-                return _context9.abrupt("return", false);
-
-              case 37:
+              case 19:
               case "end":
                 return _context9.stop();
             }
           }
         }, _callee9);
+      }))();
+    },
+    // メモを更新する
+    editScene_memo: function editScene_memo() {
+      var _this9 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+        var _response4, _response5, _response6;
+
+        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+          while (1) {
+            switch (_context10.prev = _context10.next) {
+              case 0:
+                if (!(_this9.editSceneMode_memo === 1)) {
+                  _context10.next = 14;
+                  break;
+                }
+
+                _context10.next = 3;
+                return axios.post('/api/scene_comments', {
+                  scene_id: _this9.editForm_scene.id,
+                  memo: _this9.editForm_scene.memo
+                });
+
+              case 3:
+                _response4 = _context10.sent;
+                _this9.editSceneMode_memo = 100;
+
+                if (_this9.editSceneMode_prop === 0) {
+                  _this9.editSceneMode_prop = 100;
+                }
+
+                if (!(_response4.statusText === 'Unprocessable Entity')) {
+                  _context10.next = 9;
+                  break;
+                }
+
+                _this9.errors.error = _response4.data.errors;
+                return _context10.abrupt("return", false);
+
+              case 9:
+                if (!(_response4.statusText !== 'Created')) {
+                  _context10.next = 12;
+                  break;
+                }
+
+                _this9.$store.commit('error/setCode', _response4.status);
+
+                return _context10.abrupt("return", false);
+
+              case 12:
+                _context10.next = 40;
+                break;
+
+              case 14:
+                if (!(_this9.editSceneMode_memo === 2)) {
+                  _context10.next = 28;
+                  break;
+                }
+
+                _context10.next = 17;
+                return axios["delete"]('/api/scene_comments/' + _this9.scene.scene_comments[0].id);
+
+              case 17:
+                _response5 = _context10.sent;
+                _this9.editSceneMode_memo = 100;
+
+                if (_this9.editSceneMode_prop === 0) {
+                  _this9.editSceneMode_prop = 100;
+                }
+
+                if (!(_response5.statusText === 'Unprocessable Entity')) {
+                  _context10.next = 23;
+                  break;
+                }
+
+                _this9.errors.error = _response5.data.errors;
+                return _context10.abrupt("return", false);
+
+              case 23:
+                if (!(_response5.statusText !== 'No Content')) {
+                  _context10.next = 26;
+                  break;
+                }
+
+                _this9.$store.commit('error/setCode', _response5.status);
+
+                return _context10.abrupt("return", false);
+
+              case 26:
+                _context10.next = 40;
+                break;
+
+              case 28:
+                if (!(_this9.editSceneMode_memo === 3)) {
+                  _context10.next = 40;
+                  break;
+                }
+
+                _context10.next = 31;
+                return axios.post('/api/scene_comments/' + _this9.scene.scene_comments[0].id, {
+                  memo: _this9.editForm_scene.scene_comments[0].memo
+                });
+
+              case 31:
+                _response6 = _context10.sent;
+                _this9.editSceneMode_memo = 100;
+
+                if (_this9.editSceneMode_prop === 0) {
+                  _this9.editSceneMode_prop = 100;
+                }
+
+                if (!(_response6.statusText === 'Unprocessable Entity')) {
+                  _context10.next = 37;
+                  break;
+                }
+
+                _this9.errors.error = _response6.data.errors;
+                return _context10.abrupt("return", false);
+
+              case 37:
+                if (!(_response6.statusText !== 'No Content')) {
+                  _context10.next = 40;
+                  break;
+                }
+
+                _this9.$store.commit('error/setCode', _response6.status);
+
+                return _context10.abrupt("return", false);
+
+              case 40:
+              case "end":
+                return _context10.stop();
+            }
+          }
+        }, _callee10);
+      }))();
+    },
+    // 小道具を更新する
+    editProp_usage: function editProp_usage() {
+      var _this10 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
+        return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+          while (1) {
+            switch (_context11.prev = _context11.next) {
+              case 0:
+                if (!(_this10.scene.usage != _this10.editForm_scene.usage)) {
+                  _context11.next = 3;
+                  break;
+                }
+
+                _context11.next = 3;
+                return _this10.editProp_usage_passo();
+
+              case 3:
+                if (!(_this10.scene.usage_guraduation != _this10.editForm_scene.usage_guraduation || _this10.editForm_scene.usage_guraduation)) {
+                  _context11.next = 6;
+                  break;
+                }
+
+                _context11.next = 6;
+                return _this10.editProp_usage_guraduation();
+
+              case 6:
+              case "end":
+                return _context11.stop();
+            }
+          }
+        }, _callee11);
+      }))();
+    },
+    editProp_usage_passo: function editProp_usage_passo() {
+      var _this11 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
+        var response_prop, _response_prop;
+
+        return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+          while (1) {
+            switch (_context12.prev = _context12.next) {
+              case 0:
+                if (!_this11.editForm_scene.usage) {
+                  _context12.next = 16;
+                  break;
+                }
+
+                // 中間発表0→1
+                response_prop = axios.post('/api/props/' + _this11.editForm_scene.prop_id, {
+                  method: 'usage_change',
+                  usage: 1
+                });
+                console.log(_this11.scene.usage_guraduation);
+                console.log(_this11.editForm_scene.usage_guraduation);
+                console.log(_this11.scene.usage_left);
+                console.log(_this11.scene.usage_right);
+                console.log(_this11.editForm_scene.usage_stage);
+
+                if (_this11.scene.usage_guraduation == _this11.editForm_scene.usage_guraduation && (_this11.scene.usage_left && _this11.editForm_scene.usage_stage === "left" || _this11.scene.usage_right && _this11.editForm_scene.usage_stage === "right" || !_this11.scene.usage_left && !_this11.scene.usage_right && !_this11.editForm_scene.usage_stage)) {
+                  _this11.editSceneMode_prop = 100;
+                }
+
+                if (!(response_prop.statusText === 'Unprocessable Entity')) {
+                  _context12.next = 11;
+                  break;
+                }
+
+                _this11.errors.error = response_prop.data.errors;
+                return _context12.abrupt("return", false);
+
+              case 11:
+                if (!(response_prop.statusText !== 'No Content')) {
+                  _context12.next = 14;
+                  break;
+                }
+
+                _this11.$store.commit('error/setCode', response_prop.status);
+
+                return _context12.abrupt("return", false);
+
+              case 14:
+                _context12.next = 29;
+                break;
+
+              case 16:
+                // 中間発表1→0
+                _response_prop = axios.post('/api/props_deep/' + _this11.editForm_scene.prop_id, {
+                  method: 'usage_0_change',
+                  id: _this11.scene.id,
+                  usage: 0
+                });
+                console.log(_this11.scene.usage_guraduation);
+                console.log(_this11.editForm_scene.usage_guraduation);
+                console.log(_this11.scene.usage_left);
+                console.log(_this11.scene.usage_right);
+                console.log(_this11.editForm_scene.usage_stage);
+
+                if (_this11.scene.usage_guraduation == _this11.editForm_scene.usage_guraduation && (_this11.scene.usage_left && _this11.editForm_scene.usage_stage === "left" || _this11.scene.usage_right && _this11.editForm_scene.usage_stage === "right" || !_this11.scene.usage_left && !_this11.scene.usage_right && !_this11.editForm_scene.usage_stage)) {
+                  _this11.editSceneMode_prop = 100;
+                }
+
+                if (!(_response_prop.statusText === 'Unprocessable Entity')) {
+                  _context12.next = 26;
+                  break;
+                }
+
+                _this11.errors.error = response.data.errors;
+                return _context12.abrupt("return", false);
+
+              case 26:
+                if (!(_response_prop.statusText !== 'No Content')) {
+                  _context12.next = 29;
+                  break;
+                }
+
+                _this11.$store.commit('error/setCode', _response_prop.status);
+
+                return _context12.abrupt("return", false);
+
+              case 29:
+              case "end":
+                return _context12.stop();
+            }
+          }
+        }, _callee12);
+      }))();
+    },
+    editProp_usage_guraduation: function editProp_usage_guraduation() {
+      var _this12 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13() {
+        var response_prop, _response_prop2, _response_prop3, _response_prop4, _response_prop5, _response_prop6, _response_prop7, _response_prop8, _response_prop9, _response_prop10, _response_prop11, _response_prop12, _response_prop13, _response_prop14, _response_prop15, _response_prop16;
+
+        return _regeneratorRuntime().wrap(function _callee13$(_context13) {
+          while (1) {
+            switch (_context13.prev = _context13.next) {
+              case 0:
+                if (!(_this12.scene.usage_guraduation != _this12.editForm_scene.usage_guraduation)) {
+                  _context13.next = 111;
+                  break;
+                }
+
+                if (!(!_this12.scene.usage_guraduation && _this12.editForm_scene.usage_guraduation)) {
+                  _context13.next = 78;
+                  break;
+                }
+
+                if (!(_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "right")) {
+                  _context13.next = 13;
+                  break;
+                }
+
+                // 卒業公演0→1、上手→下手で使用
+                response_prop = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_guraduation_left_to_right_change',
+                  id: _this12.scene.id,
+                  usage_guraduation: 1,
+                  usage_left: 0,
+                  usage_right: 1
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(response_prop.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 8;
+                  break;
+                }
+
+                _this12.errors.error = response_prop.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 8:
+                if (!(response_prop.statusText !== 'No Content')) {
+                  _context13.next = 11;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', response_prop.status);
+
+                return _context13.abrupt("return", false);
+
+              case 11:
+                _context13.next = 76;
+                break;
+
+              case 13:
+                if (!(_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "left")) {
+                  _context13.next = 24;
+                  break;
+                }
+
+                // 卒業公演0→1、下手→上手で使用
+                _response_prop2 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_guraduation_right_to_left_change',
+                  id: _this12.scene.id,
+                  usage_guraduation: 1,
+                  usage_left: 1,
+                  usage_right: 0
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop2.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 19;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop2.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 19:
+                if (!(_response_prop2.statusText !== 'No Content')) {
+                  _context13.next = 22;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop2.status);
+
+                return _context13.abrupt("return", false);
+
+              case 22:
+                _context13.next = 76;
+                break;
+
+              case 24:
+                if (!(!_this12.scene.usage_left && !_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "left")) {
+                  _context13.next = 35;
+                  break;
+                }
+
+                // 卒業公演0→1、上手0→1
+                _response_prop3 = axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_left_change',
+                  usage_guraduation: 1,
+                  usage_left: 1
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop3.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 30;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop3.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 30:
+                if (!(_response_prop3.statusText !== 'No Content')) {
+                  _context13.next = 33;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop3.status);
+
+                return _context13.abrupt("return", false);
+
+              case 33:
+                _context13.next = 76;
+                break;
+
+              case 35:
+                if (!(!_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "right")) {
+                  _context13.next = 46;
+                  break;
+                }
+
+                // 卒業公演0→1、下手0→1
+                _response_prop4 = axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_right_change',
+                  usage_guraduation: 1,
+                  usage_right: 1
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop4.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 41;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop4.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 41:
+                if (!(_response_prop4.statusText !== 'No Content')) {
+                  _context13.next = 44;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop4.status);
+
+                return _context13.abrupt("return", false);
+
+              case 44:
+                _context13.next = 76;
+                break;
+
+              case 46:
+                if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
+                  _context13.next = 57;
+                  break;
+                }
+
+                // 卒業公演0→1、上手1→0
+                _response_prop5 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_guraduation_1_left_0_change',
+                  id: _this12.scene.id,
+                  usage_guraduation: 1,
+                  usage_left: 0
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop5.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 52;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop5.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 52:
+                if (!(_response_prop5.statusText !== 'No Content')) {
+                  _context13.next = 55;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop5.status);
+
+                return _context13.abrupt("return", false);
+
+              case 55:
+                _context13.next = 76;
+                break;
+
+              case 57:
+                if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
+                  _context13.next = 68;
+                  break;
+                }
+
+                // 卒業公演0→1、下手1→0
+                _response_prop6 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_guraduation_1_right_0_change',
+                  id: _this12.scene.id,
+                  usage_guraduation: 1,
+                  usage_right: 0
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop6.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 63;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop6.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 63:
+                if (!(_response_prop6.statusText !== 'No Content')) {
+                  _context13.next = 66;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop6.status);
+
+                return _context13.abrupt("return", false);
+
+              case 66:
+                _context13.next = 76;
+                break;
+
+              case 68:
+                // 卒業公演0→1
+                _response_prop7 = axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_guraduation_change',
+                  usage_guraduation: 1
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop7.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 73;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop7.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 73:
+                if (!(_response_prop7.statusText !== 'No Content')) {
+                  _context13.next = 76;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop7.status);
+
+                return _context13.abrupt("return", false);
+
+              case 76:
+                _context13.next = 109;
+                break;
+
+              case 78:
+                if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
+                  _context13.next = 89;
+                  break;
+                }
+
+                // 卒業公演1→0、上手1→0
+                _response_prop8 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_guraduation_0_left_0_change',
+                  id: _this12.scene.id,
+                  usage_guraduation: 0,
+                  usage_left: 0
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop8.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 84;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop8.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 84:
+                if (!(_response_prop8.statusText !== 'No Content')) {
+                  _context13.next = 87;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop8.status);
+
+                return _context13.abrupt("return", false);
+
+              case 87:
+                _context13.next = 109;
+                break;
+
+              case 89:
+                if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
+                  _context13.next = 100;
+                  break;
+                }
+
+                // 卒業公演1→0、下手1→0
+                _response_prop9 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_guraduation_0_right_0_change',
+                  id: _this12.scene.id,
+                  usage_guraduation: 0,
+                  usage_right: 0
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop9.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 95;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop9.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 95:
+                if (!(_response_prop9.statusText !== 'No Content')) {
+                  _context13.next = 98;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop9.status);
+
+                return _context13.abrupt("return", false);
+
+              case 98:
+                _context13.next = 109;
+                break;
+
+              case 100:
+                if (!(_this12.scene.usage_guraduation && !_this12.editForm_scene.usage_guraduation)) {
+                  _context13.next = 109;
+                  break;
+                }
+
+                // 卒業公演1→0
+                _response_prop10 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_guraduation_0_change',
+                  id: _this12.scene.id,
+                  usage_guraduation: 0
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop10.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 106;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop10.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 106:
+                if (!(_response_prop10.statusText !== 'No Content')) {
+                  _context13.next = 109;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop10.status);
+
+                return _context13.abrupt("return", false);
+
+              case 109:
+                _context13.next = 176;
+                break;
+
+              case 111:
+                if (!_this12.editForm_scene.usage_guraduation) {
+                  _context13.next = 176;
+                  break;
+                }
+
+                if (!(_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "right")) {
+                  _context13.next = 123;
+                  break;
+                }
+
+                // 上手→下手
+                _response_prop11 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_left_to_right_change',
+                  id: _this12.scene.id,
+                  usage_left: 0,
+                  usage_right: 1
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop11.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 118;
+                  break;
+                }
+
+                _this12.errors.error = response.data_prop.errors;
+                return _context13.abrupt("return", false);
+
+              case 118:
+                if (!(_response_prop11.statusText !== 'No Content')) {
+                  _context13.next = 121;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop11.status);
+
+                return _context13.abrupt("return", false);
+
+              case 121:
+                _context13.next = 176;
+                break;
+
+              case 123:
+                if (!(_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "left")) {
+                  _context13.next = 134;
+                  break;
+                }
+
+                // 下手→上手
+                _response_prop12 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_right_to_left_change',
+                  id: _this12.scene.id,
+                  usage_left: 1,
+                  usage_right: 0
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop12.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 129;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop12.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 129:
+                if (!(_response_prop12.statusText !== 'No Content')) {
+                  _context13.next = 132;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop12.status);
+
+                return _context13.abrupt("return", false);
+
+              case 132:
+                _context13.next = 176;
+                break;
+
+              case 134:
+                if (!(!_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "left")) {
+                  _context13.next = 145;
+                  break;
+                }
+
+                // 上手0→1
+                _response_prop13 = axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_left_change',
+                  usage_left: 1
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop13.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 140;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop13.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 140:
+                if (!(_response_prop13.statusText !== 'No Content')) {
+                  _context13.next = 143;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop13.status);
+
+                return _context13.abrupt("return", false);
+
+              case 143:
+                _context13.next = 176;
+                break;
+
+              case 145:
+                if (!(!_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "right")) {
+                  _context13.next = 156;
+                  break;
+                }
+
+                // 下手0→1
+                _response_prop14 = axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_right_change',
+                  usage_right: 1
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop14.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 151;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop14.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 151:
+                if (!(_response_prop14.statusText !== 'No Content')) {
+                  _context13.next = 154;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop14.status);
+
+                return _context13.abrupt("return", false);
+
+              case 154:
+                _context13.next = 176;
+                break;
+
+              case 156:
+                if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
+                  _context13.next = 167;
+                  break;
+                }
+
+                // 上手1→0
+                _response_prop15 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_left_0_change',
+                  id: _this12.scene.id,
+                  usage_left: 0
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop15.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 162;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop15.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 162:
+                if (!(_response_prop15.statusText !== 'No Content')) {
+                  _context13.next = 165;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop15.status);
+
+                return _context13.abrupt("return", false);
+
+              case 165:
+                _context13.next = 176;
+                break;
+
+              case 167:
+                if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
+                  _context13.next = 176;
+                  break;
+                }
+
+                // 下手1→0
+                _response_prop16 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                  method: 'usage_right_0_change',
+                  id: _this12.scene.id,
+                  usage_right: 0
+                });
+                _this12.editSceneMode_prop = 100;
+
+                if (!(_response_prop16.statusText === 'Unprocessable Entity')) {
+                  _context13.next = 173;
+                  break;
+                }
+
+                _this12.errors.error = _response_prop16.data.errors;
+                return _context13.abrupt("return", false);
+
+              case 173:
+                if (!(_response_prop16.statusText !== 'No Content')) {
+                  _context13.next = 176;
+                  break;
+                }
+
+                _this12.$store.commit('error/setCode', _response_prop16.status);
+
+                return _context13.abrupt("return", false);
+
+              case 176:
+              case "end":
+                return _context13.stop();
+            }
+          }
+        }, _callee13);
       }))();
     },
     // 削除confirmのモーダル表示 
@@ -4336,26 +5154,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this9 = this;
+      var _this13 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
-        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14() {
+        return _regeneratorRuntime().wrap(function _callee14$(_context14) {
           while (1) {
-            switch (_context10.prev = _context10.next) {
+            switch (_context14.prev = _context14.next) {
               case 0:
-                _this9.showContent_confirmDelete = false;
+                _this13.showContent_confirmDelete = false;
 
-                _this9.$emit('close');
+                _this13.$emit('close');
 
-                _context10.next = 4;
-                return _this9.deletScene();
+                _context14.next = 4;
+                return _this13.deletScene();
 
               case 4:
               case "end":
-                return _context10.stop();
+                return _context14.stop();
             }
           }
-        }, _callee10);
+        }, _callee14);
       }))();
     },
     // 削除confirmのモーダル非表示_Cancelの場合
@@ -4364,69 +5182,55 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除する
     deletScene: function deletScene() {
-      var _this10 = this;
+      var _this14 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+        return _regeneratorRuntime().wrap(function _callee15$(_context15) {
           while (1) {
-            switch (_context11.prev = _context11.next) {
+            switch (_context15.prev = _context15.next) {
               case 0:
-                _context11.next = 2;
-                return axios["delete"]('/api/scenes/' + _this10.scene.id);
+                _context15.next = 2;
+                return axios["delete"]('/api/scenes/' + _this14.scene.id);
 
               case 2:
-                response = _context11.sent;
+                response = _context15.sent;
 
                 if (!(response.statusText === 'Unprocessable Entity')) {
-                  _context11.next = 6;
+                  _context15.next = 6;
                   break;
                 }
 
-                _this10.errors.error = response.data.errors;
-                return _context11.abrupt("return", false);
+                _this14.errors.error = response.data.errors;
+                return _context15.abrupt("return", false);
 
               case 6:
-                _this10.scene = null;
-                _this10.editForm_scene.id = null;
-                _this10.editForm_scene.character_id = null;
-                _this10.editForm_scene.character.name = null;
-                _this10.editForm_scene.character.section.section = null;
-                _this10.editForm_scene.prop_id = null;
-                _this10.editForm_scene.prop.name = null;
-                _this10.editForm_scene.prop.owner_id = '';
-                _this10.editForm_scene.prop.owner.name = '';
-                _this10.editForm_scene.prop.url = '';
-                _this10.editForm_scene.prop.prop_comments = '';
-                _this10.editForm_scene.first_page = '';
-                _this10.editForm_scene.final_page = '';
-                _this10.editForm_scene.usage = 0;
-                _this10.editForm_scene.scene_comments = [];
+                _this14.resetScene();
 
                 if (!(response.statusText !== 'No Content')) {
-                  _context11.next = 24;
+                  _context15.next = 10;
                   break;
                 }
 
-                _this10.$store.commit('error/setCode', response.status);
+                _this14.$store.commit('error/setCode', response.status);
 
-                return _context11.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
-              case 24:
+              case 10:
                 // メッセージ登録
-                _this10.$store.commit('message/setContent', {
+                _this14.$store.commit('message/setContent', {
                   content: '使用シーンが1つ削除されました！',
                   timeout: 6000
                 });
 
-                _this10.$emit('close');
+                _this14.$emit('close');
 
-              case 26:
+              case 12:
               case "end":
-                return _context11.stop();
+                return _context15.stop();
             }
           }
-        }, _callee11);
+        }, _callee15);
       }))();
     }
   }
@@ -7085,8 +7889,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }
                   }
                 }, {
-                  header: '使用するか',
+                  header: '中間発表',
                   key: 'usage',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: '卒業公演',
+                  key: 'usage_guraduation',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: '上手',
+                  key: 'usage_left',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: '下手',
+                  key: 'usage_right',
                   width: 12,
                   style: {
                     alignment: {
@@ -7134,6 +7968,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 worksheet.getCell('C1').fill = fill;
                 worksheet.getCell('D1').font = font;
                 worksheet.getCell('D1').fill = fill;
+                worksheet.getCell('E1').font = font;
+                worksheet.getCell('E1').fill = fill;
+                worksheet.getCell('F1').font = font;
+                worksheet.getCell('F1').fill = fill;
+                worksheet.getCell('G1').font = font;
+                worksheet.getCell('G1').fill = fill;
 
                 _this4.showProps.forEach(function (prop, index) {
                   var datas = [];
@@ -7146,6 +7986,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
 
                   if (prop.usage) {
+                    datas.push('〇');
+                  } else {
+                    datas.push(null);
+                  }
+
+                  if (prop.usage_guraduation) {
+                    datas.push('〇');
+                  } else {
+                    datas.push(null);
+                  }
+
+                  if (prop.usage_left) {
+                    datas.push('〇');
+                  } else {
+                    datas.push(null);
+                  }
+
+                  if (prop.usage_right) {
                     datas.push('〇');
                   } else {
                     datas.push(null);
@@ -7170,10 +8028,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }); // ③ファイル生成
 
 
-                _context4.next = 18;
+                _context4.next = 24;
                 return workbook.xlsx.writeBuffer();
 
-              case 18:
+              case 24:
                 uint8Array = _context4.sent;
                 // xlsxの場合
                 blob = new Blob([uint8Array], {
@@ -7187,7 +8045,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 a.click();
                 a.remove();
 
-              case 27:
+              case 33:
               case "end":
                 return _context4.stop();
             }
@@ -7402,8 +8260,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }
                   }
                 }, {
-                  header: '使用するか',
+                  header: '中間発表',
                   key: 'usage',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: '卒業公演',
+                  key: 'usage_guraduation',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: '上手',
+                  key: 'usage_left',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: '下手',
+                  key: 'usage_right',
                   width: 12,
                   style: {
                     alignment: {
@@ -7455,6 +8343,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 worksheet.getCell('E1').fill = fill;
                 worksheet.getCell('F1').font = font;
                 worksheet.getCell('F1').fill = fill;
+                worksheet.getCell('G1').font = font;
+                worksheet.getCell('G1').fill = fill;
+                worksheet.getCell('H1').font = font;
+                worksheet.getCell('H1').fill = fill;
+                worksheet.getCell('I1').font = font;
+                worksheet.getCell('I1').fill = fill;
 
                 _this4.showScenes.forEach(function (scene, index) {
                   var datas = [];
@@ -7464,6 +8358,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   datas.push(scene.prop.name);
 
                   if (scene.usage) {
+                    datas.push('〇');
+                  } else {
+                    datas.push(null);
+                  }
+
+                  if (scene.usage_guraduation) {
+                    datas.push('〇');
+                  } else {
+                    datas.push(null);
+                  }
+
+                  if (scene.usage_left) {
+                    datas.push('〇');
+                  } else {
+                    datas.push(null);
+                  }
+
+                  if (scene.usage_right) {
                     datas.push('〇');
                   } else {
                     datas.push(null);
@@ -7488,10 +8400,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }); // ③ファイル生成
 
 
-                _context4.next = 22;
+                _context4.next = 28;
                 return workbook.xlsx.writeBuffer();
 
-              case 22:
+              case 28:
                 uint8Array = _context4.sent;
                 // xlsxの場合
                 blob = new Blob([uint8Array], {
@@ -7505,7 +8417,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 a.click();
                 a.remove();
 
-              case 31:
+              case 37:
               case "end":
                 return _context4.stop();
             }
@@ -8172,9 +9084,7 @@ var render = function render() {
     staticStyle: {
       display: "inline"
     }
-  }, [_vm._v(_vm._s(_vm.scene.character.name))]), _vm._v(" "), _vm.scene.usage ? _c("div", [_c("i", {
-    staticClass: "fas fa-tag"
-  })]) : _vm._e()]), _vm._v(" "), _vm.scene !== null && _vm.scene.first_page !== null ? _c("span", [_vm._v("p. " + _vm._s(_vm.scene.first_page) + " \n            "), _vm.scene !== null && _vm.scene.final_page !== null ? _c("span", [_vm._v(" ~ p. " + _vm._s(_vm.scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", [_vm._v("小道具：" + _vm._s(_vm.scene.prop.name))]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.scene.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.scene.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.scene.prop.prop_comments.length ? _c("ul", _vm._l(_vm.scene.prop.prop_comments, function (comment) {
+  }, [_vm._v(_vm._s(_vm.scene.character.name))]), _vm._v(" "), _vm.scene.usage ? _c("div", [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), _vm.scene.usage_guraduation ? _c("div", [_vm._v("Ⓖ")]) : _vm._e(), _vm._v(" "), _vm.scene.usage_left ? _c("div", [_vm._v("㊤")]) : _vm._e(), _vm._v(" "), _vm.scene.usage_right ? _c("div", [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), _vm.scene !== null && _vm.scene.first_page !== null ? _c("span", [_vm._v("p. " + _vm._s(_vm.scene.first_page) + " \n            "), _vm.scene !== null && _vm.scene.final_page !== null ? _c("span", [_vm._v(" ~ p. " + _vm._s(_vm.scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", [_vm._v("小道具：" + _vm._s(_vm.scene.prop.name))]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.scene.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.scene.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.scene.prop.prop_comments.length ? _c("ul", _vm._l(_vm.scene.prop.prop_comments, function (comment) {
     return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
   }), 0) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.scene.scene_comments.length ? _c("ul", _vm._l(_vm.scene.scene_comments, function (comment) {
     return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
@@ -8280,8 +9190,7 @@ var render = function render() {
     staticClass: "form__check__input",
     attrs: {
       type: "checkbox",
-      id: "scene_usage_scene_edit",
-      checked: ""
+      id: "scene_usage_scene_edit"
     },
     domProps: {
       checked: Array.isArray(_vm.editForm_scene.usage) ? _vm._i(_vm.editForm_scene.usage, null) > -1 : _vm.editForm_scene.usage
@@ -8306,7 +9215,99 @@ var render = function render() {
         }
       }
     }
-  })]), _vm._v(" "), _c("label", {
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "scene_usage_guraduation_scene_edit"
+    }
+  }, [_vm._v("卒業公演での使用")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.usage_guraduation,
+      expression: "editForm_scene.usage_guraduation"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "scene_usage_guraduation_scene_edit"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.editForm_scene.usage_guraduation) ? _vm._i(_vm.editForm_scene.usage_guraduation, null) > -1 : _vm.editForm_scene.usage_guraduation
+    },
+    on: {
+      change: [function ($event) {
+        var $$a = _vm.editForm_scene.usage_guraduation,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.editForm_scene, "usage_guraduation", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.editForm_scene, "usage_guraduation", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.editForm_scene, "usage_guraduation", $$c);
+        }
+      }, _vm.selectGuraduation]
+    }
+  }), _vm._v(" "), _vm.guradutaion_tag ? _c("div", [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.usage_stage,
+      expression: "editForm_scene.usage_stage"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "radio",
+      id: "scene_usage_left_scene_edit",
+      value: "left"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editForm_scene.usage_stage, "left")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.editForm_scene, "usage_stage", "left");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "scene_usage_left_scene_edit"
+    }
+  }, [_vm._v("上手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.usage_stage,
+      expression: "editForm_scene.usage_stage"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "radio",
+      id: "scene_usage_right_scene_edit",
+      value: "right"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editForm_scene.usage_stage, "right")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.editForm_scene, "usage_stage", "right");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "scene_usage_right_scene_edit"
+    }
+  }, [_vm._v("下手")])]) : _vm._e()]), _vm._v(" "), _c("label", {
     attrs: {
       "for": "page"
     }
@@ -10187,6 +11188,12 @@ var render = function render() {
       }
     }, [_vm._v(_vm._s(prop.name))]), _vm._v(" "), prop.owner ? _c("td", [_vm._v(_vm._s(prop.owner.name))]) : _c("td"), _vm._v(" "), prop.usage ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
+    })]) : _c("td"), _vm._v(" "), prop.usage_guraduation ? _c("td", [_c("i", {
+      staticClass: "fas fa-check fa-fw"
+    })]) : _c("td"), _vm._v(" "), prop.usage_left ? _c("td", [_c("i", {
+      staticClass: "fas fa-check fa-fw"
+    })]) : _c("td"), _vm._v(" "), prop.usage_right ? _c("td", [_c("i", {
+      staticClass: "fas fa-check fa-fw"
     })]) : _c("td"), _vm._v(" "), prop.prop_comments.length ? _c("td", _vm._l(prop.prop_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.created_at))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.updated_at))])]);
@@ -10223,6 +11230,12 @@ var render = function render() {
       }
     })]), _vm._v(" "), _c("div", [_c("div", [_vm._v("\n              " + _vm._s(prop.name) + "\n            ")]), _vm._v(" "), prop.owner ? _c("div", [_vm._v("\n              " + _vm._s(prop.owner.name) + "\n            ")]) : _vm._e(), _vm._v(" "), prop.usage ? _c("div", [_c("i", {
       staticClass: "fas fa-tag"
+    })]) : _vm._e(), _vm._v(" "), prop.usage_guraduation ? _c("div", [_c("i", {
+      staticClass: "fas fa-tag"
+    })]) : _vm._e(), _vm._v(" "), prop.usage_left ? _c("div", [_c("i", {
+      staticClass: "fas fa-tag"
+    })]) : _vm._e(), _vm._v(" "), prop.right ? _c("div", [_c("i", {
+      staticClass: "fas fa-tag"
     })]) : _vm._e(), _vm._v(" "), prop.prop_comments.length ? _c("div", _vm._l(prop.prop_comments, function (memo) {
       return _c("div", [_vm._v("\n                " + _vm._s(memo.memo) + "\n              ")]);
     }), 0) : _vm._e()])])]);
@@ -10246,7 +11259,7 @@ var staticRenderFns = [function () {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("使用状況")]), _vm._v(" "), _c("th", [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]);
+  return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("中間発表")]), _vm._v(" "), _c("th", [_vm._v("卒業公演")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]);
 }];
 render._withStripped = true;
 
@@ -10286,11 +11299,17 @@ var render = function render() {
           return _vm.openModal_sceneDetail(scene.id);
         }
       }
-    }, [_vm._v(_vm._s(index + 1))]), _vm._v(" "), scene.first_page ? _c("td", [_vm._v(_vm._s(scene.first_page))]) : _c("td"), _vm._v(" "), scene.final_page ? _c("td", [_vm._v(_vm._s(scene.final_page))]) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.prop.name))]), _vm._v(" "), scene.scene_comments.length ? _c("td", _vm._l(scene.scene_comments, function (memo) {
-      return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
-    }), 0) : _c("td"), _vm._v(" "), scene.usage ? _c("td", [_c("i", {
+    }, [_vm._v(_vm._s(index + 1))]), _vm._v(" "), scene.first_page ? _c("td", [_vm._v(_vm._s(scene.first_page))]) : _c("td"), _vm._v(" "), scene.final_page ? _c("td", [_vm._v(_vm._s(scene.final_page))]) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.prop.name))]), _vm._v(" "), scene.usage ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
-    })]) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.created_at))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.updated_at))])]);
+    })]) : _c("td"), _vm._v(" "), scene.usage_guraduation ? _c("td", [_c("i", {
+      staticClass: "fas fa-check fa-fw"
+    })]) : _c("td"), _vm._v(" "), scene.usage_left ? _c("td", [_c("i", {
+      staticClass: "fas fa-check fa-fw"
+    })]) : _c("td"), _vm._v(" "), scene.usage_right ? _c("td", [_c("i", {
+      staticClass: "fas fa-check fa-fw"
+    })]) : _c("td"), _vm._v(" "), scene.scene_comments.length ? _c("td", _vm._l(scene.scene_comments, function (memo) {
+      return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
+    }), 0) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.created_at))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.updated_at))])]);
   }), 0) : _vm._e()]), _vm._v(" "), _c("detailScene", {
     directives: [{
       name: "show",
@@ -10311,7 +11330,7 @@ var staticRenderFns = [function () {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("何ページから")]), _vm._v(" "), _c("th", [_vm._v("何ページまで")]), _vm._v(" "), _c("th", [_vm._v("登場人物")]), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("使用状況")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]);
+  return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("何ページから")]), _vm._v(" "), _c("th", [_vm._v("何ページまで")]), _vm._v(" "), _c("th", [_vm._v("登場人物")]), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("中間発表")]), _vm._v(" "), _c("th", [_vm._v("卒業公演")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]);
 }];
 render._withStripped = true;
 
