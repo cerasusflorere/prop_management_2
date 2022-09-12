@@ -7,6 +7,8 @@ import App from './App.vue'
 import store from './store'
 // 確認ダイアログ
 import VuejsDialog from 'vuejs-dialog';
+// css
+import '../css/app.css';
 
 
 Vue.use(VuejsDialog);

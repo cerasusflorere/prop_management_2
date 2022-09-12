@@ -1,7 +1,7 @@
 <template>
 <!-- 登録-使用シーン上ではid=overay と id=contentを有効にする-->
-  <div v-bind:id="[val === 1 ? 'overlay' : '']">
-    <div v-bind:id="[val === 1 ? 'content' : '']" class="panel">
+  <div v-bind:class="[val === 1 ? 'overlay' : '']">
+    <div v-bind:class="[val === 1 ? 'content' : '']" class="panel">
         <form class="form"  @submit.prevent="register_prop">
           <!-- エラー表示 -->
           <div class="errors" v-if="errors.error">
@@ -255,25 +255,3 @@ export default {
   }
 }
 </script>
-
-<style>
-#overlay{
-  overflow-y: scroll;
-  z-index: 9999;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background-color:rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#content{
-  z-index: 2;
-  width: 50%;
-  background-color: white;
-}
-</style>

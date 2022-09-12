@@ -1,0 +1,73 @@
+/* 表 */ /* シーンも小道具も同一 */
+table {
+  margin: auto;
+  width: 95%;
+  border-collapse: collapse;    
+}
+
+table th, table td {
+  border: solid 1px black; /*実線 1px 黒*/
+  text-align: center;
+}
+
+table th {/*table内のthに対して*/
+  position: sticky;
+  top: 3.9rem;
+  padding: 0.5em;/*上下左右10pxずつ*/
+  color: #169b62;/*文字色 緑*/
+  background: #ddefe3;/*背景色*/
+}
+
+table td {/*table内のtdに対して*/
+  padding: 0.3em 0.5em;/*上下3pxで左右10px*/
+}
+
+/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/
+.overlay {
+  overflow-y: scroll;
+  z-index: 9999;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay-custom {
+  padding-bottom: 1em;
+  align-items: flex-start;
+}
+  
+.content {
+  z-index: 2;
+  width: 50%;
+  background-color: white;
+}
+
+/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */
+.content-detail {
+  width: 80%;
+  aspect-ratio: 2 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.detail-box {
+  display: flex;
+  height: 80%;
+}
+.detail-box>div {
+  width:50%;
+}
+
+/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */
+.content-confirm-dialog {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

@@ -1,6 +1,6 @@
 <template>
-  <div id="overlay">
-    <div id="content" class="panel">
+  <div class="overlay">
+    <div class="content content-detail panel">
         <form class="form"  @submit.prevent="confirm_owner">
         <!-- 持ち主 -->
         <label for="owner_edit">持ち主</label>
@@ -159,29 +159,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-#overlay{
-  overflow-y: scroll;
-  z-index: 9999;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background-color:rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#content {
-  z-index: 2;
-  background-color: white;
-  width: 80%;
-  aspect-ratio: 2 / 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-</style>

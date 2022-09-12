@@ -1,6 +1,6 @@
 <template>
-  <div id="overlay">
-    <div id="content" class="panel">
+  <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']">
+    <div class="content panel" ref="content_list_props">
       <ul>
         <li v-for="prop in props_list">
           <div type="button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</div>
@@ -36,6 +36,8 @@ export default {
     return {
       // 小道具リスト
       props_list: [],
+      // overlayのクラス
+      overlay_class: 1,
       // 小道具詳細
       showContent: false,
       postProp: ""
@@ -44,7 +46,16 @@ export default {
   watch: {
     postFlag: {
       async handler (postFlag) {
-        await this.fetchProps()
+        await this.fetchProps();
+
+        const content_dom = this.$refs.content_list_props;
+        const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+        if(content_rect.top < 0){
+          this.overlay_class = 0;
+        }else{
+          this.overlay_class = 1;
+        }
       },
       immediate: true
     }
@@ -75,25 +86,3 @@ export default {
   }
 }
 </script>
-
-<style>
-#overlay{
-  overflow-y: scroll;
-  z-index: 9999;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background-color:rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#content{
-  z-index: 2;
-  width: 50%;
-  background-color: white;
-}
-</style>

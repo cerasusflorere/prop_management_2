@@ -306,28 +306,3 @@
     }
   }  
 </script>
-
-<style>
-  table {
-    margin: auto;
-    width: 95%;
-    border-collapse: collapse;    
-  }
-
-  table th, table td {
-    border: solid 1px black; /*実線 1px 黒*/
-    text-align: center;
-  }
-
-  table th {/*table内のthに対して*/
-    position: sticky;
-    top: 3.9rem;
-    padding: 0.5em;/*上下左右10pxずつ*/
-    color: #169b62;/*文字色 緑*/
-    background: #ddefe3;/*背景色*/
-  }
-
-  table td {/*table内のtdに対して*/
-    padding: 0.3em 0.5em;/*上下3pxで左右10px*/
-  }
-</style>

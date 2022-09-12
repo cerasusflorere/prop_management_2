@@ -1,6 +1,6 @@
 <template>
-  <div id="overlay">
-    <div id="content" class="panel">
+  <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']">
+    <div class="content content-detail panel" ref="content_detail_prop">
       <!--- 閲覧/編集 -->
       <div class="form__button">
         <button type="button" v-show="tab === 1" class="button button--inverse" @click="alterTab"><i class="fas fa-edit fa-fw"></i>編集</button>
@@ -245,6 +245,8 @@ export default {
       optionCharacters: [],
       // タブ
       tab: 1,
+      // overlayのクラス
+      overlay_class: 1,
       // 写真プレビュー
       preview: null,
       // エラー
@@ -270,6 +272,15 @@ export default {
         await this.fetchProp()
         await this.fetchOwners()
         await this.fetchProps()
+
+        const content_dom = this.$refs.content_detail_prop;
+        const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+        if(content_rect.top < 0){
+          this.overlay_class = 0;
+        }else{
+          this.overlay_class = 1;
+        }
       },
       immediate: true,
     },
@@ -710,37 +721,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-#overlay{
-  overflow-y: scroll;
-  z-index: 9999;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background-color:rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#content {
-  z-index: 2;
-  background-color: white;
-  width: 80%;
-  aspect-ratio: 2 / 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.detail-box {
-  display: flex;
-  height: 80%;
-}
-.detail-box>div {
-  width:50%;
-}
-</style>
