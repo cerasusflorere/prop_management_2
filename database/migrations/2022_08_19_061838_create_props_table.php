@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('props', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 200)->unique();
+            $table->string('name', 200);
             $table->unsignedInteger('owner_id');
             $table->string('public_id', 200);
             $table->text('url', 200);

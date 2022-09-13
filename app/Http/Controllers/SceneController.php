@@ -16,7 +16,7 @@ class SceneController extends Controller
      */
     public function index()
     {
-        $scenes = Scene::with(['character', 'prop', 'scene_comments'])->orderBy('first_page')->get();
+        $scenes = Scene::with(['character', 'prop', 'scene_comments'])->orderBy('first_page')->orderBy('created_at')->get();     
 
         return $scenes;
     }

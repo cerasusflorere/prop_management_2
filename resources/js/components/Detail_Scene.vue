@@ -249,18 +249,17 @@
       postScene: {
         async handler(postScene) {
           if(this.postScene){
-            await this.fetchCharacters() // 最初にしないと間に合わない
-            await this.fetchScene()
-            await this.fetchProps()
+            await  this.fetchCharacters() // 最初にしないと間に合わない            
+            await  this.fetchProps()
+            await  this.fetchScene()
             
             const content_dom = this.$refs.content_detail_scene;
             const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-
             if(content_rect.top < 0){
               this.overlay_class = 0;
             }else{
               this.overlay_class = 1;
-            }
+            }           
           }       
         },
         immediate: true,
@@ -299,7 +298,7 @@
     // 中間発表のみ変えたらページ遷移しない
     methods: {
       // シーンの詳細を取得
-      async fetchScene () {        
+      async fetchScene () {    
         this.resetScene();
         this.tab_scene = 1
         const response = await axios.get('/api/scenes/'+ this.postScene)
@@ -318,7 +317,12 @@
         this.editForm_scene.prop_id = this.scene.prop_id
         this.editForm_scene.prop.name = this.scene.prop.name
         this.editForm_scene.prop.owner_id = this.scene.prop.owner_id
-        this.editForm_scene.prop.owner.name = this.scene.prop.owner.name
+        if(this.scene.prop.owner){
+          this.editForm_scene.prop.owner.name = this.scene.prop.owner.name
+        }else{
+          this.editForm_scene.prop.owner.name = '';
+        }
+        
         this.editForm_scene.prop.url = this.scene.prop.url
         this.editForm_scene.prop.prop_comments = this.scene.prop.prop_comments
         this.editForm_scene.first_page = this.scene.first_page

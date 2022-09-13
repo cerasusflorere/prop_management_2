@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('characters', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('section_id');
-            $table->string('name', 200);
+            $table->string('name', 200)->unique();
             $table->timestamps();
 
             $table->foreign('section_id')->references('id')->on('character_sections');

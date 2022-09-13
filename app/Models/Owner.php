@@ -23,6 +23,6 @@ class Owner extends Model
      */
     public function props()
     {
-        return $this->hasMany('App\Models\Prop')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\Prop');
     }
 }

@@ -37,7 +37,7 @@ class PropController extends Controller
      */
     public function index_all()
     {
-        $props = Prop::with('owner', 'prop_comments')->orderBy('kana')->get();
+        $props = Prop::with('owner', 'prop_comments')->orderBy('kana')->orderBy('owner_id')->orderBy('created_at')->get();
 
         return $props;
     }
@@ -52,7 +52,7 @@ class PropController extends Controller
     {
         if($request->photo){
             // Cloudinaryにファイルを保存する
-            $result = $request->photo->storeOnCloudinary('prop_management');
+            $result = $request->photo->storeOnCloudinary('prop_management_local');
             $url = $result->getSecurePath(); 
             $public_id = $result->getPublicId();
         } else {
@@ -175,7 +175,7 @@ class PropController extends Controller
             // 写真新規投稿
             if($request->photo){
                 // Cloudinaryにファイルを保存する
-                $result = $request->photo->storeOnCloudinary('prop_management');
+                $result = $request->photo->storeOnCloudinary('prop_management_local');
                 $url = $result->getSecurePath(); 
                 $public_id = $result->getPublicId();
             } else {
@@ -238,7 +238,7 @@ class PropController extends Controller
             //写真アップデート
             if($request->photo){
                 // Cloudinaryにファイルを保存する
-                $result = $request->photo->storeOnCloudinary('prop_management');
+                $result = $request->photo->storeOnCloudinary('prop_management_local');
                 $url = $result->getSecurePath(); 
                 $public_id = $result->getPublicId();
             } else {

@@ -1,12 +1,15 @@
 <template>
   <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']">
     <div class="content panel" ref="content_list_props">
-      <ul>
+      <ul v-if="props_list.length">
         <li v-for="prop in props_list">
           <div type="button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</div>
         </li>
         <detailProp :postProp="postProp" v-show="showContent" @close="closeModal_propDetail" />
       </ul>
+      <div v-else>
+        小道具は登録されていません。
+      </div>
       <button type="button" @click="$emit('close')" class="button button--inverse">閉じる</button>
     </div>
   </div>

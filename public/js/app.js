@@ -3661,11 +3661,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 case 3:
                   _context.next = 5;
-                  return _this.fetchScene();
+                  return _this.fetchProps();
 
                 case 5:
                   _context.next = 7;
-                  return _this.fetchProps();
+                  return _this.fetchScene();
 
                 case 7:
                   content_dom = _this.$refs.content_detail_scene;
@@ -3816,7 +3816,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this4.editForm_scene.prop_id = _this4.scene.prop_id;
                 _this4.editForm_scene.prop.name = _this4.scene.prop.name;
                 _this4.editForm_scene.prop.owner_id = _this4.scene.prop.owner_id;
-                _this4.editForm_scene.prop.owner.name = _this4.scene.prop.owner.name;
+
+                if (_this4.scene.prop.owner) {
+                  _this4.editForm_scene.prop.owner.name = _this4.scene.prop.owner.name;
+                } else {
+                  _this4.editForm_scene.prop.owner.name = '';
+                }
+
                 _this4.editForm_scene.prop.url = _this4.scene.prop.url;
                 _this4.editForm_scene.prop.prop_comments = _this4.scene.prop.prop_comments;
                 _this4.editForm_scene.first_page = _this4.scene.first_page;
@@ -8234,9 +8240,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 6:
                 _this2.scenes = response.data; // オリジナルデータ
 
+                console.log(_this2.scenes);
                 _this2.showScenes = JSON.parse(JSON.stringify(_this2.scenes));
 
-              case 8:
+              case 9:
               case "end":
                 return _context2.stop();
             }
@@ -10014,7 +10021,7 @@ var render = function render() {
   }, [_c("div", {
     ref: "content_list_props",
     staticClass: "content panel"
-  }, [_c("ul", [_vm._l(_vm.props_list, function (prop) {
+  }, [_vm.props_list.length ? _c("ul", [_vm._l(_vm.props_list, function (prop) {
     return _c("li", [_c("div", {
       attrs: {
         type: "button"
@@ -10038,7 +10045,7 @@ var render = function render() {
     on: {
       close: _vm.closeModal_propDetail
     }
-  })], 2), _vm._v(" "), _c("button", {
+  })], 2) : _c("div", [_vm._v("\n      小道具は登録されていません。\n    ")]), _vm._v(" "), _c("button", {
     staticClass: "button button--inverse",
     attrs: {
       type: "button"
@@ -11231,7 +11238,7 @@ var render = function render() {
     })]) : _c("td"), _vm._v(" "), prop.prop_comments.length ? _c("td", _vm._l(prop.prop_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.created_at))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.updated_at))])]);
-  }), 0) : _vm._e()])]), _vm._v(" "), _c("div", {
+  }), 0) : _vm._e()]), _vm._v(" "), !_vm.showProps.length ? _c("div", [_vm._v("\n      小道具は登録されていません。\n    ")]) : _vm._e()]), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -11273,7 +11280,7 @@ var render = function render() {
     })]) : _vm._e(), _vm._v(" "), prop.prop_comments.length ? _c("div", _vm._l(prop.prop_comments, function (memo) {
       return _c("div", [_vm._v("\n                " + _vm._s(memo.memo) + "\n              ")]);
     }), 0) : _vm._e()])])]);
-  }), 0) : _vm._e()]), _vm._v(" "), _c("detailProp", {
+  }), 0) : _c("div", [_vm._v("\n      小道具は登録されていません。\n    ")])]), _vm._v(" "), _c("detailProp", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -11344,7 +11351,7 @@ var render = function render() {
     })]) : _c("td"), _vm._v(" "), scene.scene_comments.length ? _c("td", _vm._l(scene.scene_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.created_at))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.updated_at))])]);
-  }), 0) : _vm._e()]), _vm._v(" "), _c("detailScene", {
+  }), 0) : _vm._e()]), _vm._v(" "), !_vm.showScenes.length ? _c("div", [_vm._v("\n    使用シーンは登録されていません。\n  ")]) : _vm._e(), _vm._v(" "), _c("detailScene", {
     directives: [{
       name: "show",
       rawName: "v-show",

@@ -58,8 +58,11 @@
             <!-- 更新日時 -->
             <td>{{ scene.updated_at }}</td>
         </tr>
-      </tbody>      
+      </tbody>
     </table>
+    <div v-if="!showScenes.length">
+      使用シーンは登録されていません。
+    </div>
    
     <detailScene :postScene="postScene" v-show="showContent" @close="closeModal_sceneDetail" />
   </div>
@@ -106,6 +109,8 @@
         }
 
         this.scenes = response.data // オリジナルデータ
+
+        console.log(this.scenes);
         this.showScenes = JSON.parse(JSON.stringify(this.scenes));
       },
 

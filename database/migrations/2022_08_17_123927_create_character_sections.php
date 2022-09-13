@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('character_sections', function (Blueprint $table) {
+        Schema::create('sections', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('section', 200);
+            $table->string('section', 200)->unique();
             $table->timestamps();
         });
     }

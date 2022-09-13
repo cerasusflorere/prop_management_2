@@ -65,6 +65,10 @@
           </tr>
         </tbody>      
       </table>
+
+      <div v-if="!showProps.length">
+        小道具は登録されていません。
+      </div>
     </div>
 
     <div v-show="tabProp === 2" class="photo-list">
@@ -112,6 +116,10 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div v-else>
+        小道具は登録されていません。
       </div>
     </div> 
     <detailProp :postProp="postProp" v-show="showContent" @close="closeModal_propDetail" /> 
