@@ -1,5 +1,5 @@
 <template>
-  <div class="overlay">
+  <div class="overlay" @click.self="$emit('close')">
     <div class="content content-confirm-dialog panel">
       <form class="form"  @submit.prevent="confirm_section">
         <!-- 区分 -->

@@ -1,5 +1,5 @@
 <template>
-  <div class="overlay">
+  <div class="overlay" @click.self="$emit('close')">
     <div class="content content-detail panel">
         <form class="form"  @submit.prevent="confirm_character">
         <!-- 登場人物 -->

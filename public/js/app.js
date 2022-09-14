@@ -7175,194 +7175,157 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       var last_flag = false;
       first_pages.forEach( /*#__PURE__*/function () {
-        var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(page, index) {
-          var response, prop, usage, usage_guraduation, response_prop, _response_prop, _response_prop2, _response_prop3;
+        var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(page, index) {
+          var _this5 = this;
 
-          return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          var promise;
+          return _regeneratorRuntime().wrap(function _callee6$(_context6) {
             while (1) {
-              switch (_context5.prev = _context5.next) {
+              switch (_context6.prev = _context6.next) {
                 case 0:
-                  _context5.next = 2;
-                  return axios.post('/api/scenes', {
-                    character_id: this.registerForm.character,
-                    prop_id: this.registerForm.prop,
-                    first_page: page,
-                    final_page: final_pages[index],
-                    usage: this.registerForm.usage,
-                    usage_guraduation: this.registerForm.usage_guraduation,
-                    usage_left: usage_left,
-                    usage_right: usage_right,
-                    memo: this.registerForm.comment
+                  promise = new Promise( /*#__PURE__*/function () {
+                    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(resolve) {
+                      var response;
+                      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+                        while (1) {
+                          switch (_context5.prev = _context5.next) {
+                            case 0:
+                              _context5.next = 2;
+                              return axios.post('/api/scenes', {
+                                character_id: _this5.registerForm.character,
+                                prop_id: _this5.registerForm.prop,
+                                first_page: page,
+                                final_page: final_pages[index],
+                                usage: _this5.registerForm.usage,
+                                usage_guraduation: _this5.registerForm.usage_guraduation,
+                                usage_left: usage_left,
+                                usage_right: usage_right,
+                                memo: _this5.registerForm.comment
+                              });
+
+                            case 2:
+                              response = _context5.sent;
+                              resolve(response);
+
+                            case 4:
+                            case "end":
+                              return _context5.stop();
+                          }
+                        }
+                      }, _callee5);
+                    }));
+
+                    return function (_x3) {
+                      return _ref2.apply(this, arguments);
+                    };
+                  }()).then(function (response) {
+                    if (response.statusText === 'Unprocessable Entity') {
+                      _this5.errors.error = response.data.errors;
+                      return false;
+                    }
+
+                    if (response.statusText !== 'Created') {
+                      _this5.$store.commit('error/setCode', response.status);
+
+                      return false;
+                    } else if (response.statusText === 'Created') {
+                      return response;
+                    }
+                  }).then(function (response) {
+                    if (index === first_pages.length - 1) {
+                      var prop = _this5.registerForm.prop;
+                      var usage = _this5.registerForm.usage;
+                      var usage_guraduation = _this5.registerForm.usage_guraduation; // 諸々データ削除
+
+                      _this5.reset();
+
+                      if (usage || usage_guraduation) {
+                        // 小道具の使用有無変更
+                        if (usage) {
+                          // 中間発表で使用
+                          var response_prop = axios.post('/api/props/' + prop, {
+                            method: 'usage_change',
+                            usage: usage
+                          });
+
+                          if (response_prop.statusText === 'Unprocessable Entity') {
+                            _this5.errors.error = response.data.errors;
+                            return false;
+                          }
+
+                          if (response_prop.statusText !== 'No Content') {
+                            _this5.$store.commit('error/setCode', response.status);
+
+                            return false;
+                          }
+                        }
+
+                        if (usage_guraduation) {
+                          if (usage_left) {
+                            // 上手で使用
+                            var _response_prop = axios.post('/api/props/' + prop, {
+                              method: 'usage_left_change',
+                              usage_guraduation: usage_guraduation,
+                              usage_left: usage_left
+                            });
+
+                            if (_response_prop.statusText === 'Unprocessable Entity') {
+                              _this5.errors.error = response.data.errors;
+                              return false;
+                            }
+
+                            if (_response_prop.statusText !== 'No Content') {
+                              _this5.$store.commit('error/setCode', response.status);
+
+                              return false;
+                            }
+                          } else if (usage_right) {
+                            // 下手で使用
+                            var _response_prop2 = axios.post('/api/props/' + prop, {
+                              method: 'usage_right_change',
+                              usage_guraduation: usage_guraduation,
+                              usage_right: usage_right
+                            });
+
+                            if (_response_prop2.statusText === 'Unprocessable Entity') {
+                              _this5.errors.error = response.data.errors;
+                              return false;
+                            }
+
+                            if (_response_prop2.statusText !== 'No Content') {
+                              _this5.$store.commit('error/setCode', response.status);
+
+                              return false;
+                            }
+                          } else {
+                            // とりあえず卒業公演で使用
+                            var _response_prop3 = axios.post('/api/props/' + prop, {
+                              method: 'usage_guraduation_change',
+                              usage_guraduation: usage_guraduation
+                            });
+
+                            if (_response_prop3.statusText === 'Unprocessable Entity') {
+                              _this5.errors.error = response.data.errors;
+                              return false;
+                            }
+
+                            if (_response_prop3.statusText !== 'No Content') {
+                              _this5.$store.commit('error/setCode', response.status);
+
+                              return false;
+                            }
+                          }
+                        }
+                      }
+                    }
                   });
 
-                case 2:
-                  response = _context5.sent;
-
-                  if (!(response.statusText === 'Unprocessable Entity')) {
-                    _context5.next = 6;
-                    break;
-                  }
-
-                  this.errors.error = response.data.errors;
-                  return _context5.abrupt("return", false);
-
-                case 6:
-                  if (!(response.statusText !== 'Created')) {
-                    _context5.next = 9;
-                    break;
-                  }
-
-                  this.$store.commit('error/setCode', response.status);
-                  return _context5.abrupt("return", false);
-
-                case 9:
-                  if (!(index === first_pages.length - 1)) {
-                    _context5.next = 51;
-                    break;
-                  }
-
-                  prop = this.registerForm.prop;
-                  usage = this.registerForm.usage;
-                  usage_guraduation = this.registerForm.usage_guraduation; // 諸々データ削除
-
-                  this.reset();
-
-                  if (!(response.statusText === 'Created' && (usage || usage_guraduation))) {
-                    _context5.next = 51;
-                    break;
-                  }
-
-                  if (!usage) {
-                    _context5.next = 23;
-                    break;
-                  }
-
-                  // 中間発表で使用
-                  response_prop = axios.post('/api/props/' + prop, {
-                    method: 'usage_change',
-                    usage: usage
-                  });
-
-                  if (!(response_prop.statusText === 'Unprocessable Entity')) {
-                    _context5.next = 20;
-                    break;
-                  }
-
-                  this.errors.error = response.data.errors;
-                  return _context5.abrupt("return", false);
-
-                case 20:
-                  if (!(response_prop.statusText !== 'No Content')) {
-                    _context5.next = 23;
-                    break;
-                  }
-
-                  this.$store.commit('error/setCode', response.status);
-                  return _context5.abrupt("return", false);
-
-                case 23:
-                  if (!usage_guraduation) {
-                    _context5.next = 51;
-                    break;
-                  }
-
-                  if (!usage_left) {
-                    _context5.next = 34;
-                    break;
-                  }
-
-                  // 上手で使用
-                  _response_prop = axios.post('/api/props/' + prop, {
-                    method: 'usage_left_change',
-                    usage_guraduation: usage_guraduation,
-                    usage_left: usage_left
-                  });
-
-                  if (!(_response_prop.statusText === 'Unprocessable Entity')) {
-                    _context5.next = 29;
-                    break;
-                  }
-
-                  this.errors.error = response.data.errors;
-                  return _context5.abrupt("return", false);
-
-                case 29:
-                  if (!(_response_prop.statusText !== 'No Content')) {
-                    _context5.next = 32;
-                    break;
-                  }
-
-                  this.$store.commit('error/setCode', response.status);
-                  return _context5.abrupt("return", false);
-
-                case 32:
-                  _context5.next = 51;
-                  break;
-
-                case 34:
-                  if (!usage_right) {
-                    _context5.next = 44;
-                    break;
-                  }
-
-                  // 下手で使用
-                  _response_prop2 = axios.post('/api/props/' + prop, {
-                    method: 'usage_right_change',
-                    usage_guraduation: usage_guraduation,
-                    usage_right: usage_right
-                  });
-
-                  if (!(_response_prop2.statusText === 'Unprocessable Entity')) {
-                    _context5.next = 39;
-                    break;
-                  }
-
-                  this.errors.error = response.data.errors;
-                  return _context5.abrupt("return", false);
-
-                case 39:
-                  if (!(_response_prop2.statusText !== 'No Content')) {
-                    _context5.next = 42;
-                    break;
-                  }
-
-                  this.$store.commit('error/setCode', response.status);
-                  return _context5.abrupt("return", false);
-
-                case 42:
-                  _context5.next = 51;
-                  break;
-
-                case 44:
-                  // とりあえず卒業公演で使用
-                  _response_prop3 = axios.post('/api/props/' + prop, {
-                    method: 'usage_guraduation_change',
-                    usage_guraduation: usage_guraduation
-                  });
-
-                  if (!(_response_prop3.statusText === 'Unprocessable Entity')) {
-                    _context5.next = 48;
-                    break;
-                  }
-
-                  this.errors.error = response.data.errors;
-                  return _context5.abrupt("return", false);
-
-                case 48:
-                  if (!(_response_prop3.statusText !== 'No Content')) {
-                    _context5.next = 51;
-                    break;
-                  }
-
-                  this.$store.commit('error/setCode', response.status);
-                  return _context5.abrupt("return", false);
-
-                case 51:
+                case 1:
                 case "end":
-                  return _context5.stop();
+                  return _context6.stop();
               }
             }
-          }, _callee5, this);
+          }, _callee6);
         }));
 
         return function (_x, _x2) {
@@ -7379,36 +7342,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   watch: {
     $route: {
       handler: function handler() {
-        var _this5 = this;
-
-        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
-          return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-            while (1) {
-              switch (_context6.prev = _context6.next) {
-                case 0:
-                  _context6.next = 2;
-                  return _this5.fetchCharacters();
-
-                case 2:
-                  _context6.next = 4;
-                  return _this5.fetchProps();
-
-                case 4:
-                  _context6.next = 6;
-                  return _this5.choicePerformance();
-
-                case 6:
-                case "end":
-                  return _context6.stop();
-              }
-            }
-          }, _callee6);
-        }))();
-      },
-      immediate: true
-    },
-    season: {
-      handler: function handler(season) {
         var _this6 = this;
 
         return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
@@ -7416,18 +7349,48 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             while (1) {
               switch (_context7.prev = _context7.next) {
                 case 0:
-                  if (_this6.season === "passo") {
-                    _this6.season_tag = 1;
-                  } else if (_this6.season === "guradution") {
-                    _this6.season_tag = 2;
-                  }
+                  _context7.next = 2;
+                  return _this6.fetchCharacters();
 
-                case 1:
+                case 2:
+                  _context7.next = 4;
+                  return _this6.fetchProps();
+
+                case 4:
+                  _context7.next = 6;
+                  return _this6.choicePerformance();
+
+                case 6:
                 case "end":
                   return _context7.stop();
               }
             }
           }, _callee7);
+        }))();
+      },
+      immediate: true
+    },
+    season: {
+      handler: function handler(season) {
+        var _this7 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+          return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+            while (1) {
+              switch (_context8.prev = _context8.next) {
+                case 0:
+                  if (_this7.season === "passo") {
+                    _this7.season_tag = 1;
+                  } else if (_this7.season === "guradution") {
+                    _this7.season_tag = 2;
+                  }
+
+                case 1:
+                case "end":
+                  return _context8.stop();
+              }
+            }
+          }, _callee8);
         }))();
       },
       immediate: true
@@ -9826,7 +9789,13 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "overlay"
+    staticClass: "overlay",
+    on: {
+      click: function click($event) {
+        if ($event.target !== $event.currentTarget) return null;
+        return _vm.$emit("close");
+      }
+    }
   }, [_c("div", {
     staticClass: "content content-detail panel"
   }, [_c("form", {
@@ -9978,7 +9947,13 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "overlay"
+    staticClass: "overlay",
+    on: {
+      click: function click($event) {
+        if ($event.target !== $event.currentTarget) return null;
+        return _vm.$emit("close");
+      }
+    }
   }, [_c("div", {
     staticClass: "content content-detail panel"
   }, [_c("form", {
@@ -10092,7 +10067,13 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "overlay"
+    staticClass: "overlay",
+    on: {
+      click: function click($event) {
+        if ($event.target !== $event.currentTarget) return null;
+        return _vm.$emit("close");
+      }
+    }
   }, [_c("div", {
     staticClass: "content content-confirm-dialog panel"
   }, [_c("form", {
