@@ -169,7 +169,7 @@ export default {
       if (response.statusText !== 'OK') {
         this.$store.commit('error/setCode', response.status);
         return false;
-      }        
+      }
     },
 
     // 持ち主を取得

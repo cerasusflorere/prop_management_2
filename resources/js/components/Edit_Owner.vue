@@ -8,7 +8,7 @@
 
         <!--- 変更ボタン -->
         <div class="form__button">
-          <button type="submit" class="button button--inverse" @click="$emit('close')"><i class="fas fa-edit fa-fw"></i>変更</button>
+          <button type="submit" class="button button--inverse"><i class="fas fa-edit fa-fw"></i>変更</button>
         </div>
       </form>
       <!--- 削除ボタン -->
@@ -118,6 +118,8 @@ export default {
           content: '持ち主の名前が変更されました！',
           timeout: 6000
         });
+
+        this. $emit('close');
       });
     },
 

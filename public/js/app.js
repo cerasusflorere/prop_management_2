@@ -5524,6 +5524,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     content: '登場人物の区分または名前が変更されました！',
                     timeout: 6000
                   });
+
+                  _this4.$emit('close');
                 });
 
               case 1:
@@ -5827,6 +5829,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     content: '持ち主の名前が変更されました！',
                     timeout: 6000
                   });
+
+                  _this3.$emit('close');
                 });
 
               case 1:
@@ -6677,63 +6681,77 @@ var autokana;
     register_prop: function register_prop() {
       var _this4 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-        var formData, response;
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var promise;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                formData = new FormData();
-                formData.append('name', _this4.registerForm.prop);
-                formData.append('kana', _this4.registerForm.kana);
-                formData.append('owner_id', _this4.registerForm.owner);
-                formData.append('memo', _this4.registerForm.comment);
-                formData.append('usage', '');
-                formData.append('usage_guraduation', '');
-                formData.append('usage_left', '');
-                formData.append('usage_right', '');
-                formData.append('photo', _this4.registerForm.photo);
-                _context3.next = 12;
-                return axios.post('/api/props', formData);
+                promise = new Promise( /*#__PURE__*/function () {
+                  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(resoleve) {
+                    var formData, response;
+                    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+                      while (1) {
+                        switch (_context3.prev = _context3.next) {
+                          case 0:
+                            formData = new FormData();
+                            formData.append('name', _this4.registerForm.prop);
+                            formData.append('kana', _this4.registerForm.kana);
+                            formData.append('owner_id', _this4.registerForm.owner);
+                            formData.append('memo', _this4.registerForm.comment);
+                            formData.append('usage', '');
+                            formData.append('usage_guraduation', '');
+                            formData.append('usage_left', '');
+                            formData.append('usage_right', '');
+                            formData.append('photo', _this4.registerForm.photo);
+                            _context3.next = 12;
+                            return axios.post('/api/props', formData);
 
-              case 12:
-                response = _context3.sent;
+                          case 12:
+                            response = _context3.sent;
+                            resoleve(response);
 
-                if (!(response.statusText === 'Unprocessable Entity')) {
-                  _context3.next = 16;
-                  break;
-                }
+                          case 14:
+                          case "end":
+                            return _context3.stop();
+                        }
+                      }
+                    }, _callee3);
+                  }));
 
-                _this4.errors.error = response.data.errors;
-                return _context3.abrupt("return", false);
+                  return function (_x) {
+                    return _ref.apply(this, arguments);
+                  };
+                }()).then(function (response) {
+                  // 諸々データ削除
+                  _this4.reset();
 
-              case 16:
-                // // 諸々データ削除        
-                _this4.reset();
+                  if (response.statusText === 'Unprocessable Entity') {
+                    _this4.errors.error = response.data.errors;
+                    return false;
+                  }
 
-                if (!(response.statusText !== 'Created')) {
-                  _context3.next = 20;
-                  break;
-                }
+                  if (response.statusText !== 'Created') {
+                    _this4.$store.commit('error/setCode', response.status);
 
-                _this4.$store.commit('error/setCode', response.status);
+                    return false;
+                  } else if (response.statusText === 'Created') {
+                    return response;
+                  }
+                }).then(function (response) {
+                  // メッセージ登録
+                  _this4.$store.commit('message/setContent', {
+                    content: '小道具が投稿されました！',
+                    timeout: 6000
+                  });
+                });
 
-                return _context3.abrupt("return", false);
-
-              case 20:
-                // メッセージ登録
-                _this4.$store.commit('message/setContent', {
-                  content: '小道具が投稿されました！',
-                  timeout: 6000
-                }); // this.$router.push('')
-
-
-              case 21:
+              case 1:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3);
+        }, _callee4);
       }))();
     }
   },
@@ -6742,24 +6760,24 @@ var autokana;
       handler: function handler() {
         var _this5 = this;
 
-        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-          return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+          return _regeneratorRuntime().wrap(function _callee5$(_context5) {
             while (1) {
-              switch (_context4.prev = _context4.next) {
+              switch (_context5.prev = _context5.next) {
                 case 0:
-                  _context4.next = 2;
+                  _context5.next = 2;
                   return _this5.fetchOwners();
 
                 case 2:
-                  _context4.next = 4;
+                  _context5.next = 4;
                   return _this5.fetchProps();
 
                 case 4:
                 case "end":
-                  return _context4.stop();
+                  return _context5.stop();
               }
             }
-          }, _callee4);
+          }, _callee5);
         }))();
       },
       immediate: true
@@ -9861,21 +9879,7 @@ var render = function render() {
         _vm.$set(_vm.editForm_character, "name", $event.target.value);
       }
     }
-  }), _vm._v(" "), _c("div", {
-    staticClass: "form__button"
-  }, [_c("button", {
-    staticClass: "button button--inverse",
-    attrs: {
-      type: "submit"
-    },
-    on: {
-      click: function click($event) {
-        return _vm.$emit("close");
-      }
-    }
-  }, [_c("i", {
-    staticClass: "fas fa-edit fa-fw"
-  }), _vm._v("変更")])])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("div", {
     staticClass: "form__button"
   }, [_c("button", {
     staticClass: "button button--inverse",
@@ -9914,7 +9918,21 @@ var render = function render() {
   }, [_vm._v("閉じる")])], 1)]);
 };
 
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("div", {
+    staticClass: "form__button"
+  }, [_c("button", {
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "submit"
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-edit fa-fw"
+  }), _vm._v("変更")])]);
+}];
 render._withStripped = true;
 
 
@@ -9975,21 +9993,7 @@ var render = function render() {
         _vm.$set(_vm.editForm_owner, "name", $event.target.value);
       }
     }
-  }), _vm._v(" "), _c("div", {
-    staticClass: "form__button"
-  }, [_c("button", {
-    staticClass: "button button--inverse",
-    attrs: {
-      type: "submit"
-    },
-    on: {
-      click: function click($event) {
-        return _vm.$emit("close");
-      }
-    }
-  }, [_c("i", {
-    staticClass: "fas fa-edit fa-fw"
-  }), _vm._v("変更")])])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("div", {
     staticClass: "form__button"
   }, [_c("button", {
     staticClass: "button button--inverse",
@@ -10028,7 +10032,21 @@ var render = function render() {
   }, [_vm._v("閉じる")])], 1)]);
 };
 
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("div", {
+    staticClass: "form__button"
+  }, [_c("button", {
+    staticClass: "button button--inverse",
+    attrs: {
+      type: "submit"
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-edit fa-fw"
+  }), _vm._v("変更")])]);
+}];
 render._withStripped = true;
 
 

@@ -210,38 +210,43 @@ export default {
 
     // 登録する
     async register_prop () {
-      const formData = new FormData();
-      formData.append('name', this.registerForm.prop);
-      formData.append('kana', this.registerForm.kana);
-      formData.append('owner_id', this.registerForm.owner);
-      formData.append('memo', this.registerForm.comment);
-      formData.append('usage', '');
-      formData.append('usage_guraduation', '');
-      formData.append('usage_left', '');
-      formData.append('usage_right', '');
-      formData.append('photo', this.registerForm.photo);
-      const response = await axios.post('/api/props', formData);
+      const promise = new Promise(async(resoleve) => {
+        const formData = new FormData();
+        formData.append('name', this.registerForm.prop);
+        formData.append('kana', this.registerForm.kana);
+        formData.append('owner_id', this.registerForm.owner);
+        formData.append('memo', this.registerForm.comment);
+        formData.append('usage', '');
+        formData.append('usage_guraduation', '');
+        formData.append('usage_left', '');
+        formData.append('usage_right', '');
+        formData.append('photo', this.registerForm.photo);
+        const response = await axios.post('/api/props', formData);
+        resoleve(response);
+      })
+      .then((response) => {
+        // 諸々データ削除
+        this.reset();
+  
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors;
+          return false;
+        }
 
-      if (response.statusText === 'Unprocessable Entity') {
-        this.errors.error = response.data.errors;
-        return false;
-      }
-
-      // // 諸々データ削除        
-      this.reset();
-
-      if (response.statusText !== 'Created') {
-        this.$store.commit('error/setCode', response.status);
-        return false;
-      }
-
-      // メッセージ登録
-      this.$store.commit('message/setContent', {
-        content: '小道具が投稿されました！',
-        timeout: 6000
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }else if(response.statusText === 'Created'){
+          return response;
+        }
+      })
+      .then((response) => {
+        // メッセージ登録
+        this.$store.commit('message/setContent', {
+          content: '小道具が投稿されました！',
+          timeout: 6000
+        });
       });
-      
-      // this.$router.push('')
     }
   },
   watch: {
