@@ -6306,36 +6306,56 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       handler: function handler(postFlag) {
         var _this = this;
 
-        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-          var content_dom, content_rect;
-          return _regeneratorRuntime().wrap(function _callee$(_context) {
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+          var promise;
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
             while (1) {
-              switch (_context.prev = _context.next) {
+              switch (_context2.prev = _context2.next) {
                 case 0:
-                  if (!_this.postFlag) {
-                    _context.next = 6;
-                    break;
+                  if (_this.postFlag) {
+                    promise = new Promise( /*#__PURE__*/function () {
+                      var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(resolve) {
+                        var props;
+                        return _regeneratorRuntime().wrap(function _callee$(_context) {
+                          while (1) {
+                            switch (_context.prev = _context.next) {
+                              case 0:
+                                _context.next = 2;
+                                return _this.fetchProps();
+
+                              case 2:
+                                props = _context.sent;
+                                resolve(props);
+
+                              case 4:
+                              case "end":
+                                return _context.stop();
+                            }
+                          }
+                        }, _callee);
+                      }));
+
+                      return function (_x) {
+                        return _ref.apply(this, arguments);
+                      };
+                    }()).then(function (props) {
+                      var content_dom = _this.$refs.content_list_props;
+                      var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+                      if (content_rect.top < 0) {
+                        _this.overlay_class = 0;
+                      } else {
+                        _this.overlay_class = 1;
+                      }
+                    });
                   }
 
-                  _context.next = 3;
-                  return _this.fetchProps();
-
-                case 3:
-                  content_dom = _this.$refs.content_list_props;
-                  content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-
-                  if (content_rect.top < 0) {
-                    _this.overlay_class = 0;
-                  } else {
-                    _this.overlay_class = 1;
-                  }
-
-                case 6:
+                case 1:
                 case "end":
-                  return _context.stop();
+                  return _context2.stop();
               }
             }
-          }, _callee);
+          }, _callee2);
         }))();
       },
       immediate: true
@@ -6346,34 +6366,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     fetchProps: function fetchProps() {
       var _this2 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                _context2.next = 2;
+                _context3.next = 2;
                 return axios.get('/api/props');
 
               case 2:
-                response = _context2.sent;
+                response = _context3.sent;
                 _this2.props_list = response.data;
 
                 if (!(response.statusText !== 'OK')) {
-                  _context2.next = 7;
+                  _context3.next = 7;
                   break;
                 }
 
                 _this2.$store.commit('error/setCode', response.status);
 
-                return _context2.abrupt("return", false);
+                return _context3.abrupt("return", false);
 
               case 7:
+                return _context3.abrupt("return", response);
+
+              case 8:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2);
+        }, _callee3);
       }))();
     },
     // 小道具詳細のモーダル表示 
@@ -6385,21 +6408,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     closeModal_propDetail: function closeModal_propDetail() {
       var _this3 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 _this3.showContent = false;
-                _context3.next = 3;
+                _context4.next = 3;
                 return _this3.fetchProps();
 
               case 3:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3);
+        }, _callee4);
       }))();
     }
   }

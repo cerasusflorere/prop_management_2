@@ -50,16 +50,20 @@ export default {
     postFlag: {
       async handler (postFlag) {
         if(this.postFlag){
-          await this.fetchProps();
-
-          const content_dom = this.$refs.content_list_props;
-          const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+          const promise = new Promise(async(resolve) => {
+            const props = await this.fetchProps();
+            resolve(props);
+          })
+          .then((props) => {
+            const content_dom = this.$refs.content_list_props;
+            const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
   
-          if(content_rect.top < 0){
-            this.overlay_class = 0;
-          }else{
-            this.overlay_class = 1;
-          }
+            if(content_rect.top < 0){
+              this.overlay_class = 0;
+            }else{
+              this.overlay_class = 1;
+            }
+          });
         }
       },
       immediate: true
@@ -76,6 +80,7 @@ export default {
         this.$store.commit('error/setCode', response.status);
         return false;
       }
+      return response;
     },
 
     // 小道具詳細のモーダル表示 
