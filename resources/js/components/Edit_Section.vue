@@ -8,7 +8,7 @@
 
         <!--- 変更ボタン -->
         <div class="form__button">
-          <button type="submit" class="button button--inverse" @click="$emit('close')"><i class="fas fa-edit fa-fw"></i>変更</button>
+          <button type="submit" class="button button--inverse"><i class="fas fa-edit fa-fw"></i>変更</button>
         </div>
       </form>
       <!--- 削除ボタン -->
@@ -55,7 +55,9 @@ export default {
   watch: {
     getSection: {
       async handler(getSection) {
-        await this.fetchSection_edit()
+        if(this.getSection){
+          await this.fetchSection_edit();
+        }
       },
       immediate: true,
     }
@@ -63,97 +65,112 @@ export default {
   methods: {
     // 区分の詳細を取得
     async fetchSection_edit () {
-      const response = await axios.get('/api/informations/sections/'+ this.getSection)
+      const response = await axios.get('/api/informations/sections/'+ this.getSection);
+       
+      this.section_edit = response.data;
+      this.editForm_section.id = this.section_edit.id;
+      this.editForm_section.section = this.section_edit.section;
 
       if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
-
-      this.section_edit = response.data
-      this.editForm_section.id = this.section_edit.id
-      this.editForm_section.section = this.section_edit.section
     },
 
     // 編集エラー
     confirm_section () {
       if(this.section_edit.id === this.editForm_section.id && this.section_edit.section !== this.editForm_section.section){
-        this.edit_section()
+        this.edit_section();
       }else{
         // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '元の区分名と同じです！変更するなら違う区分名にしてください！',
-          timeout: 6000
-        })
+        alert('元の区分名と同じです！変更するなら違う区分名にしてください！');
       }
     },
 
     // 編集する
-    async edit_section () {      
-      const response = await axios.post('/api/informations/sections/'+ this.section_edit.id, {
-        section: this.editForm_section.section
+    async edit_section () {
+      const promise = new Promise(async (resolve) => {
+        const response = await axios.post('/api/informations/sections/'+ this.section_edit.id, {
+          section: this.editForm_section.section
+        });
+        resolve(response);
       })
+      .then((response) => {
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors;
+          return false;
+        }
 
-      if (response.statusText === 'Unprocessable Entity') {
-        this.errors.error = response.data.errors
-        return false
-      }
-
-      this.section_edit.section = this.editForm_section.section
-
-      if (response.statusText !== 'Created') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-
-      // メッセージ登録
-      this.$store.commit('message/setContent', {
-        content: '区分が変更されました！',
-        timeout: 6000
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }else if(response.statusText === 'Created') {
+          return response;
+        }        
       })
+      .then((response) => {
+        this.section_edit.section = this.editForm_section.section;
+        return response;
+      })
+      .then((response) => {
+        // メッセージ登録
+        this.$store.commit('message/setContent', {
+          content: '区分が変更されました！',
+          timeout: 6000
+        });
+
+        this.$emit('close');
+      });
     },
 
     // 削除confirmのモーダル表示 
     openModal_confirmDelete (id) {
-      this.showContent_confirmDelete = true
+      this.showContent_confirmDelete = true;
       this.postMessage_Delete = 'これを行うと、紐づけられてた登場人物、その登場人物が小道具を使用するシーンも全て削除されます。本当に削除しますか？';
     },
     // 削除confirmのモーダル非表示_OKの場合
     async closeModal_confirmDelete_OK() {
-      await this.deletSection()
-      this.showContent_confirmDelete = false
+      await this.deletSection();
+      this.showContent_confirmDelete = false;
     },
     // 削除confirmのモーダル非表示_Cancelの場合
     closeModal_confirmDelete_Cancel() {
-      this.showContent_confirmDelete = false
+      this.showContent_confirmDelete = false;
     },
 
     // 削除する
     async deletSection() {
-      const response = await axios.delete('/api/informations/sections/'+ this.section_edit.id)
-
-      if (response.statusText === 'Unprocessable Entity') {
-        this.errors.error = response.data.errors
-        return false
-      }
-
-      this.section_edit.id = null,
-      this.section_edit.section = null,
-      this.editForm_section.id = null
-      this.editForm_section.section = null
-
-      if (response.statusText !== 'Created') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-
-      // メッセージ登録
-      this.$store.commit('message/setContent', {
-        content: '区分が1つ削除されました！',
-        timeout: 6000
+      const promise = new Promise(async (resolve) => {
+        const response = await axios.delete('/api/informations/sections/'+ this.section_edit.id);
+        resolve(response);
       })
+      .then((response) => {
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors;
+          return false;
+        }
 
-      this.$emit('close')
+        this.section_edit.id = null;
+        this.section_edit.section = null;
+        this.editForm_section.id = null;
+        this.editForm_section.section = null;
+
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }
+
+        return response.statusText;
+      })
+      .then((status) => {
+        // メッセージ登録
+        this.$store.commit('message/setContent', {
+          content: '区分が1つ削除されました！',
+          timeout: 6000
+        });
+
+        this.$emit('close');
+      });
     }
   }
 }

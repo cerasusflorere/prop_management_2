@@ -1,5 +1,5 @@
 <template>
-<div class="container--small">
+  <div class="container--small">
     <ul class="tab">
       <li
         class="tab__item"
@@ -140,9 +140,9 @@ export default {
   watch: {
     $route: {
       async handler () {
-        await this.fetchSections()
-        await this.fetchCharacters()
-        await this.fetchOwners()
+        await this.fetchSections();
+        await this.fetchCharacters();
+        await this.fetchOwners();
       },
       immediate: true
     }
@@ -150,156 +150,184 @@ export default {
   methods: {
     // 区分を取得
     async fetchSections () {
-      const response = await axios.get('/api/informations/sections')
+      const response = await axios.get('/api/informations/sections');
+
+      this.optionSections = response.data;
 
       if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
-
-      this.optionSections = response.data
     },
 
     // 登場人物を取得
     async fetchCharacters () {
-      const response = await axios.get('/api/informations/characters')
+      const response = await axios.get('/api/informations/characters');
+
+      this.gainSet.characters = response.data;
 
       if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-
-      this.gainSet.characters = response.data
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }        
     },
 
     // 持ち主を取得
     async fetchOwners () {
-      const response = await axios.get('/api/informations/owners')
+      const response = await axios.get('/api/informations/owners');
+
+      this.gainSet.owners = response.data;
 
       if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
-
-      this.gainSet.owners = response.data
     },
 
     // 区分編集のモーダル表示 
     openModal_sectionEdit (id) {
-      this.showContent_section = true
+      this.showContent_section = true;
       this.postSection = id;
     },
     // 区分編集のモーダル非表示
     async closeModal_sectionEdit() {
-      await this.fetchSections()
-      await this.fetchCharacters()
-      this.showContent_section = false
+      await this.fetchSections();
+      await this.fetchCharacters();
+      this.showContent_section = false;
     },
 
     // 登場人物編集のモーダル表示 
     openModal_characterEdit (id) {
-      this.showContent_character = true
+      this.showContent_character = true;
       this.postCharacter = id;
     },
     // 登場人物編集のモーダル非表示
     async closeModal_characterEdit() {
-      await this.fetchSections() // なぜかこれをつけるとうまくいく
-      await this.fetchCharacters()
-      this.showContent_character = false
+      await this.fetchSections(); // なぜかこれをつけるとうまくいく
+      await this.fetchCharacters();
+      this.showContent_character = false;
     },
 
     // 持ち主編集のモーダル表示 
     openModal_ownerEdit (id) {
-      this.showContent_owner = true
+      this.showContent_owner = true;
       this.postOwner = id;
     },
     // 持ち主編集のモーダル非表示
     async closeModal_ownerEdit() {
-      await this.fetchSections() // なぜかこれをつけるとうまくいく
-      await this.fetchOwners()
-      this.showContent_owner = false
+      await this.fetchSections(); // なぜかこれをつけるとうまくいく
+      await this.fetchOwners();
+      this.showContent_owner = false;
     },
 
 
     // 登録する
     async register_section () {
-      const response = await axios.post('/api/informations/sections', {
-        section: this.registerForm_section
+      const promise = new Promise(async (resolve) => {
+        const response = await axios.post('/api/informations/sections', {
+          section: this.registerForm_section
+        });
+        resolve(response);
       })
+      .then((response) => {
+        this.registerForm_section = null;
 
-      if (response.statusText === 'Unprocessable Entity') {
-        this.errors.error = response.data.errors
-        return false
-      }
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors;
+          return false;
+        }
 
-      this.registerForm_section = null
-
-      if (response.statusText !== 'Created') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-
-      // メッセージ登録
-      this.$store.commit('message/setContent', {
-        content: '区分が登録されました！',
-        timeout: 6000
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }
+        return response;
       })
+      .then(async (response) => {
+        await this.fetchSections();
+        await this.fetchCharacters();
 
-      await this.fetchSections();
+        return response;
+      })
+      .then((response) => {
+        // メッセージ登録
+        this.$store.commit('message/setContent', {
+          content: '区分が登録されました！',
+          timeout: 6000
+        });
+      });
     },
 
     async register_character () {
-      const response = await axios.post('/api/informations/characters', {
-        section_id: this.registerForm_character.section,
-        name: this.registerForm_character.character
+      const promise = new Promise(async (resolve) => {
+        const response = await axios.post('/api/informations/characters', {
+          section_id: this.registerForm_character.section,
+          name: this.registerForm_character.character
+        });
+        resolve(response);
       })
+      .then((response) => {
+        this.registerForm_character.section = null;
+        this.registerForm_character.character = null;
 
-      if (response.statusText === 'Unprocessable Entity') {
-        this.errors.error = response.data.errors
-        return false
-      }
-      
-      this.registerForm_character.section = null
-      this.registerForm_character.character = null
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors;
+          return false;
+        }
 
-      if (response.statusText !== 'Created') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-
-      // メッセージ登録
-      this.$store.commit('message/setContent', {
-        content: '登場人物が登録されました！',
-        timeout: 6000
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }
+        return response;
       })
+      .then(async (response) => {
+        await this.fetchCharacters();
 
-      await this.fetchCharacters();
+        return response;
+      })
+      .then((response) => {
+        // メッセージ登録
+        this.$store.commit('message/setContent', {
+          content: '登場人物が登録されました！',
+          timeout: 6000
+        });
+      });
     },
     
     async register_owner () {
-      const response = await axios.post('/api/informations/owners', {
-        name: this.registerForm_owner
+      const promise = new Promise(async (resolve) => {
+        const response = await axios.post('/api/informations/owners', {
+          name: this.registerForm_owner
+        });
+        resolve(response);
       })
+      .then((response) => {
+        this.registerForm_owner = null;
 
-      if (response.statusText === 'Unprocessable Entity') {
-        this.errors.error = response.data.errors
-        return false
-      }      
-      
-      this.registerForm_owner = null
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors;
+          return false;
+        }
 
-      if (response.statusText !== 'Created') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-
-      // メッセージ登録
-      this.$store.commit('message/setContent', {
-        content: '持ち主が登録されました！',
-        timeout: 6000
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }
+        return response;
       })
-      
-      await this.fetchOwners();
+      .then(async (response) => {
+        await this.fetchOwners();
+
+        return response;
+      })
+      .then((response) => {
+        // メッセージ登録
+        this.$store.commit('message/setContent', {
+          content: '持ち主が登録されました！',
+          timeout: 6000
+        });
+      });
     }
   }
 }

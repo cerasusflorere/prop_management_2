@@ -67,8 +67,10 @@ export default {
   watch: {
     getCharacter: {
       async handler(getCharacter) {
-        await this.fetchSections()
-        await this.fetchCharacter_edit()       
+        if(this.getCharacter){
+          await this.fetchSections();
+          await this.fetchCharacter_edit();
+        }        
       },
       immediate: true,
     }
@@ -76,118 +78,130 @@ export default {
   methods: {
     // 区分を取得
     async fetchSections () {
-      const response = await axios.get('/api/informations/sections')
+      const response = await axios.get('/api/informations/sections');
+
+      this.optionSections = response.data;
 
       if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
-
-      this.optionSections = response.data
     },
 
     // 登場人物の詳細を取得
     async fetchCharacter_edit () {
-      const response = await axios.get('/api/informations/characters/'+ this.getCharacter)
+      const response = await axios.get('/api/informations/characters/'+ this.getCharacter);
+      
+      this.character_edit = response.data;
+      this.editForm_character.id = this.character_edit.id;
+      this.editForm_character.section_id = this.character_edit.section.id;
+      this.editForm_character.section = this.character_edit.section.section;
+      this.editForm_character.name = this.character_edit.name;
 
       if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
-
-      this.character_edit = response.data
-      this.editForm_character.id = this.character_edit.id
-      this.editForm_character.section_id = this.character_edit.section.id
-      this.editForm_character.section = this.character_edit.section.section
-      this.editForm_character.name = this.character_edit.name
     },
 
     // 確認する
     confirm_character () {
       if(this.character_edit.id === this.editForm_character.id && (this.character_edit.section.id !== this.editForm_character.section_id || this.character_edit.name !== this.editForm_character.name)){
-        this.editCharacter()
+        this.editCharacter();
       }else{
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '元の区分も名前も同じです！変更するなら違う区分または名前にしてください！',
-          timeout: 6000
-        })
+        alert('元の名前と同じです！変更するなら違う名前にしてください！');
       }
     },
 
     // 編集する
-    async editCharacter () {      
-      const response = await axios.post('/api/informations/characters/'+ this.character_edit.id, {
-        section_id: this.editForm_character.section_id,
-        name: this.editForm_character.name
+    async editCharacter () {
+      const promise = new Promise(async(resolve) => {
+        const response = await axios.post('/api/informations/characters/'+ this.character_edit.id, {
+          section_id: this.editForm_character.section_id,
+          name: this.editForm_character.name
+        });
+        resolve(response);
       })
+      .then((response) => {
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors;
+          return false;
+        }      
 
-      if (response.statusText === 'Unprocessable Entity') {
-        this.errors.error = response.data.errors
-        return false
-      }
-
-      this.character_edit.section = this.editForm_character.section
-      this.character_edit.section_id = this.editForm_character.section_id
-      this.character_edit.name = this.editForm_character.name
-
-      if (response.statusText !== 'Created') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-
-      // メッセージ登録
-      this.$store.commit('message/setContent', {
-        content: '登場人物の区分または名前が変更されました！',
-        timeout: 6000
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }else if(response.statusText === 'Created'){
+          return response;
+        }
       })
+      .then((response) => {
+        this.character_edit.section = this.editForm_character.section;
+        this.character_edit.section_id = this.editForm_character.section_id;
+        this.character_edit.name = this.editForm_character.name;
+        return response;
+      })
+      .then((response) => {
+        // メッセージ登録
+        this.$store.commit('message/setContent', {
+          content: '登場人物の区分または名前が変更されました！',
+          timeout: 6000
+        });
+      });
     },
 
     // 削除confirmのモーダル表示 
     openModal_confirmDelete () {
-      this.showContent_confirmDelete = true
+      this.showContent_confirmDelete = true;
       this.postMessage_Delete = 'これを行うと、この登場人物が小道具を使用シーンが全て削除されます。本当に削除しますか？';
     },
     // 削除confirmのモーダル非表示_OKの場合
     async closeModal_confirmDelete_OK() {
-      await this.deletCharacter()
-      this.showContent_confirmDelete = false
+      await this.deletCharacter();
+      this.showContent_confirmDelete = false;
     },
     // 削除confirmのモーダル非表示_Cancelの場合
     closeModal_confirmDelete_Cancel() {
-      this.showContent_confirmDelete = false
+      this.showContent_confirmDelete = false;
     },
 
     // 削除する
     async deletCharacter() {
-      const response = await axios.delete('/api/informations/characters/'+ this.character_edit.id)
-
-      if (response.statusText === 'Unprocessable Entity') {
-        this.errors.error = response.data.errors
-        return false
-      }
-
-      this.character_edit.id = null
-      this.character_edit.name = null
-      this.character_edit.section.id = null
-      this.character_edit.section.section = null
-      this.editForm_character.id = null
-      this.editForm_character.name = null
-      this.editForm_character.section_id = null
-      this.editForm_character.section = null
-
-      if (response.statusText !== 'Created') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-
-      // メッセージ登録
-      this.$store.commit('message/setContent', {
-        content: '区分が1つ削除されました！',
-        timeout: 6000
+      const promise = new Promise(async (resolve) => {
+        const response = await axios.delete('/api/informations/characters/'+ this.character_edit.id);
+        resolve(response);
       })
+      .then((response) => {
+        if (response.statusText === 'Unprocessable Entity') {
+          this.errors.error = response.data.errors;
+          return false;
+        }
 
-      this.$emit('close')
+        this.character_edit.id = null;
+        this.character_edit.name = null;
+        this.character_edit.section.id = null;
+        this.character_edit.section.section = null;
+        this.editForm_character.id = null;
+        this.editForm_character.name = null;
+        this.editForm_character.section_id = null;
+        this.editForm_character.section = null;
+
+        if (response.statusText !== 'Created') {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }
+
+        return response.statusText;
+      })
+      .then((status) => {
+        // メッセージ登録
+        this.$store.commit('message/setContent', {
+          content: '登場人物が1人削除されました！',
+          timeout: 6000
+        });
+
+        this.$emit('close');
+      });
     }
   }
 }

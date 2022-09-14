@@ -117,26 +117,26 @@ export default {
   methods: {
     // 持ち主を取得
     async fetchOwners () {
-      const response = await axios.get('/api/informations/owners')
+      const response = await axios.get('/api/informations/owners');
+
+      this.optionOwners = response.data;
 
       if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
-
-      this.optionOwners = response.data
     },
 
     // 小道具一覧を取得
     async fetchProps () {
-      const response = await axios.get('/api/props')
+      const response = await axios.get('/api/props');
+
+      this.props = response.data;
 
       if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
-
-      this.props = response.data
     },
 
     handleNameInput() {
@@ -145,12 +145,12 @@ export default {
 
     // 小道具リストのモーダル表示 
     openModal_listProps (number) {
-      this.showContent = true
-      this.postFlag = 1;
+      this.showContent = true;
+      this.postFlag = 1;;
     },
     // 小道具リストのモーダル非表示
     closeModal_listProps (){
-      this.showContent = false
+      this.showContent = false;
       this.postFlag = "";
     },
     
@@ -159,19 +159,19 @@ export default {
       this.errors.photo = null;
       // 何も選択されていなかったら処理中断
       if (event.target.files.length === 0) {
-        this.reset_photo()
-        return false
+        this.reset_photo();
+        return false;
       }
 
       // ファイルが画像ではなかったら処理中断
       if (! event.target.files[0].type.match('image.*')) {
-        this.reset_photo()
-        this.errors.photo = '写真データを選択してください'
-        return false
+        this.reset_photo();
+        this.errors.photo = '写真データを選択してください';
+        return false;
       }
 
       // FileReaderクラスのインスタンスを取得
-      const reader = new FileReader()
+      const reader = new FileReader();
 
       // ファイルを読み込み終わったタイミングで実行する処理
       reader.onload = e => {
@@ -179,67 +179,67 @@ export default {
         // previewに値が入ると<output>につけたv-ifがtrueと判定される
         // また<output>内部の<img>のsrc属性はpreviewの値を参照しているので
         // 結果として画像が表示される
-        this.preview = e.target.result
+        this.preview = e.target.result;
       }
 
       // ファイルを読み込む
       // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
-      reader.readAsDataURL(event.target.files[0])
+      reader.readAsDataURL(event.target.files[0]);
 
-      this.registerForm.photo = event.target.files[0]
+      this.registerForm.photo = event.target.files[0];
     },
      
     // 画像をクリアするメソッド
     reset_photo () {
-      this.preview = null
-      this.registerForm.photo = ''
-      this.$el.querySelector('input[type="file"]').value = null
+      this.preview = null;
+      this.registerForm.photo = '';
+      this.$el.querySelector('input[type="file"]').value = null;
     },
 
     // 入力欄の値とプレビュー表示をクリアするメソッド
     reset () {
-      this.registerForm.prop = ''
-      this.registerForm.kana = ''
-      this.registerForm.owner = ''
-      this.registerForm.comment = ''
-      this.preview = null
-      this.registerForm.photo = ''
-      this.$el.querySelector('input[type="file"]').value = null,
-      this.errors.photo = null
+      this.registerForm.prop = '';
+      this.registerForm.kana = '';
+      this.registerForm.owner = '';
+      this.registerForm.comment = '';
+      this.preview = null;
+      this.registerForm.photo = '';
+      this.$el.querySelector('input[type="file"]').value = null;
+      this.errors.photo = null;
     },
 
     // 登録する
     async register_prop () {
-      const formData = new FormData()
-      formData.append('name', this.registerForm.prop)
-      formData.append('kana', this.registerForm.kana)
-      formData.append('owner_id', this.registerForm.owner)
-      formData.append('memo', this.registerForm.comment)
-      formData.append('usage', '')
-      formData.append('usage_guraduation', '')
-      formData.append('usage_left', '')
-      formData.append('usage_right', '')
-      formData.append('photo', this.registerForm.photo)
-      const response = await axios.post('/api/props', formData)
+      const formData = new FormData();
+      formData.append('name', this.registerForm.prop);
+      formData.append('kana', this.registerForm.kana);
+      formData.append('owner_id', this.registerForm.owner);
+      formData.append('memo', this.registerForm.comment);
+      formData.append('usage', '');
+      formData.append('usage_guraduation', '');
+      formData.append('usage_left', '');
+      formData.append('usage_right', '');
+      formData.append('photo', this.registerForm.photo);
+      const response = await axios.post('/api/props', formData);
 
       if (response.statusText === 'Unprocessable Entity') {
-        this.errors.error = response.data.errors
-        return false
+        this.errors.error = response.data.errors;
+        return false;
       }
 
       // // 諸々データ削除        
-      this.reset()
+      this.reset();
 
       if (response.statusText !== 'Created') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
 
       // メッセージ登録
       this.$store.commit('message/setContent', {
         content: '小道具が投稿されました！',
         timeout: 6000
-      })
+      });
       
       // this.$router.push('')
     }
@@ -247,8 +247,8 @@ export default {
   watch: {
     $route: {
       async handler () {
-        await this.fetchOwners()
-        await this.fetchProps()
+        await this.fetchOwners();
+        await this.fetchProps();
       },
       immediate: true
     }

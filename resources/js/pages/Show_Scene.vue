@@ -101,28 +101,26 @@
     methods: {
       // 使用シーン一覧を取得
       async fetchScenes () {
-        const response = await axios.get('/api/scenes')
+        const response = await axios.get('/api/scenes');
+
+        this.scenes = response.data; // オリジナルデータ
+        this.showScenes = JSON.parse(JSON.stringify(this.scenes));
   
         if (response.statusText !== 'OK') {
-          this.$store.commit('error/setCode', response.status)
-          return false
+          this.$store.commit('error/setCode', response.status);
+          return false;
         }
-
-        this.scenes = response.data // オリジナルデータ
-
-        console.log(this.scenes);
-        this.showScenes = JSON.parse(JSON.stringify(this.scenes));
       },
 
       // 使用シーン詳細のモーダル表示 
       openModal_sceneDetail (id) {
-        this.showContent = true
+        this.showContent = true;
         this.postScene = id;
       },
       // 使用シーン詳細のモーダル非表示
       async closeModal_sceneDetail() {
-        this.showContent = false
-        await this.fetchScenes()
+        this.showContent = false;
+        await this.fetchScenes();
       },
 
       // // ダウンロード
@@ -211,7 +209,7 @@
           if(scene.scene_comments.length){
             scene.scene_comments.forEach((comment, index_comment) => {
               if(index_comment){
-                const remove_data = datas.splice(datas.length-1, datas.length-1, datas[datas.length-1]+'<br>'+comment.memo)
+                const remove_data = datas.splice(datas.length-1, datas.length-1, datas[datas.length-1]+'<br>'+comment.memo);
               }else{
                 datas.push(comment.memo);
               }
@@ -230,7 +228,7 @@
         })
 
         // ③ファイル生成
-        const uint8Array = await workbook.xlsx.writeBuffer() // xlsxの場合
+        const uint8Array = await workbook.xlsx.writeBuffer(); // xlsxの場合
         const blob = new Blob([uint8Array], { type: 'application/octet-binary' });
         const a = document.createElement('a');
         a.href = (window.URL || window.webkitURL).createObjectURL(blob);
@@ -238,7 +236,7 @@
         const filename = 'Scenes_list_' + 'all' + '_' + today + '.xlsx';
         a.download = filename;
         a.click();
-        a.remove()
+        a.remove();
         
       },
 

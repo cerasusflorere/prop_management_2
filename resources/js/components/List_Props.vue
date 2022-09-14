@@ -49,15 +49,17 @@ export default {
   watch: {
     postFlag: {
       async handler (postFlag) {
-        await this.fetchProps();
+        if(this.postFlag){
+          await this.fetchProps();
 
-        const content_dom = this.$refs.content_list_props;
-        const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-
-        if(content_rect.top < 0){
-          this.overlay_class = 0;
-        }else{
-          this.overlay_class = 1;
+          const content_dom = this.$refs.content_list_props;
+          const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+  
+          if(content_rect.top < 0){
+            this.overlay_class = 0;
+          }else{
+            this.overlay_class = 1;
+          }
         }
       },
       immediate: true
@@ -66,25 +68,25 @@ export default {
   methods: {
     // 小道具一覧を取得
     async fetchProps () {
-      const response = await axios.get('/api/props')
-
-      if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
+      const response = await axios.get('/api/props');
 
       this.props_list = response.data
+
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
     },
 
     // 小道具詳細のモーダル表示 
     openModal_propDetail (id) {
-      this.showContent = true
+      this.showContent = true;
       this.postProp = id;
     },
     // 小道具詳細のモーダル非表示
     async closeModal_propDetail() {
-      this.showContent = false
-      await this.fetchProps()
+      this.showContent = false;
+      await this.fetchProps();
     },
   }
 }

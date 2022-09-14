@@ -44,6 +44,7 @@
         <!-- ページ数 -->
         <label for="page">ページ数</label>
         <small>例) 22, 24-25</small>
+        <small>半角</small>
         <input type="text"  id="page" class="form__item" v-model="registerForm.pages">
 
         <!-- 使用するか -->
@@ -122,33 +123,33 @@ export default {
   methods: {
     // 登場人物を取得
     async fetchCharacters () {
-      const response = await axios.get('/api/informations/characters')
+      const response = await axios.get('/api/informations/characters');      
 
-      if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-
-      this.characters = response.data
+      this.characters = response.data;
 
       // 区分と登場人物をオブジェクトに変換する
       let sections = new Object();
       this.characters.forEach(function(section){
         sections[section.section] = section.characters
-      })
-      this.optionCharacters = sections
+      });
+      this.optionCharacters = sections;
+
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
     },
 
     // 小道具を取得
     async fetchProps () {
-      const response = await axios.get('/api/props')
+      const response = await axios.get('/api/props');
+
+      this.optionProps = response.data;
 
       if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
-
-      this.optionProps = response.data
     },
 
     // 連動プルダウン
@@ -162,24 +163,24 @@ export default {
       const month = today.getMonth()+1;
       const day = today.getDate();
       if(3 < month && month < 11){
-        this.season = "passo"
+        this.season = "passo";
       }else if(month === 11){
         const year = today.getFullYear();
         const passo_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
         if(passo_day <= day){
-          this.season = "passo"
+          this.season = "passo";
         }else{
-          this.season = "guradutaion"
+          this.season = "guradutaion";
         }
       }else if(month > 11 && month < 3){
-        this.season = "guradutaion"
+        this.season = "guradutaion";
       }else if(month === 3){
         const year = today.getFullYear();
         const guraduation_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
         if(guraduation_day <= day){          
-          this.season = "guradutaion"
+          this.season = "guradutaion";
         }else{
-          this.season = "passo"
+          this.season = "passo";
         }
       }
     },
@@ -226,12 +227,12 @@ export default {
 
     // 小道具登録のモーダル表示 
     openModal_register () {
-      this.showContent = true
+      this.showContent = true;
       this.postFlag = 1;
     },
     // 小道具登録のモーダル非表示
     closeModal_register (){
-      this.showContent = false
+      this.showContent = false;
     },
 
     reset() {
@@ -250,7 +251,7 @@ export default {
 
     // first_pageとfinal_pageに分割する
     first_finalDivide(str) {
-      return str.split(/-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/)
+      return str.split(/-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/);
     },
 
     // 全角→半角
@@ -318,16 +319,16 @@ export default {
           usage_left: usage_left,
           usage_right: usage_right,
           memo: this.registerForm.comment
-        })
+        });
         
         if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors
-          return false
+          this.errors.error = response.data.errors;
+          return false;
         }
 
         if (response.statusText !== 'Created') {
-          this.$store.commit('error/setCode', response.status)
-          return false
+          this.$store.commit('error/setCode', response.status);
+          return false;
         }
         if(index === first_pages.length-1){
           const prop = this.registerForm.prop;
@@ -342,16 +343,16 @@ export default {
               const response_prop = axios.post('/api/props/'+ prop, {
                 method: 'usage_change',
                 usage: usage
-              })
+              });
 
               if (response_prop.statusText === 'Unprocessable Entity') {
-                this.errors.error = response.data.errors
-                return false
+                this.errors.error = response.data.errors;
+                return false;
               }
 
               if (response_prop.statusText !== 'No Content') {
-                this.$store.commit('error/setCode', response.status)
-                return false
+                this.$store.commit('error/setCode', response.status);
+                return false;
               }
             }
             if(usage_guraduation){
@@ -361,16 +362,16 @@ export default {
                   method: 'usage_left_change',
                   usage_guraduation: usage_guraduation,
                   usage_left: usage_left
-                })
+                });
 
                 if (response_prop.statusText === 'Unprocessable Entity') {
-                  this.errors.error = response.data.errors
-                  return false
+                  this.errors.error = response.data.errors;
+                  return false;
                 }
 
                 if (response_prop.statusText !== 'No Content') {
-                  this.$store.commit('error/setCode', response.status)
-                  return false
+                  this.$store.commit('error/setCode', response.status);
+                  return false;
                 }
               }else if(usage_right){
                 // 下手で使用
@@ -378,30 +379,30 @@ export default {
                   method: 'usage_right_change',
                   usage_guraduation: usage_guraduation,
                   usage_right: usage_right
-                })
+                });
                 if (response_prop.statusText === 'Unprocessable Entity') {
-                  this.errors.error = response.data.errors
-                  return false
+                  this.errors.error = response.data.errors;
+                  return false;
                 }
 
                 if (response_prop.statusText !== 'No Content') {
-                  this.$store.commit('error/setCode', response.status)
-                  return false
+                  this.$store.commit('error/setCode', response.status);
+                  return false;
                 }
               }else{
                 // とりあえず卒業公演で使用
                 const response_prop = axios.post('/api/props/'+ prop, {
                   method: 'usage_guraduation_change',
                   usage_guraduation: usage_guraduation
-                })
+                });
                 if (response_prop.statusText === 'Unprocessable Entity') {
-                  this.errors.error = response.data.errors
-                  return false
+                  this.errors.error = response.data.errors;
+                  return false;
                 }
 
                 if (response_prop.statusText !== 'No Content') {
-                  this.$store.commit('error/setCode', response.status)
-                  return false
+                  this.$store.commit('error/setCode', response.status);
+                  return false;
                 }
               }
             }
@@ -415,7 +416,7 @@ export default {
       this.$store.commit('message/setContent', {
         content: '使用シーンが投稿されました！',
         timeout: 6000
-      })
+      });
     }
   },
   watch: {

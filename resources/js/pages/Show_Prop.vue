@@ -161,15 +161,15 @@
     methods: {
       // 小道具一覧を取得
       async fetchProps () {
-        const response = await axios.get('/api/props_all')
+        const response = await axios.get('/api/props_all');
+        
+        this.props = response.data; // オリジナルデータ
+        this.showProps = JSON.parse(JSON.stringify(this.props));
   
         if (response.statusText !== 'OK') {
-          this.$store.commit('error/setCode', response.status)
-          return false
+          this.$store.commit('error/setCode', response.status);
+          return false;
         }
-
-        this.props = response.data // オリジナルデータ
-        this.showProps = JSON.parse(JSON.stringify(this.props));
       },
       
       // 表示切替
@@ -183,13 +183,13 @@
 
       // 小道具詳細のモーダル表示 
       openModal_propDetail (id) {
-        this.showContent = true
+        this.showContent = true;
         this.postProp = id;
       },
       // 小道具詳細のモーダル非表示
       async closeModal_propDetail() {
-        this.showContent = false
-        await this.fetchProps()
+        this.showContent = false;
+        await this.fetchProps();
       },
 
       // ダウンロード
@@ -292,7 +292,7 @@
         })
 
         // ③ファイル生成
-        const uint8Array = await workbook.xlsx.writeBuffer() // xlsxの場合
+        const uint8Array = await workbook.xlsx.writeBuffer(); // xlsxの場合
         const blob = new Blob([uint8Array], { type: 'application/octet-binary' });
         const a = document.createElement('a');
         a.href = (window.URL || window.webkitURL).createObjectURL(blob);
@@ -300,7 +300,7 @@
         const filename = 'Props_list_' + 'all' + '_' + today + '.xlsx';
         a.download = filename;
         a.click();
-        a.remove()
+        a.remove();
         
       },
 

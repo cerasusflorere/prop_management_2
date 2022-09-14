@@ -268,37 +268,39 @@ export default {
   watch: {
     postProp: {
       async handler(postProp) {
-        await this.fetchCharacters() // 最初にしないと間に合わない
-        await this.fetchProp()
-        await this.fetchOwners()
-        await this.fetchProps()
+        if(this.postProp){
+          await this.fetchCharacters(); // 最初にしないと間に合わない
+          await this.fetchProp();
+          await this.fetchOwners();
+          await this.fetchProps();
 
-        const content_dom = this.$refs.content_detail_prop;
-        const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+          const content_dom = this.$refs.content_detail_prop;
+          const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
 
-        if(content_rect.top < 0){
-          this.overlay_class = 0;
-        }else{
-          this.overlay_class = 1;
-        }
+          if(content_rect.top < 0){
+            this.overlay_class = 0;
+          }else{
+            this.overlay_class = 1;
+          }
+        }        
       },
       immediate: true,
     },
     editPropMode_memo: {
       async handler(editPropMode_memo){
         if(this.editPropMode_detail === 100 || this.editPropMode_memo === 100){
-          await this.fetchProp()
+          await this.fetchProp();
           // メッセージ登録
           this.$store.commit('message/setContent', {
             content: '小道具が変更されました！',
             timeout: 6000
-          })   
+          });
         }else if(this.editPropMode_detail || this.editPropMode_memo){
-          await this.openModal_confirmEdit()
+          await this.openModal_confirmEdit();
         }else if(this.editPropMode_detail === 0 && this.editPropMode_memo === 0){
-          alert('元のデータと同じです！変更してください')
-          this.editPropMode_detail = ""
-          this.editPropMode_memo = ""
+          alert('元のデータと同じです！変更してください');
+          this.editPropMode_detail = "";
+          this.editPropMode_memo = "";
         }
       },
       immediate: true,
@@ -312,20 +314,15 @@ export default {
   methods: {
     // 小道具の詳細を取得
     async fetchProp () {
-      this.tab = 1
-      const response = await axios.get('/api/props/'+ this.postProp)
+      this.tab = 1;
+      const response = await axios.get('/api/props/'+ this.postProp);
 
-      if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-
-      this.prop = response.data
-      this.editForm_prop = JSON.parse(JSON.stringify(this.prop)) // そのままコピーするとコピー元も変更される
+      this.prop = response.data;
+      this.editForm_prop = JSON.parse(JSON.stringify(this.prop)); // そのままコピーするとコピー元も変更される
       if(this.editForm_prop.public_id){
-        this.$set(this.editForm_prop, 'photo', 1) // 写真が登録されている（可能性：1のまま、0に変更（この時public_idは存在する）、写真バイナリ代入（この時public_idは存在する））
+        this.$set(this.editForm_prop, 'photo', 1); // 写真が登録されている（可能性：1のまま、0に変更（この時public_idは存在する）、写真バイナリ代入（この時public_idは存在する））
       }else{
-        this.$set(this.editForm_prop, 'photo', 0) // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
+        this.$set(this.editForm_prop, 'photo', 0); // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
       }
       // if(!this.editForm_prop.scenes.length){
       //   this.editForm_prop.scenes[0] = Object.assign({}, this.editForm_prop.scenes[0], {character_id: null, section: '' , page: '', usage: '', scene_comments: []})
@@ -336,39 +333,45 @@ export default {
       //     this.selected(index)
       //   })
       // }
-      this.editPropMode_detail = ""
-      this.editPropMode_memo = ""
+      this.editPropMode_detail = "";
+      this.editPropMode_memo = "";
+
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
     },
 
     // 持ち主を取得
     async fetchOwners () {
-      const response = await axios.get('/api/informations/owners')
+      const response = await axios.get('/api/informations/owners');
+      
+      this.optionOwners = response.data;
 
       if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
 
-      this.optionOwners = response.data
     },
 
     // 登場人物を取得
     async fetchCharacters () {
-      const response = await axios.get('/api/informations/characters')
+      const response = await axios.get('/api/informations/characters');
 
-      if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
-      }
-
-      this.characters = response.data
+      this.characters = response.data;
 
       // 区分と登場人物をオブジェクトに変換する
       let sections = new Object();
       this.characters.forEach(function(section){
         sections[section.section] = section.characters
-      })
-      this.optionCharacters = sections
+      });
+      this.optionCharacters = sections;
+
+      if (response.statusText !== 'OK') {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
     },
 
     // 連動プルダウン
@@ -378,14 +381,13 @@ export default {
 
     // 小道具一覧を取得
     async fetchProps () {
-      const response = await axios.get('/api/props')
+      const response = await axios.get('/api/props');
+      this.props = response.data;
 
       if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
-
-      this.props = response.data
     },
 
     handleNameInput() {
@@ -395,15 +397,15 @@ export default {
     // タブ切り替え
     alterTab() {
       if(this.tab === 1){
-        this.tab = 2
+        this.tab = 2;
       }else{
-        this.tab = 1
+        this.tab = 1;
       }
     },
 
     // 写真を見せない
     deletePhoto(){
-      this.editForm_prop.photo = 0
+      this.editForm_prop.photo = 0;
     },
 
     // フォームでファイルが選択されたら実行される
@@ -411,19 +413,19 @@ export default {
       this.errors.photo = null;
       // 何も選択されていなかったら処理中断
       if (event.target.files.length === 0) {
-        this.reset_photo()
-        return false
+        this.reset_photo();
+        return false;
       }
 
       // ファイルが画像ではなかったら処理中断
       if (! event.target.files[0].type.match('image.*')) {
-        this.reset_photo()
-        this.errors.photo = '写真データを選択してください'
-        return false
+        this.reset_photo();
+        this.errors.photo = '写真データを選択してください';
+        return false;
       }
 
       // FileReaderクラスのインスタンスを取得
-      const reader = new FileReader()
+      const reader = new FileReader();
 
       // ファイルを読み込み終わったタイミングで実行する処理
       reader.onload = e => {
@@ -431,77 +433,77 @@ export default {
         // previewに値が入ると<output>につけたv-ifがtrueと判定される
         // また<output>内部の<img>のsrc属性はpreviewの値を参照しているので
         // 結果として画像が表示される
-        this.preview = e.target.result
+        this.preview = e.target.result;
       }
 
       // ファイルを読み込む
       // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
-      reader.readAsDataURL(event.target.files[0])
+      reader.readAsDataURL(event.target.files[0]);
 
-      this.editForm_prop.photo = event.target.files[0]
+      this.editForm_prop.photo = event.target.files[0];
     },
 
     // 画像をクリアするメソッド
     resetPhoto () {
-      this.preview = null
-      this.editForm_prop.photo = 0
-      this.$el.querySelector('input[type="file"]').value = null
+      this.preview = null;
+      this.editForm_prop.photo = 0;
+      this.$el.querySelector('input[type="file"]').value = null;
     },
 
     // 編集エラー
     confirmProp () {
       if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.usage !== this.editForm_prop.usage) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
         // 写真をアップデートしない
-        this.editPropMode_detail = 1 // 'photo_non_update'
+        this.editPropMode_detail = 1; // 'photo_non_update'
       }else if(this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo && this.editForm_prop.photo !== 1){
         // 写真新規
-        this.editPropMode_detail = 2 // 'photo_store'
+        this.editPropMode_detail = 2; // 'photo_store'
       }else if(this.prop.id === this.editForm_prop.id && this.prop.public_id && !this.editForm_prop.photo){
         // 写真削除
-        this.editPropMode_detail = 3 //'photo_delete'
+        this.editPropMode_detail = 3; //'photo_delete'
       }else if(this.prop.id === this.editForm_prop.id && this.prop.public_id && this.editForm_prop.photo && this.editForm_prop.photo !== 1){
         // 写真アップデート
-        this.editPropMode_detail = 4 //'photo_update'
+        this.editPropMode_detail = 4; //'photo_update'
       }else{
-        this.editPropMode_detail = 0
+        this.editPropMode_detail = 0;
       }
 
       if(this.prop.id === this.editForm_prop.id && !this.prop.prop_comments.length && this.editForm_prop.memo){
         // メモ新規投稿
-        this.editPropMode_memo = 1 // 'memo_store'
+        this.editPropMode_memo = 1; // 'memo_store'
       }else if(this.prop.id === this.editForm_prop.id && this.prop.prop_comments.length){
         if(this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && !this.editForm_prop.prop_comments[0].memo){
           // メモ削除
-          this.editPropMode_memo = 2 //'memo_delete'
+          this.editPropMode_memo = 2; //'memo_delete'
         }else if(this.prop.id === this.editForm_prop.id && this.prop.prop_comments[0].id && this.prop.prop_comments[0].memo !== this.editForm_prop.prop_comments[0].memo){
           // メモアップデート
-          this.editPropMode_memo = 3 // 'memo_update'
+          this.editPropMode_memo = 3; // 'memo_update'
         }else{
-          this.editPropMode_memo = 0
+          this.editPropMode_memo = 0;
         }
       }else{
-        this.editPropMode_memo = 0
+        this.editPropMode_memo = 0;
       }
     },
 
     // 編集confirmのモーダル表示 
     openModal_confirmEdit () {
-      this.showContent_confirmEdit = true
+      this.showContent_confirmEdit = true;
       this.postMessage_Edit = '以下のように編集します。';
     },
     // 編集confirmのモーダル非表示_OKの場合
     async closeModal_confirmEdit_OK() {
-      this.showContent_confirmEdit = false
+      this.showContent_confirmEdit = false;
       if(this.editPropMode_detail){
-        await this.editProp()
+        await this.editProp();
       }
       if(this.editPropMode_memo){
-        await this.editProp_memo()
+        await this.editProp_memo();
       }
     },
     // 編集confirmのモーダル非表示_Cancelの場合
     closeModal_confirmEdit_Cancel() {
-      this.showContent_confirmEdit= false
+      this.showContent_confirmEdit= false;
     },
 
     // 基本情報を編集する
@@ -514,48 +516,47 @@ export default {
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
           usage: this.editForm_prop.usage
-        })
-
+        });
         
-        this.editPropMode_detail = 100
+        this.editPropMode_detail = 100;
         if(this.editPropMode_memo === 0){
-          this.editPropMode_memo = 100
+          this.editPropMode_memo = 100;
         }
 
         if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors
-          return false
+          this.errors.error = response.data.errors;
+          return false;
         }
 
         if (response.statusText !== 'No Content') {
-          this.$store.commit('error/setCode', response.status)
-          return false
+          this.$store.commit('error/setCode', response.status);
+          return false;
         }      
 
       }else if(this.editPropMode_detail === 2){
         // 写真新規投稿
-        const formData = new FormData()
-        formData.append('method', 'photo_store')
-        formData.append('name', this.editForm_prop.name)
-        formData.append('kana', this.editForm_prop.kana)
-        formData.append('owner_id', this.editForm_prop.owner_id)
-        formData.append('usage', this.editForm_prop.usage)
-        formData.append('photo', this.editForm_prop.photo)
-        const response = await axios.post('/api/props/'+ this.prop.id, formData)
+        const formData = new FormData();
+        formData.append('method', 'photo_store');
+        formData.append('name', this.editForm_prop.name);
+        formData.append('kana', this.editForm_prop.kana);
+        formData.append('owner_id', this.editForm_prop.owner_id);
+        formData.append('usage', this.editForm_prop.usage);
+        formData.append('photo', this.editForm_prop.photo);
+        const response = await axios.post('/api/props/'+ this.prop.id, formData);
 
-        this.editPropMode_detail = 100
+        this.editPropMode_detail = 100;
         if(this.editPropMode_memo === 0){
-          this.editPropMode_memo = 100
+          this.editPropMode_memo = 100;
         }
 
         if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors
-          return false
+          this.errors.error = response.data.errors;
+          return false;
         }
 
         if (response.statusText !== 'No Content') {
-          this.$store.commit('error/setCode', response.status)
-          return false
+          this.$store.commit('error/setCode', response.status);
+          return false;
         }
 
       }else if(this.editPropMode_detail === 3){
@@ -567,48 +568,48 @@ export default {
           owner_id: this.editForm_prop.owner_id,
           public_id: this.editForm_prop.public_id,
           usage: this.editForm_prop.usage
-        })
+        });
 
-        this.editPropMode_detail = 100
+        this.editPropMode_detail = 100;
         if(this.editPropMode_memo === 0){
-          this.editPropMode_memo = 100
+          this.editPropMode_memo = 100;
         }
 
         if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors
-          return false
+          this.errors.error = response.data.errors;
+          return false;
         }
 
         if (response.statusText !== 'No Content') {
-          this.$store.commit('error/setCode', response.status)
-          return false
+          this.$store.commit('error/setCode', response.status);
+          return false;
         }
 
       }if(this.editPropMode_detail === 4){
         // 写真アップデート
-        const formData = new FormData()
-        formData.append('method', 'photo_update')
-        formData.append('name', this.editForm_prop.name)
-        formData.append('kana', this.editForm_prop.kana)
-        formData.append('owner_id', this.editForm_prop.owner_id)
-        formData.append('public_id', this.editForm_prop.public_id)
-        formData.append('usage', this.editForm_prop.usage)
-        formData.append('photo', this.editForm_prop.photo)
-        const response = await axios.post('/api/props/'+ this.prop.id, formData)
+        const formData = new FormData();
+        formData.append('method', 'photo_update');
+        formData.append('name', this.editForm_prop.name);
+        formData.append('kana', this.editForm_prop.kana);
+        formData.append('owner_id', this.editForm_prop.owner_id);
+        formData.append('public_id', this.editForm_prop.public_id);
+        formData.append('usage', this.editForm_prop.usage);
+        formData.append('photo', this.editForm_prop.photo);
+        const response = await axios.post('/api/props/'+ this.prop.id, formData);
 
-        this.editPropMode_detail = 100
+        this.editPropMode_detail = 100;
         if(this.editPropMode_memo === 0){
-          this.editPropMode_memo = 100
+          this.editPropMode_memo = 100;
         }
 
         if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors
-          return false
+          this.errors.error = response.data.errors;
+          return false;
         }
 
         if (response.statusText !== 'No Content') {
-          this.$store.commit('error/setCode', response.status)
-          return false
+          this.$store.commit('error/setCode', response.status);
+          return false;
         }
 
       }
@@ -620,103 +621,103 @@ export default {
         const response = await axios.post('/api/prop_comments', {
           prop_id: this.editForm_prop.id,
           memo: this.editForm_prop.memo
-        })
+        });
 
-        this.editPropMode_memo = 100
+        this.editPropMode_memo = 100;
 
         if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors
-          return false
+          this.errors.error = response.data.errors;
+          return false;
         }
 
         if (response.statusText !== 'Created') {
-          this.$store.commit('error/setCode', response.status)
-          return false
+          this.$store.commit('error/setCode', response.status);
+          return false;
         }
       }else if(this.editPropMode_memo === 2){
         // メモ削除
-        const response = await axios.delete('/api/prop_comments/'+ this.prop.prop_comments[0].id)
+        const response = await axios.delete('/api/prop_comments/'+ this.prop.prop_comments[0].id);
 
-        this.editPropMode_memo = 100
+        this.editPropMode_memo = 100;
 
         if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors
-          return false
+          this.errors.error = response.data.errors;
+          return false;
         }
 
         if (response.statusText !== 'No Content') {
-          this.$store.commit('error/setCode', response.status)
-          return false
+          this.$store.commit('error/setCode', response.status);
+          return false;
         }
       }else if(this.editPropMode_memo === 3){
         // メモアップデート
         const response = await axios.post('/api/prop_comments/'+ this.prop.prop_comments[0].id, {
           memo: this.editForm_prop.prop_comments[0].memo
-        })
+        });
 
-        this.editPropMode_memo = 100
+        this.editPropMode_memo = 100;
 
         if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors
-          return false
+          this.errors.error = response.data.errors;
+          return false;
         }
 
         if (response.statusText !== 'No Content') {
-          this.$store.commit('error/setCode', response.status)
-          return false
+          this.$store.commit('error/setCode', response.status);
+          return false;
         }
       }
     },
 
     // 削除confirmのモーダル表示 
     openModal_confirmDelete (id) {
-      this.showContent_confirmDelete = true
+      this.showContent_confirmDelete = true;
       this.postMessage_Delete = 'これを行うと、紐づけられてたこの小道具を使用するシーンも全て削除されます。本当に削除しますか？';
     },
     // 削除confirmのモーダル非表示_OKの場合
     async closeModal_confirmDelete_OK() {
-      this.showContent_confirmDelete = false
-      this.$emit('close')
-      await this.deletProp()
+      this.showContent_confirmDelete = false;
+      this.$emit('close');
+      await this.deletProp();
     },
     // 削除confirmのモーダル非表示_Cancelの場合
     closeModal_confirmDelete_Cancel() {
-      this.showContent_confirmDelete = false
+      this.showContent_confirmDelete = false;
     },
 
     // 削除する
     async deletProp() {
-      const response = await axios.delete('/api/props/'+ this.prop.id)
+      const response = await axios.delete('/api/props/'+ this.prop.id);
 
       if (response.statusText === 'Unprocessable Entity') {
-        this.errors.error = response.data.errors
-        return false
+        this.errors.error = response.data.errors;
+        return false;
       }
 
-      this.prop.id = null
-      this.prop.kana = null
-      this.prop.name = null
-      this.prop.owner_id = null
-      this.prop.owner = null
-      this.prop.public_id = null
-      this.prop.url = null
-      this.prop.usage = null
-      this.prop.prop_comments = null      
-      this.prop.scenes = null
+      this.prop.id = null;
+      this.prop.kana = null;
+      this.prop.name = null;
+      this.prop.owner_id = null;
+      this.prop.owner = null;
+      this.prop.public_id = null;
+      this.prop.url = null;
+      this.prop.usage = null;
+      this.prop.prop_comments = null;
+      this.prop.scenes = null;
       
 
       if (response.statusText !== 'No Content') {
-        this.$store.commit('error/setCode', response.status)
-        return false
+        this.$store.commit('error/setCode', response.status);
+        return false;
       }
 
       // メッセージ登録
       this.$store.commit('message/setContent', {
         content: '小道具が1つ削除されました！',
         timeout: 6000
-      })
+      });
 
-      this.$emit('close')
+      this.$emit('close');
     }
   }
 }
