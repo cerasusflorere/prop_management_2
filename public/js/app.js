@@ -7237,7 +7237,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       var usage = _this5.registerForm.usage;
                       var usage_guraduation = _this5.registerForm.usage_guraduation; // 諸々データ削除
 
-                      _this5.reset();
+                      _this5.reset(); // 要検討
+
 
                       if (usage || usage_guraduation) {
                         // 小道具の使用有無変更
@@ -7510,10 +7511,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context2.sent;
-                _this2.optionSections = response.data;
 
-                if (!(response.statusText !== 'OK')) {
-                  _context2.next = 7;
+                if (!(response.status !== 200)) {
+                  _context2.next = 8;
                   break;
                 }
 
@@ -7521,7 +7521,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context2.abrupt("return", false);
 
-              case 7:
+              case 8:
+                if (response.status === 200) {
+                  _this2.optionSections = response.data;
+                }
+
+              case 9:
               case "end":
                 return _context2.stop();
             }
@@ -7529,6 +7534,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee2);
       }))();
     },
+    // statusTextが帰ってきていない
     // 登場人物を取得
     fetchCharacters: function fetchCharacters() {
       var _this3 = this;
@@ -7544,10 +7550,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context3.sent;
-                _this3.gainSet.characters = response.data;
 
-                if (!(response.statusText !== 'OK')) {
-                  _context3.next = 7;
+                if (!(response.status !== 200)) {
+                  _context3.next = 8;
                   break;
                 }
 
@@ -7555,7 +7560,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context3.abrupt("return", false);
 
-              case 7:
+              case 8:
+                if (response.status === 200) {
+                  _this3.gainSet.characters = response.data;
+                }
+
+              case 9:
               case "end":
                 return _context3.stop();
             }
@@ -7578,10 +7588,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context4.sent;
-                _this4.gainSet.owners = response.data;
 
-                if (!(response.statusText !== 'OK')) {
-                  _context4.next = 7;
+                if (!(response.status !== 200)) {
+                  _context4.next = 8;
                   break;
                 }
 
@@ -7589,7 +7598,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context4.abrupt("return", false);
 
-              case 7:
+              case 8:
+                if (response.status === 200) {
+                  _this4.gainSet.owners = response.data;
+                }
+
+              case 9:
               case "end":
                 return _context4.stop();
             }
@@ -7697,277 +7711,187 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     register_section: function register_section() {
       var _this8 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
-        var promise;
-        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context10.prev = _context10.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
-                promise = new Promise( /*#__PURE__*/function () {
-                  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(resolve) {
-                    var response;
-                    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
-                      while (1) {
-                        switch (_context8.prev = _context8.next) {
-                          case 0:
-                            _context8.next = 2;
-                            return axios.post('/api/informations/sections', {
-                              section: _this8.registerForm_section
-                            });
-
-                          case 2:
-                            response = _context8.sent;
-                            resolve(response);
-
-                          case 4:
-                          case "end":
-                            return _context8.stop();
-                        }
-                      }
-                    }, _callee8);
-                  }));
-
-                  return function (_x) {
-                    return _ref.apply(this, arguments);
-                  };
-                }()).then(function (response) {
-                  _this8.registerForm_section = null;
-
-                  if (response.statusText === 'Unprocessable Entity') {
-                    _this8.errors.error = response.data.errors;
-                    return false;
-                  }
-
-                  if (response.statusText !== 'Created') {
-                    _this8.$store.commit('error/setCode', response.status);
-
-                    return false;
-                  }
-
-                  return response;
-                }).then( /*#__PURE__*/function () {
-                  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(response) {
-                    return _regeneratorRuntime().wrap(function _callee9$(_context9) {
-                      while (1) {
-                        switch (_context9.prev = _context9.next) {
-                          case 0:
-                            _context9.next = 2;
-                            return _this8.fetchSections();
-
-                          case 2:
-                            _context9.next = 4;
-                            return _this8.fetchCharacters();
-
-                          case 4:
-                            return _context9.abrupt("return", response);
-
-                          case 5:
-                          case "end":
-                            return _context9.stop();
-                        }
-                      }
-                    }, _callee9);
-                  }));
-
-                  return function (_x2) {
-                    return _ref2.apply(this, arguments);
-                  };
-                }()).then(function (response) {
-                  // メッセージ登録
-                  _this8.$store.commit('message/setContent', {
-                    content: '区分が登録されました！',
-                    timeout: 6000
-                  });
+                _context8.next = 2;
+                return axios.post('/api/informations/sections', {
+                  section: _this8.registerForm_section
                 });
 
-              case 1:
+              case 2:
+                response = _context8.sent;
+                _this8.registerForm_section = null;
+
+                if (!(response.status === 422)) {
+                  _context8.next = 7;
+                  break;
+                }
+
+                _this8.errors.error = response.data.errors;
+                return _context8.abrupt("return", false);
+
+              case 7:
+                if (!(response.status !== 201)) {
+                  _context8.next = 12;
+                  break;
+                }
+
+                _this8.$store.commit('error/setCode', response.status);
+
+                return _context8.abrupt("return", false);
+
+              case 12:
+                if (!(response.status === 201)) {
+                  _context8.next = 18;
+                  break;
+                }
+
+                _context8.next = 15;
+                return _this8.fetchSections();
+
+              case 15:
+                _context8.next = 17;
+                return _this8.fetchCharacters();
+
+              case 17:
+                // メッセージ登録
+                _this8.$store.commit('message/setContent', {
+                  content: '区分が登録されました！',
+                  timeout: 6000
+                });
+
+              case 18:
               case "end":
-                return _context10.stop();
+                return _context8.stop();
             }
           }
-        }, _callee10);
+        }, _callee8);
       }))();
     },
     register_character: function register_character() {
       var _this9 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13() {
-        var promise;
-        return _regeneratorRuntime().wrap(function _callee13$(_context13) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context13.prev = _context13.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
-                promise = new Promise( /*#__PURE__*/function () {
-                  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(resolve) {
-                    var response;
-                    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-                      while (1) {
-                        switch (_context11.prev = _context11.next) {
-                          case 0:
-                            _context11.next = 2;
-                            return axios.post('/api/informations/characters', {
-                              section_id: _this9.registerForm_character.section,
-                              name: _this9.registerForm_character.character
-                            });
-
-                          case 2:
-                            response = _context11.sent;
-                            resolve(response);
-
-                          case 4:
-                          case "end":
-                            return _context11.stop();
-                        }
-                      }
-                    }, _callee11);
-                  }));
-
-                  return function (_x3) {
-                    return _ref3.apply(this, arguments);
-                  };
-                }()).then(function (response) {
-                  _this9.registerForm_character.section = null;
-                  _this9.registerForm_character.character = null;
-
-                  if (response.statusText === 'Unprocessable Entity') {
-                    _this9.errors.error = response.data.errors;
-                    return false;
-                  }
-
-                  if (response.statusText !== 'Created') {
-                    _this9.$store.commit('error/setCode', response.status);
-
-                    return false;
-                  }
-
-                  return response;
-                }).then( /*#__PURE__*/function () {
-                  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(response) {
-                    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
-                      while (1) {
-                        switch (_context12.prev = _context12.next) {
-                          case 0:
-                            _context12.next = 2;
-                            return _this9.fetchCharacters();
-
-                          case 2:
-                            return _context12.abrupt("return", response);
-
-                          case 3:
-                          case "end":
-                            return _context12.stop();
-                        }
-                      }
-                    }, _callee12);
-                  }));
-
-                  return function (_x4) {
-                    return _ref4.apply(this, arguments);
-                  };
-                }()).then(function (response) {
-                  // メッセージ登録
-                  _this9.$store.commit('message/setContent', {
-                    content: '登場人物が登録されました！',
-                    timeout: 6000
-                  });
+                _context9.next = 2;
+                return axios.post('/api/informations/characters', {
+                  section_id: _this9.registerForm_character.section,
+                  name: _this9.registerForm_character.character
                 });
 
-              case 1:
+              case 2:
+                response = _context9.sent;
+                _this9.registerForm_character.section = null;
+                _this9.registerForm_character.character = null;
+
+                if (!(response.status === 422)) {
+                  _context9.next = 8;
+                  break;
+                }
+
+                _this9.errors.error = response.data.errors;
+                return _context9.abrupt("return", false);
+
+              case 8:
+                if (!(response.status !== 201)) {
+                  _context9.next = 13;
+                  break;
+                }
+
+                _this9.$store.commit('error/setCode', response.status);
+
+                return _context9.abrupt("return", false);
+
+              case 13:
+                if (!(response.status === 201)) {
+                  _context9.next = 17;
+                  break;
+                }
+
+                _context9.next = 16;
+                return _this9.fetchCharacters();
+
+              case 16:
+                // メッセージ登録
+                _this9.$store.commit('message/setContent', {
+                  content: '登場人物が登録されました！',
+                  timeout: 6000
+                });
+
+              case 17:
               case "end":
-                return _context13.stop();
+                return _context9.stop();
             }
           }
-        }, _callee13);
+        }, _callee9);
       }))();
     },
     register_owner: function register_owner() {
       var _this10 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16() {
-        var promise;
-        return _regeneratorRuntime().wrap(function _callee16$(_context16) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
           while (1) {
-            switch (_context16.prev = _context16.next) {
+            switch (_context10.prev = _context10.next) {
               case 0:
-                promise = new Promise( /*#__PURE__*/function () {
-                  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(resolve) {
-                    var response;
-                    return _regeneratorRuntime().wrap(function _callee14$(_context14) {
-                      while (1) {
-                        switch (_context14.prev = _context14.next) {
-                          case 0:
-                            _context14.next = 2;
-                            return axios.post('/api/informations/owners', {
-                              name: _this10.registerForm_owner
-                            });
-
-                          case 2:
-                            response = _context14.sent;
-                            resolve(response);
-
-                          case 4:
-                          case "end":
-                            return _context14.stop();
-                        }
-                      }
-                    }, _callee14);
-                  }));
-
-                  return function (_x5) {
-                    return _ref5.apply(this, arguments);
-                  };
-                }()).then(function (response) {
-                  _this10.registerForm_owner = null;
-
-                  if (response.statusText === 'Unprocessable Entity') {
-                    _this10.errors.error = response.data.errors;
-                    return false;
-                  }
-
-                  if (response.statusText !== 'Created') {
-                    _this10.$store.commit('error/setCode', response.status);
-
-                    return false;
-                  }
-
-                  return response;
-                }).then( /*#__PURE__*/function () {
-                  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(response) {
-                    return _regeneratorRuntime().wrap(function _callee15$(_context15) {
-                      while (1) {
-                        switch (_context15.prev = _context15.next) {
-                          case 0:
-                            _context15.next = 2;
-                            return _this10.fetchOwners();
-
-                          case 2:
-                            return _context15.abrupt("return", response);
-
-                          case 3:
-                          case "end":
-                            return _context15.stop();
-                        }
-                      }
-                    }, _callee15);
-                  }));
-
-                  return function (_x6) {
-                    return _ref6.apply(this, arguments);
-                  };
-                }()).then(function (response) {
-                  // メッセージ登録
-                  _this10.$store.commit('message/setContent', {
-                    content: '持ち主が登録されました！',
-                    timeout: 6000
-                  });
+                _context10.next = 2;
+                return axios.post('/api/informations/owners', {
+                  name: _this10.registerForm_owner
                 });
 
-              case 1:
+              case 2:
+                response = _context10.sent;
+                _this10.registerForm_owner = null;
+
+                if (!(response.status === 422)) {
+                  _context10.next = 7;
+                  break;
+                }
+
+                _this10.errors.error = response.data.errors;
+                return _context10.abrupt("return", false);
+
+              case 7:
+                if (!(response.status !== 201)) {
+                  _context10.next = 12;
+                  break;
+                }
+
+                _this10.$store.commit('error/setCode', response.status);
+
+                return _context10.abrupt("return", false);
+
+              case 12:
+                if (!(response.status === 201)) {
+                  _context10.next = 16;
+                  break;
+                }
+
+                _context10.next = 15;
+                return _this10.fetchOwners();
+
+              case 15:
+                // メッセージ登録
+                _this10.$store.commit('message/setContent', {
+                  content: '持ち主が登録されました！',
+                  timeout: 6000
+                });
+
+              case 16:
               case "end":
-                return _context16.stop();
+                return _context10.stop();
             }
           }
-        }, _callee16);
+        }, _callee10);
       }))();
     }
   }
