@@ -155,9 +155,9 @@ export default {
       if (response.status !== 200) {
         this.$store.commit('error/setCode', response.status);
         return false;
-      }else if(response.status === 200){
-        this.optionSections = response.data;
       }
+
+      this.optionSections = response.data;
     },
 
     // statusTextが帰ってきていない
@@ -168,9 +168,9 @@ export default {
       if (response.status !== 200) {
         this.$store.commit('error/setCode', response.status);
         return false;
-      }else if(response.status === 200){
-        this.gainSet.characters = response.data;
       }
+      
+      this.gainSet.characters = response.data;
     },
 
     // 持ち主を取得
@@ -180,9 +180,9 @@ export default {
       if (response.status !== 200) {
         this.$store.commit('error/setCode', response.status);
         return false;
-      }else if(response.status === 200){
-        this.gainSet.owners = response.data;
       }
+      
+      this.gainSet.owners = response.data;
     },
 
     // 区分編集のモーダル表示 
@@ -228,7 +228,6 @@ export default {
         section: this.registerForm_section
       });
 
-      this.registerForm_section = null;
       if (response.status === 422) {
         this.errors.error = response.data.errors;
         return false;
@@ -236,15 +235,18 @@ export default {
       if (response.status !== 201) {
         this.$store.commit('error/setCode', response.status);
         return false;
-      }else if(response.status === 201){
-        await this.fetchSections();
-        await this.fetchCharacters();
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '区分が登録されました！',
-          timeout: 6000
-        });
       }
+
+      this.registerForm_section = null;
+      
+      await this.fetchSections();
+      await this.fetchCharacters();
+      
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '区分が登録されました！',
+        timeout: 6000
+      });
     },
 
     async register_character () {
@@ -253,9 +255,6 @@ export default {
         name: this.registerForm_character.character
       });
 
-      this.registerForm_character.section = null;
-      this.registerForm_character.character = null;
-
       if (response.status === 422) {
         this.errors.error = response.data.errors;
         return false;
@@ -264,21 +263,23 @@ export default {
       if (response.status !== 201) {
         this.$store.commit('error/setCode', response.status);
         return false;
-      }else if(response.status === 201){
-        await this.fetchCharacters();
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '登場人物が登録されました！',
-          timeout: 6000
-        });
       }
+
+      this.registerForm_character.section = null;
+      this.registerForm_character.character = null;
+      
+      await this.fetchCharacters();
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '登場人物が登録されました！',
+        timeout: 6000
+      });
     },
     
     async register_owner () {
       const response = await axios.post('/api/informations/owners', {
         name: this.registerForm_owner
       });
-      this.registerForm_owner = null;
 
       if (response.status === 422) {
         this.errors.error = response.data.errors;
@@ -288,14 +289,16 @@ export default {
       if (response.status !== 201) {
         this.$store.commit('error/setCode', response.status);
         return false;
-      }else if (response.status === 201){
-        await this.fetchOwners();
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '持ち主が登録されました！',
-          timeout: 6000
-        });
       }
+      
+      this.registerForm_owner = null;
+
+      await this.fetchOwners();
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '持ち主が登録されました！',
+        timeout: 6000
+      });
     }
   }
 }

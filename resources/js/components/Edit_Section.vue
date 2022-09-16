@@ -66,15 +66,15 @@ export default {
     // 区分の詳細を取得
     async fetchSection_edit () {
       const response = await axios.get('/api/informations/sections/'+ this.getSection);
-       
-      this.section_edit = response.data;
-      this.editForm_section.id = this.section_edit.id;
-      this.editForm_section.section = this.section_edit.section;
 
-      if (response.statusText !== 'OK') {
+      if (response.status !== 200) {
         this.$store.commit('error/setCode', response.status);
         return false;
       }
+
+      this.section_edit = response.data;
+      this.editForm_section.id = this.section_edit.id;
+      this.editForm_section.section = this.section_edit.section;
     },
 
     // 編集エラー
@@ -89,38 +89,29 @@ export default {
 
     // 編集する
     async edit_section () {
-      const promise = new Promise(async (resolve) => {
-        const response = await axios.post('/api/informations/sections/'+ this.section_edit.id, {
-          section: this.editForm_section.section
-        });
-        resolve(response);
-      })
-      .then((response) => {
-        if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors;
-          return false;
-        }
-
-        if (response.statusText !== 'Created') {
-          this.$store.commit('error/setCode', response.status);
-          return false;
-        }else if(response.statusText === 'Created') {
-          return response;
-        }        
-      })
-      .then((response) => {
-        this.section_edit.section = this.editForm_section.section;
-        return response;
-      })
-      .then((response) => {
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '区分が変更されました！',
-          timeout: 6000
-        });
-
-        this.$emit('close');
+      const response = await axios.post('/api/informations/sections/'+ this.section_edit.id, {
+        section: this.editForm_section.section
       });
+
+      if (response.status === 422) {
+        this.errors.error = response.data.errors;
+        return false;
+      }
+
+      if (response.status !== 200) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
+
+      this.section_edit.section = this.editForm_section.section;
+
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '区分が変更されました！',
+        timeout: 6000
+      });
+
+      this.$emit('close');
     },
 
     // 削除confirmのモーダル表示 
@@ -140,37 +131,30 @@ export default {
 
     // 削除する
     async deletSection() {
-      const promise = new Promise(async (resolve) => {
-        const response = await axios.delete('/api/informations/sections/'+ this.section_edit.id);
-        resolve(response);
-      })
-      .then((response) => {
-        if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors;
-          return false;
-        }
+      const response = await axios.delete('/api/informations/sections/'+ this.section_edit.id);
 
-        this.section_edit.id = null;
-        this.section_edit.section = null;
-        this.editForm_section.id = null;
-        this.editForm_section.section = null;
+      if (response.status === 422) {
+        this.errors.error = response.data.errors;
+        return false;
+      }
 
-        if (response.statusText !== 'Created') {
-          this.$store.commit('error/setCode', response.status);
-          return false;
-        }
+      if (response.status !== 200) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
 
-        return response.statusText;
-      })
-      .then((status) => {
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '区分が1つ削除されました！',
-          timeout: 6000
-        });
+      this.section_edit.id = null;
+      this.section_edit.section = null;
+      this.editForm_section.id = null;
+      this.editForm_section.section = null;
 
-        this.$emit('close');
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '区分が1つ削除されました！',
+        timeout: 6000
       });
+
+      this.$emit('close');
     }
   }
 }

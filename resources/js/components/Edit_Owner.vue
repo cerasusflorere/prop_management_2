@@ -67,15 +67,14 @@ export default {
     async fetchOwner_edit () {
       const response = await axios.get('/api/informations/owners/'+ this.getOwner);
 
-      this.owner_edit = response.data;
-      this.editForm_owner.id = this.owner_edit.id;
-      this.editForm_owner.name = this.owner_edit.name;
-
-      if (response.statusText !== 'OK') {
+      if (response.status !== 200) {
         this.$store.commit('error/setCode', response.status);
         return false;
       }
 
+      this.owner_edit = response.data;
+      this.editForm_owner.id = this.owner_edit.id;
+      this.editForm_owner.name = this.owner_edit.name;
     },
 
     // 確認する
@@ -89,38 +88,29 @@ export default {
 
     // 編集する
     async editOwner () {
-      const promise = new Promise(async(resolve) => {
-        const response = await axios.post('/api/informations/owners/'+ this.owner_edit.id, {
-          name: this.editForm_owner.name
-        });
-        resolve(response);
-      })
-      .then((response) => {
-        if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors;
-          return false;
-        }
-
-        if (response.statusText !== 'Created') {
-          this.$store.commit('error/setCode', response.status);
-          return false;
-        }else if(response.statusText === 'Created'){
-          return response;
-        }
-      })
-      .then((response) => {
-        this.owner_edit.name = this.editForm_owner.name;
-        return response;
-      })
-      .then((response) => {
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '持ち主の名前が変更されました！',
-          timeout: 6000
-        });
-
-        this. $emit('close');
+      const response = await axios.post('/api/informations/owners/'+ this.owner_edit.id, {
+        name: this.editForm_owner.name
       });
+      
+      if (response.status === 422) {
+        this.errors.error = response.data.errors;
+        return false;
+      }
+
+      if (response.status !== 200) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
+
+      this.owner_edit.name = this.editForm_owner.name;
+
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '持ち主の名前が変更されました！',
+        timeout: 6000
+      });
+
+      this. $emit('close');
     },
 
     // 削除confirmのモーダル表示 
@@ -141,37 +131,30 @@ export default {
 
     // 削除する
     async deletOwner() {
-      const promise = new Promise(async (resolve) => {
-        const response = await axios.delete('/api/informations/owners/'+ this.owner_edit.id);
-        resolve(response);
-      })
-      .then((response) => {
-        if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors;
-          return false;
-        }
+      const response = await axios.delete('/api/informations/owners/'+ this.owner_edit.id);
 
-        this.owner_edit.id = null;
-        this.owner_edit.name= null;
-        this.editForm_owner.id = null;
-        this.editForm_owner.name = null;
+      if (response.status === 422) {
+        this.errors.error = response.data.errors;
+        return false;
+      }
 
-        if (response.statusText !== 'Created') {
-          this.$store.commit('error/setCode', response.status);
-          return false;
-        }
+      if (response.status !== 200) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
 
-        return response.statusText;
-      })
-      .then((status) => {
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '持ち主が1人削除されました！',
-          timeout: 6000
-        });
+      this.owner_edit.id = null;
+      this.owner_edit.name= null;
+      this.editForm_owner.id = null;
+      this.editForm_owner.name = null;
 
-        this.$emit('close');
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '持ち主が1人削除されました！',
+        timeout: 6000
       });
+
+      this.$emit('close');
     }
   }
 }
