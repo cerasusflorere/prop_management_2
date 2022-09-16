@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']">
+  <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']" @click.self="$emit('close')">
     <div class="content content-detail panel" ref="content_detail_prop">
       <!--- 閲覧/編集 -->
       <div class="form__button">
@@ -290,6 +290,7 @@ export default {
       async handler(editPropMode_memo){
         if(this.editPropMode_detail === 100 || this.editPropMode_memo === 100){
           await this.fetchProp();
+
           // メッセージ登録
           this.$store.commit('message/setContent', {
             content: '小道具が変更されました！',
@@ -317,6 +318,11 @@ export default {
       this.tab = 1;
       const response = await axios.get('/api/props/'+ this.postProp);
 
+      if (response.status !== 200) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
+
       this.prop = response.data;
       this.editForm_prop = JSON.parse(JSON.stringify(this.prop)); // そのままコピーするとコピー元も変更される
       if(this.editForm_prop.public_id){
@@ -335,29 +341,28 @@ export default {
       // }
       this.editPropMode_detail = "";
       this.editPropMode_memo = "";
-
-      if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status);
-        return false;
-      }
     },
 
     // 持ち主を取得
     async fetchOwners () {
       const response = await axios.get('/api/informations/owners');
       
-      this.optionOwners = response.data;
-
-      if (response.statusText !== 'OK') {
+      if (response.status !== 200) {
         this.$store.commit('error/setCode', response.status);
         return false;
       }
 
+      this.optionOwners = response.data;
     },
 
     // 登場人物を取得
     async fetchCharacters () {
       const response = await axios.get('/api/informations/characters');
+
+      if (response.statu !== 200) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
 
       this.characters = response.data;
 
@@ -367,11 +372,6 @@ export default {
         sections[section.section] = section.characters
       });
       this.optionCharacters = sections;
-
-      if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status);
-        return false;
-      }
     },
 
     // 連動プルダウン
@@ -382,12 +382,13 @@ export default {
     // 小道具一覧を取得
     async fetchProps () {
       const response = await axios.get('/api/props');
-      this.props = response.data;
-
-      if (response.statusText !== 'OK') {
+      
+      if (response.status !== 200) {
         this.$store.commit('error/setCode', response.status);
         return false;
       }
+      
+      this.props = response.data;
     },
 
     handleNameInput() {
@@ -517,21 +518,21 @@ export default {
           owner_id: this.editForm_prop.owner_id,
           usage: this.editForm_prop.usage
         });
+
+        if (response.status === 422) {
+          this.errors.error = response.data.errors;
+          return false;
+        }
+
+        if (response.status !== 204) {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }
         
         this.editPropMode_detail = 100;
         if(this.editPropMode_memo === 0){
           this.editPropMode_memo = 100;
         }
-
-        if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors;
-          return false;
-        }
-
-        if (response.statusText !== 'No Content') {
-          this.$store.commit('error/setCode', response.status);
-          return false;
-        }      
 
       }else if(this.editPropMode_detail === 2){
         // 写真新規投稿
@@ -544,19 +545,19 @@ export default {
         formData.append('photo', this.editForm_prop.photo);
         const response = await axios.post('/api/props/'+ this.prop.id, formData);
 
-        this.editPropMode_detail = 100;
-        if(this.editPropMode_memo === 0){
-          this.editPropMode_memo = 100;
-        }
-
-        if (response.statusText === 'Unprocessable Entity') {
+        if (response.status === 422) {
           this.errors.error = response.data.errors;
           return false;
         }
 
-        if (response.statusText !== 'No Content') {
+        if (response.status !== 204) {
           this.$store.commit('error/setCode', response.status);
           return false;
+        }
+
+        this.editPropMode_detail = 100;
+        if(this.editPropMode_memo === 0){
+          this.editPropMode_memo = 100;
         }
 
       }else if(this.editPropMode_detail === 3){
@@ -570,19 +571,19 @@ export default {
           usage: this.editForm_prop.usage
         });
 
-        this.editPropMode_detail = 100;
-        if(this.editPropMode_memo === 0){
-          this.editPropMode_memo = 100;
-        }
-
-        if (response.statusText === 'Unprocessable Entity') {
+        if (response.status === 422) {
           this.errors.error = response.data.errors;
           return false;
         }
 
-        if (response.statusText !== 'No Content') {
+        if (response.status !== 204) {
           this.$store.commit('error/setCode', response.status);
           return false;
+        }
+
+        this.editPropMode_detail = 100;
+        if(this.editPropMode_memo === 0){
+          this.editPropMode_memo = 100;
         }
 
       }if(this.editPropMode_detail === 4){
@@ -597,21 +598,20 @@ export default {
         formData.append('photo', this.editForm_prop.photo);
         const response = await axios.post('/api/props/'+ this.prop.id, formData);
 
-        this.editPropMode_detail = 100;
-        if(this.editPropMode_memo === 0){
-          this.editPropMode_memo = 100;
-        }
-
-        if (response.statusText === 'Unprocessable Entity') {
+        if (response.status === 422) {
           this.errors.error = response.data.errors;
           return false;
         }
 
-        if (response.statusText !== 'No Content') {
+        if (response.status !== 204) {
           this.$store.commit('error/setCode', response.status);
           return false;
         }
 
+        this.editPropMode_detail = 100;
+        if(this.editPropMode_memo === 0){
+          this.editPropMode_memo = 100;
+        }
       }
     },
     // メモを更新する
@@ -623,49 +623,52 @@ export default {
           memo: this.editForm_prop.memo
         });
 
-        this.editPropMode_memo = 100;
-
-        if (response.statusText === 'Unprocessable Entity') {
+        if (response.status === 422) {
           this.errors.error = response.data.errors;
           return false;
         }
 
-        if (response.statusText !== 'Created') {
+        if (response.status !== 201) {
           this.$store.commit('error/setCode', response.status);
           return false;
         }
+
+        this.editPropMode_memo = 100;
+
       }else if(this.editPropMode_memo === 2){
         // メモ削除
         const response = await axios.delete('/api/prop_comments/'+ this.prop.prop_comments[0].id);
 
-        this.editPropMode_memo = 100;
-
-        if (response.statusText === 'Unprocessable Entity') {
+        if (response.status === 422) {
           this.errors.error = response.data.errors;
           return false;
         }
 
-        if (response.statusText !== 'No Content') {
+        if (response.status !== 204) {
           this.$store.commit('error/setCode', response.status);
           return false;
         }
+
+        this.editPropMode_memo = 100;
+
       }else if(this.editPropMode_memo === 3){
         // メモアップデート
         const response = await axios.post('/api/prop_comments/'+ this.prop.prop_comments[0].id, {
           memo: this.editForm_prop.prop_comments[0].memo
         });
 
-        this.editPropMode_memo = 100;
-
-        if (response.statusText === 'Unprocessable Entity') {
+        if (response.status === 422) {
           this.errors.error = response.data.errors;
           return false;
         }
 
-        if (response.statusText !== 'No Content') {
+        if (response.status !== 204) {
           this.$store.commit('error/setCode', response.status);
           return false;
         }
+
+        this.editPropMode_memo = 100;
+
       }
     },
 
@@ -689,27 +692,18 @@ export default {
     async deletProp() {
       const response = await axios.delete('/api/props/'+ this.prop.id);
 
-      if (response.statusText === 'Unprocessable Entity') {
+      if (response.status === 422) {
         this.errors.error = response.data.errors;
         return false;
       }
 
-      this.prop.id = null;
-      this.prop.kana = null;
-      this.prop.name = null;
-      this.prop.owner_id = null;
-      this.prop.owner = null;
-      this.prop.public_id = null;
-      this.prop.url = null;
-      this.prop.usage = null;
-      this.prop.prop_comments = null;
-      this.prop.scenes = null;
-      
-
-      if (response.statusText !== 'No Content') {
+      if (response.status !== 204) {
         this.$store.commit('error/setCode', response.status);
         return false;
       }
+
+      this.prop = [];
+      this.editForm_prop = [];
 
       // メッセージ登録
       this.$store.commit('message/setContent', {

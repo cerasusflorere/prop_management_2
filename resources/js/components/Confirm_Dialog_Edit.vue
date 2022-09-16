@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']">
+  <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']" @click.self="$emit('close')">
     <div class="content content-confirm-dialog panel"  ref="content_confirm_dialog_edit">
       <div id="confirm_dialog_edit_title">
         編集

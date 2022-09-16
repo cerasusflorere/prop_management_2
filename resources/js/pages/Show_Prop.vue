@@ -162,14 +162,14 @@
       // 小道具一覧を取得
       async fetchProps () {
         const response = await axios.get('/api/props_all');
-        
-        this.props = response.data; // オリジナルデータ
-        this.showProps = JSON.parse(JSON.stringify(this.props));
   
-        if (response.statusText !== 'OK') {
+        if (response.status !== 200) {
           this.$store.commit('error/setCode', response.status);
           return false;
         }
+
+        this.props = response.data; // オリジナルデータ
+        this.showProps = JSON.parse(JSON.stringify(this.props));
       },
       
       // 表示切替

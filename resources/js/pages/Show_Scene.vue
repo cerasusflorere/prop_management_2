@@ -102,14 +102,14 @@
       // 使用シーン一覧を取得
       async fetchScenes () {
         const response = await axios.get('/api/scenes');
-
-        this.scenes = response.data; // オリジナルデータ
-        this.showScenes = JSON.parse(JSON.stringify(this.scenes));
   
-        if (response.statusText !== 'OK') {
+        if (response.status !== 200) {
           this.$store.commit('error/setCode', response.status);
           return false;
         }
+        
+        this.scenes = response.data; // オリジナルデータ
+        this.showScenes = JSON.parse(JSON.stringify(this.scenes));
       },
 
       // 使用シーン詳細のモーダル表示 

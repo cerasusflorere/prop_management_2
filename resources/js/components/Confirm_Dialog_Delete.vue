@@ -1,5 +1,5 @@
 <template>
-  <div class="overlay">
+  <div class="overlay" @click.self="$emit('close')">
     <div class="content content-confirm-dialog panel">
       <div id="confirm_dialog_delete_title">
         最終確認

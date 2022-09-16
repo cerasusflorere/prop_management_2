@@ -2815,6 +2815,17 @@ var autokana;
 
               case 3:
                 response = _context3.sent;
+
+                if (!(response.status !== 200)) {
+                  _context3.next = 7;
+                  break;
+                }
+
+                _this3.$store.commit('error/setCode', response.status);
+
+                return _context3.abrupt("return", false);
+
+              case 7:
                 _this3.prop = response.data;
                 _this3.editForm_prop = JSON.parse(JSON.stringify(_this3.prop)); // そのままコピーするとコピー元も変更される
 
@@ -2837,15 +2848,6 @@ var autokana;
 
                 _this3.editPropMode_detail = "";
                 _this3.editPropMode_memo = "";
-
-                if (!(response.statusText !== 'OK')) {
-                  _context3.next = 12;
-                  break;
-                }
-
-                _this3.$store.commit('error/setCode', response.status);
-
-                return _context3.abrupt("return", false);
 
               case 12:
               case "end":
@@ -2870,16 +2872,18 @@ var autokana;
 
               case 2:
                 response = _context4.sent;
-                _this4.optionOwners = response.data;
 
-                if (!(response.statusText !== 'OK')) {
-                  _context4.next = 7;
+                if (!(response.status !== 200)) {
+                  _context4.next = 6;
                   break;
                 }
 
                 _this4.$store.commit('error/setCode', response.status);
 
                 return _context4.abrupt("return", false);
+
+              case 6:
+                _this4.optionOwners = response.data;
 
               case 7:
               case "end":
@@ -2904,6 +2908,17 @@ var autokana;
 
               case 2:
                 response = _context5.sent;
+
+                if (!(response.statu !== 200)) {
+                  _context5.next = 6;
+                  break;
+                }
+
+                _this5.$store.commit('error/setCode', response.status);
+
+                return _context5.abrupt("return", false);
+
+              case 6:
                 _this5.characters = response.data; // 区分と登場人物をオブジェクトに変換する
 
                 sections = new Object();
@@ -2913,15 +2928,6 @@ var autokana;
                 });
 
                 _this5.optionCharacters = sections;
-
-                if (!(response.statusText !== 'OK')) {
-                  _context5.next = 10;
-                  break;
-                }
-
-                _this5.$store.commit('error/setCode', response.status);
-
-                return _context5.abrupt("return", false);
 
               case 10:
               case "end":
@@ -2950,16 +2956,18 @@ var autokana;
 
               case 2:
                 response = _context6.sent;
-                _this6.props = response.data;
 
-                if (!(response.statusText !== 'OK')) {
-                  _context6.next = 7;
+                if (!(response.status !== 200)) {
+                  _context6.next = 6;
                   break;
                 }
 
                 _this6.$store.commit('error/setCode', response.status);
 
                 return _context6.abrupt("return", false);
+
+              case 6:
+                _this6.props = response.data;
 
               case 7:
               case "end":
@@ -3131,23 +3139,18 @@ var autokana;
 
               case 3:
                 response = _context8.sent;
-                _this9.editPropMode_detail = 100;
 
-                if (_this9.editPropMode_memo === 0) {
-                  _this9.editPropMode_memo = 100;
-                }
-
-                if (!(response.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 9;
+                if (!(response.status === 422)) {
+                  _context8.next = 7;
                   break;
                 }
 
                 _this9.errors.error = response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 9:
-                if (!(response.statusText !== 'No Content')) {
-                  _context8.next = 12;
+              case 7:
+                if (!(response.status !== 204)) {
+                  _context8.next = 10;
                   break;
                 }
 
@@ -3155,7 +3158,13 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 12:
+              case 10:
+                _this9.editPropMode_detail = 100;
+
+                if (_this9.editPropMode_memo === 0) {
+                  _this9.editPropMode_memo = 100;
+                }
+
                 _context8.next = 47;
                 break;
 
@@ -3178,23 +3187,18 @@ var autokana;
 
               case 24:
                 _response = _context8.sent;
-                _this9.editPropMode_detail = 100;
 
-                if (_this9.editPropMode_memo === 0) {
-                  _this9.editPropMode_memo = 100;
-                }
-
-                if (!(_response.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 30;
+                if (!(_response.status === 422)) {
+                  _context8.next = 28;
                   break;
                 }
 
                 _this9.errors.error = _response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 30:
-                if (!(_response.statusText !== 'No Content')) {
-                  _context8.next = 33;
+              case 28:
+                if (!(_response.status !== 204)) {
+                  _context8.next = 31;
                   break;
                 }
 
@@ -3202,7 +3206,13 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 33:
+              case 31:
+                _this9.editPropMode_detail = 100;
+
+                if (_this9.editPropMode_memo === 0) {
+                  _this9.editPropMode_memo = 100;
+                }
+
                 _context8.next = 47;
                 break;
 
@@ -3224,29 +3234,31 @@ var autokana;
 
               case 38:
                 _response2 = _context8.sent;
-                _this9.editPropMode_detail = 100;
 
-                if (_this9.editPropMode_memo === 0) {
-                  _this9.editPropMode_memo = 100;
-                }
-
-                if (!(_response2.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 44;
+                if (!(_response2.status === 422)) {
+                  _context8.next = 42;
                   break;
                 }
 
                 _this9.errors.error = _response2.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 44:
-                if (!(_response2.statusText !== 'No Content')) {
-                  _context8.next = 47;
+              case 42:
+                if (!(_response2.status !== 204)) {
+                  _context8.next = 45;
                   break;
                 }
 
                 _this9.$store.commit('error/setCode', _response2.status);
 
                 return _context8.abrupt("return", false);
+
+              case 45:
+                _this9.editPropMode_detail = 100;
+
+                if (_this9.editPropMode_memo === 0) {
+                  _this9.editPropMode_memo = 100;
+                }
 
               case 47:
                 if (!(_this9.editPropMode_detail === 4)) {
@@ -3276,29 +3288,31 @@ var autokana;
 
               case 58:
                 _response3 = _context8.sent;
-                _this9.editPropMode_detail = 100;
 
-                if (_this9.editPropMode_memo === 0) {
-                  _this9.editPropMode_memo = 100;
-                }
-
-                if (!(_response3.statusText === 'Unprocessable Entity')) {
-                  _context8.next = 64;
+                if (!(_response3.status === 422)) {
+                  _context8.next = 62;
                   break;
                 }
 
                 _this9.errors.error = _response3.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 64:
-                if (!(_response3.statusText !== 'No Content')) {
-                  _context8.next = 67;
+              case 62:
+                if (!(_response3.status !== 204)) {
+                  _context8.next = 65;
                   break;
                 }
 
                 _this9.$store.commit('error/setCode', _response3.status);
 
                 return _context8.abrupt("return", false);
+
+              case 65:
+                _this9.editPropMode_detail = 100;
+
+                if (_this9.editPropMode_memo === 0) {
+                  _this9.editPropMode_memo = 100;
+                }
 
               case 67:
               case "end":
@@ -3332,19 +3346,18 @@ var autokana;
 
               case 3:
                 response = _context9.sent;
-                _this10.editPropMode_memo = 100;
 
-                if (!(response.statusText === 'Unprocessable Entity')) {
-                  _context9.next = 8;
+                if (!(response.status === 422)) {
+                  _context9.next = 7;
                   break;
                 }
 
                 _this10.errors.error = response.data.errors;
                 return _context9.abrupt("return", false);
 
-              case 8:
-                if (!(response.statusText !== 'Created')) {
-                  _context9.next = 11;
+              case 7:
+                if (!(response.status !== 201)) {
+                  _context9.next = 10;
                   break;
                 }
 
@@ -3352,7 +3365,8 @@ var autokana;
 
                 return _context9.abrupt("return", false);
 
-              case 11:
+              case 10:
+                _this10.editPropMode_memo = 100;
                 _context9.next = 37;
                 break;
 
@@ -3367,19 +3381,18 @@ var autokana;
 
               case 16:
                 _response4 = _context9.sent;
-                _this10.editPropMode_memo = 100;
 
-                if (!(_response4.statusText === 'Unprocessable Entity')) {
-                  _context9.next = 21;
+                if (!(_response4.status === 422)) {
+                  _context9.next = 20;
                   break;
                 }
 
                 _this10.errors.error = _response4.data.errors;
                 return _context9.abrupt("return", false);
 
-              case 21:
-                if (!(_response4.statusText !== 'No Content')) {
-                  _context9.next = 24;
+              case 20:
+                if (!(_response4.status !== 204)) {
+                  _context9.next = 23;
                   break;
                 }
 
@@ -3387,7 +3400,8 @@ var autokana;
 
                 return _context9.abrupt("return", false);
 
-              case 24:
+              case 23:
+                _this10.editPropMode_memo = 100;
                 _context9.next = 37;
                 break;
 
@@ -3404,25 +3418,27 @@ var autokana;
 
               case 29:
                 _response5 = _context9.sent;
-                _this10.editPropMode_memo = 100;
 
-                if (!(_response5.statusText === 'Unprocessable Entity')) {
-                  _context9.next = 34;
+                if (!(_response5.status === 422)) {
+                  _context9.next = 33;
                   break;
                 }
 
                 _this10.errors.error = _response5.data.errors;
                 return _context9.abrupt("return", false);
 
-              case 34:
-                if (!(_response5.statusText !== 'No Content')) {
-                  _context9.next = 37;
+              case 33:
+                if (!(_response5.status !== 204)) {
+                  _context9.next = 36;
                   break;
                 }
 
                 _this10.$store.commit('error/setCode', _response5.status);
 
                 return _context9.abrupt("return", false);
+
+              case 36:
+                _this10.editPropMode_memo = 100;
 
               case 37:
               case "end":
@@ -3481,7 +3497,7 @@ var autokana;
               case 2:
                 response = _context11.sent;
 
-                if (!(response.statusText === 'Unprocessable Entity')) {
+                if (!(response.status === 422)) {
                   _context11.next = 6;
                   break;
                 }
@@ -3490,19 +3506,8 @@ var autokana;
                 return _context11.abrupt("return", false);
 
               case 6:
-                _this12.prop.id = null;
-                _this12.prop.kana = null;
-                _this12.prop.name = null;
-                _this12.prop.owner_id = null;
-                _this12.prop.owner = null;
-                _this12.prop.public_id = null;
-                _this12.prop.url = null;
-                _this12.prop.usage = null;
-                _this12.prop.prop_comments = null;
-                _this12.prop.scenes = null;
-
-                if (!(response.statusText !== 'No Content')) {
-                  _context11.next = 19;
+                if (!(response.status !== 204)) {
+                  _context11.next = 9;
                   break;
                 }
 
@@ -3510,8 +3515,10 @@ var autokana;
 
                 return _context11.abrupt("return", false);
 
-              case 19:
-                // メッセージ登録
+              case 9:
+                _this12.prop = [];
+                _this12.editForm_prop = []; // メッセージ登録
+
                 _this12.$store.commit('message/setContent', {
                   content: '小道具が1つ削除されました！',
                   timeout: 6000
@@ -3519,7 +3526,7 @@ var autokana;
 
                 _this12.$emit('close');
 
-              case 21:
+              case 13:
               case "end":
                 return _context11.stop();
             }
@@ -3770,7 +3777,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       immediate: true
     }
   },
-  // たまにページ消える
   // 中間発表のみ変えたらページ遷移しない
   methods: {
     // シーンの詳細を取得
@@ -3791,6 +3797,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 4:
                 response = _context4.sent;
+
+                if (!(response.status !== 200)) {
+                  _context4.next = 8;
+                  break;
+                }
+
+                _this4.$store.commit('error/setCode', response.status);
+
+                return _context4.abrupt("return", false);
+
+              case 8:
                 _this4.scene = response.data;
                 _this4.editForm_scene.id = _this4.scene.id;
                 _this4.editForm_scene.character_id = _this4.scene.character_id;
@@ -3842,15 +3859,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this4.editSceneMode_memo = "";
                 _this4.editSceneMode_prop = "";
 
-                if (!(response.statusText !== 'OK')) {
-                  _context4.next = 30;
-                  break;
-                }
-
-                _this4.$store.commit('error/setCode', response.status);
-
-                return _context4.abrupt("return", false);
-
               case 30:
               case "end":
                 return _context4.stop();
@@ -3874,6 +3882,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context5.sent;
+
+                if (!(response.status !== 200)) {
+                  _context5.next = 6;
+                  break;
+                }
+
+                _this5.$store.commit('error/setCode', response.status);
+
+                return _context5.abrupt("return", false);
+
+              case 6:
                 _this5.characters = response.data; // 区分と登場人物をオブジェクトに変換する
 
                 sections = new Object();
@@ -3883,15 +3902,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
                 _this5.optionCharacters = sections;
-
-                if (!(response.statusText !== 'OK')) {
-                  _context5.next = 10;
-                  break;
-                }
-
-                _this5.$store.commit('error/setCode', response.status);
-
-                return _context5.abrupt("return", false);
 
               case 10:
               case "end":
@@ -3916,16 +3926,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context6.sent;
-                _this6.optionProps = response.data;
 
-                if (!(response.statusText !== 'OK')) {
-                  _context6.next = 7;
+                if (!(response.status !== 200)) {
+                  _context6.next = 6;
                   break;
                 }
 
                 _this6.$store.commit('error/setCode', response.status);
 
                 return _context6.abrupt("return", false);
+
+              case 6:
+                _this6.optionProps = response.data;
 
               case 7:
               case "end":
@@ -4108,8 +4120,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this8 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
-        var usage_left, usage_right, _response, first_pages, final_pages, pages_before, pages_after, pattern, memo, last_flag;
-
+        var usage_left, usage_right, response, first_pages, final_pages, pages_before, pages_after, pattern, memo, last_flag;
         return _regeneratorRuntime().wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
@@ -4143,7 +4154,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 7:
-                _response = _context9.sent;
+                response = _context9.sent;
+
+                if (!(response.status === 422)) {
+                  _context9.next = 11;
+                  break;
+                }
+
+                _this8.errors.error = response.data.errors;
+                return _context9.abrupt("return", false);
+
+              case 11:
+                if (!(response.status !== 204)) {
+                  _context9.next = 14;
+                  break;
+                }
+
+                _this8.$store.commit('error/setCode', response.status);
+
+                return _context9.abrupt("return", false);
+
+              case 14:
                 _this8.editSceneMode_detail = 100;
 
                 if (_this8.editSceneMode_memo === 0 && _this8.editSceneMode_prop === 0) {
@@ -4151,25 +4182,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this8.editSceneMode_prop = 100;
                 }
 
-                if (!(_response.statusText === 'Unprocessable Entity')) {
-                  _context9.next = 13;
-                  break;
-                }
-
-                _this8.errors.error = _response.data.errors;
-                return _context9.abrupt("return", false);
-
-              case 13:
-                if (!(_response.statusText !== 'No Content')) {
-                  _context9.next = 16;
-                  break;
-                }
-
-                _this8.$store.commit('error/setCode', _response.status);
-
-                return _context9.abrupt("return", false);
-
-              case 16:
                 _context9.next = 19;
                 break;
 
@@ -4226,7 +4238,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   last_flag = false;
                   first_pages.forEach( /*#__PURE__*/function () {
                     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(page, index) {
-                      var _response2, _response3;
+                      var _response, _response2;
 
                       return _regeneratorRuntime().wrap(function _callee8$(_context8) {
                         while (1) {
@@ -4249,8 +4261,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                               });
 
                             case 3:
-                              _response2 = _context8.sent;
+                              _response = _context8.sent;
 
+                              if (!(_response.status === 422)) {
+                                _context8.next = 7;
+                                break;
+                              }
+
+                              this.errors.error = _response.data.errors;
+                              return _context8.abrupt("return", false);
+
+                            case 7:
+                              if (!(_response.status !== 204)) {
+                                _context8.next = 10;
+                                break;
+                              }
+
+                              this.$store.commit('error/setCode', _response.status);
+                              return _context8.abrupt("return", false);
+
+                            case 10:
                               if (index === first_pages.length - 1) {
                                 this.editSceneMode_detail = 100;
 
@@ -4260,24 +4290,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                                 }
                               }
 
-                              if (!(_response2.statusText === 'Unprocessable Entity')) {
-                                _context8.next = 8;
-                                break;
-                              }
-
-                              this.errors.error = _response2.data.errors;
-                              return _context8.abrupt("return", false);
-
-                            case 8:
-                              if (!(_response2.statusText !== 'No Content')) {
-                                _context8.next = 11;
-                                break;
-                              }
-
-                              this.$store.commit('error/setCode', _response2.status);
-                              return _context8.abrupt("return", false);
-
-                            case 11:
                               _context8.next = 23;
                               break;
 
@@ -4295,8 +4307,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                               });
 
                             case 15:
-                              _response3 = _context8.sent;
+                              _response2 = _context8.sent;
 
+                              if (!(_response2.status === 422)) {
+                                _context8.next = 19;
+                                break;
+                              }
+
+                              this.errors.error = _response2.data.errors;
+                              return _context8.abrupt("return", false);
+
+                            case 19:
+                              if (!(_response2.status !== 201)) {
+                                _context8.next = 22;
+                                break;
+                              }
+
+                              this.$store.commit('error/setCode', _response2.status);
+                              return _context8.abrupt("return", false);
+
+                            case 22:
                               if (index === first_pages.length - 1) {
                                 this.editSceneMode_detail = 100;
 
@@ -4305,23 +4335,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                                   this.editSceneMode_prop = 100;
                                 }
                               }
-
-                              if (!(_response3.statusText === 'Unprocessable Entity')) {
-                                _context8.next = 20;
-                                break;
-                              }
-
-                              this.errors.error = _response3.data.errors;
-                              return _context8.abrupt("return", false);
-
-                            case 20:
-                              if (!(_response3.statusText !== 'Created')) {
-                                _context8.next = 23;
-                                break;
-                              }
-
-                              this.$store.commit('error/setCode', _response3.status);
-                              return _context8.abrupt("return", false);
 
                             case 23:
                             case "end":
@@ -4350,7 +4363,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this9 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
-        var _response4, _response5, _response6;
+        var response, _response3, _response4;
 
         return _regeneratorRuntime().wrap(function _callee10$(_context10) {
           while (1) {
@@ -4368,32 +4381,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 3:
-                _response4 = _context10.sent;
+                response = _context10.sent;
+
+                if (!(response.status === 422)) {
+                  _context10.next = 7;
+                  break;
+                }
+
+                _this9.errors.error = response.data.errors;
+                return _context10.abrupt("return", false);
+
+              case 7:
+                if (!(response.status !== 201)) {
+                  _context10.next = 10;
+                  break;
+                }
+
+                _this9.$store.commit('error/setCode', response.status);
+
+                return _context10.abrupt("return", false);
+
+              case 10:
                 _this9.editSceneMode_memo = 100;
 
                 if (_this9.editSceneMode_prop === 0) {
                   _this9.editSceneMode_prop = 100;
                 }
 
-                if (!(_response4.statusText === 'Unprocessable Entity')) {
-                  _context10.next = 9;
-                  break;
-                }
-
-                _this9.errors.error = _response4.data.errors;
-                return _context10.abrupt("return", false);
-
-              case 9:
-                if (!(_response4.statusText !== 'Created')) {
-                  _context10.next = 12;
-                  break;
-                }
-
-                _this9.$store.commit('error/setCode', _response4.status);
-
-                return _context10.abrupt("return", false);
-
-              case 12:
                 _context10.next = 40;
                 break;
 
@@ -4407,32 +4421,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return axios["delete"]('/api/scene_comments/' + _this9.scene.scene_comments[0].id);
 
               case 17:
-                _response5 = _context10.sent;
+                _response3 = _context10.sent;
+
+                if (!(_response3.status === 422)) {
+                  _context10.next = 21;
+                  break;
+                }
+
+                _this9.errors.error = _response3.data.errors;
+                return _context10.abrupt("return", false);
+
+              case 21:
+                if (!(_response3.status !== 204)) {
+                  _context10.next = 24;
+                  break;
+                }
+
+                _this9.$store.commit('error/setCode', _response3.status);
+
+                return _context10.abrupt("return", false);
+
+              case 24:
                 _this9.editSceneMode_memo = 100;
 
                 if (_this9.editSceneMode_prop === 0) {
                   _this9.editSceneMode_prop = 100;
                 }
 
-                if (!(_response5.statusText === 'Unprocessable Entity')) {
-                  _context10.next = 23;
-                  break;
-                }
-
-                _this9.errors.error = _response5.data.errors;
-                return _context10.abrupt("return", false);
-
-              case 23:
-                if (!(_response5.statusText !== 'No Content')) {
-                  _context10.next = 26;
-                  break;
-                }
-
-                _this9.$store.commit('error/setCode', _response5.status);
-
-                return _context10.abrupt("return", false);
-
-              case 26:
                 _context10.next = 40;
                 break;
 
@@ -4448,30 +4463,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 31:
-                _response6 = _context10.sent;
+                _response4 = _context10.sent;
+
+                if (!(_response4.status === 422)) {
+                  _context10.next = 35;
+                  break;
+                }
+
+                _this9.errors.error = _response4.data.errors;
+                return _context10.abrupt("return", false);
+
+              case 35:
+                if (!(_response4.status !== 204)) {
+                  _context10.next = 38;
+                  break;
+                }
+
+                _this9.$store.commit('error/setCode', _response4.status);
+
+                return _context10.abrupt("return", false);
+
+              case 38:
                 _this9.editSceneMode_memo = 100;
 
                 if (_this9.editSceneMode_prop === 0) {
                   _this9.editSceneMode_prop = 100;
                 }
-
-                if (!(_response6.statusText === 'Unprocessable Entity')) {
-                  _context10.next = 37;
-                  break;
-                }
-
-                _this9.errors.error = _response6.data.errors;
-                return _context10.abrupt("return", false);
-
-              case 37:
-                if (!(_response6.statusText !== 'No Content')) {
-                  _context10.next = 40;
-                  break;
-                }
-
-                _this9.$store.commit('error/setCode', _response6.status);
-
-                return _context10.abrupt("return", false);
 
               case 40:
               case "end":
@@ -4526,31 +4543,30 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context12.prev = _context12.next) {
               case 0:
                 if (!_this11.editForm_scene.usage) {
-                  _context12.next = 11;
+                  _context12.next = 13;
                   break;
                 }
 
-                // 中間発表0→1
-                response_prop = axios.post('/api/props/' + _this11.editForm_scene.prop_id, {
+                _context12.next = 3;
+                return axios.post('/api/props/' + _this11.editForm_scene.prop_id, {
                   method: 'usage_change',
                   usage: 1
                 });
 
-                if (_this11.scene.usage_guraduation == _this11.editForm_scene.usage_guraduation && (_this11.scene.usage_left && _this11.editForm_scene.usage_stage === "left" || _this11.scene.usage_right && _this11.editForm_scene.usage_stage === "right" || !_this11.scene.usage_left && !_this11.scene.usage_right && !_this11.editForm_scene.usage_stage)) {
-                  _this11.editSceneMode_prop = 100;
-                }
+              case 3:
+                response_prop = _context12.sent;
 
-                if (!(response_prop.statusText === 'Unprocessable Entity')) {
-                  _context12.next = 6;
+                if (!(response_prop.status === 422)) {
+                  _context12.next = 7;
                   break;
                 }
 
                 _this11.errors.error = response_prop.data.errors;
                 return _context12.abrupt("return", false);
 
-              case 6:
-                if (!(response_prop.statusText !== 'No Content')) {
-                  _context12.next = 9;
+              case 7:
+                if (!(response_prop.status !== 204)) {
+                  _context12.next = 10;
                   break;
                 }
 
@@ -4558,33 +4574,36 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context12.abrupt("return", false);
 
-              case 9:
-                _context12.next = 19;
+              case 10:
+                if (_this11.scene.usage_guraduation == _this11.editForm_scene.usage_guraduation && (_this11.scene.usage_left && _this11.editForm_scene.usage_stage === "left" || _this11.scene.usage_right && _this11.editForm_scene.usage_stage === "right" || !_this11.scene.usage_left && !_this11.scene.usage_right && !_this11.editForm_scene.usage_stage)) {
+                  _this11.editSceneMode_prop = 100;
+                }
+
+                _context12.next = 23;
                 break;
 
-              case 11:
-                // 中間発表1→0
-                _response_prop = axios.post('/api/props_deep/' + _this11.editForm_scene.prop_id, {
+              case 13:
+                _context12.next = 15;
+                return axios.post('/api/props_deep/' + _this11.editForm_scene.prop_id, {
                   method: 'usage_0_change',
                   id: _this11.scene.id,
                   usage: 0
                 });
 
-                if (_this11.scene.usage_guraduation == _this11.editForm_scene.usage_guraduation && (_this11.scene.usage_left && _this11.editForm_scene.usage_stage === "left" || _this11.scene.usage_right && _this11.editForm_scene.usage_stage === "right" || !_this11.scene.usage_left && !_this11.scene.usage_right && !_this11.editForm_scene.usage_stage)) {
-                  _this11.editSceneMode_prop = 100;
-                }
+              case 15:
+                _response_prop = _context12.sent;
 
-                if (!(_response_prop.statusText === 'Unprocessable Entity')) {
-                  _context12.next = 16;
+                if (!(_response_prop.status === 422)) {
+                  _context12.next = 19;
                   break;
                 }
 
-                _this11.errors.error = response.data.errors;
+                _this11.errors.error = _response_prop.data.errors;
                 return _context12.abrupt("return", false);
 
-              case 16:
-                if (!(_response_prop.statusText !== 'No Content')) {
-                  _context12.next = 19;
+              case 19:
+                if (!(_response_prop.status !== 204)) {
+                  _context12.next = 22;
                   break;
                 }
 
@@ -4592,7 +4611,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context12.abrupt("return", false);
 
-              case 19:
+              case 22:
+                if (_this11.scene.usage_guraduation == _this11.editForm_scene.usage_guraduation && (_this11.scene.usage_left && _this11.editForm_scene.usage_stage === "left" || _this11.scene.usage_right && _this11.editForm_scene.usage_stage === "right" || !_this11.scene.usage_left && !_this11.scene.usage_right && !_this11.editForm_scene.usage_stage)) {
+                  _this11.editSceneMode_prop = 100;
+                }
+
+              case 23:
               case "end":
                 return _context12.stop();
             }
@@ -4611,41 +4635,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context13.prev = _context13.next) {
               case 0:
                 if (!(_this12.scene.usage_guraduation != _this12.editForm_scene.usage_guraduation)) {
-                  _context13.next = 111;
+                  _context13.next = 132;
                   break;
                 }
 
                 if (!(!_this12.scene.usage_guraduation && _this12.editForm_scene.usage_guraduation)) {
-                  _context13.next = 78;
+                  _context13.next = 93;
                   break;
                 }
 
                 if (!(_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "right")) {
-                  _context13.next = 13;
+                  _context13.next = 15;
                   break;
                 }
 
-                // 卒業公演0→1、上手→下手で使用
-                response_prop = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 5;
+                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_left_to_right_change',
                   id: _this12.scene.id,
                   usage_guraduation: 1,
                   usage_left: 0,
                   usage_right: 1
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(response_prop.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 8;
+              case 5:
+                response_prop = _context13.sent;
+
+                if (!(response_prop.status === 422)) {
+                  _context13.next = 9;
                   break;
                 }
 
                 _this12.errors.error = response_prop.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 8:
-                if (!(response_prop.statusText !== 'No Content')) {
-                  _context13.next = 11;
+              case 9:
+                if (!(response_prop.status !== 204)) {
+                  _context13.next = 12;
                   break;
                 }
 
@@ -4653,37 +4679,40 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 11:
-                _context13.next = 76;
+              case 12:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 91;
                 break;
 
-              case 13:
+              case 15:
                 if (!(_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "left")) {
-                  _context13.next = 24;
+                  _context13.next = 28;
                   break;
                 }
 
-                // 卒業公演0→1、下手→上手で使用
-                _response_prop2 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 18;
+                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_right_to_left_change',
                   id: _this12.scene.id,
                   usage_guraduation: 1,
                   usage_left: 1,
                   usage_right: 0
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop2.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 19;
+              case 18:
+                _response_prop2 = _context13.sent;
+
+                if (!(_response_prop2.status === 422)) {
+                  _context13.next = 22;
                   break;
                 }
 
                 _this12.errors.error = _response_prop2.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 19:
-                if (!(_response_prop2.statusText !== 'No Content')) {
-                  _context13.next = 22;
+              case 22:
+                if (!(_response_prop2.status !== 204)) {
+                  _context13.next = 25;
                   break;
                 }
 
@@ -4691,35 +4720,39 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 22:
-                _context13.next = 76;
+              case 25:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 91;
                 break;
 
-              case 24:
+              case 28:
                 if (!(!_this12.scene.usage_left && !_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "left")) {
-                  _context13.next = 35;
+                  _context13.next = 42;
                   break;
                 }
 
-                // 卒業公演0→1、上手0→1
-                _response_prop3 = axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 31;
+                return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_left_change',
                   usage_guraduation: 1,
                   usage_left: 1
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop3.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 30;
+              case 31:
+                _response_prop3 = _context13.sent;
+                console.log(_response_prop3);
+
+                if (!(_response_prop3.status === 422)) {
+                  _context13.next = 36;
                   break;
                 }
 
                 _this12.errors.error = _response_prop3.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 30:
-                if (!(_response_prop3.statusText !== 'No Content')) {
-                  _context13.next = 33;
+              case 36:
+                if (!(_response_prop3.status !== 204)) {
+                  _context13.next = 39;
                   break;
                 }
 
@@ -4727,35 +4760,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 33:
-                _context13.next = 76;
+              case 39:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 91;
                 break;
 
-              case 35:
+              case 42:
                 if (!(!_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "right")) {
-                  _context13.next = 46;
+                  _context13.next = 55;
                   break;
                 }
 
-                // 卒業公演0→1、下手0→1
-                _response_prop4 = axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 45;
+                return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_right_change',
                   usage_guraduation: 1,
                   usage_right: 1
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop4.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 41;
+              case 45:
+                _response_prop4 = _context13.sent;
+
+                if (!(_response_prop4.status === 422)) {
+                  _context13.next = 49;
                   break;
                 }
 
                 _this12.errors.error = _response_prop4.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 41:
-                if (!(_response_prop4.statusText !== 'No Content')) {
-                  _context13.next = 44;
+              case 49:
+                if (!(_response_prop4.status !== 204)) {
+                  _context13.next = 52;
                   break;
                 }
 
@@ -4763,36 +4799,39 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 44:
-                _context13.next = 76;
+              case 52:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 91;
                 break;
 
-              case 46:
+              case 55:
                 if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 57;
+                  _context13.next = 68;
                   break;
                 }
 
-                // 卒業公演0→1、上手1→0
-                _response_prop5 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 58;
+                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_1_left_0_change',
                   id: _this12.scene.id,
                   usage_guraduation: 1,
                   usage_left: 0
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop5.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 52;
+              case 58:
+                _response_prop5 = _context13.sent;
+
+                if (!(_response_prop5.status === 422)) {
+                  _context13.next = 62;
                   break;
                 }
 
                 _this12.errors.error = _response_prop5.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 52:
-                if (!(_response_prop5.statusText !== 'No Content')) {
-                  _context13.next = 55;
+              case 62:
+                if (!(_response_prop5.status !== 204)) {
+                  _context13.next = 65;
                   break;
                 }
 
@@ -4800,36 +4839,39 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 55:
-                _context13.next = 76;
+              case 65:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 91;
                 break;
 
-              case 57:
+              case 68:
                 if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 68;
+                  _context13.next = 81;
                   break;
                 }
 
-                // 卒業公演0→1、下手1→0
-                _response_prop6 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 71;
+                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_1_right_0_change',
                   id: _this12.scene.id,
                   usage_guraduation: 1,
                   usage_right: 0
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop6.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 63;
+              case 71:
+                _response_prop6 = _context13.sent;
+
+                if (!(_response_prop6.status === 422)) {
+                  _context13.next = 75;
                   break;
                 }
 
                 _this12.errors.error = _response_prop6.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 63:
-                if (!(_response_prop6.statusText !== 'No Content')) {
-                  _context13.next = 66;
+              case 75:
+                if (!(_response_prop6.status !== 204)) {
+                  _context13.next = 78;
                   break;
                 }
 
@@ -4837,29 +4879,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 66:
-                _context13.next = 76;
+              case 78:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 91;
                 break;
 
-              case 68:
-                // 卒業公演0→1
-                _response_prop7 = axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+              case 81:
+                _context13.next = 83;
+                return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_change',
                   usage_guraduation: 1
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop7.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 73;
+              case 83:
+                _response_prop7 = _context13.sent;
+
+                if (!(_response_prop7.status === 422)) {
+                  _context13.next = 87;
                   break;
                 }
 
                 _this12.errors.error = _response_prop7.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 73:
-                if (!(_response_prop7.statusText !== 'No Content')) {
-                  _context13.next = 76;
+              case 87:
+                if (!(_response_prop7.status !== 204)) {
+                  _context13.next = 90;
                   break;
                 }
 
@@ -4867,36 +4912,41 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 76:
-                _context13.next = 109;
+              case 90:
+                _this12.editSceneMode_prop = 100;
+
+              case 91:
+                _context13.next = 130;
                 break;
 
-              case 78:
+              case 93:
                 if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 89;
+                  _context13.next = 106;
                   break;
                 }
 
-                // 卒業公演1→0、上手1→0
-                _response_prop8 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 96;
+                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_left_0_change',
                   id: _this12.scene.id,
                   usage_guraduation: 0,
                   usage_left: 0
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop8.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 84;
+              case 96:
+                _response_prop8 = _context13.sent;
+
+                if (!(_response_prop8.status === 422)) {
+                  _context13.next = 100;
                   break;
                 }
 
                 _this12.errors.error = _response_prop8.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 84:
-                if (!(_response_prop8.statusText !== 'No Content')) {
-                  _context13.next = 87;
+              case 100:
+                if (!(_response_prop8.status !== 204)) {
+                  _context13.next = 103;
                   break;
                 }
 
@@ -4904,36 +4954,39 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 87:
-                _context13.next = 109;
+              case 103:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 130;
                 break;
 
-              case 89:
+              case 106:
                 if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 100;
+                  _context13.next = 119;
                   break;
                 }
 
-                // 卒業公演1→0、下手1→0
-                _response_prop9 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 109;
+                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_right_0_change',
                   id: _this12.scene.id,
                   usage_guraduation: 0,
                   usage_right: 0
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop9.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 95;
+              case 109:
+                _response_prop9 = _context13.sent;
+
+                if (!(_response_prop9.status === 422)) {
+                  _context13.next = 113;
                   break;
                 }
 
                 _this12.errors.error = _response_prop9.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 95:
-                if (!(_response_prop9.statusText !== 'No Content')) {
-                  _context13.next = 98;
+              case 113:
+                if (!(_response_prop9.status !== 204)) {
+                  _context13.next = 116;
                   break;
                 }
 
@@ -4941,35 +4994,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 98:
-                _context13.next = 109;
+              case 116:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 130;
                 break;
 
-              case 100:
+              case 119:
                 if (!(_this12.scene.usage_guraduation && !_this12.editForm_scene.usage_guraduation)) {
-                  _context13.next = 109;
+                  _context13.next = 130;
                   break;
                 }
 
-                // 卒業公演1→0
-                _response_prop10 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 122;
+                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_change',
                   id: _this12.scene.id,
                   usage_guraduation: 0
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop10.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 106;
+              case 122:
+                _response_prop10 = _context13.sent;
+
+                if (!(_response_prop10.status === 422)) {
+                  _context13.next = 126;
                   break;
                 }
 
                 _this12.errors.error = _response_prop10.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 106:
-                if (!(_response_prop10.statusText !== 'No Content')) {
-                  _context13.next = 109;
+              case 126:
+                if (!(_response_prop10.status !== 204)) {
+                  _context13.next = 129;
                   break;
                 }
 
@@ -4977,41 +5033,46 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 109:
-                _context13.next = 176;
+              case 129:
+                _this12.editSceneMode_prop = 100;
+
+              case 130:
+                _context13.next = 209;
                 break;
 
-              case 111:
+              case 132:
                 if (!_this12.editForm_scene.usage_guraduation) {
-                  _context13.next = 176;
+                  _context13.next = 209;
                   break;
                 }
 
                 if (!(_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "right")) {
-                  _context13.next = 123;
+                  _context13.next = 146;
                   break;
                 }
 
-                // 上手→下手
-                _response_prop11 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 136;
+                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_left_to_right_change',
                   id: _this12.scene.id,
                   usage_left: 0,
                   usage_right: 1
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop11.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 118;
+              case 136:
+                _response_prop11 = _context13.sent;
+
+                if (!(_response_prop11.status === 422)) {
+                  _context13.next = 140;
                   break;
                 }
 
-                _this12.errors.error = response.data_prop.errors;
+                _this12.errors.error = _response_prop11.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 118:
-                if (!(_response_prop11.statusText !== 'No Content')) {
-                  _context13.next = 121;
+              case 140:
+                if (!(_response_prop11.status !== 204)) {
+                  _context13.next = 143;
                   break;
                 }
 
@@ -5019,36 +5080,39 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 121:
-                _context13.next = 176;
+              case 143:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 209;
                 break;
 
-              case 123:
+              case 146:
                 if (!(_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "left")) {
-                  _context13.next = 134;
+                  _context13.next = 159;
                   break;
                 }
 
-                // 下手→上手
-                _response_prop12 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 149;
+                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_right_to_left_change',
                   id: _this12.scene.id,
                   usage_left: 1,
                   usage_right: 0
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop12.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 129;
+              case 149:
+                _response_prop12 = _context13.sent;
+
+                if (!(_response_prop12.status === 422)) {
+                  _context13.next = 153;
                   break;
                 }
 
                 _this12.errors.error = _response_prop12.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 129:
-                if (!(_response_prop12.statusText !== 'No Content')) {
-                  _context13.next = 132;
+              case 153:
+                if (!(_response_prop12.status !== 204)) {
+                  _context13.next = 156;
                   break;
                 }
 
@@ -5056,34 +5120,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 132:
-                _context13.next = 176;
+              case 156:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 209;
                 break;
 
-              case 134:
+              case 159:
                 if (!(!_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "left")) {
-                  _context13.next = 145;
+                  _context13.next = 172;
                   break;
                 }
 
-                // 上手0→1
-                _response_prop13 = axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 162;
+                return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_left_change',
                   usage_left: 1
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop13.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 140;
+              case 162:
+                _response_prop13 = _context13.sent;
+
+                if (!(_response_prop13.status === 422)) {
+                  _context13.next = 166;
                   break;
                 }
 
                 _this12.errors.error = _response_prop13.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 140:
-                if (!(_response_prop13.statusText !== 'No Content')) {
-                  _context13.next = 143;
+              case 166:
+                if (!(_response_prop13.status !== 204)) {
+                  _context13.next = 169;
                   break;
                 }
 
@@ -5091,34 +5158,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 143:
-                _context13.next = 176;
+              case 169:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 209;
                 break;
 
-              case 145:
+              case 172:
                 if (!(!_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "right")) {
-                  _context13.next = 156;
+                  _context13.next = 185;
                   break;
                 }
 
-                // 下手0→1
-                _response_prop14 = axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 175;
+                return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_right_change',
                   usage_right: 1
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop14.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 151;
+              case 175:
+                _response_prop14 = _context13.sent;
+
+                if (!(_response_prop14.status === 422)) {
+                  _context13.next = 179;
                   break;
                 }
 
                 _this12.errors.error = _response_prop14.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 151:
-                if (!(_response_prop14.statusText !== 'No Content')) {
-                  _context13.next = 154;
+              case 179:
+                if (!(_response_prop14.status !== 204)) {
+                  _context13.next = 182;
                   break;
                 }
 
@@ -5126,35 +5196,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 154:
-                _context13.next = 176;
+              case 182:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 209;
                 break;
 
-              case 156:
+              case 185:
                 if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 167;
+                  _context13.next = 198;
                   break;
                 }
 
-                // 上手1→0
-                _response_prop15 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 188;
+                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_left_0_change',
                   id: _this12.scene.id,
                   usage_left: 0
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop15.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 162;
+              case 188:
+                _response_prop15 = _context13.sent;
+
+                if (!(_response_prop15.status === 422)) {
+                  _context13.next = 192;
                   break;
                 }
 
                 _this12.errors.error = _response_prop15.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 162:
-                if (!(_response_prop15.statusText !== 'No Content')) {
-                  _context13.next = 165;
+              case 192:
+                if (!(_response_prop15.status !== 204)) {
+                  _context13.next = 195;
                   break;
                 }
 
@@ -5162,35 +5235,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 165:
-                _context13.next = 176;
+              case 195:
+                _this12.editSceneMode_prop = 100;
+                _context13.next = 209;
                 break;
 
-              case 167:
+              case 198:
                 if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 176;
+                  _context13.next = 209;
                   break;
                 }
 
-                // 下手1→0
-                _response_prop16 = axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                _context13.next = 201;
+                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_right_0_change',
                   id: _this12.scene.id,
                   usage_right: 0
                 });
-                _this12.editSceneMode_prop = 100;
 
-                if (!(_response_prop16.statusText === 'Unprocessable Entity')) {
-                  _context13.next = 173;
+              case 201:
+                _response_prop16 = _context13.sent;
+
+                if (!(_response_prop16.status === 422)) {
+                  _context13.next = 205;
                   break;
                 }
 
                 _this12.errors.error = _response_prop16.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 173:
-                if (!(_response_prop16.statusText !== 'No Content')) {
-                  _context13.next = 176;
+              case 205:
+                if (!(_response_prop16.status !== 204)) {
+                  _context13.next = 208;
                   break;
                 }
 
@@ -5198,7 +5274,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 176:
+              case 208:
+                _this12.editSceneMode_prop = 100;
+
+              case 209:
               case "end":
                 return _context13.stop();
             }
@@ -5255,7 +5334,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 2:
                 response = _context15.sent;
 
-                if (!(response.statusText === 'Unprocessable Entity')) {
+                if (!(response.status === 422)) {
                   _context15.next = 6;
                   break;
                 }
@@ -5264,10 +5343,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context15.abrupt("return", false);
 
               case 6:
-                _this14.resetScene();
-
-                if (!(response.statusText !== 'No Content')) {
-                  _context15.next = 10;
+                if (!(response.status !== 204)) {
+                  _context15.next = 9;
                   break;
                 }
 
@@ -5275,8 +5352,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context15.abrupt("return", false);
 
-              case 10:
-                // メッセージ登録
+              case 9:
+                _this14.resetScene(); // メッセージ登録
+
+
                 _this14.$store.commit('message/setContent', {
                   content: '使用シーンが1つ削除されました！',
                   timeout: 6000
@@ -7877,18 +7956,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context2.sent;
-                _this2.props = response.data; // オリジナルデータ
 
-                _this2.showProps = JSON.parse(JSON.stringify(_this2.props));
-
-                if (!(response.statusText !== 'OK')) {
-                  _context2.next = 8;
+                if (!(response.status !== 200)) {
+                  _context2.next = 6;
                   break;
                 }
 
                 _this2.$store.commit('error/setCode', response.status);
 
                 return _context2.abrupt("return", false);
+
+              case 6:
+                _this2.props = response.data; // オリジナルデータ
+
+                _this2.showProps = JSON.parse(JSON.stringify(_this2.props));
 
               case 8:
               case "end":
@@ -8234,18 +8315,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context2.sent;
-                _this2.scenes = response.data; // オリジナルデータ
 
-                _this2.showScenes = JSON.parse(JSON.stringify(_this2.scenes));
-
-                if (!(response.statusText !== 'OK')) {
-                  _context2.next = 8;
+                if (!(response.status !== 200)) {
+                  _context2.next = 6;
                   break;
                 }
 
                 _this2.$store.commit('error/setCode', response.status);
 
                 return _context2.abrupt("return", false);
+
+              case 6:
+                _this2.scenes = response.data; // オリジナルデータ
+
+                _this2.showScenes = JSON.parse(JSON.stringify(_this2.scenes));
 
               case 8:
               case "end":
@@ -8566,7 +8649,13 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "overlay"
+    staticClass: "overlay",
+    on: {
+      click: function click($event) {
+        if ($event.target !== $event.currentTarget) return null;
+        return _vm.$emit("close");
+      }
+    }
   }, [_c("div", {
     staticClass: "content content-confirm-dialog panel"
   }, [_c("div", {
@@ -8623,7 +8712,13 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", {
-    "class": [_vm.overlay_class === 1 ? "overlay" : "overlay overlay-custom"]
+    "class": [_vm.overlay_class === 1 ? "overlay" : "overlay overlay-custom"],
+    on: {
+      click: function click($event) {
+        if ($event.target !== $event.currentTarget) return null;
+        return _vm.$emit("close");
+      }
+    }
   }, [_c("div", {
     ref: "content_confirm_dialog_edit",
     staticClass: "content content-confirm-dialog panel"
@@ -8681,7 +8776,13 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", {
-    "class": [_vm.overlay_class === 1 ? "overlay" : "overlay overlay-custom"]
+    "class": [_vm.overlay_class === 1 ? "overlay" : "overlay overlay-custom"],
+    on: {
+      click: function click($event) {
+        if ($event.target !== $event.currentTarget) return null;
+        return _vm.$emit("close");
+      }
+    }
   }, [_c("div", {
     ref: "content_detail_prop",
     staticClass: "content content-detail panel"
@@ -9070,7 +9171,13 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", {
-    "class": [_vm.overlay_class === 1 ? "overlay" : "overlay overlay-custom"]
+    "class": [_vm.overlay_class === 1 ? "overlay" : "overlay overlay-custom"],
+    on: {
+      click: function click($event) {
+        if ($event.target !== $event.currentTarget) return null;
+        return _vm.$emit("close");
+      }
+    }
   }, [_c("div", {
     ref: "content_detail_scene",
     staticClass: "content content-detail panel"
