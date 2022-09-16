@@ -119,24 +119,24 @@ export default {
     async fetchOwners () {
       const response = await axios.get('/api/informations/owners');
 
-      this.optionOwners = response.data;
-
-      if (response.statusText !== 'OK') {
+      if (response.status !== 200) {
         this.$store.commit('error/setCode', response.status);
         return false;
       }
+
+      this.optionOwners = response.data;
     },
 
     // 小道具一覧を取得
     async fetchProps () {
       const response = await axios.get('/api/props');
 
-      this.props = response.data;
-
-      if (response.statusText !== 'OK') {
+      if (response.status !== 200) {
         this.$store.commit('error/setCode', response.status);
         return false;
       }
+
+      this.props = response.data;
     },
 
     handleNameInput() {
@@ -210,42 +210,35 @@ export default {
 
     // 登録する
     async register_prop () {
-      const promise = new Promise(async(resoleve) => {
-        const formData = new FormData();
-        formData.append('name', this.registerForm.prop);
-        formData.append('kana', this.registerForm.kana);
-        formData.append('owner_id', this.registerForm.owner);
-        formData.append('memo', this.registerForm.comment);
-        formData.append('usage', '');
-        formData.append('usage_guraduation', '');
-        formData.append('usage_left', '');
-        formData.append('usage_right', '');
-        formData.append('photo', this.registerForm.photo);
-        const response = await axios.post('/api/props', formData);
-        resoleve(response);
-      })
-      .then((response) => {
-        // 諸々データ削除
-        this.reset();
+      const formData = new FormData();
+      formData.append('name', this.registerForm.prop);
+      formData.append('kana', this.registerForm.kana);
+      formData.append('owner_id', this.registerForm.owner);
+      formData.append('memo', this.registerForm.comment);
+      formData.append('usage', '');
+      formData.append('usage_guraduation', '');
+      formData.append('usage_left', '');
+      formData.append('usage_right', '');
+      formData.append('photo', this.registerForm.photo);
+      const response = await axios.post('/api/props', formData);
   
-        if (response.statusText === 'Unprocessable Entity') {
-          this.errors.error = response.data.errors;
-          return false;
-        }
+      if (response.status === 422) {
+        this.errors.error = response.data.errors;
+        return false;
+      }
 
-        if (response.statusText !== 'Created') {
-          this.$store.commit('error/setCode', response.status);
-          return false;
-        }else if(response.statusText === 'Created'){
-          return response;
-        }
-      })
-      .then((response) => {
-        // メッセージ登録
-        this.$store.commit('message/setContent', {
-          content: '小道具が投稿されました！',
-          timeout: 6000
-        });
+      if (response.status !== 201) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
+
+      // 諸々データ削除
+      this.reset();
+
+      // メッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '小道具が投稿されました！',
+        timeout: 6000
       });
     }
   },

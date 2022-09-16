@@ -123,7 +123,12 @@ export default {
   methods: {
     // 登場人物を取得
     async fetchCharacters () {
-      const response = await axios.get('/api/informations/characters');      
+      const response = await axios.get('/api/informations/characters');
+      
+      if (response.status !== 200) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
 
       this.characters = response.data;
 
@@ -132,24 +137,19 @@ export default {
       this.characters.forEach(function(section){
         sections[section.section] = section.characters
       });
-      this.optionCharacters = sections;
-
-      if (response.statusText !== 'OK') {
-        this.$store.commit('error/setCode', response.status);
-        return false;
-      }
+      this.optionCharacters = sections;      
     },
 
     // 小道具を取得
     async fetchProps () {
       const response = await axios.get('/api/props');
 
-      this.optionProps = response.data;
-
-      if (response.statusText !== 'OK') {
+      if (response.status !== 200) {
         this.$store.commit('error/setCode', response.status);
         return false;
       }
+
+      this.optionProps = response.data;      
     },
 
     // 連動プルダウン
@@ -308,122 +308,120 @@ export default {
         usage_right = 1;
       }
       let last_flag = false;
+
       first_pages.forEach(async function(page, index) {
-        const promise = new Promise(async(resolve) => {
-          const response = await axios.post('/api/scenes', {
-            character_id: this.registerForm.character,
-            prop_id: this.registerForm.prop,
-            first_page: page,
-            final_page: final_pages[index],
-            usage: this.registerForm.usage,
-            usage_guraduation: this.registerForm.usage_guraduation,
-            usage_left: usage_left,
-            usage_right: usage_right,
-            memo: this.registerForm.comment
-          });
-          resolve(response);
-        })
-        .then((response) => {
-          if (response.statusText === 'Unprocessable Entity') {
-            this.errors.error = response.data.errors;
-            return false;
-          }
+        const response = await axios.post('/api/scenes', {
+          character_id: this.registerForm.character,
+          prop_id: this.registerForm.prop,
+          first_page: page,
+          final_page: final_pages[index],
+          usage: this.registerForm.usage,
+          usage_guraduation: this.registerForm.usage_guraduation,
+          usage_left: usage_left,
+          usage_right: usage_right,
+          memo: this.registerForm.comment
+        });
+
+        if (response.status === 422) {
+          this.errors.error = response.data.errors;
+          return false;
+        }
   
-          if (response.statusText !== 'Created') {
-            this.$store.commit('error/setCode', response.status);
-            return false;
-          }else if(response.statusText === 'Created'){
-            return response;
-          }
-        })
-        .then((response) => {
-          if(index === first_pages.length-1){
-            const prop = this.registerForm.prop;
-            const usage = this.registerForm.usage;
-            const usage_guraduation = this.registerForm.usage_guraduation;
-            // 諸々データ削除
-            this.reset();
-            // 要検討
-            if(usage || usage_guraduation){
-              // 小道具の使用有無変更
-              if(usage){
-                // 中間発表で使用
+        if (response.status !== 201) {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }
+
+        if(index === first_pages.length-1){
+          const prop = this.registerForm.prop;
+          const usage = this.registerForm.usage;
+          const usage_guraduation = this.registerForm.usage_guraduation;
+          // 諸々データ削除
+          this.reset();
+
+          // メッセージ登録
+          this.$store.commit('message/setContent', {
+            content: '使用シーンが投稿されました！',
+            timeout: 6000
+          });
+
+          // 要検討
+          if(usage || usage_guraduation){
+            // 小道具の使用有無変更
+            if(usage){
+              // 中間発表で使用
+              const response_prop = axios.post('/api/props/'+ prop, {
+                method: 'usage_change',
+                usage: usage
+              });
+
+              if (response_prop.status === 422) {
+                this.errors.error = response.data.errors;
+                return false;
+              }
+
+              if (response_prop.statusText !== 204) {
+                this.$store.commit('error/setCode', response.status);
+                return false;
+              }
+            }
+
+            if(usage_guraduation){
+              if(usage_left){
+                // 上手で使用
                 const response_prop = axios.post('/api/props/'+ prop, {
-                  method: 'usage_change',
-                  usage: usage
+                  method: 'usage_left_change',
+                  usage_guraduation: usage_guraduation,
+                  usage_left: usage_left
+                });
+  
+                if (response_prop.status === 422) {
+                  this.errors.error = response.data.errors;
+                  return false;
+                }
+ 
+                if (response_prop.status !== 204) {
+                  this.$store.commit('error/setCode', response.status);
+                  return false;
+                }
+              }else if(usage_right){
+                // 下手で使用
+                const response_prop = axios.post('/api/props/'+ prop, {
+                  method: 'usage_right_change',
+                  usage_guraduation: usage_guraduation,
+                  usage_right: usage_right
                 });
 
-                if (response_prop.statusText === 'Unprocessable Entity') {
+                if (response_prop.status === 422) {
                   this.errors.error = response.data.errors;
                   return false;
                 }
 
-                if (response_prop.statusText !== 'No Content') {
+                if (response_prop.statusText !== 204) {
+                  this.$store.commit('error/setCode', response.status);
+                  return false;
+                }
+              }else{
+                // とりあえず卒業公演で使用
+                const response_prop = axios.post('/api/props/'+ prop, {
+                  method: 'usage_guraduation_change',
+                  usage_guraduation: usage_guraduation
+                });
+
+                if (response_prop.status === 422) {
+                  this.errors.error = response.data.errors;
+                  return false;
+                }
+  
+                if (response_prop.statusText !== 204) {
                   this.$store.commit('error/setCode', response.status);
                   return false;
                 }
               }
-              if(usage_guraduation){
-                if(usage_left){
-                  // 上手で使用
-                  const response_prop = axios.post('/api/props/'+ prop, {
-                    method: 'usage_left_change',
-                    usage_guraduation: usage_guraduation,
-                    usage_left: usage_left
-                  });
-  
-                  if (response_prop.statusText === 'Unprocessable Entity') {
-                    this.errors.error = response.data.errors;
-                    return false;
-                  }
- 
-                  if (response_prop.statusText !== 'No Content') {
-                    this.$store.commit('error/setCode', response.status);
-                    return false;
-                  }
-                }else if(usage_right){
-                  // 下手で使用
-                  const response_prop = axios.post('/api/props/'+ prop, {
-                    method: 'usage_right_change',
-                    usage_guraduation: usage_guraduation,
-                    usage_right: usage_right
-                  });
-                  if (response_prop.statusText === 'Unprocessable Entity') {
-                    this.errors.error = response.data.errors;
-                    return false;
-                  }
-
-                  if (response_prop.statusText !== 'No Content') {
-                    this.$store.commit('error/setCode', response.status);
-                    return false;
-                  }
-                }else{
-                  // とりあえず卒業公演で使用
-                  const response_prop = axios.post('/api/props/'+ prop, {
-                    method: 'usage_guraduation_change',
-                    usage_guraduation: usage_guraduation
-                  });
-                  if (response_prop.statusText === 'Unprocessable Entity') {
-                    this.errors.error = response.data.errors;
-                    return false;
-                  }
-  
-                  if (response_prop.statusText !== 'No Content') {
-                    this.$store.commit('error/setCode', response.status);
-                    return false;
-                  }
-                }
-              }
             }
-          } 
-        }); 
+          }
+        } 
       }, this);
-
-      // メッセージ登録
-      this.$store.commit('message/setContent', {
-        content: '使用シーンが投稿されました！',
-        timeout: 6000
-      });
     }
   },
   watch: {

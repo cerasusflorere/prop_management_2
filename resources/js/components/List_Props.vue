@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']">
+  <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']"  @click.self="$emit('close')">
     <div class="content panel" ref="content_list_props">
       <ul v-if="props_list.length">
         <li v-for="prop in props_list">
@@ -50,20 +50,16 @@ export default {
     postFlag: {
       async handler (postFlag) {
         if(this.postFlag){
-          const promise = new Promise(async(resolve) => {
-            const props = await this.fetchProps();
-            resolve(props);
-          })
-          .then((props) => {
-            const content_dom = this.$refs.content_list_props;
-            const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+          const props = await this.fetchProps();
+
+          const content_dom = this.$refs.content_list_props;
+          const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
   
-            if(content_rect.top < 0){
-              this.overlay_class = 0;
-            }else{
-              this.overlay_class = 1;
-            }
-          });
+          if(content_rect.top < 0){
+            this.overlay_class = 0;
+          }else{
+            this.overlay_class = 1;
+          }
         }
       },
       immediate: true
@@ -74,13 +70,12 @@ export default {
     async fetchProps () {
       const response = await axios.get('/api/props');
 
-      this.props_list = response.data
-
-      if (response.statusText !== 'OK') {
+      if (response.status !== 200) {
         this.$store.commit('error/setCode', response.status);
         return false;
       }
-      return response;
+      
+      this.props_list = response.data;
     },
 
     // 小道具詳細のモーダル表示 

@@ -6212,56 +6212,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       handler: function handler(postFlag) {
         var _this = this;
 
-        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-          var promise;
-          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          var props, content_dom, content_rect;
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) {
-              switch (_context2.prev = _context2.next) {
+              switch (_context.prev = _context.next) {
                 case 0:
-                  if (_this.postFlag) {
-                    promise = new Promise( /*#__PURE__*/function () {
-                      var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(resolve) {
-                        var props;
-                        return _regeneratorRuntime().wrap(function _callee$(_context) {
-                          while (1) {
-                            switch (_context.prev = _context.next) {
-                              case 0:
-                                _context.next = 2;
-                                return _this.fetchProps();
-
-                              case 2:
-                                props = _context.sent;
-                                resolve(props);
-
-                              case 4:
-                              case "end":
-                                return _context.stop();
-                            }
-                          }
-                        }, _callee);
-                      }));
-
-                      return function (_x) {
-                        return _ref.apply(this, arguments);
-                      };
-                    }()).then(function (props) {
-                      var content_dom = _this.$refs.content_list_props;
-                      var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-
-                      if (content_rect.top < 0) {
-                        _this.overlay_class = 0;
-                      } else {
-                        _this.overlay_class = 1;
-                      }
-                    });
+                  if (!_this.postFlag) {
+                    _context.next = 7;
+                    break;
                   }
 
-                case 1:
+                  _context.next = 3;
+                  return _this.fetchProps();
+
+                case 3:
+                  props = _context.sent;
+                  content_dom = _this.$refs.content_list_props;
+                  content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+                  if (content_rect.top < 0) {
+                    _this.overlay_class = 0;
+                  } else {
+                    _this.overlay_class = 1;
+                  }
+
+                case 7:
                 case "end":
-                  return _context2.stop();
+                  return _context.stop();
               }
             }
-          }, _callee2);
+          }, _callee);
         }))();
       },
       immediate: true
@@ -6272,37 +6253,36 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     fetchProps: function fetchProps() {
       var _this2 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                _context3.next = 2;
+                _context2.next = 2;
                 return axios.get('/api/props');
 
               case 2:
-                response = _context3.sent;
-                _this2.props_list = response.data;
+                response = _context2.sent;
 
-                if (!(response.statusText !== 'OK')) {
-                  _context3.next = 7;
+                if (!(response.status !== 200)) {
+                  _context2.next = 6;
                   break;
                 }
 
                 _this2.$store.commit('error/setCode', response.status);
 
-                return _context3.abrupt("return", false);
+                return _context2.abrupt("return", false);
+
+              case 6:
+                _this2.props_list = response.data;
 
               case 7:
-                return _context3.abrupt("return", response);
-
-              case 8:
               case "end":
-                return _context3.stop();
+                return _context2.stop();
             }
           }
-        }, _callee3);
+        }, _callee2);
       }))();
     },
     // 小道具詳細のモーダル表示 
@@ -6314,21 +6294,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     closeModal_propDetail: function closeModal_propDetail() {
       var _this3 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 _this3.showContent = false;
-                _context4.next = 3;
+                _context3.next = 3;
                 return _this3.fetchProps();
 
               case 3:
               case "end":
-                return _context4.stop();
+                return _context3.stop();
             }
           }
-        }, _callee4);
+        }, _callee3);
       }))();
     }
   }
@@ -6488,16 +6468,18 @@ var autokana;
 
               case 2:
                 response = _context.sent;
-                _this.optionOwners = response.data;
 
-                if (!(response.statusText !== 'OK')) {
-                  _context.next = 7;
+                if (!(response.status !== 200)) {
+                  _context.next = 6;
                   break;
                 }
 
                 _this.$store.commit('error/setCode', response.status);
 
                 return _context.abrupt("return", false);
+
+              case 6:
+                _this.optionOwners = response.data;
 
               case 7:
               case "end":
@@ -6522,16 +6504,18 @@ var autokana;
 
               case 2:
                 response = _context2.sent;
-                _this2.props = response.data;
 
-                if (!(response.statusText !== 'OK')) {
-                  _context2.next = 7;
+                if (!(response.status !== 200)) {
+                  _context2.next = 6;
                   break;
                 }
 
                 _this2.$store.commit('error/setCode', response.status);
 
                 return _context2.abrupt("return", false);
+
+              case 6:
+                _this2.props = response.data;
 
               case 7:
               case "end":
@@ -6610,77 +6594,62 @@ var autokana;
     register_prop: function register_prop() {
       var _this4 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-        var promise;
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var formData, response;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                promise = new Promise( /*#__PURE__*/function () {
-                  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(resoleve) {
-                    var formData, response;
-                    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-                      while (1) {
-                        switch (_context3.prev = _context3.next) {
-                          case 0:
-                            formData = new FormData();
-                            formData.append('name', _this4.registerForm.prop);
-                            formData.append('kana', _this4.registerForm.kana);
-                            formData.append('owner_id', _this4.registerForm.owner);
-                            formData.append('memo', _this4.registerForm.comment);
-                            formData.append('usage', '');
-                            formData.append('usage_guraduation', '');
-                            formData.append('usage_left', '');
-                            formData.append('usage_right', '');
-                            formData.append('photo', _this4.registerForm.photo);
-                            _context3.next = 12;
-                            return axios.post('/api/props', formData);
+                formData = new FormData();
+                formData.append('name', _this4.registerForm.prop);
+                formData.append('kana', _this4.registerForm.kana);
+                formData.append('owner_id', _this4.registerForm.owner);
+                formData.append('memo', _this4.registerForm.comment);
+                formData.append('usage', '');
+                formData.append('usage_guraduation', '');
+                formData.append('usage_left', '');
+                formData.append('usage_right', '');
+                formData.append('photo', _this4.registerForm.photo);
+                _context3.next = 12;
+                return axios.post('/api/props', formData);
 
-                          case 12:
-                            response = _context3.sent;
-                            resoleve(response);
+              case 12:
+                response = _context3.sent;
 
-                          case 14:
-                          case "end":
-                            return _context3.stop();
-                        }
-                      }
-                    }, _callee3);
-                  }));
+                if (!(response.status === 422)) {
+                  _context3.next = 16;
+                  break;
+                }
 
-                  return function (_x) {
-                    return _ref.apply(this, arguments);
-                  };
-                }()).then(function (response) {
-                  // 諸々データ削除
-                  _this4.reset();
+                _this4.errors.error = response.data.errors;
+                return _context3.abrupt("return", false);
 
-                  if (response.statusText === 'Unprocessable Entity') {
-                    _this4.errors.error = response.data.errors;
-                    return false;
-                  }
+              case 16:
+                if (!(response.status !== 201)) {
+                  _context3.next = 19;
+                  break;
+                }
 
-                  if (response.statusText !== 'Created') {
-                    _this4.$store.commit('error/setCode', response.status);
+                _this4.$store.commit('error/setCode', response.status);
 
-                    return false;
-                  } else if (response.statusText === 'Created') {
-                    return response;
-                  }
-                }).then(function (response) {
-                  // メッセージ登録
-                  _this4.$store.commit('message/setContent', {
-                    content: '小道具が投稿されました！',
-                    timeout: 6000
-                  });
+                return _context3.abrupt("return", false);
+
+              case 19:
+                // 諸々データ削除
+                _this4.reset(); // メッセージ登録
+
+
+                _this4.$store.commit('message/setContent', {
+                  content: '小道具が投稿されました！',
+                  timeout: 6000
                 });
 
-              case 1:
+              case 21:
               case "end":
-                return _context4.stop();
+                return _context3.stop();
             }
           }
-        }, _callee4);
+        }, _callee3);
       }))();
     }
   },
@@ -6689,24 +6658,24 @@ var autokana;
       handler: function handler() {
         var _this5 = this;
 
-        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-          return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+          return _regeneratorRuntime().wrap(function _callee4$(_context4) {
             while (1) {
-              switch (_context5.prev = _context5.next) {
+              switch (_context4.prev = _context4.next) {
                 case 0:
-                  _context5.next = 2;
+                  _context4.next = 2;
                   return _this5.fetchOwners();
 
                 case 2:
-                  _context5.next = 4;
+                  _context4.next = 4;
                   return _this5.fetchProps();
 
                 case 4:
                 case "end":
-                  return _context5.stop();
+                  return _context4.stop();
               }
             }
-          }, _callee5);
+          }, _callee4);
         }))();
       },
       immediate: true
@@ -6788,6 +6757,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context.sent;
+
+                if (!(response.status !== 200)) {
+                  _context.next = 6;
+                  break;
+                }
+
+                _this.$store.commit('error/setCode', response.status);
+
+                return _context.abrupt("return", false);
+
+              case 6:
                 _this.characters = response.data; // 区分と登場人物をオブジェクトに変換する
 
                 sections = new Object();
@@ -6797,15 +6777,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
                 _this.optionCharacters = sections;
-
-                if (!(response.statusText !== 'OK')) {
-                  _context.next = 10;
-                  break;
-                }
-
-                _this.$store.commit('error/setCode', response.status);
-
-                return _context.abrupt("return", false);
 
               case 10:
               case "end":
@@ -6830,16 +6801,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context2.sent;
-                _this2.optionProps = response.data;
 
-                if (!(response.statusText !== 'OK')) {
-                  _context2.next = 7;
+                if (!(response.status !== 200)) {
+                  _context2.next = 6;
                   break;
                 }
 
                 _this2.$store.commit('error/setCode', response.status);
 
                 return _context2.abrupt("return", false);
+
+              case 6:
+                _this2.optionProps = response.data;
 
               case 7:
               case "end":
@@ -7081,174 +7054,240 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       var last_flag = false;
       first_pages.forEach( /*#__PURE__*/function () {
-        var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(page, index) {
-          var _this5 = this;
+        var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(page, index) {
+          var response, prop, usage, usage_guraduation, response_prop, _response_prop, _response_prop2, _response_prop3;
 
-          var promise;
-          return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          return _regeneratorRuntime().wrap(function _callee5$(_context5) {
             while (1) {
-              switch (_context6.prev = _context6.next) {
+              switch (_context5.prev = _context5.next) {
                 case 0:
-                  promise = new Promise( /*#__PURE__*/function () {
-                    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(resolve) {
-                      var response;
-                      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-                        while (1) {
-                          switch (_context5.prev = _context5.next) {
-                            case 0:
-                              _context5.next = 2;
-                              return axios.post('/api/scenes', {
-                                character_id: _this5.registerForm.character,
-                                prop_id: _this5.registerForm.prop,
-                                first_page: page,
-                                final_page: final_pages[index],
-                                usage: _this5.registerForm.usage,
-                                usage_guraduation: _this5.registerForm.usage_guraduation,
-                                usage_left: usage_left,
-                                usage_right: usage_right,
-                                memo: _this5.registerForm.comment
-                              });
-
-                            case 2:
-                              response = _context5.sent;
-                              resolve(response);
-
-                            case 4:
-                            case "end":
-                              return _context5.stop();
-                          }
-                        }
-                      }, _callee5);
-                    }));
-
-                    return function (_x3) {
-                      return _ref2.apply(this, arguments);
-                    };
-                  }()).then(function (response) {
-                    if (response.statusText === 'Unprocessable Entity') {
-                      _this5.errors.error = response.data.errors;
-                      return false;
-                    }
-
-                    if (response.statusText !== 'Created') {
-                      _this5.$store.commit('error/setCode', response.status);
-
-                      return false;
-                    } else if (response.statusText === 'Created') {
-                      return response;
-                    }
-                  }).then(function (response) {
-                    if (index === first_pages.length - 1) {
-                      var prop = _this5.registerForm.prop;
-                      var usage = _this5.registerForm.usage;
-                      var usage_guraduation = _this5.registerForm.usage_guraduation; // 諸々データ削除
-
-                      _this5.reset(); // 要検討
-
-
-                      if (usage || usage_guraduation) {
-                        // 小道具の使用有無変更
-                        if (usage) {
-                          // 中間発表で使用
-                          var response_prop = axios.post('/api/props/' + prop, {
-                            method: 'usage_change',
-                            usage: usage
-                          });
-
-                          if (response_prop.statusText === 'Unprocessable Entity') {
-                            _this5.errors.error = response.data.errors;
-                            return false;
-                          }
-
-                          if (response_prop.statusText !== 'No Content') {
-                            _this5.$store.commit('error/setCode', response.status);
-
-                            return false;
-                          }
-                        }
-
-                        if (usage_guraduation) {
-                          if (usage_left) {
-                            // 上手で使用
-                            var _response_prop = axios.post('/api/props/' + prop, {
-                              method: 'usage_left_change',
-                              usage_guraduation: usage_guraduation,
-                              usage_left: usage_left
-                            });
-
-                            if (_response_prop.statusText === 'Unprocessable Entity') {
-                              _this5.errors.error = response.data.errors;
-                              return false;
-                            }
-
-                            if (_response_prop.statusText !== 'No Content') {
-                              _this5.$store.commit('error/setCode', response.status);
-
-                              return false;
-                            }
-                          } else if (usage_right) {
-                            // 下手で使用
-                            var _response_prop2 = axios.post('/api/props/' + prop, {
-                              method: 'usage_right_change',
-                              usage_guraduation: usage_guraduation,
-                              usage_right: usage_right
-                            });
-
-                            if (_response_prop2.statusText === 'Unprocessable Entity') {
-                              _this5.errors.error = response.data.errors;
-                              return false;
-                            }
-
-                            if (_response_prop2.statusText !== 'No Content') {
-                              _this5.$store.commit('error/setCode', response.status);
-
-                              return false;
-                            }
-                          } else {
-                            // とりあえず卒業公演で使用
-                            var _response_prop3 = axios.post('/api/props/' + prop, {
-                              method: 'usage_guraduation_change',
-                              usage_guraduation: usage_guraduation
-                            });
-
-                            if (_response_prop3.statusText === 'Unprocessable Entity') {
-                              _this5.errors.error = response.data.errors;
-                              return false;
-                            }
-
-                            if (_response_prop3.statusText !== 'No Content') {
-                              _this5.$store.commit('error/setCode', response.status);
-
-                              return false;
-                            }
-                          }
-                        }
-                      }
-                    }
+                  _context5.next = 2;
+                  return axios.post('/api/scenes', {
+                    character_id: this.registerForm.character,
+                    prop_id: this.registerForm.prop,
+                    first_page: page,
+                    final_page: final_pages[index],
+                    usage: this.registerForm.usage,
+                    usage_guraduation: this.registerForm.usage_guraduation,
+                    usage_left: usage_left,
+                    usage_right: usage_right,
+                    memo: this.registerForm.comment
                   });
 
-                case 1:
+                case 2:
+                  response = _context5.sent;
+
+                  if (!(response.status === 422)) {
+                    _context5.next = 6;
+                    break;
+                  }
+
+                  this.errors.error = response.data.errors;
+                  return _context5.abrupt("return", false);
+
+                case 6:
+                  if (!(response.status !== 201)) {
+                    _context5.next = 9;
+                    break;
+                  }
+
+                  this.$store.commit('error/setCode', response.status);
+                  return _context5.abrupt("return", false);
+
+                case 9:
+                  if (!(index === first_pages.length - 1)) {
+                    _context5.next = 52;
+                    break;
+                  }
+
+                  prop = this.registerForm.prop;
+                  usage = this.registerForm.usage;
+                  usage_guraduation = this.registerForm.usage_guraduation; // 諸々データ削除
+
+                  this.reset(); // メッセージ登録
+
+                  this.$store.commit('message/setContent', {
+                    content: '使用シーンが投稿されました！',
+                    timeout: 6000
+                  }); // 要検討
+
+                  if (!(usage || usage_guraduation)) {
+                    _context5.next = 52;
+                    break;
+                  }
+
+                  if (!usage) {
+                    _context5.next = 24;
+                    break;
+                  }
+
+                  // 中間発表で使用
+                  response_prop = axios.post('/api/props/' + prop, {
+                    method: 'usage_change',
+                    usage: usage
+                  });
+
+                  if (!(response_prop.status === 422)) {
+                    _context5.next = 21;
+                    break;
+                  }
+
+                  this.errors.error = response.data.errors;
+                  return _context5.abrupt("return", false);
+
+                case 21:
+                  if (!(response_prop.statusText !== 204)) {
+                    _context5.next = 24;
+                    break;
+                  }
+
+                  this.$store.commit('error/setCode', response.status);
+                  return _context5.abrupt("return", false);
+
+                case 24:
+                  if (!usage_guraduation) {
+                    _context5.next = 52;
+                    break;
+                  }
+
+                  if (!usage_left) {
+                    _context5.next = 35;
+                    break;
+                  }
+
+                  // 上手で使用
+                  _response_prop = axios.post('/api/props/' + prop, {
+                    method: 'usage_left_change',
+                    usage_guraduation: usage_guraduation,
+                    usage_left: usage_left
+                  });
+
+                  if (!(_response_prop.status === 422)) {
+                    _context5.next = 30;
+                    break;
+                  }
+
+                  this.errors.error = response.data.errors;
+                  return _context5.abrupt("return", false);
+
+                case 30:
+                  if (!(_response_prop.status !== 204)) {
+                    _context5.next = 33;
+                    break;
+                  }
+
+                  this.$store.commit('error/setCode', response.status);
+                  return _context5.abrupt("return", false);
+
+                case 33:
+                  _context5.next = 52;
+                  break;
+
+                case 35:
+                  if (!usage_right) {
+                    _context5.next = 45;
+                    break;
+                  }
+
+                  // 下手で使用
+                  _response_prop2 = axios.post('/api/props/' + prop, {
+                    method: 'usage_right_change',
+                    usage_guraduation: usage_guraduation,
+                    usage_right: usage_right
+                  });
+
+                  if (!(_response_prop2.status === 422)) {
+                    _context5.next = 40;
+                    break;
+                  }
+
+                  this.errors.error = response.data.errors;
+                  return _context5.abrupt("return", false);
+
+                case 40:
+                  if (!(_response_prop2.statusText !== 204)) {
+                    _context5.next = 43;
+                    break;
+                  }
+
+                  this.$store.commit('error/setCode', response.status);
+                  return _context5.abrupt("return", false);
+
+                case 43:
+                  _context5.next = 52;
+                  break;
+
+                case 45:
+                  // とりあえず卒業公演で使用
+                  _response_prop3 = axios.post('/api/props/' + prop, {
+                    method: 'usage_guraduation_change',
+                    usage_guraduation: usage_guraduation
+                  });
+
+                  if (!(_response_prop3.status === 422)) {
+                    _context5.next = 49;
+                    break;
+                  }
+
+                  this.errors.error = response.data.errors;
+                  return _context5.abrupt("return", false);
+
+                case 49:
+                  if (!(_response_prop3.statusText !== 204)) {
+                    _context5.next = 52;
+                    break;
+                  }
+
+                  this.$store.commit('error/setCode', response.status);
+                  return _context5.abrupt("return", false);
+
+                case 52:
                 case "end":
-                  return _context6.stop();
+                  return _context5.stop();
               }
             }
-          }, _callee6);
+          }, _callee5, this);
         }));
 
         return function (_x, _x2) {
           return _ref.apply(this, arguments);
         };
-      }(), this); // メッセージ登録
-
-      this.$store.commit('message/setContent', {
-        content: '使用シーンが投稿されました！',
-        timeout: 6000
-      });
+      }(), this);
     }
   },
   watch: {
     $route: {
       handler: function handler() {
+        var _this5 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+          return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+            while (1) {
+              switch (_context6.prev = _context6.next) {
+                case 0:
+                  _context6.next = 2;
+                  return _this5.fetchCharacters();
+
+                case 2:
+                  _context6.next = 4;
+                  return _this5.fetchProps();
+
+                case 4:
+                  _context6.next = 6;
+                  return _this5.choicePerformance();
+
+                case 6:
+                case "end":
+                  return _context6.stop();
+              }
+            }
+          }, _callee6);
+        }))();
+      },
+      immediate: true
+    },
+    season: {
+      handler: function handler(season) {
         var _this6 = this;
 
         return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
@@ -7256,48 +7295,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             while (1) {
               switch (_context7.prev = _context7.next) {
                 case 0:
-                  _context7.next = 2;
-                  return _this6.fetchCharacters();
+                  if (_this6.season === "passo") {
+                    _this6.season_tag = 1;
+                  } else if (_this6.season === "guradution") {
+                    _this6.season_tag = 2;
+                  }
 
-                case 2:
-                  _context7.next = 4;
-                  return _this6.fetchProps();
-
-                case 4:
-                  _context7.next = 6;
-                  return _this6.choicePerformance();
-
-                case 6:
+                case 1:
                 case "end":
                   return _context7.stop();
               }
             }
           }, _callee7);
-        }))();
-      },
-      immediate: true
-    },
-    season: {
-      handler: function handler(season) {
-        var _this7 = this;
-
-        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
-          return _regeneratorRuntime().wrap(function _callee8$(_context8) {
-            while (1) {
-              switch (_context8.prev = _context8.next) {
-                case 0:
-                  if (_this7.season === "passo") {
-                    _this7.season_tag = 1;
-                  } else if (_this7.season === "guradution") {
-                    _this7.season_tag = 2;
-                  }
-
-                case 1:
-                case "end":
-                  return _context8.stop();
-              }
-            }
-          }, _callee8);
         }))();
       },
       immediate: true
@@ -10030,7 +10039,13 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", {
-    "class": [_vm.overlay_class === 1 ? "overlay" : "overlay overlay-custom"]
+    "class": [_vm.overlay_class === 1 ? "overlay" : "overlay overlay-custom"],
+    on: {
+      click: function click($event) {
+        if ($event.target !== $event.currentTarget) return null;
+        return _vm.$emit("close");
+      }
+    }
   }, [_c("div", {
     ref: "content_list_props",
     staticClass: "content panel"
