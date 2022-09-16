@@ -1,3 +1,285 @@
+/* this file is loaded by index.html and styles the page */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* * {
+  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;
+  color: #666666;
+} */
+
+:root {
+  font-size: 0.875em;
+}
+
+body {
+  color: #222;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+}
+
+h1 {
+  font-size: 2em;
+}
+
+.button {
+  /* border: 1px solid #dedede; */
+  border-radius: 0.25rem;
+  color: #8a8a8a;
+  cursor: pointer;
+  display: inline-block;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1;
+  outline: none;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  -webkit-transition: border-color 300ms ease-in-out, color 300ms ease-in-out;
+  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;
+}
+/*
+form {
+  background-color: #eee;
+  display: grid;
+  grid-gap: 1em;
+  padding: 1em;
+  max-width: 40ch;
+}
+input {
+  border: 1px solid silver;
+  display: block;
+  font-size: 16px;
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 100%;
+}
+form button {
+  background-color: #bbbbf2;
+  border: 2px solid currentColor;
+  border-radius: .25em;
+  cursor: pointer;
+  font-size: inherit;
+  line-height: 1.4em;
+  padding: 0.25em 1em;
+  max-width: 20ch;
+}
+form button:hover {
+  background-color: lavender;
+}
+*/
+
+/* footer {
+  margin-top: 3em;
+  padding-top: 1.5em;
+  border-top: 1px solid lightgrey;
+} */
+
+/* 共通 */
+/* form */
+.form label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.form__item {
+  border: 1px solid #dedede;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.5em 0.75em;
+  width: 100%;
+}
+.form__button {
+  text-align: right;
+}
+.button--inverse {
+  background: #222;
+  border-color: #222;
+  color: #fff;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
+}
+.form__output {
+  display: block;
+  margin-bottom: 1rem;
+}
+img {
+  max-width: 100%;
+}
+
+/* Navbar */
+.navbar {
+  -webkit-box-align: center;
+  align-items: center;
+  background: #fff;
+  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);
+  display: -webkit-box;
+  display: flex;
+  height: 4rem;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  left: 0;
+  padding: 2%;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 3;
+}
+.navbar__brand {
+  color: inherit;
+  font-family: Merriweather, serif;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-decoration: none;
+}
+/* ハンバーガーメニュー　*/
+.menu-btn {
+  z-index: 90;
+  display: flex;
+  position: fixed;
+  right: 3.125em;  
+  justify-content: center;
+  align-items: center;  
+}
+.menu-btn:hover{
+  cursor: hand; 
+  cursor: pointer
+} 
+.menu-btn span,
+.menu-btn span:before,
+.menu-btn span:after {
+  display: block;
+  position: absolute;
+  content: '';
+  height: 0.1875em;/*線の太さ*/
+  width: 1.5625em;/*長さ*/
+  border-radius: 0.1875em;
+  background-color: #c0c0c0;
+  cursor: pointer;
+}
+.menu-btn span:before {
+  bottom: 0.5em;
+}
+.menu-btn span:after {
+  top: 0.5em;
+}
+#menu-btn-check:checked ~ .menu-btn span {
+  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/
+}
+#menu-btn-check:checked ~ .menu-btn span::before {
+  bottom: 0;
+  transform: rotate(45deg);
+}
+#menu-btn-check:checked ~ .menu-btn span::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+#menu-btn-check {
+  display: none;
+}
+
+.menu-content {
+  z-index: 80;
+  position: fixed;
+  top: 0;
+  right: -120%;/*rightの値を変更してメニューを画面外へ*/
+  width: 15%;
+  height: 100%;
+  background-color: #ddefe3;
+  transition: all 0.5s;/*アニメーション設定*/
+}
+.menu-content ul {
+  padding: 4.375em 0.625em 0;
+}
+.menu-content ul li {
+  border-bottom: solid 0.125em #c0c0c0;
+  list-style: none;
+  padding: 1em 0;
+}
+.menu-content ul li a {
+  display: block;
+  width: 100%;
+  padding: 0.5625em 1em 0.625em 0.5625em;
+  font-size: 1em; 
+  font-weight: bold;
+  color: #c0c0c0;
+  text-decoration: none;  
+}
+#menu-btn-check:checked ~ .menu-content {
+  right: 0;/*メニューを画面内へ*/
+}
+
+
+/* Footer */
+.footer {
+  -webkit-box-align: center;
+  align-items: center;
+  border-top: 1px solid #f1f1f1;
+  display: -webkit-box;
+  display: flex;
+  height: 5rem;
+  -webkit-box-pack: center;
+  justify-content: center;
+}
+.footer-message {
+  color: #8a8a8a;
+  line-height: 1;
+}
+
+
+/* Main */
+main {
+  margin-bottom: 6rem;
+  margin-top: 7rem;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 2%;
+}
+
+/* Message */
+.message {
+  background: #D7F9EE;
+  border: 1px solid #41e2b2;
+  border-radius: 0.25rem;
+  color: #117355;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+}
+
+/* 設定 */
+.container--small {
+  margin: 0 auto;
+  max-width: 600px;
+}
+.tab {
+  display: -webkit-box;
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tab__item {
+  border-bottom: 2px solid #dedede;
+  color: #8a8a8a;
+  cursor: pointer;
+  margin: 0 1rem 0 0;
+  padding: 1rem;
+}
+.tab__item--active {
+  border-bottom: 2px solid #222;
+  color: #222;
+  font-weight: bold;
+}
+.panel {
+  border: 1px solid #dedede;
+  margin-top: 1rem;
+  padding: 1.5rem;
+}
+
+
 /* 表 */ /* シーンも小道具も同一 */
 table {
   margin: auto;
@@ -21,6 +303,40 @@ table th {/*table内のthに対して*/
 table td {/*table内のtdに対して*/
   padding: 0.3em 0.5em;/*上下3pxで左右10px*/
 }
+/* 写真リスト　*/
+.grid {
+  display: grid;
+  grid-gap: 0 2%;
+  grid-template-columns: repeat(auto-fit, 32%);
+}
+.grid__item {
+  margin-bottom: 2rem;
+}
+.photo {
+  position: relative;
+}
+.photo:nth-child(4n+1) .photo__wrapper {
+  background: #DBBCD5;
+}
+.photo__wrapper {
+  overflow: hidden;
+  padding-top: 75%;
+  position: relative;
+}
+figure {
+  margin: 0;
+}
+.photo__image {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  -o-object-fit: cover;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
 
 /* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/
 .overlay {

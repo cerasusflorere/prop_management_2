@@ -4635,12 +4635,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context13.prev = _context13.next) {
               case 0:
                 if (!(_this12.scene.usage_guraduation != _this12.editForm_scene.usage_guraduation)) {
-                  _context13.next = 132;
+                  _context13.next = 131;
                   break;
                 }
 
                 if (!(!_this12.scene.usage_guraduation && _this12.editForm_scene.usage_guraduation)) {
-                  _context13.next = 93;
+                  _context13.next = 92;
                   break;
                 }
 
@@ -4681,7 +4681,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 12:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 91;
+                _context13.next = 90;
                 break;
 
               case 15:
@@ -4722,12 +4722,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 25:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 91;
+                _context13.next = 90;
                 break;
 
               case 28:
                 if (!(!_this12.scene.usage_left && !_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "left")) {
-                  _context13.next = 42;
+                  _context13.next = 41;
                   break;
                 }
 
@@ -4740,19 +4740,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 31:
                 _response_prop3 = _context13.sent;
-                console.log(_response_prop3);
 
                 if (!(_response_prop3.status === 422)) {
-                  _context13.next = 36;
+                  _context13.next = 35;
                   break;
                 }
 
                 _this12.errors.error = _response_prop3.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 36:
+              case 35:
                 if (!(_response_prop3.status !== 204)) {
-                  _context13.next = 39;
+                  _context13.next = 38;
                   break;
                 }
 
@@ -4760,38 +4759,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 39:
+              case 38:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 91;
+                _context13.next = 90;
                 break;
 
-              case 42:
+              case 41:
                 if (!(!_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "right")) {
-                  _context13.next = 55;
+                  _context13.next = 54;
                   break;
                 }
 
-                _context13.next = 45;
+                _context13.next = 44;
                 return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_right_change',
                   usage_guraduation: 1,
                   usage_right: 1
                 });
 
-              case 45:
+              case 44:
                 _response_prop4 = _context13.sent;
 
                 if (!(_response_prop4.status === 422)) {
-                  _context13.next = 49;
+                  _context13.next = 48;
                   break;
                 }
 
                 _this12.errors.error = _response_prop4.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 49:
+              case 48:
                 if (!(_response_prop4.status !== 204)) {
-                  _context13.next = 52;
+                  _context13.next = 51;
                   break;
                 }
 
@@ -4799,18 +4798,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 52:
+              case 51:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 91;
+                _context13.next = 90;
                 break;
 
-              case 55:
+              case 54:
                 if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 68;
+                  _context13.next = 67;
                   break;
                 }
 
-                _context13.next = 58;
+                _context13.next = 57;
                 return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_1_left_0_change',
                   id: _this12.scene.id,
@@ -4818,20 +4817,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   usage_left: 0
                 });
 
-              case 58:
+              case 57:
                 _response_prop5 = _context13.sent;
 
                 if (!(_response_prop5.status === 422)) {
-                  _context13.next = 62;
+                  _context13.next = 61;
                   break;
                 }
 
                 _this12.errors.error = _response_prop5.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 62:
+              case 61:
                 if (!(_response_prop5.status !== 204)) {
-                  _context13.next = 65;
+                  _context13.next = 64;
                   break;
                 }
 
@@ -4839,18 +4838,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 65:
+              case 64:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 91;
+                _context13.next = 90;
                 break;
 
-              case 68:
+              case 67:
                 if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 81;
+                  _context13.next = 80;
                   break;
                 }
 
-                _context13.next = 71;
+                _context13.next = 70;
                 return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_1_right_0_change',
                   id: _this12.scene.id,
@@ -4858,20 +4857,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   usage_right: 0
                 });
 
-              case 71:
+              case 70:
                 _response_prop6 = _context13.sent;
 
                 if (!(_response_prop6.status === 422)) {
-                  _context13.next = 75;
+                  _context13.next = 74;
                   break;
                 }
 
                 _this12.errors.error = _response_prop6.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 75:
+              case 74:
                 if (!(_response_prop6.status !== 204)) {
-                  _context13.next = 78;
+                  _context13.next = 77;
                   break;
                 }
 
@@ -4879,32 +4878,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 78:
+              case 77:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 91;
+                _context13.next = 90;
                 break;
 
-              case 81:
-                _context13.next = 83;
+              case 80:
+                _context13.next = 82;
                 return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_change',
                   usage_guraduation: 1
                 });
 
-              case 83:
+              case 82:
                 _response_prop7 = _context13.sent;
 
                 if (!(_response_prop7.status === 422)) {
-                  _context13.next = 87;
+                  _context13.next = 86;
                   break;
                 }
 
                 _this12.errors.error = _response_prop7.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 87:
+              case 86:
                 if (!(_response_prop7.status !== 204)) {
-                  _context13.next = 90;
+                  _context13.next = 89;
                   break;
                 }
 
@@ -4912,20 +4911,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 90:
+              case 89:
                 _this12.editSceneMode_prop = 100;
 
-              case 91:
-                _context13.next = 130;
+              case 90:
+                _context13.next = 129;
                 break;
 
-              case 93:
+              case 92:
                 if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 106;
+                  _context13.next = 105;
                   break;
                 }
 
-                _context13.next = 96;
+                _context13.next = 95;
                 return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_left_0_change',
                   id: _this12.scene.id,
@@ -4933,20 +4932,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   usage_left: 0
                 });
 
-              case 96:
+              case 95:
                 _response_prop8 = _context13.sent;
 
                 if (!(_response_prop8.status === 422)) {
-                  _context13.next = 100;
+                  _context13.next = 99;
                   break;
                 }
 
                 _this12.errors.error = _response_prop8.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 100:
+              case 99:
                 if (!(_response_prop8.status !== 204)) {
-                  _context13.next = 103;
+                  _context13.next = 102;
                   break;
                 }
 
@@ -4954,18 +4953,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 103:
+              case 102:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 130;
+                _context13.next = 129;
                 break;
 
-              case 106:
+              case 105:
                 if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 119;
+                  _context13.next = 118;
                   break;
                 }
 
-                _context13.next = 109;
+                _context13.next = 108;
                 return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_right_0_change',
                   id: _this12.scene.id,
@@ -4973,20 +4972,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   usage_right: 0
                 });
 
-              case 109:
+              case 108:
                 _response_prop9 = _context13.sent;
 
                 if (!(_response_prop9.status === 422)) {
-                  _context13.next = 113;
+                  _context13.next = 112;
                   break;
                 }
 
                 _this12.errors.error = _response_prop9.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 113:
+              case 112:
                 if (!(_response_prop9.status !== 204)) {
-                  _context13.next = 116;
+                  _context13.next = 115;
                   break;
                 }
 
@@ -4994,38 +4993,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 116:
+              case 115:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 130;
+                _context13.next = 129;
                 break;
 
-              case 119:
+              case 118:
                 if (!(_this12.scene.usage_guraduation && !_this12.editForm_scene.usage_guraduation)) {
-                  _context13.next = 130;
+                  _context13.next = 129;
                   break;
                 }
 
-                _context13.next = 122;
+                _context13.next = 121;
                 return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_change',
                   id: _this12.scene.id,
                   usage_guraduation: 0
                 });
 
-              case 122:
+              case 121:
                 _response_prop10 = _context13.sent;
 
                 if (!(_response_prop10.status === 422)) {
-                  _context13.next = 126;
+                  _context13.next = 125;
                   break;
                 }
 
                 _this12.errors.error = _response_prop10.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 126:
+              case 125:
                 if (!(_response_prop10.status !== 204)) {
-                  _context13.next = 129;
+                  _context13.next = 128;
                   break;
                 }
 
@@ -5033,25 +5032,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 129:
+              case 128:
                 _this12.editSceneMode_prop = 100;
 
-              case 130:
-                _context13.next = 209;
+              case 129:
+                _context13.next = 208;
                 break;
 
-              case 132:
+              case 131:
                 if (!_this12.editForm_scene.usage_guraduation) {
-                  _context13.next = 209;
+                  _context13.next = 208;
                   break;
                 }
 
                 if (!(_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "right")) {
-                  _context13.next = 146;
+                  _context13.next = 145;
                   break;
                 }
 
-                _context13.next = 136;
+                _context13.next = 135;
                 return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_left_to_right_change',
                   id: _this12.scene.id,
@@ -5059,20 +5058,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   usage_right: 1
                 });
 
-              case 136:
+              case 135:
                 _response_prop11 = _context13.sent;
 
                 if (!(_response_prop11.status === 422)) {
-                  _context13.next = 140;
+                  _context13.next = 139;
                   break;
                 }
 
                 _this12.errors.error = _response_prop11.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 140:
+              case 139:
                 if (!(_response_prop11.status !== 204)) {
-                  _context13.next = 143;
+                  _context13.next = 142;
                   break;
                 }
 
@@ -5080,18 +5079,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 143:
+              case 142:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 209;
+                _context13.next = 208;
                 break;
 
-              case 146:
+              case 145:
                 if (!(_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "left")) {
-                  _context13.next = 159;
+                  _context13.next = 158;
                   break;
                 }
 
-                _context13.next = 149;
+                _context13.next = 148;
                 return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_right_to_left_change',
                   id: _this12.scene.id,
@@ -5099,20 +5098,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   usage_right: 0
                 });
 
-              case 149:
+              case 148:
                 _response_prop12 = _context13.sent;
 
                 if (!(_response_prop12.status === 422)) {
-                  _context13.next = 153;
+                  _context13.next = 152;
                   break;
                 }
 
                 _this12.errors.error = _response_prop12.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 153:
+              case 152:
                 if (!(_response_prop12.status !== 204)) {
-                  _context13.next = 156;
+                  _context13.next = 155;
                   break;
                 }
 
@@ -5120,37 +5119,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 156:
+              case 155:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 209;
+                _context13.next = 208;
                 break;
 
-              case 159:
+              case 158:
                 if (!(!_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "left")) {
-                  _context13.next = 172;
+                  _context13.next = 171;
                   break;
                 }
 
-                _context13.next = 162;
+                _context13.next = 161;
                 return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_left_change',
                   usage_left: 1
                 });
 
-              case 162:
+              case 161:
                 _response_prop13 = _context13.sent;
 
                 if (!(_response_prop13.status === 422)) {
-                  _context13.next = 166;
+                  _context13.next = 165;
                   break;
                 }
 
                 _this12.errors.error = _response_prop13.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 166:
+              case 165:
                 if (!(_response_prop13.status !== 204)) {
-                  _context13.next = 169;
+                  _context13.next = 168;
                   break;
                 }
 
@@ -5158,37 +5157,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 169:
+              case 168:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 209;
+                _context13.next = 208;
                 break;
 
-              case 172:
+              case 171:
                 if (!(!_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "right")) {
-                  _context13.next = 185;
+                  _context13.next = 184;
                   break;
                 }
 
-                _context13.next = 175;
+                _context13.next = 174;
                 return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_right_change',
                   usage_right: 1
                 });
 
-              case 175:
+              case 174:
                 _response_prop14 = _context13.sent;
 
                 if (!(_response_prop14.status === 422)) {
-                  _context13.next = 179;
+                  _context13.next = 178;
                   break;
                 }
 
                 _this12.errors.error = _response_prop14.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 179:
+              case 178:
                 if (!(_response_prop14.status !== 204)) {
-                  _context13.next = 182;
+                  _context13.next = 181;
                   break;
                 }
 
@@ -5196,38 +5195,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 182:
+              case 181:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 209;
+                _context13.next = 208;
                 break;
 
-              case 185:
+              case 184:
                 if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 198;
+                  _context13.next = 197;
                   break;
                 }
 
-                _context13.next = 188;
+                _context13.next = 187;
                 return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_left_0_change',
                   id: _this12.scene.id,
                   usage_left: 0
                 });
 
-              case 188:
+              case 187:
                 _response_prop15 = _context13.sent;
 
                 if (!(_response_prop15.status === 422)) {
-                  _context13.next = 192;
+                  _context13.next = 191;
                   break;
                 }
 
                 _this12.errors.error = _response_prop15.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 192:
+              case 191:
                 if (!(_response_prop15.status !== 204)) {
-                  _context13.next = 195;
+                  _context13.next = 194;
                   break;
                 }
 
@@ -5235,38 +5234,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 195:
+              case 194:
                 _this12.editSceneMode_prop = 100;
-                _context13.next = 209;
+                _context13.next = 208;
                 break;
 
-              case 198:
+              case 197:
                 if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
-                  _context13.next = 209;
+                  _context13.next = 208;
                   break;
                 }
 
-                _context13.next = 201;
+                _context13.next = 200;
                 return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
                   method: 'usage_right_0_change',
                   id: _this12.scene.id,
                   usage_right: 0
                 });
 
-              case 201:
+              case 200:
                 _response_prop16 = _context13.sent;
 
                 if (!(_response_prop16.status === 422)) {
-                  _context13.next = 205;
+                  _context13.next = 204;
                   break;
                 }
 
                 _this12.errors.error = _response_prop16.data.errors;
                 return _context13.abrupt("return", false);
 
-              case 205:
+              case 204:
                 if (!(_response_prop16.status !== 204)) {
-                  _context13.next = 208;
+                  _context13.next = 207;
                   break;
                 }
 
@@ -5274,10 +5273,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context13.abrupt("return", false);
 
-              case 208:
+              case 207:
                 _this12.editSceneMode_prop = 100;
 
-              case 209:
+              case 208:
               case "end":
                 return _context13.stop();
             }
@@ -10121,7 +10120,7 @@ var staticRenderFns = [function () {
   return _c("footer", {
     staticClass: "footer"
   }, [_c("div", {
-    staticClass: "button button--link"
+    staticClass: "footer-message"
   }, [_vm._v("\n      新天地へ～ある移民の物語\n  ")])]);
 }];
 render._withStripped = true;
@@ -10256,56 +10255,63 @@ var render = function render() {
       click: _vm.scrollTop
     }
   }, [_vm._v("\n    小道具管理アプリ\n  ")]), _vm._v(" "), _c("div", {
-    staticClass: "navbar__menu"
-  }, [_c("div", {
-    staticClass: "navbar__item"
-  }, [_c("RouterLink", {
+    staticClass: "hamburger-menu"
+  }, [_c("input", {
+    attrs: {
+      type: "checkbox",
+      id: "menu-btn-check"
+    }
+  }), _vm._v(" "), _vm._m(0), _vm._v(" "), _c("div", {
+    staticClass: "menu-content"
+  }, [_c("ul", [_c("li", [_c("RouterLink", {
     staticClass: "button",
     attrs: {
       to: "/"
     }
   }, [_c("i", {
     staticClass: "fas fa-eye fa-fw"
-  }), _vm._v("使用シーン\n      ")])], 1), _vm._v(" "), _c("div", {
-    staticClass: "navbar__item"
-  }, [_c("RouterLink", {
+  }), _vm._v("使用シーン\n          ")])], 1), _vm._v(" "), _c("li", [_c("RouterLink", {
     staticClass: "button",
     attrs: {
       to: "/show_prop"
     }
   }, [_c("i", {
     staticClass: "fas fa-eye fa-fw"
-  }), _vm._v("小道具\n      ")])], 1), _vm._v(" "), _c("div", {
-    staticClass: "navbar__item"
-  }, [_c("RouterLink", {
+  }), _vm._v("小道具\n          ")])], 1), _vm._v(" "), _c("li", [_c("RouterLink", {
     staticClass: "button",
     attrs: {
       to: "/register_scene"
     }
   }, [_c("i", {
     staticClass: "fas fa-pen fa-fw"
-  }), _vm._v("使用シーン\n      ")])], 1), _vm._v(" "), _c("div", {
-    staticClass: "navbar__item"
-  }, [_c("RouterLink", {
+  }), _vm._v("使用シーン\n          ")])], 1), _vm._v(" "), _c("li", [_c("RouterLink", {
     staticClass: "button",
     attrs: {
       to: "/register_prop"
     }
   }, [_c("i", {
     staticClass: "fas fa-pen fa-fw"
-  }), _vm._v("小道具\n      ")])], 1), _vm._v(" "), _c("div", {
-    staticClass: "navbar__item"
-  }, [_c("RouterLink", {
+  }), _vm._v("小道具\n          ")])], 1), _vm._v(" "), _c("li", [_c("RouterLink", {
     staticClass: "button",
     attrs: {
       to: "/setting"
     }
   }, [_c("i", {
     staticClass: "fas fa-eye fa-fw"
-  }), _vm._v("設定\n      ")])], 1)])]);
+  }), _vm._v("設定\n          ")])], 1)])])])]);
 };
 
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("label", {
+    staticClass: "menu-btn",
+    attrs: {
+      "for": "menu-btn-check"
+    }
+  }, [_c("span")]);
+}];
 render._withStripped = true;
 
 
@@ -13964,7 +13970,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "/* 表 */ /* シーンも小道具も同一 */\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 80%;\n}\n.detail-box>div {\n  width:50%;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  font-size: 2em;\n}\n\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\n/* form */\n.form label {\n  display: block;\n  margin-bottom: 0.5rem;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.1875em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n\n\n/* 表 */ /* シーンも小道具も同一 */\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #DBBCD5;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 80%;\n}\n.detail-box>div {\n  width:50%;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

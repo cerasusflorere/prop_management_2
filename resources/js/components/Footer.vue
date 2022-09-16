@@ -1,6 +1,6 @@
 <template>
   <footer class="footer">
-    <div class="button button--link">
+    <div class="footer-message">
         新天地へ～ある移民の物語
     </div>
   </footer>
