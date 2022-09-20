@@ -51,6 +51,7 @@ export default {
         id: null,
         name: null
       },
+      owners: [],
       // 変更confirm
       showContent_confirmEdit: false,
       postMessage_Edit: "",
@@ -64,6 +65,7 @@ export default {
       async handler(getOwner) {
         if(this.getOwner){
           await this.fetchOwner_edit();
+          await this.fetchOwners();
         }        
       },
       immediate: true,
@@ -84,10 +86,32 @@ export default {
       this.editForm_owner.name = this.owner_edit.name;
     },
 
+    // 持ち主を取得
+    async fetchOwners () {
+      const response = await axios.get('/api/informations/owners');
+
+      if (response.status !== 200) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
+
+      this.owners = response.data;
+    },
+
     // 確認する
     confirm_owner () {
-      if(this.owner_edit.id === this.editForm_owner.id && this.owner_edit.name !== this.editForm_owner.name){
+      let owner = 0;
+      this.owners.forEach((name) => {
+        if(name.name === this.editForm_owner.name && name.id !== this.editForm_owner.id) {
+          owner = 1;
+          return false;
+        }
+      }, this);
+
+      if(this.owner_edit.id === this.editForm_owner.id && this.owner_edit.name !== this.editForm_owner.name && !owner){
         this.openModal_confirmEdit();
+      }else if(owner){
+        alert('同じ名前は登録できません。');
       }else{
         alert('元の名前と同じです！変更するなら違う名前にしてください！');
       }

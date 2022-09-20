@@ -5721,6 +5721,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       character_edit: [],
       optionSections: [],
+      characters: [],
       editForm_character: {
         id: null,
         section_id: null,
@@ -5746,7 +5747,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               switch (_context.prev = _context.next) {
                 case 0:
                   if (!_this.getCharacter) {
-                    _context.next = 5;
+                    _context.next = 7;
                     break;
                   }
 
@@ -5758,6 +5759,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   return _this.fetchCharacter_edit();
 
                 case 5:
+                  _context.next = 7;
+                  return _this.fetchCharacters();
+
+                case 7:
                 case "end":
                   return _context.stop();
               }
@@ -5805,8 +5810,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee2);
       }))();
     },
-    // 登場人物の詳細を取得
-    fetchCharacter_edit: function fetchCharacter_edit() {
+    // 登場人物を取得
+    fetchCharacters: function fetchCharacters() {
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
@@ -5816,7 +5821,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.next = 2;
-                return axios.get('/api/informations/characters/' + _this3.getCharacter);
+                return axios.get('/api/informations/characters');
 
               case 2:
                 response = _context3.sent;
@@ -5831,13 +5836,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context3.abrupt("return", false);
 
               case 6:
-                _this3.character_edit = response.data;
-                _this3.editForm_character.id = _this3.character_edit.id;
-                _this3.editForm_character.section_id = _this3.character_edit.section.id;
-                _this3.editForm_character.section = _this3.character_edit.section.section;
-                _this3.editForm_character.name = _this3.character_edit.name;
+                _this3.characters = response.data;
 
-              case 11:
+              case 7:
               case "end":
                 return _context3.stop();
             }
@@ -5845,23 +5846,79 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee3);
       }))();
     },
+    // 登場人物の詳細を取得
+    fetchCharacter_edit: function fetchCharacter_edit() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return axios.get('/api/informations/characters/' + _this4.getCharacter);
+
+              case 2:
+                response = _context4.sent;
+
+                if (!(response.status !== 200)) {
+                  _context4.next = 6;
+                  break;
+                }
+
+                _this4.$store.commit('error/setCode', response.status);
+
+                return _context4.abrupt("return", false);
+
+              case 6:
+                _this4.character_edit = response.data;
+                _this4.editForm_character.id = _this4.character_edit.id;
+                _this4.editForm_character.section_id = _this4.character_edit.section.id;
+                _this4.editForm_character.section = _this4.character_edit.section.section;
+                _this4.editForm_character.name = _this4.character_edit.name;
+
+              case 11:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    // 登場人物回す
+    turnCharacters: function turnCharacters() {},
     // 確認する
     confirm_character: function confirm_character() {
-      if (this.character_edit.id === this.editForm_character.id && (this.character_edit.section.id !== this.editForm_character.section_id || this.character_edit.name !== this.editForm_character.name)) {
+      var _this5 = this;
+
+      var character = 0;
+      this.characters.forEach(function (names) {
+        names.characters.forEach(function (name) {
+          if (name.name === _this5.editForm_character.name && name.id !== _this5.editForm_character.id) {
+            character = 1;
+            return false;
+          }
+        }, _this5);
+      }, this);
+
+      if (this.character_edit.id === this.editForm_character.id && (this.character_edit.section.id !== this.editForm_character.section_id || this.character_edit.name !== this.editForm_character.name) && !character) {
         this.openModal_confirmEdit();
+      } else if (character) {
+        alert('同じ名前は登録できません。');
       } else {
         alert('元の名前と同じです！変更するなら違う名前にしてください！');
       }
     },
     // 編集confirmのモーダル表示 
     openModal_confirmEdit: function openModal_confirmEdit() {
-      var _this4 = this;
+      var _this6 = this;
 
       this.showContent_confirmEdit = true; // セクション名はリアクティブじゃない
 
       this.optionSections.forEach(function (section) {
-        if (section.id === _this4.editForm_character.section_id) {
-          _this4.editForm_character.section = section.section;
+        if (section.id === _this6.editForm_character.section_id) {
+          _this6.editForm_character.section = section.section;
           return false;
         }
       }, this);
@@ -5869,23 +5926,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
-      var _this5 = this;
+      var _this7 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                _this5.showContent_confirmEdit = false;
-                _context4.next = 3;
-                return _this5.editCharacter();
+                _this7.showContent_confirmEdit = false;
+                _context5.next = 3;
+                return _this7.editCharacter();
 
               case 3:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }))();
     },
     // 編集confirmのモーダル非表示_Cancelの場合
@@ -5894,59 +5951,59 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 編集する
     editCharacter: function editCharacter() {
-      var _this6 = this;
+      var _this8 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
-                _context5.next = 2;
-                return axios.post('/api/informations/characters/' + _this6.character_edit.id, {
-                  section_id: _this6.editForm_character.section_id,
-                  name: _this6.editForm_character.name
+                _context6.next = 2;
+                return axios.post('/api/informations/characters/' + _this8.character_edit.id, {
+                  section_id: _this8.editForm_character.section_id,
+                  name: _this8.editForm_character.name
                 });
 
               case 2:
-                response = _context5.sent;
+                response = _context6.sent;
 
                 if (!(response.status === 422)) {
-                  _context5.next = 6;
+                  _context6.next = 6;
                   break;
                 }
 
-                _this6.errors.error = response.data.errors;
-                return _context5.abrupt("return", false);
+                _this8.errors.error = response.data.errors;
+                return _context6.abrupt("return", false);
 
               case 6:
                 if (!(response.status !== 200)) {
-                  _context5.next = 9;
+                  _context6.next = 9;
                   break;
                 }
 
-                _this6.$store.commit('error/setCode', response.status);
+                _this8.$store.commit('error/setCode', response.status);
 
-                return _context5.abrupt("return", false);
+                return _context6.abrupt("return", false);
 
               case 9:
-                _this6.character_edit.section = _this6.editForm_character.section;
-                _this6.character_edit.section_id = _this6.editForm_character.section_id;
-                _this6.character_edit.name = _this6.editForm_character.name; // メッセージ登録
+                _this8.character_edit.section = _this8.editForm_character.section;
+                _this8.character_edit.section_id = _this8.editForm_character.section_id;
+                _this8.character_edit.name = _this8.editForm_character.name; // メッセージ登録
 
-                _this6.$store.commit('message/setContent', {
+                _this8.$store.commit('message/setContent', {
                   content: '登場人物の区分または名前が変更されました！',
                   timeout: 6000
                 });
 
-                _this6.$emit('close');
+                _this8.$emit('close');
 
               case 14:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
           }
-        }, _callee5);
+        }, _callee6);
       }))();
     },
     // 削除confirmのモーダル表示 
@@ -5956,25 +6013,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this7 = this;
+      var _this9 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
-        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
-                _context6.next = 2;
-                return _this7.deletCharacter();
+                _context7.next = 2;
+                return _this9.deletCharacter();
 
               case 2:
-                _this7.showContent_confirmDelete = false;
+                _this9.showContent_confirmDelete = false;
 
               case 3:
               case "end":
-                return _context6.stop();
+                return _context7.stop();
             }
           }
-        }, _callee6);
+        }, _callee7);
       }))();
     },
     // 削除confirmのモーダル非表示_Cancelの場合
@@ -5983,58 +6040,58 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除する
     deletCharacter: function deletCharacter() {
-      var _this8 = this;
+      var _this10 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context7.prev = _context7.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
-                _context7.next = 2;
-                return axios["delete"]('/api/informations/characters/' + _this8.character_edit.id);
+                _context8.next = 2;
+                return axios["delete"]('/api/informations/characters/' + _this10.character_edit.id);
 
               case 2:
-                response = _context7.sent;
+                response = _context8.sent;
 
                 if (!(response.status === 422)) {
-                  _context7.next = 6;
+                  _context8.next = 6;
                   break;
                 }
 
-                _this8.errors.error = response.data.errors;
-                return _context7.abrupt("return", false);
+                _this10.errors.error = response.data.errors;
+                return _context8.abrupt("return", false);
 
               case 6:
                 if (!(response.status !== 200)) {
-                  _context7.next = 9;
+                  _context8.next = 9;
                   break;
                 }
 
-                _this8.$store.commit('error/setCode', response.status);
+                _this10.$store.commit('error/setCode', response.status);
 
-                return _context7.abrupt("return", false);
+                return _context8.abrupt("return", false);
 
               case 9:
-                _this8.character_edit = null;
-                _this8.editForm_character.id = null;
-                _this8.editForm_character.name = null;
-                _this8.editForm_character.section_id = null;
-                _this8.editForm_character.section = null; // メッセージ登録
+                _this10.character_edit = null;
+                _this10.editForm_character.id = null;
+                _this10.editForm_character.name = null;
+                _this10.editForm_character.section_id = null;
+                _this10.editForm_character.section = null; // メッセージ登録
 
-                _this8.$store.commit('message/setContent', {
+                _this10.$store.commit('message/setContent', {
                   content: '登場人物が1人削除されました！',
                   timeout: 6000
                 });
 
-                _this8.$emit('close');
+                _this10.$emit('close');
 
               case 16:
               case "end":
-                return _context7.stop();
+                return _context8.stop();
             }
           }
-        }, _callee7);
+        }, _callee8);
       }))();
     }
   }
@@ -6088,6 +6145,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         id: null,
         name: null
       },
+      owners: [],
       // 変更confirm
       showContent_confirmEdit: false,
       postMessage_Edit: "",
@@ -6107,7 +6165,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               switch (_context.prev = _context.next) {
                 case 0:
                   if (!_this.getOwner) {
-                    _context.next = 3;
+                    _context.next = 5;
                     break;
                   }
 
@@ -6115,6 +6173,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   return _this.fetchOwner_edit();
 
                 case 3:
+                  _context.next = 5;
+                  return _this.fetchOwners();
+
+                case 5:
                 case "end":
                   return _context.stop();
               }
@@ -6164,10 +6226,58 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee2);
       }))();
     },
+    // 持ち主を取得
+    fetchOwners: function fetchOwners() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return axios.get('/api/informations/owners');
+
+              case 2:
+                response = _context3.sent;
+
+                if (!(response.status !== 200)) {
+                  _context3.next = 6;
+                  break;
+                }
+
+                _this3.$store.commit('error/setCode', response.status);
+
+                return _context3.abrupt("return", false);
+
+              case 6:
+                _this3.owners = response.data;
+
+              case 7:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
     // 確認する
     confirm_owner: function confirm_owner() {
-      if (this.owner_edit.id === this.editForm_owner.id && this.owner_edit.name !== this.editForm_owner.name) {
+      var _this4 = this;
+
+      var owner = 0;
+      this.owners.forEach(function (name) {
+        if (name.name === _this4.editForm_owner.name && name.id !== _this4.editForm_owner.id) {
+          owner = 1;
+          return false;
+        }
+      }, this);
+
+      if (this.owner_edit.id === this.editForm_owner.id && this.owner_edit.name !== this.editForm_owner.name && !owner) {
         this.openModal_confirmEdit();
+      } else if (owner) {
+        alert('同じ名前は登録できません。');
       } else {
         alert('元の名前と同じです！変更するなら違う名前にしてください！');
       }
@@ -6179,23 +6289,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
-      var _this3 = this;
+      var _this5 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                _this3.showContent_confirmEdit = false;
-                _context3.next = 3;
-                return _this3.editOwner();
+                _this5.showContent_confirmEdit = false;
+                _context4.next = 3;
+                return _this5.editOwner();
 
               case 3:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3);
+        }, _callee4);
       }))();
     },
     // 編集confirmのモーダル非表示_Cancelの場合
@@ -6204,56 +6314,56 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 編集する
     editOwner: function editOwner() {
-      var _this4 = this;
+      var _this6 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                _context4.next = 2;
-                return axios.post('/api/informations/owners/' + _this4.owner_edit.id, {
-                  name: _this4.editForm_owner.name
+                _context5.next = 2;
+                return axios.post('/api/informations/owners/' + _this6.owner_edit.id, {
+                  name: _this6.editForm_owner.name
                 });
 
               case 2:
-                response = _context4.sent;
+                response = _context5.sent;
 
                 if (!(response.status === 422)) {
-                  _context4.next = 6;
+                  _context5.next = 6;
                   break;
                 }
 
-                _this4.errors.error = response.data.errors;
-                return _context4.abrupt("return", false);
+                _this6.errors.error = response.data.errors;
+                return _context5.abrupt("return", false);
 
               case 6:
                 if (!(response.status !== 200)) {
-                  _context4.next = 9;
+                  _context5.next = 9;
                   break;
                 }
 
-                _this4.$store.commit('error/setCode', response.status);
+                _this6.$store.commit('error/setCode', response.status);
 
-                return _context4.abrupt("return", false);
+                return _context5.abrupt("return", false);
 
               case 9:
-                _this4.owner_edit.name = _this4.editForm_owner.name; // メッセージ登録
+                _this6.owner_edit.name = _this6.editForm_owner.name; // メッセージ登録
 
-                _this4.$store.commit('message/setContent', {
+                _this6.$store.commit('message/setContent', {
                   content: '持ち主の名前が変更されました！',
                   timeout: 6000
                 });
 
-                _this4.$emit('close');
+                _this6.$emit('close');
 
               case 12:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }))();
     },
     // 削除confirmのモーダル表示 
@@ -6263,27 +6373,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this5 = this;
+      var _this7 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
-                _context5.next = 2;
-                return _this5.deletOwner();
+                _context6.next = 2;
+                return _this7.deletOwner();
 
               case 2:
-                _this5.showContent_confirmDelete = false;
+                _this7.showContent_confirmDelete = false;
 
-                _this5.$emit('close');
+                _this7.$emit('close');
 
               case 4:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
           }
-        }, _callee5);
+        }, _callee6);
       }))();
     },
     // 削除confirmのモーダル非表示_Cancelの場合
@@ -6292,57 +6402,57 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除する
     deletOwner: function deletOwner() {
-      var _this6 = this;
+      var _this8 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
-                _context6.next = 2;
-                return axios["delete"]('/api/informations/owners/' + _this6.owner_edit.id);
+                _context7.next = 2;
+                return axios["delete"]('/api/informations/owners/' + _this8.owner_edit.id);
 
               case 2:
-                response = _context6.sent;
+                response = _context7.sent;
 
                 if (!(response.status === 422)) {
-                  _context6.next = 6;
+                  _context7.next = 6;
                   break;
                 }
 
-                _this6.errors.error = response.data.errors;
-                return _context6.abrupt("return", false);
+                _this8.errors.error = response.data.errors;
+                return _context7.abrupt("return", false);
 
               case 6:
                 if (!(response.status !== 200)) {
-                  _context6.next = 9;
+                  _context7.next = 9;
                   break;
                 }
 
-                _this6.$store.commit('error/setCode', response.status);
+                _this8.$store.commit('error/setCode', response.status);
 
-                return _context6.abrupt("return", false);
+                return _context7.abrupt("return", false);
 
               case 9:
-                _this6.owner_edit.id = null;
-                _this6.owner_edit.name = null;
-                _this6.editForm_owner.id = null;
-                _this6.editForm_owner.name = null; // メッセージ登録
+                _this8.owner_edit.id = null;
+                _this8.owner_edit.name = null;
+                _this8.editForm_owner.id = null;
+                _this8.editForm_owner.name = null; // メッセージ登録
 
-                _this6.$store.commit('message/setContent', {
+                _this8.$store.commit('message/setContent', {
                   content: '持ち主が1人削除されました！',
                   timeout: 6000
                 });
 
-                _this6.$emit('close');
+                _this8.$emit('close');
 
               case 15:
               case "end":
-                return _context6.stop();
+                return _context7.stop();
             }
           }
-        }, _callee6);
+        }, _callee7);
       }))();
     }
   }
@@ -6396,6 +6506,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         id: null,
         section: null
       },
+      sections: [],
       // 変更confirm
       showContent_confirmEdit: false,
       postMessage_Edit: "",
@@ -6415,7 +6526,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               switch (_context.prev = _context.next) {
                 case 0:
                   if (!_this.getSection) {
-                    _context.next = 3;
+                    _context.next = 5;
                     break;
                   }
 
@@ -6423,6 +6534,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   return _this.fetchSection_edit();
 
                 case 3:
+                  _context.next = 5;
+                  return _this.fetchSections();
+
+                case 5:
                 case "end":
                   return _context.stop();
               }
@@ -6472,10 +6587,61 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee2);
       }))();
     },
+    // 区分を取得
+    fetchSections: function fetchSections() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return axios.get('/api/informations/sections');
+
+              case 2:
+                response = _context3.sent;
+
+                if (!(response.status !== 200)) {
+                  _context3.next = 6;
+                  break;
+                }
+
+                _this3.$store.commit('error/setCode', response.status);
+
+                return _context3.abrupt("return", false);
+
+              case 6:
+                _this3.sections = response.data;
+
+              case 7:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
     // 編集エラー
     confirm_section: function confirm_section() {
-      if (this.section_edit.id === this.editForm_section.id && this.section_edit.section !== this.editForm_section.section) {
+      var _this4 = this;
+
+      var section = 0;
+      this.sections.forEach(function (name) {
+        console.log(name);
+
+        if (name.section === _this4.editForm_section.section && name.id !== _this4.editForm_section.id) {
+          section = 1;
+          return false;
+        }
+      }, this);
+      console.log(section);
+
+      if (this.section_edit.id === this.editForm_section.id && this.section_edit.section !== this.editForm_section.section && !section) {
         this.openModal_confirmEdit();
+      } else if (section) {
+        alert('同じ名前は登録できません。');
       } else {
         // メッセージ登録
         alert('元の区分名と同じです！変更するなら違う区分名にしてください！');
@@ -6488,23 +6654,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
-      var _this3 = this;
+      var _this5 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                _this3.showContent_confirmEdit = false;
-                _context3.next = 3;
-                return _this3.edit_section();
+                _this5.showContent_confirmEdit = false;
+                _context4.next = 3;
+                return _this5.edit_section();
 
               case 3:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3);
+        }, _callee4);
       }))();
     },
     // 編集confirmのモーダル非表示_Cancelの場合
@@ -6513,56 +6679,56 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 編集する
     edit_section: function edit_section() {
-      var _this4 = this;
+      var _this6 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                _context4.next = 2;
-                return axios.post('/api/informations/sections/' + _this4.section_edit.id, {
-                  section: _this4.editForm_section.section
+                _context5.next = 2;
+                return axios.post('/api/informations/sections/' + _this6.section_edit.id, {
+                  section: _this6.editForm_section.section
                 });
 
               case 2:
-                response = _context4.sent;
+                response = _context5.sent;
 
                 if (!(response.status === 422)) {
-                  _context4.next = 6;
+                  _context5.next = 6;
                   break;
                 }
 
-                _this4.errors.error = response.data.errors;
-                return _context4.abrupt("return", false);
+                _this6.errors.error = response.data.errors;
+                return _context5.abrupt("return", false);
 
               case 6:
                 if (!(response.status !== 200)) {
-                  _context4.next = 9;
+                  _context5.next = 9;
                   break;
                 }
 
-                _this4.$store.commit('error/setCode', response.status);
+                _this6.$store.commit('error/setCode', response.status);
 
-                return _context4.abrupt("return", false);
+                return _context5.abrupt("return", false);
 
               case 9:
-                _this4.section_edit.section = _this4.editForm_section.section; // メッセージ登録
+                _this6.section_edit.section = _this6.editForm_section.section; // メッセージ登録
 
-                _this4.$store.commit('message/setContent', {
+                _this6.$store.commit('message/setContent', {
                   content: '区分が変更されました！',
                   timeout: 6000
                 });
 
-                _this4.$emit('close');
+                _this6.$emit('close');
 
               case 12:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }))();
     },
     // 削除confirmのモーダル表示 
@@ -6572,25 +6738,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this5 = this;
+      var _this7 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
-                _context5.next = 2;
-                return _this5.deletSection();
+                _context6.next = 2;
+                return _this7.deletSection();
 
               case 2:
-                _this5.showContent_confirmDelete = false;
+                _this7.showContent_confirmDelete = false;
 
               case 3:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
           }
-        }, _callee5);
+        }, _callee6);
       }))();
     },
     // 削除confirmのモーダル非表示_Cancelの場合
@@ -6599,57 +6765,57 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除する
     deletSection: function deletSection() {
-      var _this6 = this;
+      var _this8 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
-                _context6.next = 2;
-                return axios["delete"]('/api/informations/sections/' + _this6.section_edit.id);
+                _context7.next = 2;
+                return axios["delete"]('/api/informations/sections/' + _this8.section_edit.id);
 
               case 2:
-                response = _context6.sent;
+                response = _context7.sent;
 
                 if (!(response.status === 422)) {
-                  _context6.next = 6;
+                  _context7.next = 6;
                   break;
                 }
 
-                _this6.errors.error = response.data.errors;
-                return _context6.abrupt("return", false);
+                _this8.errors.error = response.data.errors;
+                return _context7.abrupt("return", false);
 
               case 6:
                 if (!(response.status !== 200)) {
-                  _context6.next = 9;
+                  _context7.next = 9;
                   break;
                 }
 
-                _this6.$store.commit('error/setCode', response.status);
+                _this8.$store.commit('error/setCode', response.status);
 
-                return _context6.abrupt("return", false);
+                return _context7.abrupt("return", false);
 
               case 9:
-                _this6.section_edit.id = null;
-                _this6.section_edit.section = null;
-                _this6.editForm_section.id = null;
-                _this6.editForm_section.section = null; // メッセージ登録
+                _this8.section_edit.id = null;
+                _this8.section_edit.section = null;
+                _this8.editForm_section.id = null;
+                _this8.editForm_section.section = null; // メッセージ登録
 
-                _this6.$store.commit('message/setContent', {
+                _this8.$store.commit('message/setContent', {
                   content: '区分が1つ削除されました！',
                   timeout: 6000
                 });
 
-                _this6.$emit('close');
+                _this8.$emit('close');
 
               case 15:
               case "end":
-                return _context6.stop();
+                return _context7.stop();
             }
           }
-        }, _callee6);
+        }, _callee7);
       }))();
     }
   }
@@ -7329,24 +7495,36 @@ var autokana;
                 response = _context5.sent;
 
                 if (!(response.status === 422)) {
-                  _context5.next = 15;
+                  _context5.next = 16;
                   break;
                 }
 
-                _this7.errors.error = response.data.errors;
+                _this7.errors.error = response.data.errors; // メッセージ登録
+
+                _this7.$store.commit('message/setContent', {
+                  content: '変更できませんでした',
+                  timeout: 6000
+                });
+
                 return _context5.abrupt("return", false);
 
-              case 15:
+              case 16:
                 if (!(response.status !== 201)) {
-                  _context5.next = 18;
+                  _context5.next = 20;
                   break;
                 }
 
-                _this7.$store.commit('error/setCode', response.status);
+                _this7.$store.commit('error/setCode', response.status); // メッセージ登録
+
+
+                _this7.$store.commit('message/setContent', {
+                  content: '変更できませんでした',
+                  timeout: 6000
+                });
 
                 return _context5.abrupt("return", false);
 
-              case 18:
+              case 20:
                 // 諸々データ削除
                 _this7.reset(); // メッセージ登録
 
@@ -7356,7 +7534,7 @@ var autokana;
                   timeout: 6000
                 });
 
-              case 20:
+              case 22:
               case "end":
                 return _context5.stop();
             }
@@ -8220,7 +8398,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee2);
       }))();
     },
-    // statusTextが帰ってきていない
     // 登場人物を取得
     fetchCharacters: function fetchCharacters() {
       var _this3 = this;
@@ -10534,7 +10711,7 @@ var render = function render() {
     attrs: {
       "for": "scene_comment_edit"
     }
-  }, [_vm._v("メモ:")]), _vm._v(" "), _vm.editForm_scene.scene_comments.length ? _c("ul", _vm._l(_vm.editForm_scene.scene_comments, function (comment) {
+  }, [_vm._v("シーンメモ:")]), _vm._v(" "), _vm.editForm_scene.scene_comments.length ? _c("ul", _vm._l(_vm.editForm_scene.scene_comments, function (comment) {
     return _c("li", [_c("textarea", {
       directives: [{
         name: "model",

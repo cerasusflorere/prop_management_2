@@ -57,6 +57,7 @@ export default {
     return {
       character_edit: [],
       optionSections: [],
+      characters: [],
       editForm_character: {
         id: null,
         section_id: null,
@@ -77,6 +78,7 @@ export default {
         if(this.getCharacter){
           await this.fetchSections();
           await this.fetchCharacter_edit();
+          await this.fetchCharacters();
         }        
       },
       immediate: true,
@@ -95,6 +97,18 @@ export default {
       this.optionSections = response.data;
     },
 
+    // 登場人物を取得
+    async fetchCharacters () {
+      const response = await axios.get('/api/informations/characters');
+      
+      if (response.status !== 200) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
+
+      this.characters = response.data;
+    },
+
     // 登場人物の詳細を取得
     async fetchCharacter_edit () {
       const response = await axios.get('/api/informations/characters/'+ this.getCharacter);
@@ -111,10 +125,27 @@ export default {
       this.editForm_character.name = this.character_edit.name;
     },
 
+    // 登場人物回す
+    turnCharacters () {
+      
+    },
+
     // 確認する
     confirm_character () {
-      if(this.character_edit.id === this.editForm_character.id && (this.character_edit.section.id !== this.editForm_character.section_id || this.character_edit.name !== this.editForm_character.name)){
+      let character = 0;
+      this.characters.forEach((names) => {
+        names.characters.forEach((name) => {
+          if(name.name === this.editForm_character.name && name.id !== this.editForm_character.id) {
+            character = 1;
+            return false;
+          }
+        }, this);
+      }, this);
+
+      if(this.character_edit.id === this.editForm_character.id && (this.character_edit.section.id !== this.editForm_character.section_id || this.character_edit.name !== this.editForm_character.name) && !character){
         this.openModal_confirmEdit();
+      }else if(character){
+        alert('同じ名前は登録できません。');
       }else{
         alert('元の名前と同じです！変更するなら違う名前にしてください！');
       }

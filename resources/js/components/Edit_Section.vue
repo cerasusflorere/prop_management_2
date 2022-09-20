@@ -51,6 +51,7 @@ export default {
         id: null,
         section: null
       },
+      sections: [],
       // 変更confirm
       showContent_confirmEdit: false,
       postMessage_Edit: "",
@@ -64,6 +65,7 @@ export default {
       async handler(getSection) {
         if(this.getSection){
           await this.fetchSection_edit();
+          await this.fetchSections();
         }
       },
       immediate: true,
@@ -84,10 +86,32 @@ export default {
       this.editForm_section.section = this.section_edit.section;
     },
 
+    // 区分を取得
+    async fetchSections () {
+      const response = await axios.get('/api/informations/sections');
+
+      if (response.status !== 200) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
+
+      this.sections = response.data;
+    },
+
     // 編集エラー
     confirm_section () {
-      if(this.section_edit.id === this.editForm_section.id && this.section_edit.section !== this.editForm_section.section){
+      let section = 0;
+      this.sections.forEach((name) => {
+        if(name.section === this.editForm_section.section && name.id !== this.editForm_section.id) {
+          section = 1;
+          return false;
+        }
+      }, this);
+
+      if(this.section_edit.id === this.editForm_section.id && this.section_edit.section !== this.editForm_section.section && !section){
         this.openModal_confirmEdit();
+      }else if(section){
+        alert('同じ名前は登録できません。');
       }else{
         // メッセージ登録
         alert('元の区分名と同じです！変更するなら違う区分名にしてください！');

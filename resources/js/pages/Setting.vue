@@ -160,7 +160,6 @@ export default {
       this.optionSections = response.data;
     },
 
-    // statusTextが帰ってきていない
     // 登場人物を取得
     async fetchCharacters () {
       const response = await axios.get('/api/informations/characters');

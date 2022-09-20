@@ -383,11 +383,21 @@ export default {
   
       if (response.status === 422) {
         this.errors.error = response.data.errors;
+        // メッセージ登録
+        this.$store.commit('message/setContent', {
+          content: '変更できませんでした',
+          timeout: 6000
+        });
         return false;
       }
 
       if (response.status !== 201) {
         this.$store.commit('error/setCode', response.status);
+        // メッセージ登録
+        this.$store.commit('message/setContent', {
+          content: '変更できませんでした',
+          timeout: 6000
+        });
         return false;
       }
 
