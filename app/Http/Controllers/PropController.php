@@ -50,9 +50,10 @@ class PropController extends Controller
      */
     public function store(Request $request)
     {
+        $folder = 'prop_management_local';
         if($request->photo){
             // Cloudinaryにファイルを保存する
-            $result = $request->photo->storeOnCloudinary('prop_management_local');
+            $result = $request->photo->storeOnCloudinary($folder);
             $url = $result->getSecurePath(); 
             $public_id = $result->getPublicId();
         } else {
@@ -112,6 +113,7 @@ class PropController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $folder = 'prop_management_local';
         if($request->method == 'usage_change'){
             // 小道具投稿時にしようとした場合
             $usage = Prop::where('id', $id)
@@ -178,7 +180,7 @@ class PropController extends Controller
             // 写真新規投稿
             if($request->photo){
                 // Cloudinaryにファイルを保存する
-                $result = $request->photo->storeOnCloudinary('prop_management_local');
+                $result = $request->photo->storeOnCloudinary($folder);
                 $url = $result->getSecurePath(); 
                 $public_id = $result->getPublicId();
             } else {
@@ -247,7 +249,7 @@ class PropController extends Controller
             //写真アップデート
             if($request->photo){
                 // Cloudinaryにファイルを保存する
-                $result = $request->photo->storeOnCloudinary('prop_management_local');
+                $result = $request->photo->storeOnCloudinary($folder);
                 $url = $result->getSecurePath(); 
                 $public_id = $result->getPublicId();
             } else {
