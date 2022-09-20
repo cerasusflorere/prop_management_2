@@ -1,9 +1,9 @@
 <template>
   <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']"  @click.self="$emit('close')">
-    <div class="content panel" ref="content_list_props">
+    <div class="content content-confirm-dialog panel" ref="content_list_props">
       <ul v-if="props_list.length">
         <li v-for="prop in props_list">
-          <div type="button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</div>
+          <div type="button" class="list-button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</div>
         </li>
         <detailProp :postProp="postProp" v-show="showContent" @close="closeModal_propDetail" />
       </ul>
@@ -40,7 +40,7 @@ export default {
       // 小道具リスト
       props_list: [],
       // overlayのクラス
-      overlay_class: 1,
+      overlay_class: 1, // 1の時はつかない
       // 小道具詳細
       showContent: false,
       postProp: ""

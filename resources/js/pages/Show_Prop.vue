@@ -3,11 +3,11 @@
     <!-- ボタンエリア -->
     <div>
       <!--表示切替ボタン-->
-      <div v-show="tabProp === 1">
-       <button type="button" @click="switchDisplay_prop"><i class="fas fa-th fa-fw"></i>写真ブロック</button>
+      <div v-show="tabProp === 1" class="button-area--showhow">
+       <button type="button" @click="switchDisplay_prop" class="button button--inverse"><i class="fas fa-th fa-fw"></i>写真ブロック</button>
       </div>
-      <div v-show="tabProp === 2">
-       <button type="button" @click="switchDisplay_prop"><i class="fas fa-list-ul fa-fw"></i>リスト</button>
+      <div v-show="tabProp === 2" class="button-area--showhow">
+       <button type="button" @click="switchDisplay_prop" class="button button--inverse"><i class="fas fa-list-ul fa-fw"></i>リスト</button>
       </div>
     </div>
 
@@ -15,8 +15,8 @@
     <!-- 表示エリア -->
     <div v-show="tabProp === 1">
       <!-- ダウンロードボタン -->
-      <div>
-        <button type="button" @click="downloadProps">ダウンロード</button>
+      <div class="button-area--download">
+        <button type="button" @click="downloadProps" class="button button--inverse"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
       </div>
       <table>
         <thead>
@@ -37,7 +37,7 @@
           <tr v-for="(prop, index) in showProps">
             <td>{{ index + 1 }}</td>
             <!-- 小道具名 -->
-            <td type="button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</td>
+            <td type="button" class="list-button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</td>
             <!-- 持ち主 -->
             <td v-if="prop.owner">{{ prop.owner.name }}</td>
             <td v-else></td>
@@ -71,7 +71,7 @@
       </div>
     </div>
 
-    <div v-show="tabProp === 2" class="photo-list">
+    <div v-show="tabProp === 2">
       <div class="grid" v-if="showProps.length">
         <div class="grid__item" v-for="prop in showProps">
           <div class="photo">
@@ -91,24 +91,21 @@
               <div v-if="prop.owner">
                 {{ prop.owner.name }}
               </div>
-              <!-- 中間発表 -->
-              <div v-if="prop.usage">
-                <i class="fas fa-tag"></i>
+
+              <div>
+                <!-- 中間発表 -->
+                <span v-if="prop.usage" class="usage-show">Ⓟ</span>
+                <!-- 卒業公演 -->
+                <span v-if="prop.usage_guraduation" class="usage-show">Ⓖ</span>
+                <!-- 上手 -->
+                <span v-if="prop.usage_left" class="usage-show">㊤</span>
+                <!-- 下手 -->
+                <span v-if="prop.right" class="usage-show">㊦</span>
               </div>
-              <!-- 卒業公演 -->
-              <div v-if="prop.usage_guraduation">
-                <i class="fas fa-tag"></i>
-              </div>
-              <!-- 上手 -->
-              <div v-if="prop.usage_left">
-                <i class="fas fa-tag"></i>
-              </div>
-              <!-- 下手 -->
-              <div v-if="prop.right">
-                <i class="fas fa-tag"></i>
-              </div>
+              
               <!-- メモ -->
               <div v-if="prop.prop_comments.length">
+                <span>メモ: </span>
                 <div v-for="memo in prop.prop_comments">
                   {{ memo.memo }}
                 </div>

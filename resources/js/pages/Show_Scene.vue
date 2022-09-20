@@ -2,8 +2,8 @@
   <!-- 表示エリア -->
   <div>
     <!-- ダウンロードボタン -->
-    <div>
-      <button type="button" @click="downloadScenes">ダウンロード</button>
+    <div class="button-area--download">
+      <button type="button" @click="downloadScenes" class="button button--inverse"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
     </div>
     <table>
       <thead>
@@ -25,7 +25,7 @@
       <tbody v-if="showScenes.length">
         <tr v-for="(scene, index) in showScenes">
             <!-- index -->
-            <td type="button" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
+            <td type="button" class="list-button" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
             <!-- 何ページから -->
             <td v-if="scene.first_page">{{ scene.first_page }}</td>
             <td v-else></td>
@@ -35,7 +35,7 @@
             <!-- 登場人物 -->
             <td>{{ scene.character.name }}</td>
             <!-- 小道具名 -->
-            <td>{{ scene.prop.name }}</td>
+            <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
             <!-- 中間発表 -->
             <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
             <td v-else></td> 
@@ -65,6 +65,7 @@
     </div>
    
     <detailScene :postScene="postScene" v-show="showContent" @close="closeModal_sceneDetail" />
+    <detailProp :postProp="postProp" v-show="showContent_prop" @close="closeModal_propDetail" /> 
   </div>
 </template>
 
@@ -72,12 +73,14 @@
   import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util';
 
   import detailScene from '../components/Detail_Scene.vue';
+  import detailProp from '../components/Detail_Prop.vue';
   import ExcelJS from 'exceljs';
 
   export default {
     // このページの上で表示するコンポーネント
     components: {
-      detailScene
+      detailScene,
+      detailProp
     },
     data() {
       return{
@@ -87,7 +90,10 @@
         showScenes: [],
         // シーン詳細
         showContent: false,
-        postScene: ""
+        postScene: "",
+        // 小道具詳細
+        showContent_prop: false,
+        postProp: ""
       }
     },
     watch: {
@@ -120,6 +126,17 @@
       // 使用シーン詳細のモーダル非表示
       async closeModal_sceneDetail() {
         this.showContent = false;
+        await this.fetchScenes();
+      },
+
+      // 小道具詳細のモーダル表示 
+      openModal_propDetail (id) {
+        this.showContent_prop = true;
+        this.postProp = id;
+      },
+      // 小道具詳細のモーダル非表示
+      async closeModal_propDetail() {
+        this.showContent_prop = false;
         await this.fetchScenes();
       },
 

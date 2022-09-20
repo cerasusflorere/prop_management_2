@@ -1,6 +1,6 @@
 <template>
   <div class="overlay" @click.self="$emit('close')">
-    <div class="content content-detail panel">
+    <div class="content content-confirm-dialog panel">
         <form class="form"  @submit.prevent="confirm_character">
         <!-- 登場人物 -->
         <label for="character_edit_area">登場人物</label>
@@ -20,9 +20,11 @@
           <button type="submit" class="button button--inverse"><i class="fas fa-edit fa-fw"></i>変更</button>
         </div>
       </form>
+      <confirmDialog_Edit :confirm_dialog_edit_message="postMessage_Edit" v-show="showContent_confirmEdit" @Cancel_Edit="closeModal_confirmEdit_Cancel" @OK_Edit="closeModal_confirmEdit_OK"/>
+
       <!--- 削除ボタン -->
       <div class="form__button">
-        <button type="button" class="button button--inverse"  @click="openModal_confirmDelete"><i class="fas fa-eraser fa-fw"></i>削除</button>
+        <button type="button" class="button button--inverse"  @click="openModal_confirmDelete"><i class="fas fa-trash fa-fw"></i>削除</button>
       </div>
       <confirmDialog_Delete :confirm_dialog_delete_message="postMessage_Delete" v-show="showContent_confirmDelete" @Cancel_Delete="closeModal_confirmDelete_Cancel" @OK_Delete="closeModal_confirmDelete_OK"/>
       
@@ -34,12 +36,14 @@
 <script>
 import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util'
 
+import confirmDialog_Edit from './Confirm_Dialog_Edit.vue'
 import confirmDialog_Delete from './Confirm_Dialog_Delete.vue'
 
 export default {
   // モーダルとして表示
   name: 'editCharacter',
   components: {
+    confirmDialog_Edit,
     confirmDialog_Delete
   },
   props: {
@@ -59,6 +63,9 @@ export default {
         section: null,
         name: null
       },
+      // 変更confirm
+      showContent_confirmEdit: false,
+      postMessage_Edit: "",
       // 削除confirm
       showContent_confirmDelete: false,
       postMessage_Delete: ""
@@ -107,10 +114,32 @@ export default {
     // 確認する
     confirm_character () {
       if(this.character_edit.id === this.editForm_character.id && (this.character_edit.section.id !== this.editForm_character.section_id || this.character_edit.name !== this.editForm_character.name)){
-        this.editCharacter();
+        this.openModal_confirmEdit();
       }else{
         alert('元の名前と同じです！変更するなら違う名前にしてください！');
       }
+    },
+
+    // 編集confirmのモーダル表示 
+    openModal_confirmEdit () {
+      this.showContent_confirmEdit = true;
+      // セクション名はリアクティブじゃない
+      this.optionSections.forEach((section) => {
+        if(section.id === this.editForm_character.section_id) { 
+          this.editForm_character.section = section.section;
+          return false;
+        }
+      }, this);
+      this.postMessage_Edit = '以下のように編集します。\n属性：' + this.editForm_character.section + '\n名前：' + this.editForm_character.name;
+    },
+    // 編集confirmのモーダル非表示_OKの場合
+    async closeModal_confirmEdit_OK() {
+      this.showContent_confirmEdit = false;
+      await this.editCharacter();
+    },
+    // 編集confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmEdit_Cancel() {
+      this.showContent_confirmEdit= false;
     },
 
     // 編集する

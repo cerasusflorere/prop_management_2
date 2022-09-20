@@ -2655,7 +2655,24 @@ var autokana;
       // 表示する小道具のデータ
       prop: [],
       // 編集データ
-      editForm_prop: [],
+      editForm_prop: {
+        id: null,
+        name: null,
+        kana: null,
+        owner: {
+          name: ''
+        },
+        owner_id: '',
+        url: '',
+        public_id: '',
+        usage: 0,
+        usage_guraduation: 0,
+        usage_left: 0,
+        usage_right: 0,
+        photo: 0,
+        prop_comments: [],
+        scenes: []
+      },
       // 取得するデータ
       props: [],
       optionOwners: [],
@@ -2664,6 +2681,8 @@ var autokana;
       optionCharacters: [],
       // タブ
       tab: 1,
+      // 卒業公演
+      guradutaion_tag: 0,
       // overlayのクラス
       overlay_class: 1,
       // 写真プレビュー
@@ -2696,26 +2715,27 @@ var autokana;
               switch (_context.prev = _context.next) {
                 case 0:
                   if (!_this.postProp) {
-                    _context.next = 12;
+                    _context.next = 13;
                     break;
                   }
 
-                  _context.next = 3;
+                  _this.overlay_class = 1;
+                  _context.next = 4;
                   return _this.fetchCharacters();
 
-                case 3:
-                  _context.next = 5;
+                case 4:
+                  _context.next = 6;
                   return _this.fetchProp();
 
-                case 5:
-                  _context.next = 7;
+                case 6:
+                  _context.next = 8;
                   return _this.fetchOwners();
 
-                case 7:
-                  _context.next = 9;
+                case 8:
+                  _context.next = 10;
                   return _this.fetchProps();
 
-                case 9:
+                case 10:
                   content_dom = _this.$refs.content_detail_prop;
                   content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
 
@@ -2725,7 +2745,7 @@ var autokana;
                     _this.overlay_class = 1;
                   }
 
-                case 12:
+                case 13:
                 case "end":
                   return _context.stop();
               }
@@ -2745,44 +2765,58 @@ var autokana;
               switch (_context2.prev = _context2.next) {
                 case 0:
                   if (!(_this2.editPropMode_detail === 100 || _this2.editPropMode_memo === 100)) {
-                    _context2.next = 6;
+                    _context2.next = 8;
                     break;
                   }
 
-                  _context2.next = 3;
+                  _this2.resetProp();
+
+                  _context2.next = 4;
                   return _this2.fetchProp();
 
-                case 3:
-                  // メッセージ登録
+                case 4:
+                  // 調整
+                  _this2.$nextTick(function () {
+                    var content_dom = _this2.$refs.content_detail_prop;
+                    var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+                    if (content_rect.top < 0) {
+                      _this2.overlay_class = 0;
+                    } else {
+                      _this2.overlay_class = 1;
+                    }
+                  }); // メッセージ登録
+
+
                   _this2.$store.commit('message/setContent', {
                     content: '小道具が変更されました！',
                     timeout: 6000
                   });
 
-                  _context2.next = 12;
+                  _context2.next = 14;
                   break;
 
-                case 6:
+                case 8:
                   if (!(_this2.editPropMode_detail || _this2.editPropMode_memo)) {
-                    _context2.next = 11;
+                    _context2.next = 13;
                     break;
                   }
 
-                  _context2.next = 9;
+                  _context2.next = 11;
                   return _this2.openModal_confirmEdit();
 
-                case 9:
-                  _context2.next = 12;
+                case 11:
+                  _context2.next = 14;
                   break;
 
-                case 11:
+                case 13:
                   if (_this2.editPropMode_detail === 0 && _this2.editPropMode_memo === 0) {
                     alert('元のデータと同じです！変更してください');
                     _this2.editPropMode_detail = "";
                     _this2.editPropMode_memo = "";
                   }
 
-                case 12:
+                case 14:
                 case "end":
                   return _context2.stop();
               }
@@ -2826,16 +2860,39 @@ var autokana;
                 return _context3.abrupt("return", false);
 
               case 7:
-                _this3.prop = response.data;
-                _this3.editForm_prop = JSON.parse(JSON.stringify(_this3.prop)); // そのままコピーするとコピー元も変更される
+                _this3.prop = response.data; // this.editForm_prop = JSON.parse(JSON.stringify(this.prop)); // そのままコピーするとコピー元も変更される
+
+                _this3.editForm_prop.id = _this3.prop.id;
+                _this3.editForm_prop.name = _this3.prop.name;
+                _this3.editForm_prop.kana = _this3.prop.kana;
+
+                if (_this3.prop.owner_id) {
+                  _this3.editForm_prop.owner_id = _this3.prop.owner_id;
+                  _this3.editForm_prop.owner.name = _this3.prop.owner.name;
+                }
+
+                _this3.editForm_prop.url = _this3.prop.url;
+                _this3.editForm_prop.public_id = _this3.prop.public_id;
+                _this3.editForm_prop.usage = _this3.prop.usage;
+                _this3.editForm_prop.usage_guraduation = _this3.prop.usage_guraduation;
+                _this3.editForm_prop.usage_left = _this3.prop.usage_left;
+                _this3.editForm_prop.usage_right = _this3.prop.usage_right;
+                _this3.editForm_prop.prop_comments = JSON.parse(JSON.stringify(_this3.prop.prop_comments));
+                _this3.editForm_prop.scenes = JSON.parse(JSON.stringify(_this3.prop.scenes));
+
+                if (_this3.prop.usage_guraduation) {
+                  _this3.guradutaion_tag = 1;
+                } else {
+                  _this3.guradutaion_tag = 0;
+                }
 
                 if (_this3.editForm_prop.public_id) {
-                  _this3.$set(_this3.editForm_prop, 'photo', 1); // 写真が登録されている（可能性：1のまま、0に変更（この時public_idは存在する）、写真バイナリ代入（この時public_idは存在する））
-
+                  _this3.editForm_prop.photo = 1; // 写真が登録されている（可能性：1のまま、0に変更（この時public_idは存在する）、写真バイナリ代入（この時public_idは存在する））
                 } else {
-                  _this3.$set(_this3.editForm_prop, 'photo', 0); // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
+                  _this3.editForm_prop.photo = 0; // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
+                }
 
-                } // if(!this.editForm_prop.scenes.length){
+                _this3.preview = null; // if(!this.editForm_prop.scenes.length){
                 //   this.editForm_prop.scenes[0] = Object.assign({}, this.editForm_prop.scenes[0], {character_id: null, section: '' , page: '', usage: '', scene_comments: []})
                 //   this.editForm_prop.scenes[0].scene_comments[0] = Object.assign({}, this.editForm_prop.scenes[0].scene_comments[0], {memo: null})
                 // }else{
@@ -2845,11 +2902,10 @@ var autokana;
                 //   })
                 // }
 
-
                 _this3.editPropMode_detail = "";
                 _this3.editPropMode_memo = "";
 
-              case 12:
+              case 25:
               case "end":
                 return _context3.stop();
             }
@@ -2982,19 +3038,46 @@ var autokana;
     },
     // タブ切り替え
     alterTab: function alterTab() {
+      var _this7 = this;
+
       if (this.tab === 1) {
         this.tab = 2;
       } else {
         this.tab = 1;
-      }
+      } // 調整
+
+
+      this.$nextTick(function () {
+        var content_dom = _this7.$refs.content_detail_prop;
+        var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+        if (content_rect.top < 0) {
+          _this7.overlay_class = 0;
+        } else {
+          _this7.overlay_class = 1;
+        }
+      });
     },
     // 写真を見せない
     deletePhoto: function deletePhoto() {
-      this.editForm_prop.photo = 0;
+      var _this8 = this;
+
+      this.editForm_prop.photo = 0; // 調整
+
+      this.$nextTick(function () {
+        var content_dom = _this8.$refs.content_detail_prop;
+        var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+        if (content_rect.top < 0) {
+          _this8.overlay_class = 0;
+        } else {
+          _this8.overlay_class = 1;
+        }
+      });
     },
     // フォームでファイルが選択されたら実行される
     onFileChange: function onFileChange(event) {
-      var _this7 = this;
+      var _this9 = this;
 
       this.errors.photo = null; // 何も選択されていなかったら処理中断
 
@@ -3018,25 +3101,101 @@ var autokana;
         // previewに値が入ると<output>につけたv-ifがtrueと判定される
         // また<output>内部の<img>のsrc属性はpreviewの値を参照しているので
         // 結果として画像が表示される
-        _this7.preview = e.target.result;
+        _this9.preview = e.target.result;
       }; // ファイルを読み込む
       // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
 
 
       reader.readAsDataURL(event.target.files[0]);
-      this.editForm_prop.photo = event.target.files[0];
+      this.editForm_prop.photo = event.target.files[0]; // 調整
+
+      this.$nextTick(function () {
+        var content_dom = _this9.$refs.content_detail_prop;
+        var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+        if (content_rect.top < 0) {
+          _this9.overlay_class = 0;
+        } else {
+          _this9.overlay_class = 1;
+        }
+      });
     },
     // 画像をクリアするメソッド
     resetPhoto: function resetPhoto() {
+      var _this10 = this;
+
+      this.preview = null;
+      this.editForm_prop.photo = 0;
+      this.$el.querySelector('input[type="file"]').value = null; // 調整
+
+      this.$nextTick(function () {
+        var content_dom = _this10.$refs.content_detail_prop;
+        var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+        if (content_rect.top < 0) {
+          _this10.overlay_class = 0;
+        } else {
+          _this10.overlay_class = 1;
+        }
+      });
+    },
+    // 卒業公演の使用にチェックが付いたか
+    selectGuraduation: function selectGuraduation() {
+      if (!this.guradutaion_tag) {
+        this.guradutaion_tag = 1;
+      } else {
+        this.guradutaion_tag = 0;
+        this.editForm_prop.usage_left = 0;
+        this.editForm_prop.usage_right = 0;
+      }
+    },
+    // 諸々リセット
+    resetProp: function resetProp() {
+      var _this11 = this;
+
+      this.editForm_prop.id = null;
+      this.editForm_prop.name = null;
+      this.editForm_prop.kana = null;
+      this.editForm_prop.owner.name = '';
+      this.editForm_prop.owner_id = '';
+      this.editForm_prop.url = '';
+      this.editForm_prop.public_id = '';
+      this.editForm_prop.usage = 0;
+      this.editForm_prop.usage_guraduation = 0;
+      this.editForm_prop.usage_left = 0;
+      this.editForm_prop.usage_right = 0;
+      this.editForm_prop.photo = 0;
+      this.editForm_prop.prop_comments = [];
+      this.editForm_prop.scenes = []; // 卒業公演
+
+      this.guradutaion_tag = 0;
       this.preview = null;
       this.editForm_prop.photo = 0;
       this.$el.querySelector('input[type="file"]').value = null;
+
+      if (this.val) {
+        // 調整
+        this.$nextTick(function () {
+          var content_dom = _this11.$refs.content_detail_prop;
+          var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+          if (content_rect.top < 0) {
+            _this11.overlay_class = 0;
+          } else {
+            _this11.overlay_class = 1;
+          }
+        });
+      }
     },
     // 編集エラー
     confirmProp: function confirmProp() {
-      if (this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.usage !== this.editForm_prop.usage) && (this.prop.public_id && this.editForm_prop.photo === 1 || !this.prop.public_id && !this.editForm_prop.photo)) {
-        // 写真をアップデートしない
-        this.editPropMode_detail = 1; // 'photo_non_update'
+      if (this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && (this.prop.public_id && this.editForm_prop.photo === 1 || !this.prop.public_id && !this.editForm_prop.photo)) {
+        if (!this.prop.owner_id && !this.editForm_prop.owner_id) {
+          this.editPropMode_detail = 0;
+        } else {
+          // 写真をアップデートしない
+          this.editPropMode_detail = 1; // 'photo_non_update'
+        }
       } else if (this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo && this.editForm_prop.photo !== 1) {
         // 写真新規
         this.editPropMode_detail = 2; // 'photo_store'
@@ -3069,36 +3228,79 @@ var autokana;
     },
     // 編集confirmのモーダル表示 
     openModal_confirmEdit: function openModal_confirmEdit() {
+      var _this12 = this;
+
       this.showContent_confirmEdit = true;
-      this.postMessage_Edit = '以下のように編集します。';
+      this.optionOwners.forEach(function (owner) {
+        if (owner.id === _this12.editForm_prop.owner_id) {
+          _this12.editForm_prop.owner.name = owner.name;
+        }
+      }, this);
+      var usage = '';
+      var usage_guraduation = '';
+      var usage_left = '';
+      var usage_right = '';
+
+      if (this.editForm_prop.usage) {
+        usage = 'Ⓟ ';
+      }
+
+      if (this.editForm_prop.usage_guraduation) {
+        usage_guraduation = 'Ⓖ ';
+      }
+
+      if (this.editForm_prop.usage_left) {
+        usage_left = '㊤ ';
+      }
+
+      if (this.editForm_prop.usage_right) {
+        usage_right = '㊦';
+      }
+
+      var memos = [];
+      this.editForm_prop.prop_comments.forEach(function (memo, index) {
+        if (memo.memo && index !== _this12.editForm_prop.prop_comments.length - 1) {
+          memos.push(memo.memo + '\n　　　');
+        } else if (memo.memo) {
+          memos.push(memo.memo);
+        }
+      }, this); // 写真は出ない
+
+      var photo = '変更する';
+
+      if (this.editPropMode_detail === 1 || this.editPropMode_detail === 0) {
+        photo = '変更しない';
+      }
+
+      this.postMessage_Edit = '以下のように編集します。\n小道具名：' + this.editForm_prop.name + '\nふりがな：' + this.editForm_prop.kana + '\n持ち主：' + this.editForm_prop.owner.name + '\n使用状況：' + usage + usage_guraduation + usage_left + usage_right + '\nメモ：' + memos + '\n写真：' + photo;
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
-      var _this8 = this;
+      var _this13 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
         return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
-                _this8.showContent_confirmEdit = false;
+                _this13.showContent_confirmEdit = false;
 
-                if (!_this8.editPropMode_detail) {
+                if (!_this13.editPropMode_detail) {
                   _context7.next = 4;
                   break;
                 }
 
                 _context7.next = 4;
-                return _this8.editProp();
+                return _this13.editProp();
 
               case 4:
-                if (!_this8.editPropMode_memo) {
+                if (!_this13.editPropMode_memo) {
                   _context7.next = 7;
                   break;
                 }
 
                 _context7.next = 7;
-                return _this8.editProp_memo();
+                return _this13.editProp_memo();
 
               case 7:
               case "end":
@@ -3111,10 +3313,13 @@ var autokana;
     // 編集confirmのモーダル非表示_Cancelの場合
     closeModal_confirmEdit_Cancel: function closeModal_confirmEdit_Cancel() {
       this.showContent_confirmEdit = false;
+      this.editForm_prop.owner = "";
+      this.editPropMode_detail = "";
+      this.editPropMode_memo = "";
     },
     // 基本情報を編集する
     editProp: function editProp() {
-      var _this9 = this;
+      var _this14 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
         var response, formData, _response, _response2, _formData, _response3;
@@ -3123,18 +3328,21 @@ var autokana;
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                if (!(_this9.editPropMode_detail === 1)) {
+                if (!(_this14.editPropMode_detail === 1)) {
                   _context8.next = 14;
                   break;
                 }
 
                 _context8.next = 3;
-                return axios.post('/api/props/' + _this9.prop.id, {
+                return axios.post('/api/props/' + _this14.prop.id, {
                   method: 'photo_non_update',
-                  name: _this9.editForm_prop.name,
-                  kana: _this9.editForm_prop.kana,
-                  owner_id: _this9.editForm_prop.owner_id,
-                  usage: _this9.editForm_prop.usage
+                  name: _this14.editForm_prop.name,
+                  kana: _this14.editForm_prop.kana,
+                  owner_id: _this14.editForm_prop.owner_id,
+                  usage: _this14.editForm_prop.usage,
+                  usage_guraduation: _this14.editForm_prop.usage_guraduation,
+                  usage_left: _this14.editForm_prop.usage_left,
+                  usage_right: _this14.editForm_prop.usage_right
                 });
 
               case 3:
@@ -3145,7 +3353,7 @@ var autokana;
                   break;
                 }
 
-                _this9.errors.error = response.data.errors;
+                _this14.errors.error = response.data.errors;
                 return _context8.abrupt("return", false);
 
               case 7:
@@ -3154,115 +3362,121 @@ var autokana;
                   break;
                 }
 
-                _this9.$store.commit('error/setCode', response.status);
+                _this14.$store.commit('error/setCode', response.status);
 
                 return _context8.abrupt("return", false);
 
               case 10:
-                _this9.editPropMode_detail = 100;
+                _this14.editPropMode_detail = 100;
 
-                if (_this9.editPropMode_memo === 0) {
-                  _this9.editPropMode_memo = 100;
+                if (_this14.editPropMode_memo === 0) {
+                  _this14.editPropMode_memo = 100;
                 }
 
-                _context8.next = 47;
+                _context8.next = 50;
                 break;
 
               case 14:
-                if (!(_this9.editPropMode_detail === 2)) {
-                  _context8.next = 35;
+                if (!(_this14.editPropMode_detail === 2)) {
+                  _context8.next = 38;
                   break;
                 }
 
                 // 写真新規投稿
                 formData = new FormData();
                 formData.append('method', 'photo_store');
-                formData.append('name', _this9.editForm_prop.name);
-                formData.append('kana', _this9.editForm_prop.kana);
-                formData.append('owner_id', _this9.editForm_prop.owner_id);
-                formData.append('usage', _this9.editForm_prop.usage);
-                formData.append('photo', _this9.editForm_prop.photo);
-                _context8.next = 24;
-                return axios.post('/api/props/' + _this9.prop.id, formData);
+                formData.append('name', _this14.editForm_prop.name);
+                formData.append('kana', _this14.editForm_prop.kana);
+                formData.append('owner_id', _this14.editForm_prop.owner_id);
+                formData.append('usage', _this14.editForm_prop.usage);
+                formData.append('usage_guraduation', _this14.editForm_prop.usage_guraduation);
+                formData.append('usage_left', _this14.editForm_prop.usage_left);
+                formData.append('usage_right', _this14.editForm_prop.usage_right);
+                formData.append('photo', _this14.editForm_prop.photo);
+                _context8.next = 27;
+                return axios.post('/api/props/' + _this14.prop.id, formData);
 
-              case 24:
+              case 27:
                 _response = _context8.sent;
 
                 if (!(_response.status === 422)) {
-                  _context8.next = 28;
-                  break;
-                }
-
-                _this9.errors.error = _response.data.errors;
-                return _context8.abrupt("return", false);
-
-              case 28:
-                if (!(_response.status !== 204)) {
                   _context8.next = 31;
                   break;
                 }
 
-                _this9.$store.commit('error/setCode', _response.status);
-
+                _this14.errors.error = _response.data.errors;
                 return _context8.abrupt("return", false);
 
               case 31:
-                _this9.editPropMode_detail = 100;
-
-                if (_this9.editPropMode_memo === 0) {
-                  _this9.editPropMode_memo = 100;
-                }
-
-                _context8.next = 47;
-                break;
-
-              case 35:
-                if (!(_this9.editPropMode_detail === 3)) {
-                  _context8.next = 47;
+                if (!(_response.status !== 204)) {
+                  _context8.next = 34;
                   break;
                 }
 
-                _context8.next = 38;
-                return axios.post('/api/props/' + _this9.prop.id, {
-                  method: 'photo_delete',
-                  name: _this9.editForm_prop.name,
-                  kana: _this9.editForm_prop.kana,
-                  owner_id: _this9.editForm_prop.owner_id,
-                  public_id: _this9.editForm_prop.public_id,
-                  usage: _this9.editForm_prop.usage
-                });
+                _this14.$store.commit('error/setCode', _response.status);
+
+                return _context8.abrupt("return", false);
+
+              case 34:
+                _this14.editPropMode_detail = 100;
+
+                if (_this14.editPropMode_memo === 0) {
+                  _this14.editPropMode_memo = 100;
+                }
+
+                _context8.next = 50;
+                break;
 
               case 38:
+                if (!(_this14.editPropMode_detail === 3)) {
+                  _context8.next = 50;
+                  break;
+                }
+
+                _context8.next = 41;
+                return axios.post('/api/props/' + _this14.prop.id, {
+                  method: 'photo_delete',
+                  name: _this14.editForm_prop.name,
+                  kana: _this14.editForm_prop.kana,
+                  owner_id: _this14.editForm_prop.owner_id,
+                  public_id: _this14.editForm_prop.public_id,
+                  usage: _this14.editForm_prop.usage,
+                  usage_guraduation: _this14.editForm_prop.usage_guraduation,
+                  usage_left: _this14.editForm_prop.usage_left,
+                  usage_right: _this14.editForm_prop.usage_right
+                });
+
+              case 41:
                 _response2 = _context8.sent;
 
                 if (!(_response2.status === 422)) {
-                  _context8.next = 42;
-                  break;
-                }
-
-                _this9.errors.error = _response2.data.errors;
-                return _context8.abrupt("return", false);
-
-              case 42:
-                if (!(_response2.status !== 204)) {
                   _context8.next = 45;
                   break;
                 }
 
-                _this9.$store.commit('error/setCode', _response2.status);
-
+                _this14.errors.error = _response2.data.errors;
                 return _context8.abrupt("return", false);
 
               case 45:
-                _this9.editPropMode_detail = 100;
-
-                if (_this9.editPropMode_memo === 0) {
-                  _this9.editPropMode_memo = 100;
+                if (!(_response2.status !== 204)) {
+                  _context8.next = 48;
+                  break;
                 }
 
-              case 47:
-                if (!(_this9.editPropMode_detail === 4)) {
-                  _context8.next = 67;
+                _this14.$store.commit('error/setCode', _response2.status);
+
+                return _context8.abrupt("return", false);
+
+              case 48:
+                _this14.editPropMode_detail = 100;
+
+                if (_this14.editPropMode_memo === 0) {
+                  _this14.editPropMode_memo = 100;
+                }
+
+              case 50:
+                if (!(_this14.editPropMode_detail === 4)) {
+                  _context8.next = 73;
                   break;
                 }
 
@@ -3271,50 +3485,56 @@ var autokana;
 
                 _formData.append('method', 'photo_update');
 
-                _formData.append('name', _this9.editForm_prop.name);
+                _formData.append('name', _this14.editForm_prop.name);
 
-                _formData.append('kana', _this9.editForm_prop.kana);
+                _formData.append('kana', _this14.editForm_prop.kana);
 
-                _formData.append('owner_id', _this9.editForm_prop.owner_id);
+                _formData.append('owner_id', _this14.editForm_prop.owner_id);
 
-                _formData.append('public_id', _this9.editForm_prop.public_id);
+                _formData.append('public_id', _this14.editForm_prop.public_id);
 
-                _formData.append('usage', _this9.editForm_prop.usage);
+                _formData.append('usage', _this14.editForm_prop.usage);
 
-                _formData.append('photo', _this9.editForm_prop.photo);
+                _formData.append('usage_guraduation', _this14.editForm_prop.usage_guraduation);
 
-                _context8.next = 58;
-                return axios.post('/api/props/' + _this9.prop.id, _formData);
+                _formData.append('usage_left', _this14.editForm_prop.usage_left);
 
-              case 58:
+                _formData.append('usage_right', _this14.editForm_prop.usage_right);
+
+                _formData.append('photo', _this14.editForm_prop.photo);
+
+                _context8.next = 64;
+                return axios.post('/api/props/' + _this14.prop.id, _formData);
+
+              case 64:
                 _response3 = _context8.sent;
 
                 if (!(_response3.status === 422)) {
-                  _context8.next = 62;
+                  _context8.next = 68;
                   break;
                 }
 
-                _this9.errors.error = _response3.data.errors;
+                _this14.errors.error = _response3.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 62:
+              case 68:
                 if (!(_response3.status !== 204)) {
-                  _context8.next = 65;
+                  _context8.next = 71;
                   break;
                 }
 
-                _this9.$store.commit('error/setCode', _response3.status);
+                _this14.$store.commit('error/setCode', _response3.status);
 
                 return _context8.abrupt("return", false);
 
-              case 65:
-                _this9.editPropMode_detail = 100;
+              case 71:
+                _this14.editPropMode_detail = 100;
 
-                if (_this9.editPropMode_memo === 0) {
-                  _this9.editPropMode_memo = 100;
+                if (_this14.editPropMode_memo === 0) {
+                  _this14.editPropMode_memo = 100;
                 }
 
-              case 67:
+              case 73:
               case "end":
                 return _context8.stop();
             }
@@ -3324,7 +3544,7 @@ var autokana;
     },
     // メモを更新する
     editProp_memo: function editProp_memo() {
-      var _this10 = this;
+      var _this15 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
         var response, _response4, _response5;
@@ -3333,15 +3553,15 @@ var autokana;
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
-                if (!(_this10.editPropMode_memo === 1)) {
+                if (!(_this15.editPropMode_memo === 1)) {
                   _context9.next = 13;
                   break;
                 }
 
                 _context9.next = 3;
                 return axios.post('/api/prop_comments', {
-                  prop_id: _this10.editForm_prop.id,
-                  memo: _this10.editForm_prop.memo
+                  prop_id: _this15.editForm_prop.id,
+                  memo: _this15.editForm_prop.memo
                 });
 
               case 3:
@@ -3352,7 +3572,7 @@ var autokana;
                   break;
                 }
 
-                _this10.errors.error = response.data.errors;
+                _this15.errors.error = response.data.errors;
                 return _context9.abrupt("return", false);
 
               case 7:
@@ -3361,23 +3581,23 @@ var autokana;
                   break;
                 }
 
-                _this10.$store.commit('error/setCode', response.status);
+                _this15.$store.commit('error/setCode', response.status);
 
                 return _context9.abrupt("return", false);
 
               case 10:
-                _this10.editPropMode_memo = 100;
+                _this15.editPropMode_memo = 100;
                 _context9.next = 37;
                 break;
 
               case 13:
-                if (!(_this10.editPropMode_memo === 2)) {
+                if (!(_this15.editPropMode_memo === 2)) {
                   _context9.next = 26;
                   break;
                 }
 
                 _context9.next = 16;
-                return axios["delete"]('/api/prop_comments/' + _this10.prop.prop_comments[0].id);
+                return axios["delete"]('/api/prop_comments/' + _this15.prop.prop_comments[0].id);
 
               case 16:
                 _response4 = _context9.sent;
@@ -3387,7 +3607,7 @@ var autokana;
                   break;
                 }
 
-                _this10.errors.error = _response4.data.errors;
+                _this15.errors.error = _response4.data.errors;
                 return _context9.abrupt("return", false);
 
               case 20:
@@ -3396,24 +3616,24 @@ var autokana;
                   break;
                 }
 
-                _this10.$store.commit('error/setCode', _response4.status);
+                _this15.$store.commit('error/setCode', _response4.status);
 
                 return _context9.abrupt("return", false);
 
               case 23:
-                _this10.editPropMode_memo = 100;
+                _this15.editPropMode_memo = 100;
                 _context9.next = 37;
                 break;
 
               case 26:
-                if (!(_this10.editPropMode_memo === 3)) {
+                if (!(_this15.editPropMode_memo === 3)) {
                   _context9.next = 37;
                   break;
                 }
 
                 _context9.next = 29;
-                return axios.post('/api/prop_comments/' + _this10.prop.prop_comments[0].id, {
-                  memo: _this10.editForm_prop.prop_comments[0].memo
+                return axios.post('/api/prop_comments/' + _this15.prop.prop_comments[0].id, {
+                  memo: _this15.editForm_prop.prop_comments[0].memo
                 });
 
               case 29:
@@ -3424,7 +3644,7 @@ var autokana;
                   break;
                 }
 
-                _this10.errors.error = _response5.data.errors;
+                _this15.errors.error = _response5.data.errors;
                 return _context9.abrupt("return", false);
 
               case 33:
@@ -3433,12 +3653,12 @@ var autokana;
                   break;
                 }
 
-                _this10.$store.commit('error/setCode', _response5.status);
+                _this15.$store.commit('error/setCode', _response5.status);
 
                 return _context9.abrupt("return", false);
 
               case 36:
-                _this10.editPropMode_memo = 100;
+                _this15.editPropMode_memo = 100;
 
               case 37:
               case "end":
@@ -3455,19 +3675,19 @@ var autokana;
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this11 = this;
+      var _this16 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
         return _regeneratorRuntime().wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
-                _this11.showContent_confirmDelete = false;
+                _this16.showContent_confirmDelete = false;
 
-                _this11.$emit('close');
+                _this16.$emit('close');
 
                 _context10.next = 4;
-                return _this11.deletProp();
+                return _this16.deletProp();
 
               case 4:
               case "end":
@@ -3483,7 +3703,7 @@ var autokana;
     },
     // 削除する
     deletProp: function deletProp() {
-      var _this12 = this;
+      var _this17 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
         var response;
@@ -3492,7 +3712,7 @@ var autokana;
             switch (_context11.prev = _context11.next) {
               case 0:
                 _context11.next = 2;
-                return axios["delete"]('/api/props/' + _this12.prop.id);
+                return axios["delete"]('/api/props/' + _this17.prop.id);
 
               case 2:
                 response = _context11.sent;
@@ -3502,7 +3722,7 @@ var autokana;
                   break;
                 }
 
-                _this12.errors.error = response.data.errors;
+                _this17.errors.error = response.data.errors;
                 return _context11.abrupt("return", false);
 
               case 6:
@@ -3511,20 +3731,22 @@ var autokana;
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', response.status);
+                _this17.$store.commit('error/setCode', response.status);
 
                 return _context11.abrupt("return", false);
 
               case 9:
-                _this12.prop = [];
-                _this12.editForm_prop = []; // メッセージ登録
+                _this17.prop = [];
 
-                _this12.$store.commit('message/setContent', {
+                _this17.resetProp(); // メッセージ登録
+
+
+                _this17.$store.commit('message/setContent', {
                   content: '小道具が1つ削除されました！',
                   timeout: 6000
                 });
 
-                _this12.$emit('close');
+                _this17.$emit('close');
 
               case 13:
               case "end":
@@ -3777,7 +3999,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       immediate: true
     }
   },
-  // 中間発表のみ変えたらページ遷移しない
   methods: {
     // シーンの詳細を取得
     fetchScene: function fetchScene() {
@@ -3835,6 +4056,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 if (_this4.scene.usage_guraduation) {
                   _this4.guradutaion_tag = 1;
+                } else {
+                  _this4.guradutaion_tag = 0;
                 }
 
                 if (_this4.scene.usage_left) {
@@ -3949,11 +4172,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // タブ切り替え
     alterTab: function alterTab() {
+      var _this7 = this;
+
       if (this.tab_scene === 1) {
         this.tab_scene = 2;
       } else {
         this.tab_scene = 1;
-      }
+      } // 調整
+
+
+      this.$nextTick(function () {
+        var content_dom = _this7.$refs.content_detail_scene;
+        var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+        if (content_rect.top < 0) {
+          _this7.overlay_class = 0;
+        } else {
+          _this7.overlay_class = 1;
+        }
+      });
     },
     // 連動プルダウン
     selected: function selected() {
@@ -4062,36 +4299,97 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 編集confirmのモーダル表示 
     openModal_confirmEdit: function openModal_confirmEdit() {
+      var _this8 = this;
+
       this.showContent_confirmEdit = true;
-      this.postMessage_Edit = '以下のように編集します。';
+      Object.keys(this.optionCharacters).forEach(function (section) {
+        if (section === _this8.editForm_scene.character.section.section) {
+          _this8.optionCharacters[section].forEach(function (name) {
+            if (name.id === _this8.editForm_scene.character_id) {
+              _this8.editForm_scene.character.name = name.name;
+            }
+          }, _this8);
+        }
+      }, this);
+      var usage = '';
+      var usage_guraduation = '';
+      var usage_left = '';
+      var usage_right = '';
+
+      if (this.editForm_scene.usage) {
+        usage = 'Ⓟ ';
+      }
+
+      if (this.editForm_scene.usage_guraduation) {
+        usage_guraduation = 'Ⓖ ';
+      }
+
+      if (this.editForm_scene.usage_stage === 'left') {
+        usage_left = '㊤ ';
+      }
+
+      if (this.editForm_scene.usage_stage === 'right') {
+        usage_right = '㊦';
+      }
+
+      var pages = '';
+
+      if (this.editForm_scene.first_page) {
+        pages = 'p' + this.editForm_scene.first_page;
+      }
+
+      if (this.editForm_scene.final_page) {
+        pages = pages + '~' + this.editForm_scene.final_page;
+        +' ';
+      }
+
+      if (this.editForm_scene.pages) {
+        pages = pages + this.editForm_scene.pages;
+      }
+
+      var prop;
+      this.optionProps.forEach(function (props) {
+        if (props.id === _this8.editForm_scene.prop_id) {
+          prop = props.name;
+        }
+      }, this);
+      var memos = [];
+      this.editForm_scene.scene_comments.forEach(function (memo, index) {
+        if (memo.memo && index !== _this8.editForm_scene.scene_comments.length - 1) {
+          memos.push(memo.memo + '\n　　　');
+        } else if (memo.memo) {
+          memos.push(memo.memo);
+        }
+      }, this);
+      this.postMessage_Edit = '以下のように編集します。\n登場人物：' + this.editForm_scene.character.name + '\n使用状況：' + usage + usage_guraduation + usage_right + usage_left + '\nページ数：' + pages + '\n小道具：' + prop + '\nメモ：' + memos;
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
-      var _this7 = this;
+      var _this9 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
         return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
-                _this7.showContent_confirmEdit = false;
+                _this9.showContent_confirmEdit = false;
 
-                if (!_this7.editSceneMode_detail) {
+                if (!_this9.editSceneMode_detail) {
                   _context7.next = 4;
                   break;
                 }
 
                 _context7.next = 4;
-                return _this7.editScene();
+                return _this9.editScene();
 
               case 4:
-                if (!_this7.editSceneMode_memo) {
+                if (!_this9.editSceneMode_memo) {
                   _context7.next = 7;
                   break;
                 }
 
                 _context7.next = 7;
-                return _this7.editScene_memo();
+                return _this9.editScene_memo();
 
               case 7:
               case "end":
@@ -4104,6 +4402,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     // 編集confirmのモーダル非表示_Cancelの場合
     closeModal_confirmEdit_Cancel: function closeModal_confirmEdit_Cancel() {
       this.showContent_confirmEdit = false;
+      this.editSceneMode_detail = "";
+      this.editSceneMode_memo = "";
+      this.editSceneMode_prop = "";
     },
     // first_pageとfinal_pageに分割する
     first_finalDivide: function first_finalDivide(str) {
@@ -4117,7 +4418,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 基本情報を編集する
     editScene: function editScene() {
-      var _this8 = this;
+      var _this10 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
         var usage_left, usage_right, response, first_pages, final_pages, pages_before, pages_after, pattern, memo, last_flag;
@@ -4128,27 +4429,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 usage_left = '';
                 usage_right = '';
 
-                if (_this8.editForm_scene.usage_stage === "left") {
+                if (_this10.editForm_scene.usage_stage === "left") {
                   usage_left = 1;
-                } else if (_this8.editForm_scene.usage_stage === "right") {
+                } else if (_this10.editForm_scene.usage_stage === "right") {
                   usage_right = 1;
                 }
 
-                if (!(_this8.editSceneMode_detail === 1)) {
+                if (!(_this10.editSceneMode_detail === 1)) {
                   _context9.next = 18;
                   break;
                 }
 
                 // 元々ページ数の指定があった
-                _this8.editSceneMode_detail = "change";
+                _this10.editSceneMode_detail = "change";
                 _context9.next = 7;
-                return axios.post('/api/scenes/' + _this8.scene.id, {
-                  character_id: _this8.editForm_scene.character_id,
-                  prop_id: _this8.editForm_scene.prop_id,
-                  first_page: _this8.editForm_scene.first_page,
-                  final_page: _this8.editForm_scene.final_page,
-                  usage: _this8.editForm_scene.usage,
-                  usage_guraduation: _this8.editForm_scene.usage_guraduation,
+                return axios.post('/api/scenes/' + _this10.scene.id, {
+                  character_id: _this10.editForm_scene.character_id,
+                  prop_id: _this10.editForm_scene.prop_id,
+                  first_page: _this10.editForm_scene.first_page,
+                  final_page: _this10.editForm_scene.final_page,
+                  usage: _this10.editForm_scene.usage,
+                  usage_guraduation: _this10.editForm_scene.usage_guraduation,
                   usage_left: usage_left,
                   usage_right: usage_right
                 });
@@ -4161,7 +4462,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this8.errors.error = response.data.errors;
+                _this10.errors.error = response.data.errors;
                 return _context9.abrupt("return", false);
 
               case 11:
@@ -4170,33 +4471,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this8.$store.commit('error/setCode', response.status);
+                _this10.$store.commit('error/setCode', response.status);
 
                 return _context9.abrupt("return", false);
 
               case 14:
-                _this8.editSceneMode_detail = 100;
+                _this10.editSceneMode_detail = 100;
 
-                if (_this8.editSceneMode_memo === 0 && _this8.editSceneMode_prop === 0) {
-                  _this8.editSceneMode_memo = 100;
-                  _this8.editSceneMode_prop = 100;
+                if (_this10.editSceneMode_memo === 0 && _this10.editSceneMode_prop === 0) {
+                  _this10.editSceneMode_memo = 100;
+                  _this10.editSceneMode_prop = 100;
                 }
 
                 _context9.next = 19;
                 break;
 
               case 18:
-                if (_this8.editSceneMode_detail === 2) {
+                if (_this10.editSceneMode_detail === 2) {
                   // ページ数を新たに指定
-                  _this8.editSceneMode_detail = "change"; // ページを分割
+                  _this10.editSceneMode_detail = "change"; // ページを分割
 
                   first_pages = [];
                   final_pages = [];
                   first_pages[0] = 0;
                   final_pages[0] = 0;
 
-                  if (_this8.editForm_scene.pages) {
-                    pages_before = _this8.editForm_scene.pages.split(/,|、|，|\s+/);
+                  if (_this10.editForm_scene.pages) {
+                    pages_before = _this10.editForm_scene.pages.split(/,|、|，|\s+/);
                     pages_before.forEach(function (page) {
                       page = page.replaceAll(/\s+/g, '');
                     });
@@ -4205,22 +4506,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     pages_after.forEach(function (page, index) {
                       if (index === 0) {
                         if (pattern.test(page)) {
-                          var pages = _this8.first_finalDivide(page);
+                          var pages = _this10.first_finalDivide(page);
 
-                          first_pages[index] = parseInt(_this8.hankaku2Zenkaku(pages[0]));
-                          final_pages[index] = parseInt(_this8.hankaku2Zenkaku(pages[1]));
+                          first_pages[index] = parseInt(_this10.hankaku2Zenkaku(pages[0]));
+                          final_pages[index] = parseInt(_this10.hankaku2Zenkaku(pages[1]));
                         } else {
-                          first_pages[index] = parseInt(_this8.hankaku2Zenkaku(page));
+                          first_pages[index] = parseInt(_this10.hankaku2Zenkaku(page));
                           final_pages[index] = 0;
                         }
                       } else {
                         if (pattern.test(page)) {
-                          var _pages = _this8.first_finalDivide(page);
+                          var _pages = _this10.first_finalDivide(page);
 
-                          first_pages.push(parseInt(_this8.hankaku2Zenkaku(_pages[0])));
-                          final_pages.push(parseInt(_this8.hankaku2Zenkaku(_pages[1])));
+                          first_pages.push(parseInt(_this10.hankaku2Zenkaku(_pages[0])));
+                          final_pages.push(parseInt(_this10.hankaku2Zenkaku(_pages[1])));
                         } else {
-                          first_pages.push(parseInt(_this8.hankaku2Zenkaku(page)));
+                          first_pages.push(parseInt(_this10.hankaku2Zenkaku(page)));
                           final_pages.push(0);
                         }
                       }
@@ -4229,10 +4530,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   memo = '';
 
-                  if (_this8.editForm_scene.memo) {
-                    memo = _this8.editForm_scene.memo;
-                  } else if (_this8.editForm_scene.scene_comments.length) {
-                    memo = _this8.editForm_scene.scene_comments[0].memo;
+                  if (_this10.editForm_scene.memo) {
+                    memo = _this10.editForm_scene.memo;
+                  } else if (_this10.editForm_scene.scene_comments.length) {
+                    memo = _this10.editForm_scene.scene_comments[0].memo;
                   }
 
                   last_flag = false;
@@ -4347,7 +4648,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     return function (_x, _x2) {
                       return _ref.apply(this, arguments);
                     };
-                  }(), _this8);
+                  }(), _this10);
                 }
 
               case 19:
@@ -4360,7 +4661,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // メモを更新する
     editScene_memo: function editScene_memo() {
-      var _this9 = this;
+      var _this11 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
         var response, _response3, _response4;
@@ -4369,15 +4670,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
-                if (!(_this9.editSceneMode_memo === 1)) {
+                if (!(_this11.editSceneMode_memo === 1)) {
                   _context10.next = 14;
                   break;
                 }
 
                 _context10.next = 3;
                 return axios.post('/api/scene_comments', {
-                  scene_id: _this9.editForm_scene.id,
-                  memo: _this9.editForm_scene.memo
+                  scene_id: _this11.editForm_scene.id,
+                  memo: _this11.editForm_scene.memo
                 });
 
               case 3:
@@ -4388,7 +4689,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this9.errors.error = response.data.errors;
+                _this11.errors.error = response.data.errors;
                 return _context10.abrupt("return", false);
 
               case 7:
@@ -4397,28 +4698,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this9.$store.commit('error/setCode', response.status);
+                _this11.$store.commit('error/setCode', response.status);
 
                 return _context10.abrupt("return", false);
 
               case 10:
-                _this9.editSceneMode_memo = 100;
+                _this11.editSceneMode_memo = 100;
 
-                if (_this9.editSceneMode_prop === 0) {
-                  _this9.editSceneMode_prop = 100;
+                if (_this11.editSceneMode_prop === 0) {
+                  _this11.editSceneMode_prop = 100;
                 }
 
                 _context10.next = 40;
                 break;
 
               case 14:
-                if (!(_this9.editSceneMode_memo === 2)) {
+                if (!(_this11.editSceneMode_memo === 2)) {
                   _context10.next = 28;
                   break;
                 }
 
                 _context10.next = 17;
-                return axios["delete"]('/api/scene_comments/' + _this9.scene.scene_comments[0].id);
+                return axios["delete"]('/api/scene_comments/' + _this11.scene.scene_comments[0].id);
 
               case 17:
                 _response3 = _context10.sent;
@@ -4428,7 +4729,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this9.errors.error = _response3.data.errors;
+                _this11.errors.error = _response3.data.errors;
                 return _context10.abrupt("return", false);
 
               case 21:
@@ -4437,29 +4738,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this9.$store.commit('error/setCode', _response3.status);
+                _this11.$store.commit('error/setCode', _response3.status);
 
                 return _context10.abrupt("return", false);
 
               case 24:
-                _this9.editSceneMode_memo = 100;
+                _this11.editSceneMode_memo = 100;
 
-                if (_this9.editSceneMode_prop === 0) {
-                  _this9.editSceneMode_prop = 100;
+                if (_this11.editSceneMode_prop === 0) {
+                  _this11.editSceneMode_prop = 100;
                 }
 
                 _context10.next = 40;
                 break;
 
               case 28:
-                if (!(_this9.editSceneMode_memo === 3)) {
+                if (!(_this11.editSceneMode_memo === 3)) {
                   _context10.next = 40;
                   break;
                 }
 
                 _context10.next = 31;
-                return axios.post('/api/scene_comments/' + _this9.scene.scene_comments[0].id, {
-                  memo: _this9.editForm_scene.scene_comments[0].memo
+                return axios.post('/api/scene_comments/' + _this11.scene.scene_comments[0].id, {
+                  memo: _this11.editForm_scene.scene_comments[0].memo
                 });
 
               case 31:
@@ -4470,7 +4771,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this9.errors.error = _response4.data.errors;
+                _this11.errors.error = _response4.data.errors;
                 return _context10.abrupt("return", false);
 
               case 35:
@@ -4479,15 +4780,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this9.$store.commit('error/setCode', _response4.status);
+                _this11.$store.commit('error/setCode', _response4.status);
 
                 return _context10.abrupt("return", false);
 
               case 38:
-                _this9.editSceneMode_memo = 100;
+                _this11.editSceneMode_memo = 100;
 
-                if (_this9.editSceneMode_prop === 0) {
-                  _this9.editSceneMode_prop = 100;
+                if (_this11.editSceneMode_prop === 0) {
+                  _this11.editSceneMode_prop = 100;
                 }
 
               case 40:
@@ -4500,29 +4801,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 小道具を更新する
     editProp_usage: function editProp_usage() {
-      var _this10 = this;
+      var _this12 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
         return _regeneratorRuntime().wrap(function _callee11$(_context11) {
           while (1) {
             switch (_context11.prev = _context11.next) {
               case 0:
-                if (!(_this10.scene.usage != _this10.editForm_scene.usage)) {
+                if (!(_this12.scene.usage != _this12.editForm_scene.usage)) {
                   _context11.next = 3;
                   break;
                 }
 
                 _context11.next = 3;
-                return _this10.editProp_usage_passo();
+                return _this12.editProp_usage_passo();
 
               case 3:
-                if (!(_this10.scene.usage_guraduation != _this10.editForm_scene.usage_guraduation || _this10.editForm_scene.usage_guraduation)) {
+                if (!(_this12.scene.usage_guraduation != _this12.editForm_scene.usage_guraduation || _this12.editForm_scene.usage_guraduation)) {
                   _context11.next = 6;
                   break;
                 }
 
                 _context11.next = 6;
-                return _this10.editProp_usage_guraduation();
+                return _this12.editProp_usage_guraduation();
 
               case 6:
               case "end":
@@ -4533,7 +4834,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     editProp_usage_passo: function editProp_usage_passo() {
-      var _this11 = this;
+      var _this13 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
         var response_prop, _response_prop;
@@ -4542,13 +4843,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
-                if (!_this11.editForm_scene.usage) {
+                if (!_this13.editForm_scene.usage) {
                   _context12.next = 13;
                   break;
                 }
 
                 _context12.next = 3;
-                return axios.post('/api/props/' + _this11.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this13.editForm_scene.prop_id, {
                   method: 'usage_change',
                   usage: 1
                 });
@@ -4561,7 +4862,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this11.errors.error = response_prop.data.errors;
+                _this13.errors.error = response_prop.data.errors;
                 return _context12.abrupt("return", false);
 
               case 7:
@@ -4570,13 +4871,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this11.$store.commit('error/setCode', response_prop.status);
+                _this13.$store.commit('error/setCode', response_prop.status);
 
                 return _context12.abrupt("return", false);
 
               case 10:
-                if (_this11.scene.usage_guraduation == _this11.editForm_scene.usage_guraduation && (_this11.scene.usage_left && _this11.editForm_scene.usage_stage === "left" || _this11.scene.usage_right && _this11.editForm_scene.usage_stage === "right" || !_this11.scene.usage_left && !_this11.scene.usage_right && !_this11.editForm_scene.usage_stage)) {
-                  _this11.editSceneMode_prop = 100;
+                if (_this13.scene.usage_guraduation == _this13.editForm_scene.usage_guraduation && (_this13.scene.usage_left && _this13.editForm_scene.usage_stage === "left" || _this13.scene.usage_right && _this13.editForm_scene.usage_stage === "right" || !_this13.scene.usage_left && !_this13.scene.usage_right && !_this13.editForm_scene.usage_stage)) {
+                  _this13.editSceneMode_prop = 100;
                 }
 
                 _context12.next = 23;
@@ -4584,9 +4885,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 13:
                 _context12.next = 15;
-                return axios.post('/api/props_deep/' + _this11.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this13.editForm_scene.prop_id, {
                   method: 'usage_0_change',
-                  id: _this11.scene.id,
+                  id: _this13.scene.id,
                   usage: 0
                 });
 
@@ -4598,7 +4899,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this11.errors.error = _response_prop.data.errors;
+                _this13.errors.error = _response_prop.data.errors;
                 return _context12.abrupt("return", false);
 
               case 19:
@@ -4607,13 +4908,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this11.$store.commit('error/setCode', _response_prop.status);
+                _this13.$store.commit('error/setCode', _response_prop.status);
 
                 return _context12.abrupt("return", false);
 
               case 22:
-                if (_this11.scene.usage_guraduation == _this11.editForm_scene.usage_guraduation && (_this11.scene.usage_left && _this11.editForm_scene.usage_stage === "left" || _this11.scene.usage_right && _this11.editForm_scene.usage_stage === "right" || !_this11.scene.usage_left && !_this11.scene.usage_right && !_this11.editForm_scene.usage_stage)) {
-                  _this11.editSceneMode_prop = 100;
+                if (_this13.scene.usage_guraduation == _this13.editForm_scene.usage_guraduation && (_this13.scene.usage_left && _this13.editForm_scene.usage_stage === "left" || _this13.scene.usage_right && _this13.editForm_scene.usage_stage === "right" || !_this13.scene.usage_left && !_this13.scene.usage_right && !_this13.editForm_scene.usage_stage)) {
+                  _this13.editSceneMode_prop = 100;
                 }
 
               case 23:
@@ -4625,7 +4926,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     editProp_usage_guraduation: function editProp_usage_guraduation() {
-      var _this12 = this;
+      var _this14 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13() {
         var response_prop, _response_prop2, _response_prop3, _response_prop4, _response_prop5, _response_prop6, _response_prop7, _response_prop8, _response_prop9, _response_prop10, _response_prop11, _response_prop12, _response_prop13, _response_prop14, _response_prop15, _response_prop16;
@@ -4634,25 +4935,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context13.prev = _context13.next) {
               case 0:
-                if (!(_this12.scene.usage_guraduation != _this12.editForm_scene.usage_guraduation)) {
+                if (!(_this14.scene.usage_guraduation != _this14.editForm_scene.usage_guraduation)) {
                   _context13.next = 131;
                   break;
                 }
 
-                if (!(!_this12.scene.usage_guraduation && _this12.editForm_scene.usage_guraduation)) {
+                if (!(!_this14.scene.usage_guraduation && _this14.editForm_scene.usage_guraduation)) {
                   _context13.next = 92;
                   break;
                 }
 
-                if (!(_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "right")) {
+                if (!(_this14.scene.usage_left && _this14.editForm_scene.usage_stage === "right")) {
                   _context13.next = 15;
                   break;
                 }
 
                 _context13.next = 5;
-                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_guraduation_left_to_right_change',
-                  id: _this12.scene.id,
+                  id: _this14.scene.id,
                   usage_guraduation: 1,
                   usage_left: 0,
                   usage_right: 1
@@ -4666,7 +4967,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = response_prop.data.errors;
+                _this14.errors.error = response_prop.data.errors;
                 return _context13.abrupt("return", false);
 
               case 9:
@@ -4675,25 +4976,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', response_prop.status);
+                _this14.$store.commit('error/setCode', response_prop.status);
 
                 return _context13.abrupt("return", false);
 
               case 12:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 90;
                 break;
 
               case 15:
-                if (!(_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "left")) {
+                if (!(_this14.scene.usage_right && _this14.editForm_scene.usage_stage === "left")) {
                   _context13.next = 28;
                   break;
                 }
 
                 _context13.next = 18;
-                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_guraduation_right_to_left_change',
-                  id: _this12.scene.id,
+                  id: _this14.scene.id,
                   usage_guraduation: 1,
                   usage_left: 1,
                   usage_right: 0
@@ -4707,7 +5008,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop2.data.errors;
+                _this14.errors.error = _response_prop2.data.errors;
                 return _context13.abrupt("return", false);
 
               case 22:
@@ -4716,23 +5017,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop2.status);
+                _this14.$store.commit('error/setCode', _response_prop2.status);
 
                 return _context13.abrupt("return", false);
 
               case 25:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 90;
                 break;
 
               case 28:
-                if (!(!_this12.scene.usage_left && !_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "left")) {
+                if (!(!_this14.scene.usage_left && !_this14.scene.usage_right && _this14.editForm_scene.usage_stage === "left")) {
                   _context13.next = 41;
                   break;
                 }
 
                 _context13.next = 31;
-                return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_left_change',
                   usage_guraduation: 1,
                   usage_left: 1
@@ -4746,7 +5047,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop3.data.errors;
+                _this14.errors.error = _response_prop3.data.errors;
                 return _context13.abrupt("return", false);
 
               case 35:
@@ -4755,23 +5056,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop3.status);
+                _this14.$store.commit('error/setCode', _response_prop3.status);
 
                 return _context13.abrupt("return", false);
 
               case 38:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 90;
                 break;
 
               case 41:
-                if (!(!_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "right")) {
+                if (!(!_this14.scene.usage_left && _this14.editForm_scene.usage_stage === "right")) {
                   _context13.next = 54;
                   break;
                 }
 
                 _context13.next = 44;
-                return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_right_change',
                   usage_guraduation: 1,
                   usage_right: 1
@@ -4785,7 +5086,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop4.data.errors;
+                _this14.errors.error = _response_prop4.data.errors;
                 return _context13.abrupt("return", false);
 
               case 48:
@@ -4794,25 +5095,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop4.status);
+                _this14.$store.commit('error/setCode', _response_prop4.status);
 
                 return _context13.abrupt("return", false);
 
               case 51:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 90;
                 break;
 
               case 54:
-                if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
+                if (!(_this14.scene.usage_left && !_this14.editForm_scene.usage_stage)) {
                   _context13.next = 67;
                   break;
                 }
 
                 _context13.next = 57;
-                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_guraduation_1_left_0_change',
-                  id: _this12.scene.id,
+                  id: _this14.scene.id,
                   usage_guraduation: 1,
                   usage_left: 0
                 });
@@ -4825,7 +5126,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop5.data.errors;
+                _this14.errors.error = _response_prop5.data.errors;
                 return _context13.abrupt("return", false);
 
               case 61:
@@ -4834,25 +5135,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop5.status);
+                _this14.$store.commit('error/setCode', _response_prop5.status);
 
                 return _context13.abrupt("return", false);
 
               case 64:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 90;
                 break;
 
               case 67:
-                if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
+                if (!(_this14.scene.usage_right && !_this14.editForm_scene.usage_stage)) {
                   _context13.next = 80;
                   break;
                 }
 
                 _context13.next = 70;
-                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_guraduation_1_right_0_change',
-                  id: _this12.scene.id,
+                  id: _this14.scene.id,
                   usage_guraduation: 1,
                   usage_right: 0
                 });
@@ -4865,7 +5166,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop6.data.errors;
+                _this14.errors.error = _response_prop6.data.errors;
                 return _context13.abrupt("return", false);
 
               case 74:
@@ -4874,18 +5175,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop6.status);
+                _this14.$store.commit('error/setCode', _response_prop6.status);
 
                 return _context13.abrupt("return", false);
 
               case 77:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 90;
                 break;
 
               case 80:
                 _context13.next = 82;
-                return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_guraduation_change',
                   usage_guraduation: 1
                 });
@@ -4898,7 +5199,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop7.data.errors;
+                _this14.errors.error = _response_prop7.data.errors;
                 return _context13.abrupt("return", false);
 
               case 86:
@@ -4907,27 +5208,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop7.status);
+                _this14.$store.commit('error/setCode', _response_prop7.status);
 
                 return _context13.abrupt("return", false);
 
               case 89:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
 
               case 90:
                 _context13.next = 129;
                 break;
 
               case 92:
-                if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
+                if (!(_this14.scene.usage_left && !_this14.editForm_scene.usage_stage)) {
                   _context13.next = 105;
                   break;
                 }
 
                 _context13.next = 95;
-                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_left_0_change',
-                  id: _this12.scene.id,
+                  id: _this14.scene.id,
                   usage_guraduation: 0,
                   usage_left: 0
                 });
@@ -4940,7 +5241,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop8.data.errors;
+                _this14.errors.error = _response_prop8.data.errors;
                 return _context13.abrupt("return", false);
 
               case 99:
@@ -4949,25 +5250,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop8.status);
+                _this14.$store.commit('error/setCode', _response_prop8.status);
 
                 return _context13.abrupt("return", false);
 
               case 102:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 129;
                 break;
 
               case 105:
-                if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
+                if (!(_this14.scene.usage_right && !_this14.editForm_scene.usage_stage)) {
                   _context13.next = 118;
                   break;
                 }
 
                 _context13.next = 108;
-                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_right_0_change',
-                  id: _this12.scene.id,
+                  id: _this14.scene.id,
                   usage_guraduation: 0,
                   usage_right: 0
                 });
@@ -4980,7 +5281,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop9.data.errors;
+                _this14.errors.error = _response_prop9.data.errors;
                 return _context13.abrupt("return", false);
 
               case 112:
@@ -4989,25 +5290,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop9.status);
+                _this14.$store.commit('error/setCode', _response_prop9.status);
 
                 return _context13.abrupt("return", false);
 
               case 115:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 129;
                 break;
 
               case 118:
-                if (!(_this12.scene.usage_guraduation && !_this12.editForm_scene.usage_guraduation)) {
+                if (!(_this14.scene.usage_guraduation && !_this14.editForm_scene.usage_guraduation)) {
                   _context13.next = 129;
                   break;
                 }
 
                 _context13.next = 121;
-                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_change',
-                  id: _this12.scene.id,
+                  id: _this14.scene.id,
                   usage_guraduation: 0
                 });
 
@@ -5019,7 +5320,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop10.data.errors;
+                _this14.errors.error = _response_prop10.data.errors;
                 return _context13.abrupt("return", false);
 
               case 125:
@@ -5028,32 +5329,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop10.status);
+                _this14.$store.commit('error/setCode', _response_prop10.status);
 
                 return _context13.abrupt("return", false);
 
               case 128:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
 
               case 129:
                 _context13.next = 208;
                 break;
 
               case 131:
-                if (!_this12.editForm_scene.usage_guraduation) {
+                if (!_this14.editForm_scene.usage_guraduation) {
                   _context13.next = 208;
                   break;
                 }
 
-                if (!(_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "right")) {
+                if (!(_this14.scene.usage_left && _this14.editForm_scene.usage_stage === "right")) {
                   _context13.next = 145;
                   break;
                 }
 
                 _context13.next = 135;
-                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_left_to_right_change',
-                  id: _this12.scene.id,
+                  id: _this14.scene.id,
                   usage_left: 0,
                   usage_right: 1
                 });
@@ -5066,7 +5367,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop11.data.errors;
+                _this14.errors.error = _response_prop11.data.errors;
                 return _context13.abrupt("return", false);
 
               case 139:
@@ -5075,25 +5376,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop11.status);
+                _this14.$store.commit('error/setCode', _response_prop11.status);
 
                 return _context13.abrupt("return", false);
 
               case 142:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 208;
                 break;
 
               case 145:
-                if (!(_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "left")) {
+                if (!(_this14.scene.usage_right && _this14.editForm_scene.usage_stage === "left")) {
                   _context13.next = 158;
                   break;
                 }
 
                 _context13.next = 148;
-                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_right_to_left_change',
-                  id: _this12.scene.id,
+                  id: _this14.scene.id,
                   usage_left: 1,
                   usage_right: 0
                 });
@@ -5106,7 +5407,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop12.data.errors;
+                _this14.errors.error = _response_prop12.data.errors;
                 return _context13.abrupt("return", false);
 
               case 152:
@@ -5115,23 +5416,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop12.status);
+                _this14.$store.commit('error/setCode', _response_prop12.status);
 
                 return _context13.abrupt("return", false);
 
               case 155:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 208;
                 break;
 
               case 158:
-                if (!(!_this12.scene.usage_left && _this12.editForm_scene.usage_stage === "left")) {
+                if (!(!_this14.scene.usage_left && _this14.editForm_scene.usage_stage === "left")) {
                   _context13.next = 171;
                   break;
                 }
 
                 _context13.next = 161;
-                return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_left_change',
                   usage_left: 1
                 });
@@ -5144,7 +5445,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop13.data.errors;
+                _this14.errors.error = _response_prop13.data.errors;
                 return _context13.abrupt("return", false);
 
               case 165:
@@ -5153,23 +5454,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop13.status);
+                _this14.$store.commit('error/setCode', _response_prop13.status);
 
                 return _context13.abrupt("return", false);
 
               case 168:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 208;
                 break;
 
               case 171:
-                if (!(!_this12.scene.usage_right && _this12.editForm_scene.usage_stage === "right")) {
+                if (!(!_this14.scene.usage_right && _this14.editForm_scene.usage_stage === "right")) {
                   _context13.next = 184;
                   break;
                 }
 
                 _context13.next = 174;
-                return axios.post('/api/props/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_right_change',
                   usage_right: 1
                 });
@@ -5182,7 +5483,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop14.data.errors;
+                _this14.errors.error = _response_prop14.data.errors;
                 return _context13.abrupt("return", false);
 
               case 178:
@@ -5191,25 +5492,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop14.status);
+                _this14.$store.commit('error/setCode', _response_prop14.status);
 
                 return _context13.abrupt("return", false);
 
               case 181:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 208;
                 break;
 
               case 184:
-                if (!(_this12.scene.usage_left && !_this12.editForm_scene.usage_stage)) {
+                if (!(_this14.scene.usage_left && !_this14.editForm_scene.usage_stage)) {
                   _context13.next = 197;
                   break;
                 }
 
                 _context13.next = 187;
-                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_left_0_change',
-                  id: _this12.scene.id,
+                  id: _this14.scene.id,
                   usage_left: 0
                 });
 
@@ -5221,7 +5522,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop15.data.errors;
+                _this14.errors.error = _response_prop15.data.errors;
                 return _context13.abrupt("return", false);
 
               case 191:
@@ -5230,25 +5531,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop15.status);
+                _this14.$store.commit('error/setCode', _response_prop15.status);
 
                 return _context13.abrupt("return", false);
 
               case 194:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
                 _context13.next = 208;
                 break;
 
               case 197:
-                if (!(_this12.scene.usage_right && !_this12.editForm_scene.usage_stage)) {
+                if (!(_this14.scene.usage_right && !_this14.editForm_scene.usage_stage)) {
                   _context13.next = 208;
                   break;
                 }
 
                 _context13.next = 200;
-                return axios.post('/api/props_deep/' + _this12.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
                   method: 'usage_right_0_change',
-                  id: _this12.scene.id,
+                  id: _this14.scene.id,
                   usage_right: 0
                 });
 
@@ -5260,7 +5561,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.errors.error = _response_prop16.data.errors;
+                _this14.errors.error = _response_prop16.data.errors;
                 return _context13.abrupt("return", false);
 
               case 204:
@@ -5269,12 +5570,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this12.$store.commit('error/setCode', _response_prop16.status);
+                _this14.$store.commit('error/setCode', _response_prop16.status);
 
                 return _context13.abrupt("return", false);
 
               case 207:
-                _this12.editSceneMode_prop = 100;
+                _this14.editSceneMode_prop = 100;
 
               case 208:
               case "end":
@@ -5291,19 +5592,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this13 = this;
+      var _this15 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14() {
         return _regeneratorRuntime().wrap(function _callee14$(_context14) {
           while (1) {
             switch (_context14.prev = _context14.next) {
               case 0:
-                _this13.showContent_confirmDelete = false;
+                _this15.showContent_confirmDelete = false;
 
-                _this13.$emit('close');
+                _this15.$emit('close');
 
                 _context14.next = 4;
-                return _this13.deletScene();
+                return _this15.deletScene();
 
               case 4:
               case "end":
@@ -5319,7 +5620,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除する
     deletScene: function deletScene() {
-      var _this14 = this;
+      var _this16 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15() {
         var response;
@@ -5328,7 +5629,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context15.prev = _context15.next) {
               case 0:
                 _context15.next = 2;
-                return axios["delete"]('/api/scenes/' + _this14.scene.id);
+                return axios["delete"]('/api/scenes/' + _this16.scene.id);
 
               case 2:
                 response = _context15.sent;
@@ -5338,7 +5639,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this14.errors.error = response.data.errors;
+                _this16.errors.error = response.data.errors;
                 return _context15.abrupt("return", false);
 
               case 6:
@@ -5347,22 +5648,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this14.$store.commit('error/setCode', response.status);
+                _this16.$store.commit('error/setCode', response.status);
 
                 return _context15.abrupt("return", false);
 
               case 9:
-                _this14.resetScene(); // メッセージ登録
+                _this16.scene = [];
+
+                _this16.resetScene(); // メッセージ登録
 
 
-                _this14.$store.commit('message/setContent', {
+                _this16.$store.commit('message/setContent', {
                   content: '使用シーンが1つ削除されました！',
                   timeout: 6000
                 });
 
-                _this14.$emit('close');
+                _this16.$emit('close');
 
-              case 12:
+              case 13:
               case "end":
                 return _context15.stop();
             }
@@ -5387,7 +5690,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
-/* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
+/* harmony import */ var _Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Edit.vue */ "./resources/js/components/Confirm_Dialog_Edit.vue");
+/* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
@@ -5398,11 +5702,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // モーダルとして表示
   name: 'editCharacter',
   components: {
-    confirmDialog_Delete: _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+    confirmDialog_Edit: _Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    confirmDialog_Delete: _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   props: {
     getCharacter: {
@@ -5421,6 +5727,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         section: null,
         name: null
       },
+      // 変更confirm
+      showContent_confirmEdit: false,
+      postMessage_Edit: "",
       // 削除confirm
       showContent_confirmDelete: false,
       postMessage_Delete: ""
@@ -5539,66 +5848,105 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     // 確認する
     confirm_character: function confirm_character() {
       if (this.character_edit.id === this.editForm_character.id && (this.character_edit.section.id !== this.editForm_character.section_id || this.character_edit.name !== this.editForm_character.name)) {
-        this.editCharacter();
+        this.openModal_confirmEdit();
       } else {
         alert('元の名前と同じです！変更するなら違う名前にしてください！');
       }
     },
-    // 編集する
-    editCharacter: function editCharacter() {
+    // 編集confirmのモーダル表示 
+    openModal_confirmEdit: function openModal_confirmEdit() {
       var _this4 = this;
 
+      this.showContent_confirmEdit = true; // セクション名はリアクティブじゃない
+
+      this.optionSections.forEach(function (section) {
+        if (section.id === _this4.editForm_character.section_id) {
+          _this4.editForm_character.section = section.section;
+          return false;
+        }
+      }, this);
+      this.postMessage_Edit = '以下のように編集します。\n属性：' + this.editForm_character.section + '\n名前：' + this.editForm_character.name;
+    },
+    // 編集confirmのモーダル非表示_OKの場合
+    closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
+      var _this5 = this;
+
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-        var response;
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                _context4.next = 2;
-                return axios.post('/api/informations/characters/' + _this4.character_edit.id, {
-                  section_id: _this4.editForm_character.section_id,
-                  name: _this4.editForm_character.name
-                });
+                _this5.showContent_confirmEdit = false;
+                _context4.next = 3;
+                return _this5.editCharacter();
 
-              case 2:
-                response = _context4.sent;
-
-                if (!(response.status === 422)) {
-                  _context4.next = 6;
-                  break;
-                }
-
-                _this4.errors.error = response.data.errors;
-                return _context4.abrupt("return", false);
-
-              case 6:
-                if (!(response.status !== 200)) {
-                  _context4.next = 9;
-                  break;
-                }
-
-                _this4.$store.commit('error/setCode', response.status);
-
-                return _context4.abrupt("return", false);
-
-              case 9:
-                _this4.character_edit.section = _this4.editForm_character.section;
-                _this4.character_edit.section_id = _this4.editForm_character.section_id;
-                _this4.character_edit.name = _this4.editForm_character.name; // メッセージ登録
-
-                _this4.$store.commit('message/setContent', {
-                  content: '登場人物の区分または名前が変更されました！',
-                  timeout: 6000
-                });
-
-                _this4.$emit('close');
-
-              case 14:
+              case 3:
               case "end":
                 return _context4.stop();
             }
           }
         }, _callee4);
+      }))();
+    },
+    // 編集confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmEdit_Cancel: function closeModal_confirmEdit_Cancel() {
+      this.showContent_confirmEdit = false;
+    },
+    // 編集する
+    editCharacter: function editCharacter() {
+      var _this6 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return axios.post('/api/informations/characters/' + _this6.character_edit.id, {
+                  section_id: _this6.editForm_character.section_id,
+                  name: _this6.editForm_character.name
+                });
+
+              case 2:
+                response = _context5.sent;
+
+                if (!(response.status === 422)) {
+                  _context5.next = 6;
+                  break;
+                }
+
+                _this6.errors.error = response.data.errors;
+                return _context5.abrupt("return", false);
+
+              case 6:
+                if (!(response.status !== 200)) {
+                  _context5.next = 9;
+                  break;
+                }
+
+                _this6.$store.commit('error/setCode', response.status);
+
+                return _context5.abrupt("return", false);
+
+              case 9:
+                _this6.character_edit.section = _this6.editForm_character.section;
+                _this6.character_edit.section_id = _this6.editForm_character.section_id;
+                _this6.character_edit.name = _this6.editForm_character.name; // メッセージ登録
+
+                _this6.$store.commit('message/setContent', {
+                  content: '登場人物の区分または名前が変更されました！',
+                  timeout: 6000
+                });
+
+                _this6.$emit('close');
+
+              case 14:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
       }))();
     },
     // 削除confirmのモーダル表示 
@@ -5608,25 +5956,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this5 = this;
+      var _this7 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
-                _context5.next = 2;
-                return _this5.deletCharacter();
+                _context6.next = 2;
+                return _this7.deletCharacter();
 
               case 2:
-                _this5.showContent_confirmDelete = false;
+                _this7.showContent_confirmDelete = false;
 
               case 3:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
           }
-        }, _callee5);
+        }, _callee6);
       }))();
     },
     // 削除confirmのモーダル非表示_Cancelの場合
@@ -5635,58 +5983,58 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除する
     deletCharacter: function deletCharacter() {
-      var _this6 = this;
+      var _this8 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
-                _context6.next = 2;
-                return axios["delete"]('/api/informations/characters/' + _this6.character_edit.id);
+                _context7.next = 2;
+                return axios["delete"]('/api/informations/characters/' + _this8.character_edit.id);
 
               case 2:
-                response = _context6.sent;
+                response = _context7.sent;
 
                 if (!(response.status === 422)) {
-                  _context6.next = 6;
+                  _context7.next = 6;
                   break;
                 }
 
-                _this6.errors.error = response.data.errors;
-                return _context6.abrupt("return", false);
+                _this8.errors.error = response.data.errors;
+                return _context7.abrupt("return", false);
 
               case 6:
                 if (!(response.status !== 200)) {
-                  _context6.next = 9;
+                  _context7.next = 9;
                   break;
                 }
 
-                _this6.$store.commit('error/setCode', response.status);
+                _this8.$store.commit('error/setCode', response.status);
 
-                return _context6.abrupt("return", false);
+                return _context7.abrupt("return", false);
 
               case 9:
-                _this6.character_edit = null;
-                _this6.editForm_character.id = null;
-                _this6.editForm_character.name = null;
-                _this6.editForm_character.section_id = null;
-                _this6.editForm_character.section = null; // メッセージ登録
+                _this8.character_edit = null;
+                _this8.editForm_character.id = null;
+                _this8.editForm_character.name = null;
+                _this8.editForm_character.section_id = null;
+                _this8.editForm_character.section = null; // メッセージ登録
 
-                _this6.$store.commit('message/setContent', {
+                _this8.$store.commit('message/setContent', {
                   content: '登場人物が1人削除されました！',
                   timeout: 6000
                 });
 
-                _this6.$emit('close');
+                _this8.$emit('close');
 
               case 16:
               case "end":
-                return _context6.stop();
+                return _context7.stop();
             }
           }
-        }, _callee6);
+        }, _callee7);
       }))();
     }
   }
@@ -5706,7 +6054,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
-/* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
+/* harmony import */ var _Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Edit.vue */ "./resources/js/components/Confirm_Dialog_Edit.vue");
+/* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
@@ -5717,11 +6066,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // モーダルとして表示
   name: 'editOwner',
   components: {
-    confirmDialog_Delete: _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+    confirmDialog_Edit: _Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    confirmDialog_Delete: _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   props: {
     getOwner: {
@@ -5737,6 +6088,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         id: null,
         name: null
       },
+      // 変更confirm
+      showContent_confirmEdit: false,
+      postMessage_Edit: "",
       // 削除confirm
       showContent_confirmDelete: false,
       postMessage_Delete: ""
@@ -5813,63 +6167,93 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     // 確認する
     confirm_owner: function confirm_owner() {
       if (this.owner_edit.id === this.editForm_owner.id && this.owner_edit.name !== this.editForm_owner.name) {
-        this.editOwner();
+        this.openModal_confirmEdit();
       } else {
         alert('元の名前と同じです！変更するなら違う名前にしてください！');
       }
     },
-    // 編集する
-    editOwner: function editOwner() {
+    // 編集confirmのモーダル表示 
+    openModal_confirmEdit: function openModal_confirmEdit() {
+      this.showContent_confirmEdit = true;
+      this.postMessage_Edit = '以下のように編集します。\n持ち主：' + this.editForm_owner.name;
+    },
+    // 編集confirmのモーダル非表示_OKの場合
+    closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-        var response;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                _context3.next = 2;
-                return axios.post('/api/informations/owners/' + _this3.owner_edit.id, {
-                  name: _this3.editForm_owner.name
-                });
+                _this3.showContent_confirmEdit = false;
+                _context3.next = 3;
+                return _this3.editOwner();
 
-              case 2:
-                response = _context3.sent;
-
-                if (!(response.status === 422)) {
-                  _context3.next = 6;
-                  break;
-                }
-
-                _this3.errors.error = response.data.errors;
-                return _context3.abrupt("return", false);
-
-              case 6:
-                if (!(response.status !== 200)) {
-                  _context3.next = 9;
-                  break;
-                }
-
-                _this3.$store.commit('error/setCode', response.status);
-
-                return _context3.abrupt("return", false);
-
-              case 9:
-                _this3.owner_edit.name = _this3.editForm_owner.name; // メッセージ登録
-
-                _this3.$store.commit('message/setContent', {
-                  content: '持ち主の名前が変更されました！',
-                  timeout: 6000
-                });
-
-                _this3.$emit('close');
-
-              case 12:
+              case 3:
               case "end":
                 return _context3.stop();
             }
           }
         }, _callee3);
+      }))();
+    },
+    // 編集confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmEdit_Cancel: function closeModal_confirmEdit_Cancel() {
+      this.showContent_confirmEdit = false;
+    },
+    // 編集する
+    editOwner: function editOwner() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return axios.post('/api/informations/owners/' + _this4.owner_edit.id, {
+                  name: _this4.editForm_owner.name
+                });
+
+              case 2:
+                response = _context4.sent;
+
+                if (!(response.status === 422)) {
+                  _context4.next = 6;
+                  break;
+                }
+
+                _this4.errors.error = response.data.errors;
+                return _context4.abrupt("return", false);
+
+              case 6:
+                if (!(response.status !== 200)) {
+                  _context4.next = 9;
+                  break;
+                }
+
+                _this4.$store.commit('error/setCode', response.status);
+
+                return _context4.abrupt("return", false);
+
+              case 9:
+                _this4.owner_edit.name = _this4.editForm_owner.name; // メッセージ登録
+
+                _this4.$store.commit('message/setContent', {
+                  content: '持ち主の名前が変更されました！',
+                  timeout: 6000
+                });
+
+                _this4.$emit('close');
+
+              case 12:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
       }))();
     },
     // 削除confirmのモーダル表示 
@@ -5879,27 +6263,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this4 = this;
+      var _this5 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                _context4.next = 2;
-                return _this4.deletOwner();
+                _context5.next = 2;
+                return _this5.deletOwner();
 
               case 2:
-                _this4.showContent_confirmDelete = false;
+                _this5.showContent_confirmDelete = false;
 
-                _this4.$emit('close');
+                _this5.$emit('close');
 
               case 4:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }))();
     },
     // 削除confirmのモーダル非表示_Cancelの場合
@@ -5908,57 +6292,57 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除する
     deletOwner: function deletOwner() {
-      var _this5 = this;
+      var _this6 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
-                _context5.next = 2;
-                return axios["delete"]('/api/informations/owners/' + _this5.owner_edit.id);
+                _context6.next = 2;
+                return axios["delete"]('/api/informations/owners/' + _this6.owner_edit.id);
 
               case 2:
-                response = _context5.sent;
+                response = _context6.sent;
 
                 if (!(response.status === 422)) {
-                  _context5.next = 6;
+                  _context6.next = 6;
                   break;
                 }
 
-                _this5.errors.error = response.data.errors;
-                return _context5.abrupt("return", false);
+                _this6.errors.error = response.data.errors;
+                return _context6.abrupt("return", false);
 
               case 6:
                 if (!(response.status !== 200)) {
-                  _context5.next = 9;
+                  _context6.next = 9;
                   break;
                 }
 
-                _this5.$store.commit('error/setCode', response.status);
+                _this6.$store.commit('error/setCode', response.status);
 
-                return _context5.abrupt("return", false);
+                return _context6.abrupt("return", false);
 
               case 9:
-                _this5.owner_edit.id = null;
-                _this5.owner_edit.name = null;
-                _this5.editForm_owner.id = null;
-                _this5.editForm_owner.name = null; // メッセージ登録
+                _this6.owner_edit.id = null;
+                _this6.owner_edit.name = null;
+                _this6.editForm_owner.id = null;
+                _this6.editForm_owner.name = null; // メッセージ登録
 
-                _this5.$store.commit('message/setContent', {
+                _this6.$store.commit('message/setContent', {
                   content: '持ち主が1人削除されました！',
                   timeout: 6000
                 });
 
-                _this5.$emit('close');
+                _this6.$emit('close');
 
               case 15:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
           }
-        }, _callee5);
+        }, _callee6);
       }))();
     }
   }
@@ -5978,7 +6362,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
-/* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
+/* harmony import */ var _Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Confirm_Dialog_Edit.vue */ "./resources/js/components/Confirm_Dialog_Edit.vue");
+/* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
@@ -5989,11 +6374,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // モーダルとして表示
   name: 'editSection',
   components: {
-    confirmDialog_Delete: _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+    confirmDialog_Edit: _Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    confirmDialog_Delete: _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   props: {
     getSection: {
@@ -6009,6 +6396,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         id: null,
         section: null
       },
+      // 変更confirm
+      showContent_confirmEdit: false,
+      postMessage_Edit: "",
       // 削除confirm
       showContent_confirmDelete: false,
       postMessage_Delete: ""
@@ -6085,64 +6475,94 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     // 編集エラー
     confirm_section: function confirm_section() {
       if (this.section_edit.id === this.editForm_section.id && this.section_edit.section !== this.editForm_section.section) {
-        this.edit_section();
+        this.openModal_confirmEdit();
       } else {
         // メッセージ登録
         alert('元の区分名と同じです！変更するなら違う区分名にしてください！');
       }
     },
-    // 編集する
-    edit_section: function edit_section() {
+    // 編集confirmのモーダル表示 
+    openModal_confirmEdit: function openModal_confirmEdit() {
+      this.showContent_confirmEdit = true;
+      this.postMessage_Edit = '以下のように編集します。\n属性：' + this.editForm_section.section;
+    },
+    // 編集confirmのモーダル非表示_OKの場合
+    closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-        var response;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                _context3.next = 2;
-                return axios.post('/api/informations/sections/' + _this3.section_edit.id, {
-                  section: _this3.editForm_section.section
-                });
+                _this3.showContent_confirmEdit = false;
+                _context3.next = 3;
+                return _this3.edit_section();
 
-              case 2:
-                response = _context3.sent;
-
-                if (!(response.status === 422)) {
-                  _context3.next = 6;
-                  break;
-                }
-
-                _this3.errors.error = response.data.errors;
-                return _context3.abrupt("return", false);
-
-              case 6:
-                if (!(response.status !== 200)) {
-                  _context3.next = 9;
-                  break;
-                }
-
-                _this3.$store.commit('error/setCode', response.status);
-
-                return _context3.abrupt("return", false);
-
-              case 9:
-                _this3.section_edit.section = _this3.editForm_section.section; // メッセージ登録
-
-                _this3.$store.commit('message/setContent', {
-                  content: '区分が変更されました！',
-                  timeout: 6000
-                });
-
-                _this3.$emit('close');
-
-              case 12:
+              case 3:
               case "end":
                 return _context3.stop();
             }
           }
         }, _callee3);
+      }))();
+    },
+    // 編集confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmEdit_Cancel: function closeModal_confirmEdit_Cancel() {
+      this.showContent_confirmEdit = false;
+    },
+    // 編集する
+    edit_section: function edit_section() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return axios.post('/api/informations/sections/' + _this4.section_edit.id, {
+                  section: _this4.editForm_section.section
+                });
+
+              case 2:
+                response = _context4.sent;
+
+                if (!(response.status === 422)) {
+                  _context4.next = 6;
+                  break;
+                }
+
+                _this4.errors.error = response.data.errors;
+                return _context4.abrupt("return", false);
+
+              case 6:
+                if (!(response.status !== 200)) {
+                  _context4.next = 9;
+                  break;
+                }
+
+                _this4.$store.commit('error/setCode', response.status);
+
+                return _context4.abrupt("return", false);
+
+              case 9:
+                _this4.section_edit.section = _this4.editForm_section.section; // メッセージ登録
+
+                _this4.$store.commit('message/setContent', {
+                  content: '区分が変更されました！',
+                  timeout: 6000
+                });
+
+                _this4.$emit('close');
+
+              case 12:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
       }))();
     },
     // 削除confirmのモーダル表示 
@@ -6152,25 +6572,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this4 = this;
+      var _this5 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                _context4.next = 2;
-                return _this4.deletSection();
+                _context5.next = 2;
+                return _this5.deletSection();
 
               case 2:
-                _this4.showContent_confirmDelete = false;
+                _this5.showContent_confirmDelete = false;
 
               case 3:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }))();
     },
     // 削除confirmのモーダル非表示_Cancelの場合
@@ -6179,57 +6599,57 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除する
     deletSection: function deletSection() {
-      var _this5 = this;
+      var _this6 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
-                _context5.next = 2;
-                return axios["delete"]('/api/informations/sections/' + _this5.section_edit.id);
+                _context6.next = 2;
+                return axios["delete"]('/api/informations/sections/' + _this6.section_edit.id);
 
               case 2:
-                response = _context5.sent;
+                response = _context6.sent;
 
                 if (!(response.status === 422)) {
-                  _context5.next = 6;
+                  _context6.next = 6;
                   break;
                 }
 
-                _this5.errors.error = response.data.errors;
-                return _context5.abrupt("return", false);
+                _this6.errors.error = response.data.errors;
+                return _context6.abrupt("return", false);
 
               case 6:
                 if (!(response.status !== 200)) {
-                  _context5.next = 9;
+                  _context6.next = 9;
                   break;
                 }
 
-                _this5.$store.commit('error/setCode', response.status);
+                _this6.$store.commit('error/setCode', response.status);
 
-                return _context5.abrupt("return", false);
+                return _context6.abrupt("return", false);
 
               case 9:
-                _this5.section_edit.id = null;
-                _this5.section_edit.section = null;
-                _this5.editForm_section.id = null;
-                _this5.editForm_section.section = null; // メッセージ登録
+                _this6.section_edit.id = null;
+                _this6.section_edit.section = null;
+                _this6.editForm_section.id = null;
+                _this6.editForm_section.section = null; // メッセージ登録
 
-                _this5.$store.commit('message/setContent', {
+                _this6.$store.commit('message/setContent', {
                   content: '区分が1つ削除されました！',
                   timeout: 6000
                 });
 
-                _this5.$emit('close');
+                _this6.$emit('close');
 
               case 15:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
           }
-        }, _callee5);
+        }, _callee6);
       }))();
     }
   }
@@ -6280,6 +6700,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       props_list: [],
       // overlayのクラス
       overlay_class: 1,
+      // 1の時はつかない
       // 小道具詳細
       showContent: false,
       postProp: ""
@@ -6505,8 +6926,16 @@ var autokana;
       postFlag: "",
       // 小道具候補
       props: [],
+      // 中間公演or卒業公演
+      season_prop: null,
+      season_tag_prop: null,
+      // 卒業公演
+      guradutaion_tag_prop: 0,
       // 写真プレビュー
       preview: null,
+      // overlayのクラス
+      overlay_class: 1,
+      // 1のときはつかない
       // エラー
       errors: {
         photo: null,
@@ -6517,6 +6946,9 @@ var autokana;
         prop: '',
         kana: '',
         owner: '',
+        usage_prop: '',
+        usage_guraduation_prop: 0,
+        usage_stage_prop: null,
         comment: '',
         // 写真
         photo: ''
@@ -6606,6 +7038,149 @@ var autokana;
     handleNameInput: function handleNameInput() {
       this.registerForm.kana = autokana.getFurigana();
     },
+    // どちらの公演か取得
+    choicePerformance: function choicePerformance() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var today, month, day, year, passo_day, _year, guraduation_day;
+
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                today = new Date();
+                month = today.getMonth() + 1;
+                day = today.getDate();
+
+                if (!(3 < month && month < 11)) {
+                  _context3.next = 7;
+                  break;
+                }
+
+                _this3.season_prop = "passo";
+                _context3.next = 25;
+                break;
+
+              case 7:
+                if (!(month === 11)) {
+                  _context3.next = 15;
+                  break;
+                }
+
+                year = today.getFullYear();
+                _context3.next = 11;
+                return _this3.getDateFromWeek(year, month, 1, 0);
+
+              case 11:
+                passo_day = _context3.sent;
+
+                // 11月第1日曜日
+                if (passo_day <= day) {
+                  _this3.season_prop = "passo";
+                } else {
+                  _this3.season_prop = "guradutaion";
+                }
+
+                _context3.next = 25;
+                break;
+
+              case 15:
+                if (!(month > 11 && month < 3)) {
+                  _context3.next = 19;
+                  break;
+                }
+
+                _this3.season_prop = "guradutaion";
+                _context3.next = 25;
+                break;
+
+              case 19:
+                if (!(month === 3)) {
+                  _context3.next = 25;
+                  break;
+                }
+
+                _year = today.getFullYear();
+                _context3.next = 23;
+                return _this3.getDateFromWeek(_year, month, 1, 0);
+
+              case 23:
+                guraduation_day = _context3.sent;
+
+                // 11月第1日曜日
+                if (guraduation_day <= day) {
+                  _this3.season_prop = "guradutaion";
+                } else {
+                  _this3.season_prop = "passo";
+                }
+
+              case 25:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    // 第1日曜日の日付を返す
+    getDateFromWeek: function getDateFromWeek(year, month_origin, turn, weekday) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var month, firstDateOfMonth, firstDayOfWeek, firstWeekdayDate, firstWeekDay, specifiedDate;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                month = month_origin - 1; // 月初の日
+
+                firstDateOfMonth = new Date(year, month, 1); // 月初の曜日
+
+                firstDayOfWeek = firstDateOfMonth.getDay(); // 指定された曜日が最初に出現する日付を求める
+
+                firstWeekdayDate = null;
+
+                if (firstDayOfWeek == weekday) {
+                  // 月初の曜日が指定曜日の時
+                  firstWeekdayDate = new Date(year, month, 1);
+                } else if (firstDayOfWeek < weekday) {
+                  // 月初の曜日 < 指定の曜日の時
+                  firstWeekdayDate = new Date(year, month, 1 + (weekday - firstDayOfWeek));
+                } else if (weekday < firstDayOfWeek) {
+                  // 指定の曜日 < 月初の曜日の時
+                  firstWeekdayDate = new Date(year, month, 1 + (7 - (firstDayOfWeek - weekday)));
+                } // 第○の指定の分だけ日数を足す
+
+
+                firstWeekDay = firstWeekdayDate.getDate();
+                specifiedDate = new Date(year, month, firstWeekDay + 7 * (turn - 1)); // yyyy年mm月dd日
+
+                if (!(specifiedDate.getMonth() != month)) {
+                  _context4.next = 9;
+                  break;
+                }
+
+                return _context4.abrupt("return", null);
+
+              case 9:
+                return _context4.abrupt("return", firstWeekDay + 7 * (turn - 1));
+
+              case 10:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    // 卒業公演の使用にチェックが付いたか
+    selectGuraduation_Prop: function selectGuraduation_Prop() {
+      if (!this.guradutaion_tag_prop) {
+        this.guradutaion_tag_prop = 1;
+      } else {
+        this.guradutaion_tag_prop = 0;
+        this.registerForm.usage_stage_prop = null;
+      }
+    },
     // 小道具リストのモーダル表示 
     openModal_listProps: function openModal_listProps(number) {
       this.showContent = true;
@@ -6619,7 +7194,7 @@ var autokana;
     },
     // フォームでファイルが選択されたら実行される
     onFileChange: function onFileChange(event) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.errors.photo = null; // 何も選択されていなかったら処理中断
 
@@ -6643,117 +7218,237 @@ var autokana;
         // previewに値が入ると<output>につけたv-ifがtrueと判定される
         // また<output>内部の<img>のsrc属性はpreviewの値を参照しているので
         // 結果として画像が表示される
-        _this3.preview = e.target.result;
+        _this4.preview = e.target.result;
       }; // ファイルを読み込む
       // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
 
 
       reader.readAsDataURL(event.target.files[0]);
       this.registerForm.photo = event.target.files[0];
+
+      if (this.val) {
+        // 調整
+        this.$nextTick(function () {
+          var content_dom = _this4.$refs.content_register_prop;
+          var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+          if (content_rect.top < 0) {
+            _this4.overlay_class = 0;
+          } else {
+            _this4.overlay_class = 1;
+          }
+        });
+      }
     },
     // 画像をクリアするメソッド
     reset_photo: function reset_photo() {
+      var _this5 = this;
+
       this.preview = null;
       this.registerForm.photo = '';
       this.$el.querySelector('input[type="file"]').value = null;
+
+      if (this.val) {
+        // 調整
+        this.$nextTick(function () {
+          var content_dom = _this5.$refs.content_register_prop;
+          var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+          if (content_rect.top < 0) {
+            _this5.overlay_class = 0;
+          } else {
+            _this5.overlay_class = 1;
+          }
+        });
+      }
     },
     // 入力欄の値とプレビュー表示をクリアするメソッド
     reset: function reset() {
+      var _this6 = this;
+
       this.registerForm.prop = '';
       this.registerForm.kana = '';
       this.registerForm.owner = '';
+      this.registerForm.usage_prop = '';
+      this.registerForm.usage_guraduation_prop = '';
+      this.registerForm.usage_stage_prop = null;
       this.registerForm.comment = '';
       this.preview = null;
       this.registerForm.photo = '';
       this.$el.querySelector('input[type="file"]').value = null;
       this.errors.photo = null;
+
+      if (this.val) {
+        // 調整
+        this.$nextTick(function () {
+          var content_dom = _this6.$refs.content_register_prop;
+          var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+          if (content_rect.top < 0) {
+            _this6.overlay_class = 0;
+          } else {
+            _this6.overlay_class = 1;
+          }
+        });
+      }
     },
     // 登録する
     register_prop: function register_prop() {
-      var _this4 = this;
+      var _this7 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
         var formData, response;
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 formData = new FormData();
-                formData.append('name', _this4.registerForm.prop);
-                formData.append('kana', _this4.registerForm.kana);
-                formData.append('owner_id', _this4.registerForm.owner);
-                formData.append('memo', _this4.registerForm.comment);
-                formData.append('usage', '');
-                formData.append('usage_guraduation', '');
-                formData.append('usage_left', '');
-                formData.append('usage_right', '');
-                formData.append('photo', _this4.registerForm.photo);
-                _context3.next = 12;
+                formData.append('name', _this7.registerForm.prop);
+                formData.append('kana', _this7.registerForm.kana);
+                formData.append('owner_id', _this7.registerForm.owner);
+                formData.append('memo', _this7.registerForm.comment);
+                formData.append('usage', _this7.registerForm.usage_prop);
+                formData.append('usage_guraduation', _this7.registerForm.usage_guraduation_prop);
+
+                if (_this7.registerForm.usage_stage_prop === "usage_left") {
+                  formData.append('usage_left', 1);
+                  formData.append('usage_right', '');
+                } else if (_this7.registerForm.usage_stage_prop === "usage_right") {
+                  formData.append('usage_right', 1);
+                  formData.append('usage_left', '');
+                } else {
+                  formData.append('usage_left', '');
+                  formData.append('usage_right', '');
+                }
+
+                formData.append('photo', _this7.registerForm.photo);
+                _context5.next = 11;
                 return axios.post('/api/props', formData);
 
-              case 12:
-                response = _context3.sent;
+              case 11:
+                response = _context5.sent;
 
                 if (!(response.status === 422)) {
-                  _context3.next = 16;
+                  _context5.next = 15;
                   break;
                 }
 
-                _this4.errors.error = response.data.errors;
-                return _context3.abrupt("return", false);
+                _this7.errors.error = response.data.errors;
+                return _context5.abrupt("return", false);
 
-              case 16:
+              case 15:
                 if (!(response.status !== 201)) {
-                  _context3.next = 19;
+                  _context5.next = 18;
                   break;
                 }
 
-                _this4.$store.commit('error/setCode', response.status);
+                _this7.$store.commit('error/setCode', response.status);
 
-                return _context3.abrupt("return", false);
+                return _context5.abrupt("return", false);
 
-              case 19:
+              case 18:
                 // 諸々データ削除
-                _this4.reset(); // メッセージ登録
+                _this7.reset(); // メッセージ登録
 
 
-                _this4.$store.commit('message/setContent', {
+                _this7.$store.commit('message/setContent', {
                   content: '小道具が投稿されました！',
                   timeout: 6000
                 });
 
-              case 21:
+              case 20:
               case "end":
-                return _context3.stop();
+                return _context5.stop();
             }
           }
-        }, _callee3);
+        }, _callee5);
       }))();
     }
   },
   watch: {
     $route: {
       handler: function handler() {
-        var _this5 = this;
+        var _this8 = this;
 
-        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-          return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+          return _regeneratorRuntime().wrap(function _callee6$(_context6) {
             while (1) {
-              switch (_context4.prev = _context4.next) {
+              switch (_context6.prev = _context6.next) {
                 case 0:
-                  _context4.next = 2;
-                  return _this5.fetchOwners();
+                  _context6.next = 2;
+                  return _this8.fetchOwners();
 
                 case 2:
-                  _context4.next = 4;
-                  return _this5.fetchProps();
+                  _context6.next = 4;
+                  return _this8.fetchProps();
 
                 case 4:
+                  _context6.next = 6;
+                  return _this8.choicePerformance();
+
+                case 6:
                 case "end":
-                  return _context4.stop();
+                  return _context6.stop();
               }
             }
-          }, _callee4);
+          }, _callee6);
+        }))();
+      },
+      immediate: true
+    },
+    season_prop: {
+      handler: function handler(season_prop) {
+        var _this9 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+          return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+            while (1) {
+              switch (_context7.prev = _context7.next) {
+                case 0:
+                  if (_this9.season_prop === "passo") {
+                    _this9.season_tag_prop = 1;
+                  } else if (_this9.season_prop === "guradution") {
+                    _this9.season_tag_prop = 2;
+                  }
+
+                case 1:
+                case "end":
+                  return _context7.stop();
+              }
+            }
+          }, _callee7);
+        }))();
+      },
+      immediate: true
+    },
+    val: {
+      handler: function handler(val) {
+        var _this10 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+          return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+            while (1) {
+              switch (_context8.prev = _context8.next) {
+                case 0:
+                  if (_this10.val) {
+                    _this10.$nextTick(function () {
+                      var content_dom = _this10.$refs.content_register_prop;
+                      var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+                      if (content_rect.top < 0) {
+                        _this10.overlay_class = 0;
+                      } else {
+                        _this10.overlay_class = 1;
+                      }
+                    });
+                  }
+
+                case 1:
+                case "end":
+                  return _context8.stop();
+              }
+            }
+          }, _callee8);
         }))();
       },
       immediate: true
@@ -8245,8 +8940,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
 /* harmony import */ var _components_Detail_Scene_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Detail_Scene.vue */ "./resources/js/components/Detail_Scene.vue");
-/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! exceljs */ "./node_modules/exceljs/dist/exceljs.min.js");
-/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(exceljs__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_Detail_Prop_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Detail_Prop.vue */ "./resources/js/components/Detail_Prop.vue");
+/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! exceljs */ "./node_modules/exceljs/dist/exceljs.min.js");
+/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(exceljs__WEBPACK_IMPORTED_MODULE_3__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
@@ -8258,10 +8954,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // このページの上で表示するコンポーネント
   components: {
-    detailScene: _components_Detail_Scene_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+    detailScene: _components_Detail_Scene_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    detailProp: _components_Detail_Prop_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     return {
@@ -8271,7 +8969,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       showScenes: [],
       // シーン詳細
       showContent: false,
-      postScene: ""
+      postScene: "",
+      // 小道具詳細
+      showContent_prop: false,
+      postProp: ""
     };
   },
   watch: {
@@ -8363,22 +9064,48 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee3);
       }))();
     },
+    // 小道具詳細のモーダル表示 
+    openModal_propDetail: function openModal_propDetail(id) {
+      this.showContent_prop = true;
+      this.postProp = id;
+    },
+    // 小道具詳細のモーダル非表示
+    closeModal_propDetail: function closeModal_propDetail() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _this4.showContent_prop = false;
+                _context4.next = 3;
+                return _this4.fetchScenes();
+
+              case 3:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
     // // ダウンロード
     // downloadScenes() {
     //   const response = axios.post('/api/scenes_list', this.showScenes);
     // }
     // ダウンロード
     downloadScenes: function downloadScenes() {
-      var _this4 = this;
+      var _this5 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
         var workbook, worksheet, font, fill, uint8Array, blob, a, today, filename;
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 // ①初期化
-                workbook = new (exceljs__WEBPACK_IMPORTED_MODULE_2___default().Workbook)(); // workbookを作成
+                workbook = new (exceljs__WEBPACK_IMPORTED_MODULE_3___default().Workbook)(); // workbookを作成
 
                 workbook.addWorksheet('Sheet1'); // worksheetを追加
 
@@ -8517,7 +9244,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 worksheet.getCell('I1').font = font;
                 worksheet.getCell('I1').fill = fill;
 
-                _this4.showScenes.forEach(function (scene, index) {
+                _this5.showScenes.forEach(function (scene, index) {
                   var datas = [];
                   datas.push(scene.first_page);
                   datas.push(scene.final_page);
@@ -8567,18 +9294,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }); // ③ファイル生成
 
 
-                _context4.next = 28;
+                _context5.next = 28;
                 return workbook.xlsx.writeBuffer();
 
               case 28:
-                uint8Array = _context4.sent;
+                uint8Array = _context5.sent;
                 // xlsxの場合
                 blob = new Blob([uint8Array], {
                   type: 'application/octet-binary'
                 });
                 a = document.createElement('a');
                 a.href = (window.URL || window.webkitURL).createObjectURL(blob);
-                today = _this4.formatDate(new Date());
+                today = _this5.formatDate(new Date());
                 filename = 'Scenes_list_' + 'all' + '_' + today + '.xlsx';
                 a.download = filename;
                 a.click();
@@ -8586,10 +9313,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 37:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }))();
     },
     // 日付をyyyy-mm-ddで返す
@@ -8665,8 +9392,10 @@ var render = function render() {
     attrs: {
       id: "confirm_dialog_delete_message"
     }
-  }, [_vm._v("\n      " + _vm._s(_vm.confirm_dialog_delete_message) + "\n    ")]), _vm._v(" "), _c("button", {
-    staticClass: "button button--inverse",
+  }, [_vm._v("\n      " + _vm._s(_vm.confirm_dialog_delete_message) + "\n    ")]), _vm._v(" "), _c("div", {
+    staticClass: "button-area--together"
+  }, [_c("button", {
+    staticClass: "button button--inverse button--confirm",
     attrs: {
       type: "button"
     },
@@ -8675,8 +9404,10 @@ var render = function render() {
         return _vm.$emit("Cancel_Delete");
       }
     }
-  }, [_vm._v("キャンセル")]), _vm._v(" "), _c("button", {
-    staticClass: "button button--inverse",
+  }, [_c("i", {
+    staticClass: "fas fa-ban fa-fw"
+  }), _vm._v("キャンセル")]), _vm._v(" "), _c("button", {
+    staticClass: "button button--inverse button--confirm button--danger",
     attrs: {
       type: "button"
     },
@@ -8685,7 +9416,9 @@ var render = function render() {
         return _vm.$emit("OK_Delete");
       }
     }
-  }, [_vm._v("OK")])])]);
+  }, [_c("i", {
+    staticClass: "fas fa-trash fa-fw"
+  }), _vm._v("削除")])])])]);
 };
 
 var staticRenderFns = [];
@@ -8725,12 +9458,15 @@ var render = function render() {
     attrs: {
       id: "confirm_dialog_edit_title"
     }
-  }, [_vm._v("\n      編集\n    ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n        編集\n      ")]), _vm._v(" "), _c("div", {
+    staticClass: "dialog-message",
     attrs: {
       id: "confirm_dialog_edit_message"
     }
-  }, [_vm._v("\n      " + _vm._s(_vm.confirm_dialog_edit_message) + "\n    ")]), _vm._v(" "), _c("button", {
-    staticClass: "button button--inverse",
+  }, [_vm._v("\n" + _vm._s(_vm.confirm_dialog_edit_message) + "\n      ")]), _vm._v(" "), _c("div", {
+    staticClass: "button-area--together"
+  }, [_c("button", {
+    staticClass: "button button--inverse button--confirm",
     attrs: {
       type: "button"
     },
@@ -8739,8 +9475,10 @@ var render = function render() {
         return _vm.$emit("Cancel_Edit");
       }
     }
-  }, [_vm._v("キャンセル")]), _vm._v(" "), _c("button", {
-    staticClass: "button button--inverse",
+  }, [_c("i", {
+    staticClass: "fas fa-ban fa-fw"
+  }), _vm._v("キャンセル")]), _vm._v(" "), _c("button", {
+    staticClass: "button button--inverse button--confirm button--danger",
     attrs: {
       type: "button"
     },
@@ -8749,7 +9487,9 @@ var render = function render() {
         return _vm.$emit("OK_Edit");
       }
     }
-  }, [_vm._v("OK")])])]);
+  }, [_c("i", {
+    staticClass: "fas fa-edit fa-fw"
+  }), _vm._v("編集")])])])]);
 };
 
 var staticRenderFns = [];
@@ -8786,7 +9526,9 @@ var render = function render() {
     ref: "content_detail_prop",
     staticClass: "content content-detail panel"
   }, [_c("div", {
-    staticClass: "form__button"
+    staticClass: "area--detail-box"
+  }, [_c("div", {
+    staticClass: "form__button button--area--detail-box"
   }, [_c("button", {
     directives: [{
       name: "show",
@@ -8828,12 +9570,19 @@ var render = function render() {
     }]
   }, [_c("div", {
     staticClass: "detail-box"
-  }, [_c("div", [_c("img", {
+  }, [_c("div", [_vm.prop.url ? _c("div", {
+    staticClass: "detail-box--img"
+  }, [_c("img", {
     attrs: {
       src: _vm.prop.url,
       alt: _vm.prop.name
     }
-  })]), _vm._v(" "), _c("div", [_c("div", {
+  })]) : _c("div", [_c("img", {
+    attrs: {
+      src: _vm.prop.url,
+      alt: _vm.prop.name
+    }
+  })])]), _vm._v(" "), _c("div", [_c("div", {
     staticClass: "form__button"
   }, [_c("button", {
     staticClass: "button button--inverse",
@@ -8844,7 +9593,7 @@ var render = function render() {
       click: _vm.openModal_confirmDelete
     }
   }, [_c("i", {
-    staticClass: "fas fa-eraser fa-fw"
+    staticClass: "fas fa-trash fa-fw"
   }), _vm._v("削除")])]), _vm._v(" "), _c("confirmDialog_Delete", {
     directives: [{
       name: "show",
@@ -8859,16 +9608,26 @@ var render = function render() {
       Cancel_Delete: _vm.closeModal_confirmDelete_Cancel,
       OK_Delete: _vm.closeModal_confirmDelete_OK
     }
-  }), _vm._v(" "), _c("div", [_c("h1", {
-    staticStyle: {
-      display: "inline"
-    }
-  }, [_vm._v(_vm._s(_vm.prop.name))]), _vm._v(" "), _vm.prop.usage ? _c("div", [_c("i", {
-    staticClass: "fas fa-tag"
-  })]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.prop.prop_comments.length ? _c("ul", _vm._l(_vm.prop.prop_comments, function (comment) {
+  }), _vm._v(" "), _c("div", [_c("h1", [_vm._v(_vm._s(_vm.prop.name))])]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _c("div", [_vm.prop.usage ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), _vm.prop.usage_guraduation ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("Ⓖ")]) : _vm._e(), _vm._v(" "), _vm.prop.usage_left ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("㊤")]) : _vm._e(), _vm._v(" "), _vm.prop.usage_right ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.prop.prop_comments.length ? _c("ul", _vm._l(_vm.prop.prop_comments, function (comment) {
     return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
   }), 0) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("シーン:")]), _vm._v(" "), _vm.prop.scenes.length ? _c("ol", _vm._l(_vm.prop.scenes, function (scene) {
-    return _c("li", [_c("span", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), scene !== null && scene.first_page !== null ? _c("span", [_vm._v(" : p. " + _vm._s(scene.first_page) + " \n                    "), scene !== null && scene.final_page !== null ? _c("span", [_vm._v(" ~ p. " + _vm._s(scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", [scene.scene_comments.length ? _c("ul", _vm._l(scene.scene_comments, function (comment) {
+    return _c("li", [_c("span", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), scene !== null && scene.first_page !== null ? _c("span", [_vm._v(" : p. " + _vm._s(scene.first_page) + " \n                      "), scene !== null && scene.final_page !== null ? _c("span", [_vm._v(" ~ p. " + _vm._s(scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), scene.usage ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), scene.usage_guraduation ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("Ⓖ")]) : _vm._e(), _vm._v(" "), scene.usage_left ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("㊤")]) : _vm._e(), _vm._v(" "), scene.usage_right ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("㊦")]) : _vm._e(), _vm._v(" "), _c("div", [scene.scene_comments.length ? _c("ul", _vm._l(scene.scene_comments, function (comment) {
       return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
     }), 0) : _vm._e()])]);
   }), 0) : _vm._e()])], 1)])]), _vm._v(" "), _c("div", {
@@ -8877,7 +9636,8 @@ var render = function render() {
       rawName: "v-show",
       value: _vm.tab === 2,
       expression: "tab === 2"
-    }]
+    }],
+    staticClass: "edit-area"
   }, [_c("form", {
     staticClass: "detail-box",
     on: {
@@ -8886,7 +9646,7 @@ var render = function render() {
         return _vm.confirmProp.apply(null, arguments);
       }
     }
-  }, [_c("div", {
+  }, [_c("div", [_c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -8947,7 +9707,7 @@ var render = function render() {
     on: {
       click: _vm.resetPhoto
     }
-  }, [_vm._v("×")])]), _vm._v(" "), _c("div", [_c("div", [_c("label", {
+  }, [_vm._v("×")])])]), _vm._v(" "), _c("div", [_vm._m(0), _vm._v(" "), _c("div", [_c("label", {
     attrs: {
       "for": "prop_name_edit"
     }
@@ -8997,40 +9757,7 @@ var render = function render() {
         _vm.$set(_vm.editForm_prop, "kana", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.editForm_prop.usage,
-      expression: "editForm_prop.usage"
-    }],
-    attrs: {
-      type: "checkbox"
-    },
-    domProps: {
-      checked: Array.isArray(_vm.editForm_prop.usage) ? _vm._i(_vm.editForm_prop.usage, null) > -1 : _vm.editForm_prop.usage
-    },
-    on: {
-      change: function change($event) {
-        var $$a = _vm.editForm_prop.usage,
-            $$el = $event.target,
-            $$c = $$el.checked ? true : false;
-
-        if (Array.isArray($$a)) {
-          var $$v = null,
-              $$i = _vm._i($$a, $$v);
-
-          if ($$el.checked) {
-            $$i < 0 && _vm.$set(_vm.editForm_prop, "usage", $$a.concat([$$v]));
-          } else {
-            $$i > -1 && _vm.$set(_vm.editForm_prop, "usage", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
-          }
-        } else {
-          _vm.$set(_vm.editForm_prop, "usage", $$c);
-        }
-      }
-    }
-  }), _vm._v(" "), _c("div", [_vm._v("所有者: \n            "), _c("select", {
+  })]), _vm._v(" "), _c("div", [_vm._v("所有者: \n              "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -9063,8 +9790,176 @@ var render = function render() {
       domProps: {
         value: owner.id
       }
-    }, [_vm._v("\n                " + _vm._s(owner.name) + "\n              ")]);
-  })], 2)]), _vm._v(" "), _c("div", [_c("label", {
+    }, [_vm._v("\n                  " + _vm._s(owner.name) + "\n                ")]);
+  })], 2)]), _vm._v(" "), _c("div", [_c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "prop_usage_prop_edit"
+    }
+  }, [_vm._v("中間発表での使用")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.usage,
+      expression: "editForm_prop.usage"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "prop_usage_prop_edit"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.editForm_prop.usage) ? _vm._i(_vm.editForm_prop.usage, null) > -1 : _vm.editForm_prop.usage
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.editForm_prop.usage,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.editForm_prop, "usage", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.editForm_prop, "usage", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.editForm_prop, "usage", $$c);
+        }
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "prop_usage_guraduation_prop_edit"
+    }
+  }, [_vm._v("卒業公演での使用")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.usage_guraduation,
+      expression: "editForm_prop.usage_guraduation"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "prop_usage_guraduation_scene_edit"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.editForm_prop.usage_guraduation) ? _vm._i(_vm.editForm_prop.usage_guraduation, null) > -1 : _vm.editForm_prop.usage_guraduation
+    },
+    on: {
+      change: [function ($event) {
+        var $$a = _vm.editForm_prop.usage_guraduation,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.editForm_prop, "usage_guraduation", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.editForm_prop, "usage_guraduation", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.editForm_prop, "usage_guraduation", $$c);
+        }
+      }, _vm.selectGuraduation]
+    }
+  })]), _vm._v(" "), _vm.guradutaion_tag ? _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.usage_left,
+      expression: "editForm_prop.usage_left"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "prop_usage_left_prop_edit",
+      value: "left"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.editForm_prop.usage_left) ? _vm._i(_vm.editForm_prop.usage_left, "left") > -1 : _vm.editForm_prop.usage_left
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.editForm_prop.usage_left,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = "left",
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.editForm_prop, "usage_left", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.editForm_prop, "usage_left", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.editForm_prop, "usage_left", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "prop_usage_left_prop_edit"
+    }
+  }, [_vm._v("上手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.usage_right,
+      expression: "editForm_prop.usage_right"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "prop_usage_right_prop_edit",
+      value: "right"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.editForm_prop.usage_right) ? _vm._i(_vm.editForm_prop.usage_right, "right") > -1 : _vm.editForm_prop.usage_right
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.editForm_prop.usage_right,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = "right",
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.editForm_prop, "usage_right", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.editForm_prop, "usage_right", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.editForm_prop, "usage_right", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "prop_usage_right_prop_edit"
+    }
+  }, [_vm._v("下手")])]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", {
     attrs: {
       "for": "prop_comment_edit"
     }
@@ -9076,6 +9971,7 @@ var render = function render() {
         value: comment.memo,
         expression: "comment.memo"
       }],
+      staticClass: "form__item",
       domProps: {
         value: comment.memo
       },
@@ -9108,7 +10004,7 @@ var render = function render() {
         _vm.$set(_vm.editForm_prop, "memo", $event.target.value);
       }
     }
-  })])])]), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("confirmDialog_Edit", {
+  })])])])]), _vm._v(" "), _c("confirmDialog_Edit", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -9122,8 +10018,8 @@ var render = function render() {
       Cancel_Edit: _vm.closeModal_confirmEdit_Cancel,
       OK_Edit: _vm.closeModal_confirmEdit_OK
     }
-  })], 1), _vm._v(" "), _c("button", {
-    staticClass: "button button--inverse",
+  })], 1)]), _vm._v(" "), _c("button", {
+    staticClass: "button button--inverse button--area--detail-box",
     attrs: {
       type: "button"
     },
@@ -9146,7 +10042,9 @@ var staticRenderFns = [function () {
     attrs: {
       type: "submit"
     }
-  }, [_vm._v("編集")])]);
+  }, [_c("i", {
+    staticClass: "fas fa-edit fa-fw"
+  }), _vm._v("編集")])]);
 }];
 render._withStripped = true;
 
@@ -9181,7 +10079,9 @@ var render = function render() {
     ref: "content_detail_scene",
     staticClass: "content content-detail panel"
   }, [_c("div", {
-    staticClass: "form__button"
+    staticClass: "area--detail-box"
+  }, [_c("div", {
+    staticClass: "form__button button--area--detail-box"
   }, [_c("button", {
     directives: [{
       name: "show",
@@ -9223,12 +10123,19 @@ var render = function render() {
     }]
   }, [_c("div", {
     staticClass: "detail-box"
-  }, [_c("div", [_c("img", {
+  }, [_c("div", [_vm.scene.prop.url ? _c("div", {
+    staticClass: "detail-box--img"
+  }, [_c("img", {
     attrs: {
       src: _vm.scene.prop.url,
       alt: _vm.scene.prop.name
     }
-  })]), _vm._v(" "), _c("div", [_c("div", {
+  })]) : _c("div", [_c("img", {
+    attrs: {
+      src: _vm.scene.prop.url,
+      alt: _vm.scene.prop.name
+    }
+  })])]), _vm._v(" "), _c("div", [_c("div", {
     staticClass: "form__button"
   }, [_c("button", {
     staticClass: "button button--inverse",
@@ -9239,7 +10146,7 @@ var render = function render() {
       click: _vm.openModal_confirmDelete
     }
   }, [_c("i", {
-    staticClass: "fas fa-eraser fa-fw"
+    staticClass: "fas fa-trash fa-fw"
   }), _vm._v("削除")])]), _vm._v(" "), _c("confirmDialog_Delete", {
     directives: [{
       name: "show",
@@ -9254,13 +10161,17 @@ var render = function render() {
       Cancel_Delete: _vm.closeModal_confirmDelete_Cancel,
       OK_Delete: _vm.closeModal_confirmDelete_OK
     }
-  }), _vm._v(" "), _c("div", [_c("h1", {
-    staticStyle: {
-      display: "inline"
-    }
-  }, [_vm._v(_vm._s(_vm.scene.character.name))]), _vm._v(" "), _vm.scene.usage ? _c("div", [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), _vm.scene.usage_guraduation ? _c("div", [_vm._v("Ⓖ")]) : _vm._e(), _vm._v(" "), _vm.scene.usage_left ? _c("div", [_vm._v("㊤")]) : _vm._e(), _vm._v(" "), _vm.scene.usage_right ? _c("div", [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), _vm.scene !== null && _vm.scene.first_page !== null ? _c("span", [_vm._v("p. " + _vm._s(_vm.scene.first_page) + " \n            "), _vm.scene !== null && _vm.scene.final_page !== null ? _c("span", [_vm._v(" ~ p. " + _vm._s(_vm.scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", [_vm._v("小道具：" + _vm._s(_vm.scene.prop.name))]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.scene.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.scene.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.scene.prop.prop_comments.length ? _c("ul", _vm._l(_vm.scene.prop.prop_comments, function (comment) {
+  }), _vm._v(" "), _c("div", [_c("h1", [_vm._v(_vm._s(_vm.scene.character.name))])]), _vm._v(" "), _c("div", [_vm._v("小道具：" + _vm._s(_vm.scene.prop.name))]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.scene.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.scene.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _vm.scene !== null && _vm.scene.first_page !== null ? _c("span", [_vm._v("p. " + _vm._s(_vm.scene.first_page) + " \n              "), _vm.scene !== null && _vm.scene.final_page !== null ? _c("span", [_vm._v(" ~ p. " + _vm._s(_vm.scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", [_vm.scene.usage ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), _vm.scene.usage_guraduation ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("Ⓖ")]) : _vm._e(), _vm._v(" "), _vm.scene.usage_left ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("㊤")]) : _vm._e(), _vm._v(" "), _vm.scene.usage_right ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("小道具メモ:")]), _vm._v(" "), _vm.scene.prop.prop_comments.length ? _c("ul", _vm._l(_vm.scene.prop.prop_comments, function (comment) {
     return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
-  }), 0) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.scene.scene_comments.length ? _c("ul", _vm._l(_vm.scene.scene_comments, function (comment) {
+  }), 0) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("シーンメモ:")]), _vm._v(" "), _vm.scene.scene_comments.length ? _c("ul", _vm._l(_vm.scene.scene_comments, function (comment) {
     return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
   }), 0) : _vm._e()])], 1)])]), _vm._v(" "), _c("div", {
     directives: [{
@@ -9268,7 +10179,8 @@ var render = function render() {
       rawName: "v-show",
       value: _vm.tab_scene === 2,
       expression: "tab_scene === 2"
-    }]
+    }],
+    staticClass: "edit-area"
   }, [_c("form", {
     staticClass: "detail-box",
     on: {
@@ -9277,12 +10189,19 @@ var render = function render() {
         return _vm.confirmScene.apply(null, arguments);
       }
     }
-  }, [_c("div", [_c("img", {
+  }, [_c("div", [_vm.scene.prop.url ? _c("div", {
+    staticClass: "detail-box--img"
+  }, [_c("img", {
     attrs: {
       src: _vm.scene.prop.url,
       alt: _vm.scene.prop.name
     }
-  })]), _vm._v(" "), _c("div", [_c("div", [_c("label", {
+  })]) : _c("div", [_c("img", {
+    attrs: {
+      src: _vm.scene.prop.url,
+      alt: _vm.scene.prop.name
+    }
+  })])]), _vm._v(" "), _c("div", [_vm._m(0), _vm._v(" "), _c("div", [_c("label", {
     attrs: {
       "for": "character_attr"
     }
@@ -9312,7 +10231,7 @@ var render = function render() {
       value: ""
     }
   }, [_vm._v("登場人物属性")]), _vm._v(" "), _vm._l(_vm.optionCharacters, function (value, key) {
-    return _c("option", [_vm._v("\n                " + _vm._s(key) + "\n              ")]);
+    return _c("option", [_vm._v("\n                  " + _vm._s(key) + "\n                ")]);
   })], 2), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
@@ -9346,9 +10265,9 @@ var render = function render() {
       domProps: {
         value: characters.id
       }
-    }, [_vm._v("\n                " + _vm._s(characters.name) + "\n              ")]) : _vm._e();
-  })], 2)]), _vm._v(" "), _c("div", {
-    staticClass: "form__check"
+    }, [_vm._v("\n                  " + _vm._s(characters.name) + "\n                ")]) : _vm._e();
+  })], 2)]), _vm._v(" "), _c("div", [_c("div", {
+    staticClass: "checkbox-area--together"
   }, [_c("label", {
     staticClass: "form__check__label",
     attrs: {
@@ -9389,7 +10308,9 @@ var render = function render() {
         }
       }
     }
-  }), _vm._v(" "), _c("label", {
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
     staticClass: "form__check__label",
     attrs: {
       "for": "scene_usage_guraduation_scene_edit"
@@ -9429,7 +10350,9 @@ var render = function render() {
         }
       }, _vm.selectGuraduation]
     }
-  }), _vm._v(" "), _vm.guradutaion_tag ? _c("div", [_c("input", {
+  })]), _vm._v(" "), _vm.guradutaion_tag ? _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -9485,7 +10408,7 @@ var render = function render() {
     attrs: {
       "for": "page"
     }
-  }, [_vm._v("ページ数")]), _vm._v(" "), _c("small", [_vm._v("例) 22, 24-25")]), _vm._v(" "), _vm.scene.first_page ? _c("div", [_vm._v("\n            p. "), _c("input", {
+  }, [_vm._v("ページ数")]), _vm._v(" "), _c("small", [_vm._v("例) 22, 24-25")]), _vm._v(" "), _vm.scene.first_page ? _c("div", [_vm._v("\n              p. "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -9503,7 +10426,7 @@ var render = function render() {
         _vm.$set(_vm.editForm_scene, "first_page", $event.target.value);
       }
     }
-  }), _vm._v("\n            ~ p. "), _c("input", {
+  }), _vm._v("\n              ~ p. "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -9581,7 +10504,7 @@ var render = function render() {
       domProps: {
         value: prop.id
       }
-    }, [_vm._v("\n                " + _vm._s(prop.name) + "\n              ")]);
+    }, [_vm._v("\n                  " + _vm._s(prop.name) + "\n                ")]);
   })], 2), _vm._v(" "), _c("div", {
     staticClass: "form__button"
   }, [_c("button", {
@@ -9619,6 +10542,7 @@ var render = function render() {
         value: comment.memo,
         expression: "comment.memo"
       }],
+      staticClass: "form__item",
       domProps: {
         value: comment.memo
       },
@@ -9651,7 +10575,7 @@ var render = function render() {
         _vm.$set(_vm.editForm_scene, "memo", $event.target.value);
       }
     }
-  })])])]), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("confirmDialog_Edit", {
+  })])])])]), _vm._v(" "), _c("confirmDialog_Edit", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -9665,7 +10589,7 @@ var render = function render() {
       Cancel_Edit: _vm.closeModal_confirmEdit_Cancel,
       OK_Edit: _vm.closeModal_confirmEdit_OK
     }
-  })], 1), _vm._v(" "), _c("button", {
+  })], 1)]), _vm._v(" "), _c("button", {
     staticClass: "button button--inverse",
     attrs: {
       type: "button"
@@ -9689,7 +10613,9 @@ var staticRenderFns = [function () {
     attrs: {
       type: "submit"
     }
-  }, [_vm._v("編集")])]);
+  }, [_c("i", {
+    staticClass: "fas fa-edit fa-fw"
+  }), _vm._v("編集")])]);
 }];
 render._withStripped = true;
 
@@ -9721,7 +10647,7 @@ var render = function render() {
       }
     }
   }, [_c("div", {
-    staticClass: "content content-detail panel"
+    staticClass: "content content-confirm-dialog panel"
   }, [_c("form", {
     staticClass: "form",
     on: {
@@ -9795,7 +10721,21 @@ var render = function render() {
         _vm.$set(_vm.editForm_character, "name", $event.target.value);
       }
     }
-  }), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("confirmDialog_Edit", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_confirmEdit,
+      expression: "showContent_confirmEdit"
+    }],
+    attrs: {
+      confirm_dialog_edit_message: _vm.postMessage_Edit
+    },
+    on: {
+      Cancel_Edit: _vm.closeModal_confirmEdit_Cancel,
+      OK_Edit: _vm.closeModal_confirmEdit_OK
+    }
+  }), _vm._v(" "), _c("div", {
     staticClass: "form__button"
   }, [_c("button", {
     staticClass: "button button--inverse",
@@ -9806,7 +10746,7 @@ var render = function render() {
       click: _vm.openModal_confirmDelete
     }
   }, [_c("i", {
-    staticClass: "fas fa-eraser fa-fw"
+    staticClass: "fas fa-trash fa-fw"
   }), _vm._v("削除")])]), _vm._v(" "), _c("confirmDialog_Delete", {
     directives: [{
       name: "show",
@@ -9879,7 +10819,7 @@ var render = function render() {
       }
     }
   }, [_c("div", {
-    staticClass: "content content-detail panel"
+    staticClass: "content content-confirm-dialog panel"
   }, [_c("form", {
     staticClass: "form",
     on: {
@@ -9915,7 +10855,21 @@ var render = function render() {
         _vm.$set(_vm.editForm_owner, "name", $event.target.value);
       }
     }
-  }), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("confirmDialog_Edit", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_confirmEdit,
+      expression: "showContent_confirmEdit"
+    }],
+    attrs: {
+      confirm_dialog_edit_message: _vm.postMessage_Edit
+    },
+    on: {
+      Cancel_Edit: _vm.closeModal_confirmEdit_Cancel,
+      OK_Edit: _vm.closeModal_confirmEdit_OK
+    }
+  }), _vm._v(" "), _c("div", {
     staticClass: "form__button"
   }, [_c("button", {
     staticClass: "button button--inverse",
@@ -9926,7 +10880,7 @@ var render = function render() {
       click: _vm.openModal_confirmDelete
     }
   }, [_c("i", {
-    staticClass: "fas fa-eraser fa-fw"
+    staticClass: "fas fa-trash fa-fw"
   }), _vm._v("削除")])]), _vm._v(" "), _c("confirmDialog_Delete", {
     directives: [{
       name: "show",
@@ -10035,7 +10989,21 @@ var render = function render() {
         _vm.$set(_vm.editForm_section, "section", $event.target.value);
       }
     }
-  }), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("confirmDialog_Edit", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_confirmEdit,
+      expression: "showContent_confirmEdit"
+    }],
+    attrs: {
+      confirm_dialog_edit_message: _vm.postMessage_Edit
+    },
+    on: {
+      Cancel_Edit: _vm.closeModal_confirmEdit_Cancel,
+      OK_Edit: _vm.closeModal_confirmEdit_OK
+    }
+  }), _vm._v(" "), _c("div", {
     staticClass: "form__button"
   }, [_c("button", {
     staticClass: "button button--inverse",
@@ -10046,7 +11014,7 @@ var render = function render() {
       click: _vm.openModal_confirmDelete
     }
   }, [_c("i", {
-    staticClass: "fas fa-eraser fa-fw"
+    staticClass: "fas fa-trash fa-fw"
   }), _vm._v("削除")])]), _vm._v(" "), _c("confirmDialog_Delete", {
     directives: [{
       name: "show",
@@ -10154,9 +11122,10 @@ var render = function render() {
     }
   }, [_c("div", {
     ref: "content_list_props",
-    staticClass: "content panel"
+    staticClass: "content content-confirm-dialog panel"
   }, [_vm.props_list.length ? _c("ul", [_vm._l(_vm.props_list, function (prop) {
     return _c("li", [_c("div", {
+      staticClass: "list-button",
       attrs: {
         type: "button"
       },
@@ -10283,21 +11252,21 @@ var render = function render() {
       to: "/register_scene"
     }
   }, [_c("i", {
-    staticClass: "fas fa-pen fa-fw"
+    staticClass: "fas fa-paper-plane fa-fw"
   }), _vm._v("使用シーン\n          ")])], 1), _vm._v(" "), _c("li", [_c("RouterLink", {
     staticClass: "button",
     attrs: {
       to: "/register_prop"
     }
   }, [_c("i", {
-    staticClass: "fas fa-pen fa-fw"
+    staticClass: "fas fa-paper-plane fa-fw"
   }), _vm._v("小道具\n          ")])], 1), _vm._v(" "), _c("li", [_c("RouterLink", {
     staticClass: "button",
     attrs: {
       to: "/setting"
     }
   }, [_c("i", {
-    staticClass: "fas fa-eye fa-fw"
+    staticClass: "fas fa-cog fa-fw"
   }), _vm._v("設定\n          ")])], 1)])])])]);
 };
 
@@ -10334,11 +11303,68 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", {
-    "class": [_vm.val === 1 ? "overlay" : ""]
+    "class": [_vm.val === 1 ? "overlay" : "", _vm.overlay_class === 0 && _vm.val === 1 ? "overlay-custom" : ""],
+    on: {
+      click: function click($event) {
+        if ($event.target !== $event.currentTarget) return null;
+        _vm.val === 1 ? _vm.$emit("close") : null;
+      }
+    }
   }, [_c("div", {
+    ref: "content_register_prop",
     staticClass: "panel",
-    "class": [_vm.val === 1 ? "content" : ""]
-  }, [_c("form", {
+    "class": [_vm.val === 1 ? "content content-confirm-dialog" : ""]
+  }, [_c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.season_prop,
+      expression: "season_prop"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_passo",
+      value: "passo"
+    },
+    domProps: {
+      checked: _vm._q(_vm.season_prop, "passo")
+    },
+    on: {
+      change: function change($event) {
+        _vm.season_prop = "passo";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_passo"
+    }
+  }, [_vm._v("中間公演")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.season_prop,
+      expression: "season_prop"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_guraduation",
+      value: "guradution"
+    },
+    domProps: {
+      checked: _vm._q(_vm.season_prop, "guradution")
+    },
+    on: {
+      change: function change($event) {
+        _vm.season_prop = "guradution";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_guraduation"
+    }
+  }, [_vm._v("卒業公演")])]), _vm._v(" "), _c("form", {
     staticClass: "form",
     on: {
       submit: function submit($event) {
@@ -10368,7 +11394,9 @@ var render = function render() {
         return _vm.openModal_listProps(1);
       }
     }
-  }, [_vm._v("小道具リスト")])])]), _vm._v(" "), _c("input", {
+  }, [_c("i", {
+    staticClass: "fas fa-list-ul fa-fw"
+  }), _vm._v("小道具リスト")])])]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -10402,6 +11430,7 @@ var render = function render() {
       value: _vm.registerForm.kana,
       expression: "registerForm.kana"
     }],
+    staticClass: "form__item form__item--furigana",
     attrs: {
       type: "text",
       name: "furigana",
@@ -10455,8 +11484,151 @@ var render = function render() {
       domProps: {
         value: owner.id
       }
-    }, [_vm._v("\n              " + _vm._s(owner.name) + "\n            ")]);
-  })], 2), _vm._v(" "), _c("label", {
+    }, [_vm._v("\n            " + _vm._s(owner.name) + "\n          ")]);
+  })], 2), _vm._v(" "), _c("div", [_c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.season_tag_prop === 1,
+      expression: "season_tag_prop === 1"
+    }],
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_usage_scene"
+    }
+  }, [_vm._v("中間発表での使用")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.usage_prop,
+      expression: "registerForm.usage_prop"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "prop_usage_scene"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.registerForm.usage_prop) ? _vm._i(_vm.registerForm.usage_prop, null) > -1 : _vm.registerForm.usage_prop
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.registerForm.usage_prop,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.registerForm, "usage_prop", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.registerForm, "usage_prop", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.registerForm, "usage_prop", $$c);
+        }
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.season_tag_prop === 2,
+      expression: "season_tag_prop === 2"
+    }]
+  }, [_c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_usage_scene_guradutaion"
+    }
+  }, [_vm._v("卒業公演での使用")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.usage_guraduation_prop,
+      expression: "registerForm.usage_guraduation_prop"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "prop_usage_scene_guradutaion"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.registerForm.usage_guraduation_prop) ? _vm._i(_vm.registerForm.usage_guraduation_prop, null) > -1 : _vm.registerForm.usage_guraduation_prop
+    },
+    on: {
+      change: [function ($event) {
+        var $$a = _vm.registerForm.usage_guraduation_prop,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.registerForm, "usage_guraduation_prop", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.registerForm, "usage_guraduation_prop", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.registerForm, "usage_guraduation_prop", $$c);
+        }
+      }, _vm.selectGuraduation_Prop]
+    }
+  })]), _vm._v(" "), _vm.guradutaion_tag_prop ? _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.usage_stage_prop,
+      expression: "registerForm.usage_stage_prop"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_usage_scene_left",
+      value: "usage_left"
+    },
+    domProps: {
+      checked: _vm._q(_vm.registerForm.usage_stage_prop, "usage_left")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.registerForm, "usage_stage_prop", "usage_left");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_usage_scene_left"
+    }
+  }, [_vm._v("上手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.usage_stage_prop,
+      expression: "registerForm.usage_stage_prop"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_usage_scene_right",
+      value: "usage_right"
+    },
+    domProps: {
+      checked: _vm._q(_vm.registerForm.usage_stage_prop, "usage_right")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.registerForm, "usage_stage_prop", "usage_right");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_usage_scene_right"
+    }
+  }, [_vm._v("下手")])]) : _vm._e()])]), _vm._v(" "), _c("label", {
     attrs: {
       "for": "comment_prop"
     }
@@ -10541,7 +11713,9 @@ var staticRenderFns = [function () {
     attrs: {
       type: "submit"
     }
-  }, [_vm._v("登録")])]);
+  }, [_c("i", {
+    staticClass: "fas fa-paper-plane fa-fw"
+  }), _vm._v("登録")])]);
 }];
 render._withStripped = true;
 
@@ -10566,7 +11740,9 @@ var render = function render() {
 
   return _c("div", {
     staticClass: "panel"
-  }, [_c("div", [_c("div", [_c("input", {
+  }, [_c("div", [_c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -10737,7 +11913,9 @@ var render = function render() {
         return _vm.openModal_register();
       }
     }
-  }, [_vm._v("新たな小道具追加")])]), _vm._v(" "), _c("registerProp", {
+  }, [_c("i", {
+    staticClass: "fas fa-plus fa-fw"
+  }), _vm._v("新たな小道具追加")])]), _vm._v(" "), _c("registerProp", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -10776,17 +11954,15 @@ var render = function render() {
         _vm.$set(_vm.registerForm, "pages", $event.target.value);
       }
     }
-  }), _vm._v(" "), _c("div", {
-    staticClass: "form__check"
-  }, [_c("div", {
+  }), _vm._v(" "), _c("div", [_c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
       value: _vm.season_tag === 1,
       expression: "season_tag === 1"
-    }]
+    }],
+    staticClass: "checkbox-area--together"
   }, [_c("label", {
-    staticClass: "form__check__label",
     attrs: {
       "for": "usage_scene"
     }
@@ -10797,7 +11973,6 @@ var render = function render() {
       value: _vm.registerForm.usage,
       expression: "registerForm.usage"
     }],
-    staticClass: "form__check__input",
     attrs: {
       type: "checkbox",
       id: "usage_scene"
@@ -10832,7 +12007,9 @@ var render = function render() {
       value: _vm.season_tag === 2,
       expression: "season_tag === 2"
     }]
-  }, [_c("div", [_c("label", {
+  }, [_c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
     attrs: {
       "for": "usage_scene_guradutaion"
     }
@@ -10843,7 +12020,6 @@ var render = function render() {
       value: _vm.registerForm.usage_guraduation,
       expression: "registerForm.usage_guraduation"
     }],
-    staticClass: "form__check__input",
     attrs: {
       type: "checkbox",
       id: "usage_scene_guradutaion"
@@ -10871,14 +12047,15 @@ var render = function render() {
         }
       }, _vm.selectGuraduation]
     }
-  })]), _vm._v(" "), _vm.guradutaion_tag ? _c("div", [_c("input", {
+  })]), _vm._v(" "), _vm.guradutaion_tag ? _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.registerForm.usage_stage,
       expression: "registerForm.usage_stage"
     }],
-    staticClass: "form__check__input",
     attrs: {
       type: "radio",
       id: "usage_scene_left",
@@ -10893,7 +12070,6 @@ var render = function render() {
       }
     }
   }), _vm._v(" "), _c("label", {
-    staticClass: "form__check__label",
     attrs: {
       "for": "usage_scene_left"
     }
@@ -10904,7 +12080,6 @@ var render = function render() {
       value: _vm.registerForm.usage_stage,
       expression: "registerForm.usage_stage"
     }],
-    staticClass: "form__check__input",
     attrs: {
       type: "radio",
       id: "usage_scene_right",
@@ -10919,7 +12094,6 @@ var render = function render() {
       }
     }
   }), _vm._v(" "), _c("label", {
-    staticClass: "form__check__label",
     attrs: {
       "for": "usage_scene_right"
     }
@@ -10962,7 +12136,9 @@ var staticRenderFns = [function () {
     attrs: {
       type: "submit"
     }
-  }, [_vm._v("登録")])]);
+  }, [_c("i", {
+    staticClass: "fas fa-paper-plane fa-fw"
+  }), _vm._v("登録")])]);
 }];
 render._withStripped = true;
 
@@ -11027,6 +12203,7 @@ var render = function render() {
     }
   }, [_vm.gainSet.characters.length ? _c("ul", _vm._l(_vm.gainSet.characters, function (section) {
     return _c("li", [_c("div", {
+      staticClass: "list-button",
       attrs: {
         type: "button"
       },
@@ -11037,6 +12214,7 @@ var render = function render() {
       }
     }, [_vm._v(_vm._s(section.section))]), _vm._v(" "), section.characters.length ? _c("ul", _vm._l(section.characters, function (name) {
       return _c("li", [_c("div", {
+        staticClass: "list-button",
         attrs: {
           type: "button"
         },
@@ -11083,6 +12261,7 @@ var render = function render() {
     }
   }, [_vm.gainSet.owners.length ? _c("ul", _vm._l(_vm.gainSet.owners, function (owner) {
     return _c("li", [_c("div", {
+      staticClass: "list-button",
       attrs: {
         type: "button"
       },
@@ -11318,8 +12497,10 @@ var render = function render() {
       rawName: "v-show",
       value: _vm.tabProp === 1,
       expression: "tabProp === 1"
-    }]
+    }],
+    staticClass: "button-area--showhow"
   }, [_c("button", {
+    staticClass: "button button--inverse",
     attrs: {
       type: "button"
     },
@@ -11334,8 +12515,10 @@ var render = function render() {
       rawName: "v-show",
       value: _vm.tabProp === 2,
       expression: "tabProp === 2"
-    }]
+    }],
+    staticClass: "button-area--showhow"
   }, [_c("button", {
+    staticClass: "button button--inverse",
     attrs: {
       type: "button"
     },
@@ -11351,15 +12534,21 @@ var render = function render() {
       value: _vm.tabProp === 1,
       expression: "tabProp === 1"
     }]
-  }, [_c("div", [_c("button", {
+  }, [_c("div", {
+    staticClass: "button-area--download"
+  }, [_c("button", {
+    staticClass: "button button--inverse",
     attrs: {
       type: "button"
     },
     on: {
       click: _vm.downloadProps
     }
-  }, [_vm._v("ダウンロード")])]), _vm._v(" "), _c("table", [_vm._m(0), _vm._v(" "), _vm.showProps.length ? _c("tbody", _vm._l(_vm.showProps, function (prop, index) {
+  }, [_c("i", {
+    staticClass: "fas fa-download fa-fw"
+  }), _vm._v("ダウンロード")])]), _vm._v(" "), _c("table", [_vm._m(0), _vm._v(" "), _vm.showProps.length ? _c("tbody", _vm._l(_vm.showProps, function (prop, index) {
     return _c("tr", [_c("td", [_vm._v(_vm._s(index + 1))]), _vm._v(" "), _c("td", {
+      staticClass: "list-button",
       attrs: {
         type: "button"
       },
@@ -11385,8 +12574,7 @@ var render = function render() {
       rawName: "v-show",
       value: _vm.tabProp === 2,
       expression: "tabProp === 2"
-    }],
-    staticClass: "photo-list"
+    }]
   }, [_vm.showProps.length ? _c("div", {
     staticClass: "grid"
   }, _vm._l(_vm.showProps, function (prop) {
@@ -11410,17 +12598,17 @@ var render = function render() {
         src: prop.url,
         alt: prop.name
       }
-    })]), _vm._v(" "), _c("div", [_c("div", [_vm._v("\n              " + _vm._s(prop.name) + "\n            ")]), _vm._v(" "), prop.owner ? _c("div", [_vm._v("\n              " + _vm._s(prop.owner.name) + "\n            ")]) : _vm._e(), _vm._v(" "), prop.usage ? _c("div", [_c("i", {
-      staticClass: "fas fa-tag"
-    })]) : _vm._e(), _vm._v(" "), prop.usage_guraduation ? _c("div", [_c("i", {
-      staticClass: "fas fa-tag"
-    })]) : _vm._e(), _vm._v(" "), prop.usage_left ? _c("div", [_c("i", {
-      staticClass: "fas fa-tag"
-    })]) : _vm._e(), _vm._v(" "), prop.right ? _c("div", [_c("i", {
-      staticClass: "fas fa-tag"
-    })]) : _vm._e(), _vm._v(" "), prop.prop_comments.length ? _c("div", _vm._l(prop.prop_comments, function (memo) {
+    })]), _vm._v(" "), _c("div", [_c("div", [_vm._v("\n              " + _vm._s(prop.name) + "\n            ")]), _vm._v(" "), prop.owner ? _c("div", [_vm._v("\n              " + _vm._s(prop.owner.name) + "\n            ")]) : _vm._e(), _vm._v(" "), _c("div", [prop.usage ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), prop.usage_guraduation ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("Ⓖ")]) : _vm._e(), _vm._v(" "), prop.usage_left ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("㊤")]) : _vm._e(), _vm._v(" "), prop.right ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), prop.prop_comments.length ? _c("div", [_c("span", [_vm._v("メモ: ")]), _vm._v(" "), _vm._l(prop.prop_comments, function (memo) {
       return _c("div", [_vm._v("\n                " + _vm._s(memo.memo) + "\n              ")]);
-    }), 0) : _vm._e()])])]);
+    })], 2) : _vm._e()])])]);
   }), 0) : _c("div", [_vm._v("\n      小道具は登録されていません。\n    ")])]), _vm._v(" "), _c("detailProp", {
     directives: [{
       name: "show",
@@ -11464,15 +12652,21 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("div", [_c("div", [_c("button", {
+  return _c("div", [_c("div", {
+    staticClass: "button-area--download"
+  }, [_c("button", {
+    staticClass: "button button--inverse",
     attrs: {
       type: "button"
     },
     on: {
       click: _vm.downloadScenes
     }
-  }, [_vm._v("ダウンロード")])]), _vm._v(" "), _c("table", [_vm._m(0), _vm._v(" "), _vm.showScenes.length ? _c("tbody", _vm._l(_vm.showScenes, function (scene, index) {
+  }, [_c("i", {
+    staticClass: "fas fa-download fa-fw"
+  }), _vm._v("ダウンロード")])]), _vm._v(" "), _c("table", [_vm._m(0), _vm._v(" "), _vm.showScenes.length ? _c("tbody", _vm._l(_vm.showScenes, function (scene, index) {
     return _c("tr", [_c("td", {
+      staticClass: "list-button",
       attrs: {
         type: "button"
       },
@@ -11481,7 +12675,17 @@ var render = function render() {
           return _vm.openModal_sceneDetail(scene.id);
         }
       }
-    }, [_vm._v(_vm._s(index + 1))]), _vm._v(" "), scene.first_page ? _c("td", [_vm._v(_vm._s(scene.first_page))]) : _c("td"), _vm._v(" "), scene.final_page ? _c("td", [_vm._v(_vm._s(scene.final_page))]) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.prop.name))]), _vm._v(" "), scene.usage ? _c("td", [_c("i", {
+    }, [_vm._v(_vm._s(index + 1))]), _vm._v(" "), scene.first_page ? _c("td", [_vm._v(_vm._s(scene.first_page))]) : _c("td"), _vm._v(" "), scene.final_page ? _c("td", [_vm._v(_vm._s(scene.final_page))]) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), _c("td", {
+      staticClass: "list-button",
+      attrs: {
+        type: "button"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.openModal_propDetail(scene.prop.id);
+        }
+      }
+    }, [_vm._v(_vm._s(scene.prop.name))]), _vm._v(" "), scene.usage ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td"), _vm._v(" "), scene.usage_guraduation ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
@@ -11504,6 +12708,19 @@ var render = function render() {
     },
     on: {
       close: _vm.closeModal_sceneDetail
+    }
+  }), _vm._v(" "), _c("detailProp", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_prop,
+      expression: "showContent_prop"
+    }],
+    attrs: {
+      postProp: _vm.postProp
+    },
+    on: {
+      close: _vm.closeModal_propDetail
     }
   })], 1);
 };
@@ -13970,7 +15187,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  font-size: 2em;\n}\n\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\n/* form */\n.form label {\n  display: block;\n  margin-bottom: 0.5rem;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.1875em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n\n\n/* 表 */ /* シーンも小道具も同一 */\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #DBBCD5;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 80%;\n}\n.detail-box>div {\n  width:50%;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  margin: 0;\n  font-size: 2em;\n}\n\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\nlabel {\n  display: block;\n  margin-bottom: 0.5rem;\n}\ninput[type=checkbox], input[type=radio] {\n  display: block;\n  margin-bottom: 0.7rem;\n  margin-left: 0.7rem;\n}\n/* form */\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n.button-area--together {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n}\n.button-area--showhow {\n  margin-bottom: 0.5em;\n}\n.button-area--download {\n  margin-top: 1em;\n  margin-bottom: 0.5em;\n}\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  margin: 0.1em;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.list-button:hover {\n  cursor: pointer;\n}\n.checkbox-area--together {\n  display: flex;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n/* 写真 */\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n  cursor: pointer;\n}\n.navbar__brand:hover {\n  color: #c0c0c0;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.19em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n.menu-content ul li a:hover {\n  color: #169b62\n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n\n\n/* 小道具投稿 */\n.form__item--furigana {\n  width: 50%;\n  padding-top: 0.3em;\n  padding-bottom: 0.3em;\n}\n\n\n\n/* 表 */ /* シーンも小道具も同一 */\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #4fac7b;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n  cursor: pointer;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 100%;\n}\n.detail-box>div {\n  width:50%;\n  height: 100%;\n  padding: 0.5em;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n\n/* Confirm＿Dialog */\n/* 横並びボタン */\n.button--confirm {\n  width: 50%;\n  padding: 0.5em;\n}\n.button--danger {\n  background: #e61919;\n  border-color: #e61919;\n}\n.dialog-message {\n  display: flex;\n  white-space: pre-wrap;\n  justify-content: center;\n}\n\n\n/* Show_Prop 写真リスト */\n.usage-show {\n  margin-right: 0.2em;\n}\n\n/* Detail_Prop 小道具詳細 */\n.area--detail-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n}\n.button--area--detail-box {\n  padding-right: 0.5em;\n}\n.detail-box--img {\n  display: flex;\n  justify-content: center;\n  max-width: 100%;\n  max-height: 100%;\n}\n.detail-box ul, .detail-box ol {\n  margin: 0.2em;\n}\n.detail-box ul ul {\n  margin: 0;\n}\n.edit-area li {\n  list-style-type: none;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

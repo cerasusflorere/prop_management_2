@@ -1,54 +1,85 @@
 <template>
-<!-- 登録-使用シーン上ではid=overay と id=contentを有効にする-->
-  <div v-bind:class="[val === 1 ? 'overlay' : '']">
-    <div v-bind:class="[val === 1 ? 'content' : '']" class="panel">
-        <form class="form"  @submit.prevent="register_prop">
-          <!-- エラー表示 -->
-          <div class="errors" v-if="errors.error">
-            <ul v-if="errors.error.photo">
-             <li v-for="msg in errors.error.photo" :key="msg">{{ msg }}</li>
-            </ul>
+<!-- 登録-使用シーン上ではclass=overay と class=contentを有効にする-->
+  <div v-bind:class="[val === 1 ? 'overlay' : '', (overlay_class === 0 && val === 1) ? 'overlay-custom' : '']" @click.self="val === 1 ? $emit('close') : null">
+    <div v-bind:class="[val === 1 ? 'content content-confirm-dialog' : '']" class="panel"  ref="content_register_prop">
+      <div class="checkbox-area--together">
+        <input type="radio" id="prop_passo" v-model="season_prop" value="passo">
+        <label for="prop_passo">中間公演</label>       
+
+        <input type="radio" id="prop_guraduation" v-model="season_prop" value="guradution">
+        <label for="prop_guraduation">卒業公演</label>
+      </div>
+
+      <form class="form"  @submit.prevent="register_prop">
+        <!-- エラー表示 -->
+        <div class="errors" v-if="errors.error">
+         <ul v-if="errors.error.photo">
+           <li v-for="msg in errors.error.photo" :key="msg">{{ msg }}</li>
+          </ul>
+        </div>
+
+        <!-- 小道具名 -->
+        <div>
+          <label for="prop_input">小道具</label>
+          <div class="form__button">
+            <button type="button" @click="openModal_listProps(1)" class="button button--inverse"><i class="fas fa-list-ul fa-fw"></i>小道具リスト</button>
           </div>
-          <!-- 小道具名 -->
-          <div>
-            <label for="prop_input">小道具</label>
-            <div class="form__button">
-              <button type="button" @click="openModal_listProps(1)" class="button button--inverse">小道具リスト</button>
+        </div>
+         
+        <input type="text" class="form__item" id="prop_input" v-model="registerForm.prop" @input="handleNameInput" required>
+        <label for="furigana">ふりがな</label>
+        <input type="text" name="furigana" id="furigana" v-model="registerForm.kana" class="form__item form__item--furigana" required>
+
+        <!-- 所有者 -->
+        <label for="owner">持ち主</label>
+        <select id="owner" class="form__item"  v-model="registerForm.owner">
+          <option disabled value="">持ち主一覧</option>
+          <option v-for="owner in optionOwners" v-bind:value="owner.id">
+            {{ owner.name }}
+          </option>
+        </select>
+
+        <!-- 使用するか -->
+        <div>
+          <div v-show="season_tag_prop === 1" class="checkbox-area--together">
+            <label for="prop_usage_scene">中間発表での使用</label>
+            <input type="checkbox" id="prop_usage_scene" v-model="registerForm.usage_prop"></input>    
+          </div>
+          <div v-show="season_tag_prop === 2">
+            <div class="checkbox-area--together">
+              <label for="prop_usage_scene_guradutaion">卒業公演での使用</label>
+              <input type="checkbox" id="prop_usage_scene_guradutaion" v-model="registerForm.usage_guraduation_prop" @change="selectGuraduation_Prop">
+            </div>
+            <div v-if="guradutaion_tag_prop" class="checkbox-area--together">
+              <input type="radio" id="prop_usage_scene_left" value="usage_left" v-model="registerForm.usage_stage_prop">            
+              <label for="prop_usage_scene_left">上手</label>
+
+              <input type="radio" id="prop_usage_scene_right" value="usage_right" v-model="registerForm.usage_stage_prop">
+              <label for="prop_usage_scene_right">下手</label>
             </div>
           </div>
-         
-          <input type="text" class="form__item" id="prop_input" v-model="registerForm.prop" @input="handleNameInput" required>
-          <label for="furigana">ふりがな</label>
-          <input type="text" name="furigana" id="furigana" v-model="registerForm.kana" required>
-
-          <!-- 所有者 -->
-          <label for="owner">持ち主</label>
-          <select id="owner" class="form__item"  v-model="registerForm.owner">
-            <option disabled value="">持ち主一覧</option>
-            <option v-for="owner in optionOwners" v-bind:value="owner.id">
-              {{ owner.name }}
-            </option>
-          </select>
-          <!-- コメント -->
-          <label for="comment_prop">コメント</label>
-          <textarea class="form__item" id="comment_prop" v-model="registerForm.comment"></textarea>
-
-          <!-- 写真 -->
-          <label for="photo_input">写真</label>
-          <div v-if="errors.photo">{{ errors.photo }}</div>
+        </div>
+     
+        <!-- コメント -->
+        <label for="comment_prop">コメント</label>
+        <textarea class="form__item" id="comment_prop" v-model="registerForm.comment"></textarea>
+     
+        <!-- 写真 -->
+        <label for="photo_input">写真</label>
+        <div v-if="errors.photo">{{ errors.photo }}</div>
           <input id="photo_photo" class="form__item" type="file" @change="onFileChange">
           <output class="form__output" v-if="preview">
             <img :src="preview" alt="" style="max-height: 12em">
           </output>
 
-          <!--- 送信ボタン -->
-          <div class="form__button">
-            <button type="submit" class="button button--inverse">登録</button>
-          </div>
-        </form>
-        <listProps :postFlag="postFlag" v-show="showContent" @close="closeModal_listProps" />
-        <!-- 登録- 使用シーンでは閉じるボタンを出現させる -->
-        <button type="button" v-if="val===1" @click="$emit('close')" class="button button--inverse">閉じる</button>
+        <!--- 送信ボタン -->
+        <div class="form__button">
+          <button type="submit" class="button button--inverse"><i class="fas fa-paper-plane fa-fw"></i>登録</button>
+        </div>
+      </form>
+      <listProps :postFlag="postFlag" v-show="showContent" @close="closeModal_listProps" />
+      <!-- 登録- 使用シーンでは閉じるボタンを出現させる -->
+      <button type="button" v-if="val===1" @click="$emit('close')" class="button button--inverse">閉じる</button>
     </div>
   </div>
 </template>
@@ -89,8 +120,15 @@ export default {
       postFlag: "",
       // 小道具候補
       props: [],
+      // 中間公演or卒業公演
+      season_prop: null,
+      season_tag_prop: null,
+      // 卒業公演
+      guradutaion_tag_prop: 0,
       // 写真プレビュー
       preview: null,
+      // overlayのクラス
+      overlay_class: 1, // 1のときはつかない
       // エラー
       errors: {
         photo: null,
@@ -101,6 +139,9 @@ export default {
         prop: '',
         kana: '',
         owner: '',
+        usage_prop: '',
+        usage_guraduation_prop: 0,
+        usage_stage_prop: null,
         comment: '',
         // 写真
         photo: ''
@@ -141,6 +182,74 @@ export default {
 
     handleNameInput() {
       this.registerForm.kana = autokana.getFurigana();
+    },
+
+    // どちらの公演か取得
+    async choicePerformance() {
+      let today = new Date();
+      const month = today.getMonth()+1;
+      const day = today.getDate();
+      if(3 < month && month < 11){
+        this.season_prop = "passo";
+      }else if(month === 11){
+        const year = today.getFullYear();
+        const passo_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
+        if(passo_day <= day){
+          this.season_prop = "passo";
+        }else{
+          this.season_prop = "guradutaion";
+        }
+      }else if(month > 11 && month < 3){
+        this.season_prop = "guradutaion";
+      }else if(month === 3){
+        const year = today.getFullYear();
+        const guraduation_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
+        if(guraduation_day <= day){          
+          this.season_prop = "guradutaion";
+        }else{
+          this.season_prop = "passo";
+        }
+      }
+    },
+
+    // 第1日曜日の日付を返す
+    async getDateFromWeek(year, month_origin, turn, weekday) {
+      const month = month_origin - 1;
+      // 月初の日
+      const firstDateOfMonth = new Date(year, month, 1);
+      // 月初の曜日
+      const firstDayOfWeek = firstDateOfMonth.getDay();
+ 
+      // 指定された曜日が最初に出現する日付を求める
+      let firstWeekdayDate = null;
+      if (firstDayOfWeek == weekday) {
+        // 月初の曜日が指定曜日の時
+        firstWeekdayDate = new Date(year, month, 1);
+      } else if (firstDayOfWeek < weekday) {
+        // 月初の曜日 < 指定の曜日の時
+        firstWeekdayDate = new Date(year, month, 1 + (weekday - firstDayOfWeek));
+      } else if (weekday < firstDayOfWeek) {
+        // 指定の曜日 < 月初の曜日の時
+        firstWeekdayDate = new Date(year, month, 1 + (7 - (firstDayOfWeek - weekday)));
+      }
+
+      // 第○の指定の分だけ日数を足す
+      const firstWeekDay = firstWeekdayDate.getDate();
+      const specifiedDate = new Date(year, month, firstWeekDay + 7 * (turn - 1)); // yyyy年mm月dd日
+      if (specifiedDate.getMonth() != month) {
+        return null;
+      }
+      return firstWeekDay + 7 * (turn - 1);
+    },
+
+    // 卒業公演の使用にチェックが付いたか
+    selectGuraduation_Prop() {
+      if(!this.guradutaion_tag_prop){
+        this.guradutaion_tag_prop = 1;
+      }else{
+        this.guradutaion_tag_prop = 0;
+        this.registerForm.usage_stage_prop = null;
+      }
     },
 
     // 小道具リストのモーダル表示 
@@ -185,8 +294,21 @@ export default {
       // ファイルを読み込む
       // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
       reader.readAsDataURL(event.target.files[0]);
+  
+      this.registerForm.photo = event.target.files[0];      
 
-      this.registerForm.photo = event.target.files[0];
+      if(this.val){
+        // 調整
+        this.$nextTick(() => {
+          const content_dom = this.$refs.content_register_prop;
+          const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+          if(content_rect.top < 0){
+            this.overlay_class = 0;
+          }else{
+            this.overlay_class = 1;
+          }
+        });
+      }     
     },
      
     // 画像をクリアするメソッド
@@ -194,6 +316,19 @@ export default {
       this.preview = null;
       this.registerForm.photo = '';
       this.$el.querySelector('input[type="file"]').value = null;
+
+      if(this.val){
+        // 調整
+        this.$nextTick(() => {
+          const content_dom = this.$refs.content_register_prop;
+          const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+          if(content_rect.top < 0){
+            this.overlay_class = 0;
+          }else{
+            this.overlay_class = 1;
+          }
+        });
+      }
     },
 
     // 入力欄の値とプレビュー表示をクリアするメソッド
@@ -201,11 +336,27 @@ export default {
       this.registerForm.prop = '';
       this.registerForm.kana = '';
       this.registerForm.owner = '';
+      this.registerForm.usage_prop = '';
+      this.registerForm.usage_guraduation_prop = '';
+      this.registerForm.usage_stage_prop = null;
       this.registerForm.comment = '';
       this.preview = null;
       this.registerForm.photo = '';
       this.$el.querySelector('input[type="file"]').value = null;
       this.errors.photo = null;
+
+      if(this.val){
+        // 調整
+        this.$nextTick(() => {
+          const content_dom = this.$refs.content_register_prop;
+          const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+          if(content_rect.top < 0){
+            this.overlay_class = 0;
+          }else{
+            this.overlay_class = 1;
+          }
+        });
+      }
     },
 
     // 登録する
@@ -215,10 +366,18 @@ export default {
       formData.append('kana', this.registerForm.kana);
       formData.append('owner_id', this.registerForm.owner);
       formData.append('memo', this.registerForm.comment);
-      formData.append('usage', '');
-      formData.append('usage_guraduation', '');
-      formData.append('usage_left', '');
-      formData.append('usage_right', '');
+      formData.append('usage', this.registerForm.usage_prop);
+      formData.append('usage_guraduation', this.registerForm.usage_guraduation_prop);
+      if(this.registerForm.usage_stage_prop === "usage_left"){
+        formData.append('usage_left', 1);
+        formData.append('usage_right', '');
+      }else if(this.registerForm.usage_stage_prop === "usage_right"){
+        formData.append('usage_right', 1);
+        formData.append('usage_left', '');
+      }else{
+        formData.append('usage_left', '');
+        formData.append('usage_right', '');
+      }
       formData.append('photo', this.registerForm.photo);
       const response = await axios.post('/api/props', formData);
   
@@ -247,6 +406,34 @@ export default {
       async handler () {
         await this.fetchOwners();
         await this.fetchProps();
+        await this.choicePerformance();
+      },
+      immediate: true
+    },
+    season_prop: {
+      async handler(season_prop) {
+        if(this.season_prop === "passo"){
+          this.season_tag_prop = 1;
+        }else if(this.season_prop === "guradution"){
+          this.season_tag_prop = 2;
+        }
+      },
+      immediate: true
+    },
+    val: {
+      async handler(val) {
+        if(this.val){
+          this.$nextTick(() => {
+            const content_dom = this.$refs.content_register_prop;
+            const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+  
+            if(content_rect.top < 0){
+              this.overlay_class = 0;
+            }else{
+              this.overlay_class = 1;
+            }
+          });
+        }        
       },
       immediate: true
     }

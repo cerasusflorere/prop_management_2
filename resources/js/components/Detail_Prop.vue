@@ -1,208 +1,256 @@
 <template>
   <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']" @click.self="$emit('close')">
     <div class="content content-detail panel" ref="content_detail_prop">
-      <!--- 閲覧/編集 -->
-      <div class="form__button">
-        <button type="button" v-show="tab === 1" class="button button--inverse" @click="alterTab"><i class="fas fa-edit fa-fw"></i>編集</button>
-        <button type="button" v-show="tab === 2" class="button button--inverse" @click="alterTab"><i class="fas fa-eye fa-fw"></i>閲覧</button>
-      </div>
+      <div class="area--detail-box">
+        <!--- 閲覧/編集 -->
+        <div class="form__button button--area--detail-box">
+          <button type="button" v-show="tab === 1" class="button button--inverse" @click="alterTab"><i class="fas fa-edit fa-fw"></i>編集</button>
+          <button type="button" v-show="tab === 2" class="button button--inverse" @click="alterTab"><i class="fas fa-eye fa-fw"></i>閲覧</button>
+        </div>
 
-      <div v-show="tab === 1">
-        <div class="detail-box">
-          <!-- 写真 -->
-          <div>
-            <img :src="prop.url" :alt="prop.name">
-          </div>
-          <!-- 詳細 -->
-          <div>
-            <!--- 削除ボタン -->
-            <div class="form__button">
-              <button type="button" class="button button--inverse" @click="openModal_confirmDelete"><i class="fas fa-eraser fa-fw"></i>削除</button>
+        <div v-show="tab === 1">
+          <div class="detail-box">
+            <!-- 写真 -->
+            <div>
+              <div v-if="prop.url" class="detail-box--img">
+                <img :src="prop.url" :alt="prop.name"></img>
+              </div>
+              <div v-else>
+                <img :src="prop.url" :alt="prop.name"></img>
+              </div>
             </div>
-            <confirmDialog_Delete :confirm_dialog_delete_message="postMessage_Delete" v-show="showContent_confirmDelete" @Cancel_Delete="closeModal_confirmDelete_Cancel" @OK_Delete="closeModal_confirmDelete_OK"/>
+            <!-- 詳細 -->
+            <div>
+              <!--- 削除ボタン -->
+              <div class="form__button">
+                <button type="button" class="button button--inverse" @click="openModal_confirmDelete"><i class="fas fa-trash fa-fw"></i>削除</button>
+              </div>
+              <confirmDialog_Delete :confirm_dialog_delete_message="postMessage_Delete" v-show="showContent_confirmDelete" @Cancel_Delete="closeModal_confirmDelete_Cancel" @OK_Delete="closeModal_confirmDelete_OK"/>
             
-            <div>
-              <h1 style="display: inline">{{ prop.name }}</h1>
-              <div v-if="prop.usage"><i class="fas fa-tag"></i></div>
-            </div>
-            <div>所有者: <span v-if="prop.owner">{{ prop.owner.name }}</span></div>
+              <div>
+                <h1>{{ prop.name }}</h1>
+              </div>
+              
+              <div>所有者: <span v-if="prop.owner">{{ prop.owner.name }}</span></div>
 
-            <div>
-              <label>メモ:</label>
-              <ul v-if="prop.prop_comments.length" >
-                <li v-for="comment in prop.prop_comments">
-                  <div>{{ comment.memo }}</div>
-                </li>
-              </ul>
-            </div>
+              <div>
+                <!-- 中間発表 -->
+                <span v-if="prop.usage" class="usage-show">Ⓟ</span>
+                <!-- 卒業公演 -->
+                <span v-if="prop.usage_guraduation" class="usage-show">Ⓖ</span>
+                <!-- 上手 -->
+                <span v-if="prop.usage_left" class="usage-show">㊤</span>
+                <!-- 下手 -->
+                <span v-if="prop.usage_right" class="usage-show">㊦</span>
+              </div>
 
-            <div>
-              <label>シーン:</label>
-                <ol v-if="prop.scenes.length">
-                  <li v-for="scene in prop.scenes">
-                    <!-- 名前 -->
-                    <span>{{ scene.character.name }}</span>
-                    <!-- 何ページ -->
-                    <span v-if="scene !== null && scene.first_page !== null"> : p. {{ scene.first_page }} 
-                      <span v-if="scene !== null && scene.final_page !== null"> ~ p. {{ scene.final_page}}</span>
-                    </span>
-                    <!-- メモ -->
-                    <div>
-                      <ul v-if="scene.scene_comments.length">
-                        <li v-for="comment in scene.scene_comments">
-                          <div>{{ comment.memo }}</div>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>                  
-                </ol>
-            </div> 
+              <div>
+                <label>メモ:</label>
+                <ul v-if="prop.prop_comments.length" >
+                  <li v-for="comment in prop.prop_comments">
+                    <div>{{ comment.memo }}</div>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <label>シーン:</label>
+                  <ol v-if="prop.scenes.length">
+                    <li v-for="scene in prop.scenes">
+                      <!-- 名前 -->
+                      <span>{{ scene.character.name }}</span>
+                      <!-- 何ページ -->
+                      <span v-if="scene !== null && scene.first_page !== null"> : p. {{ scene.first_page }} 
+                        <span v-if="scene !== null && scene.final_page !== null"> ~ p. {{ scene.final_page}}</span>
+                      </span>
+
+                      <!-- 使用状況 -->
+                      <span v-if="scene.usage" class="usage-show">Ⓟ</span>
+                      <span v-if="scene.usage_guraduation" class="usage-show">Ⓖ</span>
+                      <span v-if="scene.usage_left" class="usage-show">㊤</span>
+                      <span v-if="scene.usage_right" class="usage-show">㊦</span>
+                   
+                      <!-- メモ -->
+                      <div>
+                        <ul v-if="scene.scene_comments.length">
+                          <li v-for="comment in scene.scene_comments">
+                            <div>{{ comment.memo }}</div>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  </ol>
+              </div> 
+            </div>
           </div>
         </div>
-      </div>
     
-      <!-- 編集 -->
-      <div v-show="tab === 2">
-        <form class="detail-box"  @submit.prevent="confirmProp">
-          <!-- 写真 -->
-          <div v-show="editForm_prop.url && editForm_prop.photo === 1">
-            <img :src="prop.url" :alt="prop.name">
-            <button type="button" class="button button--inverse" @click="deletePhoto">×</button>
-          </div>
-          <div v-show="!editForm_prop.photo">
-            <input id="photo_edit" class="form__item" type="file" @change="onFileChange">
-          </div>
-          <div v-show="editForm_prop.photo !== 1 && editForm_prop.photo">
-            <output class="form__output" v-if="preview">
-              <img :src="preview" alt="" style="max-height: 12em">
-            </output>
-            <button type="button" class="button button--inverse" @click="resetPhoto">×</button>
-          </div>
-          
-
-          <!-- 詳細 -->
-          <div>
+        <!-- 編集 -->
+        <div v-show="tab === 2" class="edit-area">
+          <form class="detail-box"  @submit.prevent="confirmProp">
             <div>
-              <label for="prop_name_edit">小道具名</label>
-              <input type="text" id="prop_name_edit" class="form__item" v-model="editForm_prop.name" @input="handleNameInput" required>
-              <input type="text" name="furigana" id="prop_furigana_edit" v-model="editForm_prop.kana" required>
-            </div>            
-            <input type="checkbox" v-model="editForm_prop.usage">
-            <div>所有者: 
-              <select id="prop_owner_edit" class="form__item"  v-model="editForm_prop.owner_id">
-                <option disabled value="">持ち主一覧</option>
-                <option v-for="owner in optionOwners" v-bind:value="owner.id">
-                  {{ owner.name }}
-                </option>
-              </select>
-            </div>
-
-            <div>
-              <label for="prop_comment_edit">メモ:</label>
-              <ul v-if="editForm_prop.prop_comments.length" >
-                <li v-for="comment in editForm_prop.prop_comments">
-                  <textarea v-model="comment.memo">{{ comment.memo }}</textarea>
-                </li>
-              </ul>
-              <div v-else>
-                <textarea id="prop_comment_edit" class="form__item" v-model="editForm_prop.memo"></textarea>
+              <!-- 写真 -->
+              <div v-show="editForm_prop.url && editForm_prop.photo === 1">
+                <img :src="prop.url" :alt="prop.name">
+                <button type="button" class="button button--inverse" @click="deletePhoto">×</button>
               </div>
-            </div>
+              <div v-show="!editForm_prop.photo">
+                <input id="photo_edit" class="form__item" type="file" @change="onFileChange">
+              </div>
+              <div v-show="editForm_prop.photo !== 1 && editForm_prop.photo">
+                <output class="form__output" v-if="preview">
+                  <img :src="preview" alt="" style="max-height: 12em">
+                </output>
+                <button type="button" class="button button--inverse" @click="resetPhoto">×</button>
+              </div>
+            </div>         
 
-            <!-- <div>
-              <label>シーン:</label>
-              <div v-if="editForm_prop.scenes.length && editForm_prop.scenes[0].id">
-                <ol>
-                  <li v-for="(scene, index) in editForm_prop.scenes"> -->
-                    <!-- 名前 -->
-                    <!-- <label for="character_attr">登場人物</label>
-                    <select class="form__item" v-model="scene.section" v-on:change="selected(index)">
-                      <option disabled value="">登場人物属性</option>
-                      <option v-for="(value, key) in optionCharacters">
-                        {{ key }}
-                      </option>
-                    </select>
-
-                    <select class="form__item" v-model="scene.character_id" required>
-                      <option disabled value="">登場人物一覧</option>
-                        <option v-if="selectedCharacters" v-for="characters in selectedCharacters[index]"
-                         v-bind:value="characters.id">
-                          {{ characters.name }}
-                        </option>
-                    </select> -->
-
-                    <!-- ページ数 -->
-                    <!-- <label>ページ数</label>
-                    <div> p. <input class="form__item" v-model="scene.first_page">
-                       ~ p. <input class="form__item" v-model="scene.final_page">
-                    </div> -->
-
-                    <!-- 使用するか -->
-                    <!-- <div>
-                      <label>中間発表での使用</label>
-                      <input type="checkbox" class="form__check__input" v-model="scene.usage"></input>          
-                    </div> -->
-        
-                    <!-- コメント -->
-                    <!-- <label for="comment_scene">コメント</label>
-                    <div>
-                      <ul v-if="scene.scene_comments.length">
-                        <li v-for="comment in scene.scene_comments">
-                          <textarea class="form__item" v-model="comment.memo"></textarea>
-                        </li>
-                      </ul>
-                      <div v-else>
-                        <textarea class="form__item" v-model="scene.memo"></textarea>
-                      </div>
-                    </div>
-                  </li>
-                </ol>
+            <!-- 詳細 -->
+            <div>
+              <!--- 送信ボタン -->
+              <div class="form__button">
+                <button type="submit" class="button button--inverse"><i class="fas fa-edit fa-fw"></i>編集</button>
               </div>
 
-              <div v-else> -->
-                <!-- 登場人物 -->
-                <!-- <label>登場人物</label>
-                <select class="form__item" v-model="editForm_prop.scenes[0].section" v-on:change="selected(0)">
-                  <option disabled value="">登場人物属性</option>
-                  <option v-for="(value, key) in optionCharacters">
-                    {{ key }}
+              <div>
+                <label for="prop_name_edit">小道具名</label>
+                <input type="text" id="prop_name_edit" class="form__item" v-model="editForm_prop.name" @input="handleNameInput" required>
+                <input type="text" name="furigana" id="prop_furigana_edit" v-model="editForm_prop.kana" required>
+              </div>            
+              
+              <div>所有者: 
+                <select id="prop_owner_edit" class="form__item"  v-model="editForm_prop.owner_id">
+                  <option disabled value="">持ち主一覧</option>
+                  <option v-for="owner in optionOwners" v-bind:value="owner.id">
+                    {{ owner.name }}
                   </option>
                 </select>
-
-                <select class="form__item" v-model="editForm_prop.scenes[0].character_id" required>
-                  <option disabled value="">登場人物一覧</option>
-                  <option v-if="selectedCharacters" v-for="characters in selectedCharacters"
-                   v-bind:value="characters.id">
-                    {{ characters.name }}
-                  </option>
-                </select> -->
-
-                <!-- ページ数 -->
-                <!-- <label for="page">ページ数</label>
-                <small>例) 22, 24-25</small>
-                <input type="text"  id="page" class="form__item" v-model="editForm_prop.scenes[0].pages"> -->
-
-                <!-- 使用するか -->
-                <!-- <div class="form__check">
-                  <label for="usage_scene" class="form__check__label">中間発表での使用</label>
-                  <input type="checkbox" id="usage_scene" class="form__check__input" v-model="editForm_prop.scenes[0].usage" checked></input>          
-                </div> -->
-        
-                <!-- コメント -->
-                <!-- <label for="comment_scene">コメント</label>
-                <textarea class="form__item" id="comment_scene" v-model="editForm_prop.scenes[0].scene_comments[0].memo"></textarea>
               </div>
-            </div>  -->
-          </div>
-          <!--- 送信ボタン -->
-          <div class="form__button">
-            <button type="submit" class="button button--inverse">編集</button>
-          </div>
-        </form>
-        <confirmDialog_Edit :confirm_dialog_edit_message="postMessage_Edit" v-show="showContent_confirmEdit" @Cancel_Edit="closeModal_confirmEdit_Cancel" @OK_Edit="closeModal_confirmEdit_OK"/>
+
+              <!-- 使用するか -->
+              <div>
+                <div  class="checkbox-area--together">
+                  <label for="prop_usage_prop_edit" class="form__check__label">中間発表での使用</label>
+                  <input type="checkbox" id="prop_usage_prop_edit" class="form__check__input" v-model="editForm_prop.usage">
+                </div>
+                
+                <div  class="checkbox-area--together">
+                  <label for="prop_usage_guraduation_prop_edit" class="form__check__label">卒業公演での使用</label>
+                  <input type="checkbox" id="prop_usage_guraduation_scene_edit" class="form__check__input" v-model="editForm_prop.usage_guraduation" @change="selectGuraduation">
+                </div>
+
+                <div v-if="guradutaion_tag"  class="checkbox-area--together">
+                  <input type="checkbox" id="prop_usage_left_prop_edit" class="form__check__input" value="left" v-model="editForm_prop.usage_left">
+                  <label for="prop_usage_left_prop_edit" class="form__check__label">上手</label>
+
+                  <input type="checkbox" id="prop_usage_right_prop_edit" class="form__check__input" value="right" v-model="editForm_prop.usage_right"></input>
+                  <label for="prop_usage_right_prop_edit" class="form__check__label">下手</label>                
+                </div>
+              </div>
+
+              <div>
+                <label for="prop_comment_edit">メモ:</label>
+                <ul v-if="editForm_prop.prop_comments.length" >
+                  <li v-for="comment in editForm_prop.prop_comments">
+                    <textarea class="form__item" v-model="comment.memo">{{ comment.memo }}</textarea>
+                  </li>
+                </ul>
+                <div v-else>
+                  <textarea id="prop_comment_edit" class="form__item" v-model="editForm_prop.memo"></textarea>
+                </div>
+              </div>
+
+              <!-- <div>
+                <label>シーン:</label>
+                <div v-if="editForm_prop.scenes.length && editForm_prop.scenes[0].id">
+                  <ol>
+                    <li v-for="(scene, index) in editForm_prop.scenes"> -->
+                      <!-- 名前 -->
+                      <!-- <label for="character_attr">登場人物</label>
+                      <select class="form__item" v-model="scene.section" v-on:change="selected(index)">
+                        <option disabled value="">登場人物属性</option>
+                        <option v-for="(value, key) in optionCharacters">
+                          {{ key }}
+                        </option>
+                      </select>
+  
+                      <select class="form__item" v-model="scene.character_id" required>
+                        <option disabled value="">登場人物一覧</option>
+                          <option v-if="selectedCharacters" v-for="characters in selectedCharacters[index]"
+                           v-bind:value="characters.id">
+                            {{ characters.name }}
+                          </option>
+                      </select> -->
+
+                      <!-- ページ数 -->
+                      <!-- <label>ページ数</label>
+                      <div> p. <input class="form__item" v-model="scene.first_page">
+                         ~ p. <input class="form__item" v-model="scene.final_page">
+                      </div> -->
+
+                      <!-- 使用するか -->
+                      <!-- <div>
+                        <label>中間発表での使用</label>
+                        <input type="checkbox" class="form__check__input" v-model="scene.usage"></input>          
+                      </div> -->
+        
+                      <!-- コメント -->
+                      <!-- <label for="comment_scene">コメント</label>
+                      <div>
+                        <ul v-if="scene.scene_comments.length">
+                          <li v-for="comment in scene.scene_comments">
+                            <textarea class="form__item" v-model="comment.memo"></textarea>
+                          </li>
+                        </ul>
+                        <div v-else>
+                          <textarea class="form__item" v-model="scene.memo"></textarea>
+                        </div>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+  
+                <div v-else> -->
+                  <!-- 登場人物 -->
+                  <!-- <label>登場人物</label>
+                  <select class="form__item" v-model="editForm_prop.scenes[0].section" v-on:change="selected(0)">
+                    <option disabled value="">登場人物属性</option>
+                    <option v-for="(value, key) in optionCharacters">
+                      {{ key }}
+                    </option>
+                  </select>
+
+                  <select class="form__item" v-model="editForm_prop.scenes[0].character_id" required>
+                    <option disabled value="">登場人物一覧</option>
+                    <option v-if="selectedCharacters" v-for="characters in selectedCharacters"
+                     v-bind:value="characters.id">
+                      {{ characters.name }}
+                    </option>
+                  </select> -->
+
+                  <!-- ページ数 -->
+                  <!-- <label for="page">ページ数</label>
+                  <small>例) 22, 24-25</small>
+                  <input type="text"  id="page" class="form__item" v-model="editForm_prop.scenes[0].pages"> -->
+
+                  <!-- 使用するか -->
+                  <!-- <div class="form__check">
+                    <label for="usage_scene" class="form__check__label">中間発表での使用</label>
+                    <input type="checkbox" id="usage_scene" class="form__check__input" v-model="editForm_prop.scenes[0].usage" checked></input>          
+                  </div> -->
+        
+                  <!-- コメント -->
+                  <!-- <label for="comment_scene">コメント</label>
+                  <textarea class="form__item" id="comment_scene" v-model="editForm_prop.scenes[0].scene_comments[0].memo"></textarea>
+                </div>
+              </div>  -->
+            </div>
+          </form>
+          <confirmDialog_Edit :confirm_dialog_edit_message="postMessage_Edit" v-show="showContent_confirmEdit" @Cancel_Edit="closeModal_confirmEdit_Cancel" @OK_Edit="closeModal_confirmEdit_OK"/>
+        </div>
       </div>
       
-      <button type="button" @click="$emit('close')" class="button button--inverse">閉じる</button>
+      <button type="button" @click="$emit('close')" class="button button--inverse button--area--detail-box">閉じる</button>
     </div>
   </div>
 </template>
@@ -236,7 +284,24 @@ export default {
       // 表示する小道具のデータ
       prop: [],
       // 編集データ
-      editForm_prop: [],
+      editForm_prop: {
+        id: null,
+        name: null,
+        kana: null,
+        owner: {
+          name: ''
+        },
+        owner_id: '',
+        url: '',
+        public_id: '',
+        usage: 0,
+        usage_guraduation: 0,
+        usage_left: 0,
+        usage_right: 0,
+        photo: 0,
+        prop_comments: [],
+        scenes: []
+      },
       // 取得するデータ
       props: [],
       optionOwners: [],
@@ -245,6 +310,8 @@ export default {
       optionCharacters: [],
       // タブ
       tab: 1,
+      // 卒業公演
+      guradutaion_tag: 0,
       // overlayのクラス
       overlay_class: 1,
       // 写真プレビュー
@@ -269,6 +336,7 @@ export default {
     postProp: {
       async handler(postProp) {
         if(this.postProp){
+          this.overlay_class = 1;
           await this.fetchCharacters(); // 最初にしないと間に合わない
           await this.fetchProp();
           await this.fetchOwners();
@@ -289,7 +357,19 @@ export default {
     editPropMode_memo: {
       async handler(editPropMode_memo){
         if(this.editPropMode_detail === 100 || this.editPropMode_memo === 100){
+          this.resetProp();
           await this.fetchProp();
+
+          // 調整
+          this.$nextTick(() => {
+            const content_dom = this.$refs.content_detail_prop;
+            const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+            if(content_rect.top < 0){
+              this.overlay_class = 0;
+            }else{
+              this.overlay_class = 1;
+            }
+          });
 
           // メッセージ登録
           this.$store.commit('message/setContent', {
@@ -324,12 +404,38 @@ export default {
       }
 
       this.prop = response.data;
-      this.editForm_prop = JSON.parse(JSON.stringify(this.prop)); // そのままコピーするとコピー元も変更される
-      if(this.editForm_prop.public_id){
-        this.$set(this.editForm_prop, 'photo', 1); // 写真が登録されている（可能性：1のまま、0に変更（この時public_idは存在する）、写真バイナリ代入（この時public_idは存在する））
-      }else{
-        this.$set(this.editForm_prop, 'photo', 0); // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
+      // this.editForm_prop = JSON.parse(JSON.stringify(this.prop)); // そのままコピーするとコピー元も変更される
+      this.editForm_prop.id = this.prop.id;
+      this.editForm_prop.name = this.prop.name;
+      this.editForm_prop.kana = this.prop.kana;
+      if(this.prop.owner_id){
+        this.editForm_prop.owner_id = this.prop.owner_id;
+        this.editForm_prop.owner.name = this.prop.owner.name;
       }
+
+      this.editForm_prop.url = this.prop.url;
+      this.editForm_prop.public_id = this.prop.public_id;
+
+      this.editForm_prop.usage = this.prop.usage;
+      this.editForm_prop.usage_guraduation = this.prop.usage_guraduation;
+      this.editForm_prop.usage_left = this.prop.usage_left;
+      this.editForm_prop.usage_right = this.prop.usage_right;
+
+      this.editForm_prop.prop_comments = JSON.parse(JSON.stringify(this.prop.prop_comments));
+      this.editForm_prop.scenes = JSON.parse(JSON.stringify(this.prop.scenes));
+
+      if(this.prop.usage_guraduation){
+        this.guradutaion_tag = 1;
+      }else{
+        this.guradutaion_tag = 0;
+      }
+
+      if(this.editForm_prop.public_id){
+        this.editForm_prop.photo = 1; // 写真が登録されている（可能性：1のまま、0に変更（この時public_idは存在する）、写真バイナリ代入（この時public_idは存在する））
+      }else{
+        this.editForm_prop.photo = 0; // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
+      }
+      this.preview = null;
       // if(!this.editForm_prop.scenes.length){
       //   this.editForm_prop.scenes[0] = Object.assign({}, this.editForm_prop.scenes[0], {character_id: null, section: '' , page: '', usage: '', scene_comments: []})
       //   this.editForm_prop.scenes[0].scene_comments[0] = Object.assign({}, this.editForm_prop.scenes[0].scene_comments[0], {memo: null})
@@ -402,11 +508,32 @@ export default {
       }else{
         this.tab = 1;
       }
+
+      // 調整
+      this.$nextTick(() => {
+        const content_dom = this.$refs.content_detail_prop;
+        const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+        if(content_rect.top < 0){
+          this.overlay_class = 0;
+        }else{
+          this.overlay_class = 1;
+        }
+      });
     },
 
     // 写真を見せない
     deletePhoto(){
       this.editForm_prop.photo = 0;
+      // 調整
+      this.$nextTick(() => {
+        const content_dom = this.$refs.content_detail_prop;
+        const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+        if(content_rect.top < 0){
+          this.overlay_class = 0;
+        }else{
+          this.overlay_class = 1;
+        }
+      });
     },
 
     // フォームでファイルが選択されたら実行される
@@ -442,6 +569,17 @@ export default {
       reader.readAsDataURL(event.target.files[0]);
 
       this.editForm_prop.photo = event.target.files[0];
+
+      // 調整
+      this.$nextTick(() => {
+        const content_dom = this.$refs.content_detail_prop;
+        const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+        if(content_rect.top < 0){
+          this.overlay_class = 0;
+        }else{
+          this.overlay_class = 1;
+        }
+      });
     },
 
     // 画像をクリアするメソッド
@@ -449,13 +587,75 @@ export default {
       this.preview = null;
       this.editForm_prop.photo = 0;
       this.$el.querySelector('input[type="file"]').value = null;
+      // 調整
+      this.$nextTick(() => {
+        const content_dom = this.$refs.content_detail_prop;
+        const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+        if(content_rect.top < 0){
+          this.overlay_class = 0;
+        }else{
+          this.overlay_class = 1;
+        }
+      });
+    },
+
+    // 卒業公演の使用にチェックが付いたか
+    selectGuraduation() {
+      if(!this.guradutaion_tag){
+        this.guradutaion_tag = 1;
+      }else{
+        this.guradutaion_tag = 0;
+        this.editForm_prop.usage_left = 0;
+        this.editForm_prop.usage_right = 0;
+      }
+    },
+
+    // 諸々リセット
+    resetProp() {
+      this.editForm_prop.id = null;
+      this.editForm_prop.name = null;
+      this.editForm_prop.kana = null;
+      this.editForm_prop.owner.name = '';
+      this.editForm_prop.owner_id = '';
+      this.editForm_prop.url = '';
+      this.editForm_prop.public_id = '';
+      this.editForm_prop.usage = 0;
+      this.editForm_prop.usage_guraduation = 0;
+      this.editForm_prop.usage_left = 0;
+      this.editForm_prop.usage_right = 0;
+      this.editForm_prop.photo = 0;
+      this.editForm_prop.prop_comments = [];
+      this.editForm_prop.scenes = [];
+      // 卒業公演
+      this.guradutaion_tag = 0;
+
+      this.preview = null;
+      this.editForm_prop.photo = 0;
+      this.$el.querySelector('input[type="file"]').value = null;
+
+      if(this.val){
+        // 調整
+        this.$nextTick(() => {
+          const content_dom = this.$refs.content_detail_prop;
+          const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+          if(content_rect.top < 0){
+            this.overlay_class = 0;
+          }else{
+            this.overlay_class = 1;
+          }
+        });
+      }
     },
 
     // 編集エラー
     confirmProp () {
-      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.usage !== this.editForm_prop.usage) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
-        // 写真をアップデートしない
-        this.editPropMode_detail = 1; // 'photo_non_update'
+      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
+        if(!this.prop.owner_id && !this.editForm_prop.owner_id){
+          this.editPropMode_detail = 0;
+        }else{
+          // 写真をアップデートしない
+          this.editPropMode_detail = 1; // 'photo_non_update'
+        }        
       }else if(this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo && this.editForm_prop.photo !== 1){
         // 写真新規
         this.editPropMode_detail = 2; // 'photo_store'
@@ -490,7 +690,47 @@ export default {
     // 編集confirmのモーダル表示 
     openModal_confirmEdit () {
       this.showContent_confirmEdit = true;
-      this.postMessage_Edit = '以下のように編集します。';
+
+      this.optionOwners.forEach((owner) => {
+        if(owner.id === this.editForm_prop.owner_id){
+          this.editForm_prop.owner.name = owner.name;
+        }
+      }, this);
+
+      let usage = '';
+      let usage_guraduation = '';
+      let usage_left = '';
+      let usage_right = '';
+
+      if(this.editForm_prop.usage) { 
+        usage = 'Ⓟ ';
+      }
+      if(this.editForm_prop.usage_guraduation) { 
+        usage_guraduation = 'Ⓖ ';
+      }
+      if(this.editForm_prop.usage_left) {
+        usage_left = '㊤ ';
+      }
+      if(this.editForm_prop.usage_right){
+        usage_right = '㊦';
+      }
+
+      let memos = [];
+      this.editForm_prop.prop_comments.forEach((memo, index) => {
+        if(memo.memo && index !== this.editForm_prop.prop_comments.length - 1){
+          memos.push(memo.memo+'\n　　　');
+        }else if(memo.memo){
+          memos.push(memo.memo);
+        }
+      }, this);
+
+      // 写真は出ない
+      let photo = '変更する';
+      if(this.editPropMode_detail === 1 || this.editPropMode_detail === 0){
+        photo = '変更しない';
+      }
+
+      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name+'\nふりがな：'+this.editForm_prop.kana+'\n持ち主：'+this.editForm_prop.owner.name +'\n使用状況：'+usage+usage_guraduation+usage_left+usage_right+'\nメモ：'+memos+'\n写真：'+photo;
     },
     // 編集confirmのモーダル非表示_OKの場合
     async closeModal_confirmEdit_OK() {
@@ -505,6 +745,9 @@ export default {
     // 編集confirmのモーダル非表示_Cancelの場合
     closeModal_confirmEdit_Cancel() {
       this.showContent_confirmEdit= false;
+      this.editForm_prop.owner = "";
+      this.editPropMode_detail = "";
+      this.editPropMode_memo = "";
     },
 
     // 基本情報を編集する
@@ -516,7 +759,10 @@ export default {
           name: this.editForm_prop.name,
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
-          usage: this.editForm_prop.usage
+          usage: this.editForm_prop.usage,
+          usage_guraduation: this.editForm_prop.usage_guraduation,
+          usage_left: this.editForm_prop.usage_left,
+          usage_right: this.editForm_prop.usage_right
         });
 
         if (response.status === 422) {
@@ -542,6 +788,9 @@ export default {
         formData.append('kana', this.editForm_prop.kana);
         formData.append('owner_id', this.editForm_prop.owner_id);
         formData.append('usage', this.editForm_prop.usage);
+        formData.append('usage_guraduation', this.editForm_prop.usage_guraduation);
+        formData.append('usage_left', this.editForm_prop.usage_left);
+        formData.append('usage_right', this.editForm_prop.usage_right);
         formData.append('photo', this.editForm_prop.photo);
         const response = await axios.post('/api/props/'+ this.prop.id, formData);
 
@@ -568,7 +817,10 @@ export default {
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
           public_id: this.editForm_prop.public_id,
-          usage: this.editForm_prop.usage
+          usage: this.editForm_prop.usage,
+          usage_guraduation: this.editForm_prop.usage_guraduation,
+          usage_left: this.editForm_prop.usage_left,
+          usage_right: this.editForm_prop.usage_right
         });
 
         if (response.status === 422) {
@@ -595,6 +847,9 @@ export default {
         formData.append('owner_id', this.editForm_prop.owner_id);
         formData.append('public_id', this.editForm_prop.public_id);
         formData.append('usage', this.editForm_prop.usage);
+        formData.append('usage_guraduation', this.editForm_prop.usage_guraduation);
+        formData.append('usage_left', this.editForm_prop.usage_left);
+        formData.append('usage_right', this.editForm_prop.usage_right);
         formData.append('photo', this.editForm_prop.photo);
         const response = await axios.post('/api/props/'+ this.prop.id, formData);
 
@@ -703,7 +958,7 @@ export default {
       }
 
       this.prop = [];
-      this.editForm_prop = [];
+      this.resetProp();
 
       // メッセージ登録
       this.$store.commit('message/setContent', {

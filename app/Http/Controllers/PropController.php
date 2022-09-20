@@ -164,9 +164,12 @@ class PropController extends Controller
             // 写真更新しない
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
             $usage = !empty($request->usage) ? 1 : 0;
+            $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
+            $usage_left = !empty($request->usage_left) ? 1 : 0;
+            $usage_right = !empty($request->usage_right) ? 1 : 0;
 
             $affected = Prop::where('id', $id)
-                   ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'usage' => $usage]);
+                   ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
 
             // レスポンスコードは204(No Content)を返却する
             return response($affected, 204);
@@ -185,12 +188,15 @@ class PropController extends Controller
 
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
             $usage = !empty($request->usage) ? 1 : 0;
+            $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
+            $usage_left = !empty($request->usage_left) ? 1 : 0;
+            $usage_right = !empty($request->usage_right) ? 1 : 0;
 
             DB::beginTransaction();
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 
                 DB::commit();
             }catch (\Exception $exception) {
@@ -210,12 +216,15 @@ class PropController extends Controller
             // 写真削除
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
             $usage = !empty($request->usage) ? 1 : 0;
+            $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
+            $usage_left = !empty($request->usage_left) ? 1 : 0;
+            $usage_right = !empty($request->usage_right) ? 1 : 0;
 
             DB::beginTransaction();
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => null, 'url' => null, 'usage' => $usage]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => null, 'url' => null, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 
                 DB::commit();
 
@@ -247,12 +256,15 @@ class PropController extends Controller
             }
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
             $usage = !empty($request->usage) ? 1 : 0;
+            $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
+            $usage_left = !empty($request->usage_left) ? 1 : 0;
+            $usage_right = !empty($request->usage_right) ? 1 : 0;
 
             DB::beginTransaction();
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 
                 DB::commit();
 

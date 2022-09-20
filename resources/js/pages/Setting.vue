@@ -20,10 +20,10 @@
       <div id="section_view">
         <ul v-if="gainSet.characters.length">
           <li v-for="section in gainSet.characters">
-            <div type="button" @click="openModal_sectionEdit(section.id)">{{ section.section }}</div>
+            <div type="button" class="list-button" @click="openModal_sectionEdit(section.id)">{{ section.section }}</div>
             <ul v-if="section.characters.length">
               <li v-for="name in section.characters">
-                <div type="button" @click="openModal_characterEdit(name.id)">{{ name.name }}</div>                
+                <div type="button" class="list-button" @click="openModal_characterEdit(name.id)">{{ name.name }}</div>                
               </li>
             </ul>
           </li>
@@ -37,7 +37,7 @@
       <div id="owner_view">
         <ul v-if="gainSet.owners.length">
           <li v-for="owner in gainSet.owners">
-            <div type="button" @click="openModal_ownerEdit(owner.id)">{{ owner.name }}</div> 
+            <div type="button" class="list-button" @click="openModal_ownerEdit(owner.id)">{{ owner.name }}</div> 
           </li>
         </ul>
       </div>

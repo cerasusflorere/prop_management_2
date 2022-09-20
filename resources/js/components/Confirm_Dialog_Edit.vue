@@ -4,14 +4,16 @@
       <div id="confirm_dialog_edit_title">
         編集
       </div>
-      <div id="confirm_dialog_edit_message">
-        {{ confirm_dialog_edit_message }}
+      <div id="confirm_dialog_edit_message" class="dialog-message">
+{{ confirm_dialog_edit_message }}
       </div>
-  
-      <button type="button" @click="$emit('Cancel_Edit')" class="button button--inverse">キャンセル</button>
+
+      <div class="button-area--together">
+        <button type="button" @click="$emit('Cancel_Edit')" class="button button--inverse button--confirm"><i class="fas fa-ban fa-fw"></i>キャンセル</button>
         
-      <button type="button" @click="$emit('OK_Edit')" class="button button--inverse">OK</button>
-    </div>
+        <button type="button" @click="$emit('OK_Edit')" class="button button--inverse button--confirm button--danger"><i class="fas fa-edit fa-fw"></i>編集</button>
+      </div>  
+      </div>
   </div>
 </template>
   

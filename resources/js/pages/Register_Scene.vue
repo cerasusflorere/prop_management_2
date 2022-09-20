@@ -1,14 +1,14 @@
 <template>
   <div class="panel">
     <div>
-      <div>
+      <div class="checkbox-area--together">
         <input type="radio" id="passo" v-model="season" value="passo">
         <label for="passo">中間公演</label>
 
         <input type="radio" id="guraduation" v-model="season" value="guradution">
         <label for="guraduation">卒業公演</label>
-         
       </div>
+
       <form class="form"  @submit.prevent="register">
         <!-- 登場人物 -->
         <label for="character_attr">登場人物</label>
@@ -37,7 +37,7 @@
           </option>
         </select>
         <div class="form__button">
-          <button type="button" @click="openModal_register()" class="button button--inverse">新たな小道具追加</button>
+          <button type="button" @click="openModal_register()" class="button button--inverse"><i class="fas fa-plus fa-fw"></i>新たな小道具追加</button>
         </div>
         <registerProp :val="postFlag" v-show="showContent" @close="closeModal_register" />
 
@@ -48,25 +48,24 @@
         <input type="text"  id="page" class="form__item" v-model="registerForm.pages">
 
         <!-- 使用するか -->
-        <div class="form__check">
-          <div v-show="season_tag === 1">
-            <label for="usage_scene" class="form__check__label">中間発表での使用</label>
-            <input type="checkbox" id="usage_scene" class="form__check__input" v-model="registerForm.usage"></input>    
+        <div>
+          <div v-show="season_tag === 1" class="checkbox-area--together">
+            <label for="usage_scene">中間発表での使用</label>
+            <input type="checkbox" id="usage_scene" v-model="registerForm.usage"></input>    
           </div>
           <div v-show="season_tag === 2">
-            <div>
+            <div class="checkbox-area--together">
               <label for="usage_scene_guradutaion">卒業公演での使用</label>
-              <input type="checkbox" id="usage_scene_guradutaion" class="form__check__input" v-model="registerForm.usage_guraduation" @change="selectGuraduation">
+              <input type="checkbox" id="usage_scene_guradutaion" v-model="registerForm.usage_guraduation" @change="selectGuraduation">
             </div>
-            <div v-if="guradutaion_tag">
-              <input type="radio" id="usage_scene_left" class="form__check__input" value="usage_left" v-model="registerForm.usage_stage">            
-              <label for="usage_scene_left" class="form__check__label">上手</label>
+            <div v-if="guradutaion_tag" class="checkbox-area--together">
+              <input type="radio" id="usage_scene_left" value="usage_left" v-model="registerForm.usage_stage">            
+              <label for="usage_scene_left">上手</label>
 
-              <input type="radio" id="usage_scene_right" class="form__check__input" value="usage_right" v-model="registerForm.usage_stage">
-              <label for="usage_scene_right" class="form__check__label">下手</label>
+              <input type="radio" id="usage_scene_right" value="usage_right" v-model="registerForm.usage_stage">
+              <label for="usage_scene_right">下手</label>
             </div>
           </div>
-      
         </div>
         
         <!-- コメント -->
@@ -75,7 +74,7 @@
 
         <!--- 送信ボタン -->
         <div class="form__button">
-          <button type="submit" class="button button--inverse">登録</button>
+          <button type="submit" class="button button--inverse"><i class="fas fa-paper-plane fa-fw"></i>登録</button>
         </div>
       </form>
     </div>

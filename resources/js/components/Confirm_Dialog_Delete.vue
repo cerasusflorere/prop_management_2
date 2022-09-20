@@ -8,10 +8,13 @@
         {{ confirm_dialog_delete_message }}
       </div>
 
-      <button type="button" @click="$emit('Cancel_Delete')" class="button button--inverse">キャンセル</button>
+      <div class="button-area--together">
+        <button type="button" @click="$emit('Cancel_Delete')" class="button button--inverse button--confirm"><i class="fas fa-ban fa-fw"></i>キャンセル</button>
         
-      <button type="button" @click="$emit('OK_Delete')" class="button button--inverse">OK</button>
-    </div>
+        <button type="button" @click="$emit('OK_Delete')" class="button button--inverse button--confirm button--danger"><i class="fas fa-trash fa-fw"></i>削除</button>
+      </div>
+
+      </div>
   </div>
 </template>
 

@@ -23,19 +23,19 @@
 
           <li>
             <RouterLink class="button" to="/register_scene">
-              <i class="fas fa-pen fa-fw"></i>使用シーン
+              <i class="fas fa-paper-plane fa-fw"></i>使用シーン
             </RouterLink>
           </li>
 
           <li>
             <RouterLink class="button" to="/register_prop">
-              <i class="fas fa-pen fa-fw"></i>小道具
+              <i class="fas fa-paper-plane fa-fw"></i>小道具
             </RouterLink>
           </li>
 
           <li>
             <RouterLink class="button" to="/setting">
-              <i class="fas fa-eye fa-fw"></i>設定
+              <i class="fas fa-cog fa-fw"></i>設定
             </RouterLink>
           </li>
         </ul>
