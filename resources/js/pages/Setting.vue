@@ -223,6 +223,19 @@ export default {
 
     // 登録する
     async register_section () {
+      let section = 0;
+      this.optionSections.forEach((name) => {
+        if(name.section === this.registerForm_section) {
+          section = 1;
+          return false;
+        }
+      }, this);
+
+      if(section){
+        alert('同じ名前は登録できません。');
+        return false;
+      }
+
       const response = await axios.post('/api/informations/sections', {
         section: this.registerForm_section
       });
@@ -249,6 +262,26 @@ export default {
     },
 
     async register_character () {
+      let character = 0;
+      this.gainSet.characters.forEach((names,index) => {
+        names.characters.forEach((name) => {
+          console.log(name);
+          console.log(this.registerForm_character);
+          if(name.name === this.registerForm_character.character) {
+            character = 1;
+            return false;
+          }
+        }, this);
+        if(index === this.gainSet.characters.length-1){
+          console.log(character);
+        }
+      }, this);
+
+      if(character){
+        alert('同じ名前は登録できません。');
+        return false;
+      }
+
       const response = await axios.post('/api/informations/characters', {
         section_id: this.registerForm_character.section,
         name: this.registerForm_character.character
@@ -276,6 +309,18 @@ export default {
     },
     
     async register_owner () {
+      let owner = 0;
+      this.gainSet.owners.forEach((name) => {
+        if(name.name === this.registerForm_owner) {
+          owner = 1;
+          return false;
+        }
+      }, this);
+
+      if(owner){
+        alert('同じ名前は登録できません。');
+      }
+
       const response = await axios.post('/api/informations/owners', {
         name: this.registerForm_owner
       });

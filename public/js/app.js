@@ -6629,14 +6629,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       var section = 0;
       this.sections.forEach(function (name) {
-        console.log(name);
-
         if (name.section === _this4.editForm_section.section && name.id !== _this4.editForm_section.id) {
           section = 1;
           return false;
         }
       }, this);
-      console.log(section);
 
       if (this.section_edit.id === this.editForm_section.id && this.section_edit.section !== this.editForm_section.section && !section) {
         this.openModal_confirmEdit();
@@ -8571,30 +8568,48 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this8 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
-        var response;
+        var section, response;
         return _regeneratorRuntime().wrap(function _callee8$(_context8) {
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                _context8.next = 2;
+                section = 0;
+
+                _this8.optionSections.forEach(function (name) {
+                  if (name.section === _this8.registerForm_section) {
+                    section = 1;
+                    return false;
+                  }
+                }, _this8);
+
+                if (!section) {
+                  _context8.next = 5;
+                  break;
+                }
+
+                alert('同じ名前は登録できません。');
+                return _context8.abrupt("return", false);
+
+              case 5:
+                _context8.next = 7;
                 return axios.post('/api/informations/sections', {
                   section: _this8.registerForm_section
                 });
 
-              case 2:
+              case 7:
                 response = _context8.sent;
 
                 if (!(response.status === 422)) {
-                  _context8.next = 6;
+                  _context8.next = 11;
                   break;
                 }
 
                 _this8.errors.error = response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 6:
+              case 11:
                 if (!(response.status !== 201)) {
-                  _context8.next = 9;
+                  _context8.next = 14;
                   break;
                 }
 
@@ -8602,23 +8617,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context8.abrupt("return", false);
 
-              case 9:
+              case 14:
                 _this8.registerForm_section = null;
-                _context8.next = 12;
+                _context8.next = 17;
                 return _this8.fetchSections();
 
-              case 12:
-                _context8.next = 14;
+              case 17:
+                _context8.next = 19;
                 return _this8.fetchCharacters();
 
-              case 14:
+              case 19:
                 // メッセージ登録
                 _this8.$store.commit('message/setContent', {
                   content: '区分が登録されました！',
                   timeout: 6000
                 });
 
-              case 15:
+              case 20:
               case "end":
                 return _context8.stop();
             }
@@ -8630,31 +8645,58 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this9 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
-        var response;
+        var character, response;
         return _regeneratorRuntime().wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
-                _context9.next = 2;
+                character = 0;
+
+                _this9.gainSet.characters.forEach(function (names, index) {
+                  names.characters.forEach(function (name) {
+                    console.log(name);
+                    console.log(_this9.registerForm_character);
+
+                    if (name.name === _this9.registerForm_character.character) {
+                      character = 1;
+                      return false;
+                    }
+                  }, _this9);
+
+                  if (index === _this9.gainSet.characters.length - 1) {
+                    console.log(character);
+                  }
+                }, _this9);
+
+                if (!character) {
+                  _context9.next = 5;
+                  break;
+                }
+
+                alert('同じ名前は登録できません。');
+                return _context9.abrupt("return", false);
+
+              case 5:
+                _context9.next = 7;
                 return axios.post('/api/informations/characters', {
                   section_id: _this9.registerForm_character.section,
                   name: _this9.registerForm_character.character
                 });
 
-              case 2:
+              case 7:
                 response = _context9.sent;
 
                 if (!(response.status === 422)) {
-                  _context9.next = 6;
+                  _context9.next = 11;
                   break;
                 }
 
                 _this9.errors.error = response.data.errors;
                 return _context9.abrupt("return", false);
 
-              case 6:
+              case 11:
                 if (!(response.status !== 201)) {
-                  _context9.next = 9;
+                  _context9.next = 14;
                   break;
                 }
 
@@ -8662,20 +8704,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context9.abrupt("return", false);
 
-              case 9:
+              case 14:
                 _this9.registerForm_character.section = null;
                 _this9.registerForm_character.character = null;
-                _context9.next = 13;
+                _context9.next = 18;
                 return _this9.fetchCharacters();
 
-              case 13:
+              case 18:
                 // メッセージ登録
                 _this9.$store.commit('message/setContent', {
                   content: '登場人物が登録されました！',
                   timeout: 6000
                 });
 
-              case 14:
+              case 19:
               case "end":
                 return _context9.stop();
             }
@@ -8687,30 +8729,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this10 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
-        var response;
+        var owner, response;
         return _regeneratorRuntime().wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
-                _context10.next = 2;
+                owner = 0;
+
+                _this10.gainSet.owners.forEach(function (name) {
+                  if (name.name === _this10.registerForm_owner) {
+                    owner = 1;
+                    return false;
+                  }
+                }, _this10);
+
+                if (owner) {
+                  alert('同じ名前は登録できません。');
+                }
+
+                _context10.next = 5;
                 return axios.post('/api/informations/owners', {
                   name: _this10.registerForm_owner
                 });
 
-              case 2:
+              case 5:
                 response = _context10.sent;
 
                 if (!(response.status === 422)) {
-                  _context10.next = 6;
+                  _context10.next = 9;
                   break;
                 }
 
                 _this10.errors.error = response.data.errors;
                 return _context10.abrupt("return", false);
 
-              case 6:
+              case 9:
                 if (!(response.status !== 201)) {
-                  _context10.next = 9;
+                  _context10.next = 12;
                   break;
                 }
 
@@ -8718,19 +8773,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context10.abrupt("return", false);
 
-              case 9:
+              case 12:
                 _this10.registerForm_owner = null;
-                _context10.next = 12;
+                _context10.next = 15;
                 return _this10.fetchOwners();
 
-              case 12:
+              case 15:
                 // メッセージ登録
                 _this10.$store.commit('message/setContent', {
                   content: '持ち主が登録されました！',
                   timeout: 6000
                 });
 
-              case 13:
+              case 16:
               case "end":
                 return _context10.stop();
             }
