@@ -14,60 +14,132 @@
 
     <!-- 表示エリア -->
     <div v-show="tabProp === 1">
-      <!-- ダウンロードボタン -->
-      <div class="button-area--download">
-        <button type="button" @click="downloadProps" class="button button--inverse"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>小道具名</th>
-            <th>持ち主</th>
-            <th>中間発表</th>
-            <th>卒業公演</th>
-            <th>上手</th>
-            <th>下手</th>
-            <th>メモ</th>
-            <th>登録日時</th>
-            <th>更新日時</th>
-          </tr>
-        </thead>
-        <tbody v-if="showProps.length">
-          <tr v-for="(prop, index) in showProps">
-            <td>{{ index + 1 }}</td>
-            <!-- 小道具名 -->
-            <td type="button" class="list-button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</td>
-            <!-- 持ち主 -->
-            <td v-if="prop.owner">{{ prop.owner.name }}</td>
-            <td v-else></td>
-            <!-- 中間発表-->
-            <td v-if="prop.usage"><i class="fas fa-check fa-fw"></i></td>
-            <td v-else></td>
-            <!-- 卒業公演-->
-            <td v-if="prop.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
-            <td v-else></td>
-            <!-- 上手-->
-            <td v-if="prop.usage_left"><i class="fas fa-check fa-fw"></i></td>
-            <td v-else></td>
-            <!-- 下手-->
-            <td v-if="prop.usage_right"><i class="fas fa-check fa-fw"></i></td>
-            <td v-else></td>
-            <!-- メモ -->
-            <td v-if="prop.prop_comments.length">
-              <div v-for="memo in prop.prop_comments"> {{ memo.memo }}</div>
-            </td>
-            <td v-else></td>
-            <!-- 登録日時 -->
-            <td>{{ prop.created_at }}</td>
-            <!-- 更新日時 -->
-            <td>{{ prop.updated_at }}</td>
-          </tr>
-        </tbody>      
-      </table>
+      <div v-if="!sizeScreen" class="PC">
+        <!-- ダウンロードボタン -->
+        <div class="button-area--download">
+          <button type="button" @click="downloadProps" class="button button--inverse"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th class="th-non"></th>
+              <th>小道具名</th>
+              <th>持ち主</th>
+              <th>中間</th>
+              <th>卒業</th>
+              <th>上手</th>
+              <th>下手</th>
+              <th class="th-memo">メモ</th>
+              <th>登録日時</th>
+              <th>更新日時</th>
+            </tr>
+          </thead>
+          <tbody v-if="showProps.length">
+            <tr v-for="(prop, index) in showProps">
+              <td class="td-color">{{ index + 1 }}</td>
+              <!-- 小道具名 -->
+              <td type="button" class="list-button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</td>
+              <!-- 持ち主 -->
+              <td v-if="prop.owner">{{ prop.owner.name }}</td>
+              <td v-else></td>
+              <!-- 中間発表-->
+              <td v-if="prop.usage"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+              <!-- 卒業公演-->
+              <td v-if="prop.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+              <!-- 上手-->
+              <td v-if="prop.usage_left"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+              <!-- 下手-->
+              <td v-if="prop.usage_right"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+              <!-- メモ -->
+              <td v-if="prop.prop_comments.length">
+                <div v-for="memo in prop.prop_comments"> {{ memo.memo }}</div>
+              </td>
+              <td v-else></td>
+              <!-- 登録日時 -->
+              <td>{{ prop.created_at }}</td>
+              <!-- 更新日時 -->
+              <td>{{ prop.updated_at }}</td>
+            </tr> 
+          </tbody>      
+        </table>
 
-      <div v-if="!showProps.length">
-        小道具は登録されていません。
+        <div v-if="!showProps.length">
+          小道具は登録されていません。 
+        </div>
+      </div>
+
+      <div v-else class="phone">
+        <div v-if="showProps.length">
+          <table>
+            <div v-for="(prop, index) in showProps">
+              <tr>
+                <th class="th-non"></th>
+                <td class="td-color">{{ index + 1 }}</td> 
+              </tr>
+              <tr>
+                <!-- 小道具名 -->
+                <th>小道具名</th>
+                <td type="button" class="list-button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</td>
+              </tr>
+              <tr>
+                <!-- 持ち主 -->
+                <th>持ち主</th>
+                <td v-if="prop.owner">{{ prop.owner.name }}</td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 中間発表 -->
+                <th>中間</th>
+                <td v-if="prop.usage"><i class="fas fa-check fa-fw"></i></td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 卒業公演 -->
+                <th>卒業</th>
+                <td v-if="prop.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 上手 -->
+                <th>上手</th>
+                <td v-if="prop.usage_left"><i class="fas fa-check fa-fw"></i></td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 下手 -->
+                <th>下手</th>
+                <td v-if="prop.usage_right"><i class="fas fa-check fa-fw"></i></td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- メモ -->
+                <th>メモ</th>
+                <td v-if="prop.prop_comments.length">
+                  <div v-for="memo in prop.prop_comments"> {{ memo.memo }}</div>
+                </td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 登録日時 -->
+                <th>登録日時</th>
+                <td>{{ prop.created_at }}</td>
+              </tr>
+              <tr>
+                <!-- 更新日時 -->
+                <th>更新日時</th>
+                <td>{{ prop.updated_at }}</td>
+              </tr>
+            </div>
+          </table>
+        </div>
+
+        <div v-else>
+          小道具は登録されていません。 
+        </div>
       </div>
     </div>
 
@@ -136,6 +208,8 @@
     },
     data() {
       return{
+        // 画面サイズ取得
+        sizeScreen: 1, // 0:パソコン, 1: スマホ
         // タブ切り替え
         tabProp: 1,
         // 取得するデータ
@@ -150,7 +224,14 @@
     watch: {
       $route: {
         async handler () {
-          await this.fetchProps()
+          await this.fetchProps();
+          if (window.matchMedia('(max-width: 989px)').matches) {
+            //スマホ処理
+            this.sizeScreen = 1;
+          } else {
+            //PC処理
+            this.sizeScreen = 0;
+          }
         },
         immediate: true
       }

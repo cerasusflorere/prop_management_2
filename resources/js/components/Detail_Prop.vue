@@ -115,7 +115,7 @@
               <div>
                 <label for="prop_name_edit">小道具名</label>
                 <input type="text" id="prop_name_edit" class="form__item" v-model="editForm_prop.name" @input="handleNameInput" required>
-                <input type="text" name="furigana" id="prop_furigana_edit" v-model="editForm_prop.kana" required>
+                <input type="text" name="furigana" id="prop_furigana_edit" class="form__item form__item--furigana" v-model="editForm_prop.kana" required>
               </div>            
               
               <div>所有者: 

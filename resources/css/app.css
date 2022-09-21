@@ -220,6 +220,7 @@ img {
   top: 0;
   right: -120%;/*rightの値を変更してメニューを画面外へ*/
   width: 15%;
+  min-width: 9.5em;
   height: 100%;
   background-color: #ddefe3;
   transition: all 0.5s;/*アニメーション設定*/
@@ -320,6 +321,9 @@ main {
   padding-top: 0.3em;
   padding-bottom: 0.3em;
 }
+.edit-area .form__item--furigana {
+  width: 80%;
+}
 
 
 
@@ -342,6 +346,26 @@ table th {/*table内のthに対して*/
   color: #169b62;/*文字色 緑*/
   background: #ddefe3;/*背景色*/
 }
+.phone th {
+  width: 20%;
+}
+.phone td {
+  width: 70%;
+}
+
+.th-non { 
+  color: #222;
+  background: white;
+}
+.td-color {
+  color: #169b62;/*文字色 緑*/
+  background: #ddefe3;/*背景色*/
+}
+.PC .th-memo {
+  width: 10em;
+}
+
+
 
 table td {/*table内のtdに対して*/
   padding: 0.3em 0.5em;/*上下3pxで左右10px*/

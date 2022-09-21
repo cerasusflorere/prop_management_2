@@ -1,68 +1,144 @@
 <template>
   <!-- 表示エリア -->
   <div>
-    <!-- ダウンロードボタン -->
-    <div class="button-area--download">
-      <button type="button" @click="downloadScenes" class="button button--inverse"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
+    <div v-if="!sizeScreen" class="PC">
+      <!-- ダウンロードボタン -->
+      <div class="button-area--download">
+        <button type="button" @click="downloadScenes" class="button button--inverse"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="th-non"></th>
+            <th>ページ数</th>
+            <th>登場人物</th>
+            <th>小道具名</th> 
+            <th>中間発表</th>
+            <th>卒業公演</th>
+            <th>上手</th>
+            <th>下手</th>         
+            <th class="th-memo">メモ</th>
+            <th>登録日時</th>
+            <th>更新日時</th>
+          </tr>
+        </thead>
+        <tbody v-if="showScenes.length">
+          <tr v-for="(scene, index) in showScenes">
+              <!-- index -->
+              <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
+              <!-- 何ページから -->
+              <td v-if="scene.first_page">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
+              <td v-if="!scene.first_page"></td>
+              <!-- 登場人物 -->
+              <td>{{ scene.character.name }}</td>
+              <!-- 小道具名 -->
+              <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
+              <!-- 中間発表 -->
+              <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td> 
+              <!-- 卒業公演 -->
+              <td v-if="scene.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+              <!-- 上手 -->
+              <td v-if="scene.usage_left"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+              <!-- 下手 -->
+              <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+              <!-- メモ -->
+              <td v-if="scene.scene_comments.length">
+                <div v-for="memo in scene.scene_comments"> {{ memo.memo }}</div>
+              </td>
+              <td v-else></td>
+              <!-- 登録日時 -->
+              <td>{{ scene.created_at }}</td>
+              <!-- 更新日時 -->
+              <td>{{ scene.updated_at }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div v-if="!showScenes.length">
+        使用シーンは登録されていません。
+      </div>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th>何ページから</th>
-          <th>何ページまで</th>
-          <th>登場人物</th>
-          <th>小道具名</th> 
-          <th>中間発表</th>
-          <th>卒業公演</th>
-          <th>上手</th>
-          <th>下手</th>         
-          <th>メモ</th>
-          <th>登録日時</th>
-          <th>更新日時</th>
-        </tr>
-      </thead>
-      <tbody v-if="showScenes.length">
-        <tr v-for="(scene, index) in showScenes">
-            <!-- index -->
-            <td type="button" class="list-button" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
-            <!-- 何ページから -->
-            <td v-if="scene.first_page">{{ scene.first_page }}</td>
-            <td v-else></td>
-            <!-- 何ページまで -->
-            <td v-if="scene.final_page">{{ scene.final_page }}</td>
-            <td v-else></td>
-            <!-- 登場人物 -->
-            <td>{{ scene.character.name }}</td>
-            <!-- 小道具名 -->
-            <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
-            <!-- 中間発表 -->
-            <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
-            <td v-else></td> 
-            <!-- 卒業公演 -->
-            <td v-if="scene.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
-            <td v-else></td>
-            <!-- 上手 -->
-            <td v-if="scene.usage_left"><i class="fas fa-check fa-fw"></i></td>
-            <td v-else></td>
-            <!-- 下手 -->
-            <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
-            <td v-else></td>
-            <!-- メモ -->
-            <td v-if="scene.scene_comments.length">
-              <div v-for="memo in scene.scene_comments"> {{ memo.memo }}</div>
-            </td>
-            <td v-else></td>
-            <!-- 登録日時 -->
-            <td>{{ scene.created_at }}</td>
-            <!-- 更新日時 -->
-            <td>{{ scene.updated_at }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div v-if="!showScenes.length">
-      使用シーンは登録されていません。
-    </div>
+
+    <div v-else class="phone">
+        <div v-if="showScenes.length">
+          <table>
+            <div v-for="(scene, index) in showScenes">
+              <tr>
+                <!-- index -->
+                <th class="th-non"></th>
+                <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
+              </tr>
+              <tr>
+                <!-- ページ数 -->
+                <th>ページ数</th>
+                <td v-if="scene.first_page">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
+                <td v-if="!scene.first_page"></td>  
+              </tr>
+              <tr>
+                <!-- 登場人物 -->
+                <th>登場人物</th>
+                <td>{{ scene.character.name }}</td>
+              </tr>
+              <tr>
+                <!-- 小道具 -->
+                <th>小道具</th>
+                <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
+              </tr>
+              <tr>
+                <!-- 中間発表 -->
+                <th>中間</th>
+                <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 卒業公演 -->
+                <th>卒業</th>
+                <td v-if="scene.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 上手 -->
+                <th>上手</th>
+                <td v-if="scene.usage_left"><i class="fas fa-check fa-fw"></i></td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 下手 -->
+                <th>下手</th>
+                <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- メモ -->
+                <th>メモ</th>
+                <td v-if="scene.scene_comments.length">
+                  <div v-for="memo in scene.scene_comments"> {{ memo.memo }}</div>
+                </td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 登録日時 -->
+                <th>登録日時</th>
+                <td>{{ scene.created_at }}</td>
+              </tr>
+              <tr>
+                <!-- 更新日時 -->
+                <th>更新日時</th>
+                <td>{{ scene.updated_at }}</td>
+              </tr>
+            </div>
+          </table>
+        </div>
+
+        <div v-else>
+          小道具は登録されていません。 
+        </div>
+      </div>
+
+    
    
     <detailScene :postScene="postScene" v-show="showContent" @close="closeModal_sceneDetail" />
     <detailProp :postProp="postProp" v-show="showContent_prop" @close="closeModal_propDetail" /> 
@@ -84,6 +160,8 @@
     },
     data() {
       return{
+        // 画面サイズ取得
+        sizeScreen: 1, // 0:パソコン, 1:　スマホ
         // 取得するデータ
         scenes: [],
         // 表示するデータ
@@ -99,7 +177,14 @@
     watch: {
       $route: {
         async handler () {
-          await this.fetchScenes()
+          await this.fetchScenes();
+          if (window.matchMedia('(max-width: 989px)').matches) {
+            //スマホ処理
+            this.sizeScreen = 1;
+          } else {
+            //PC処理
+            this.sizeScreen = 0;
+          }
         },
         immediate: true
       }
