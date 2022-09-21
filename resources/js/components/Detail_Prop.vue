@@ -60,8 +60,8 @@
                       <!-- 名前 -->
                       <span>{{ scene.character.name }}</span>
                       <!-- 何ページ -->
-                      <span v-if="scene !== null && scene.first_page !== null"> : p. {{ scene.first_page }} 
-                        <span v-if="scene !== null && scene.final_page !== null"> ~ p. {{ scene.final_page}}</span>
+                      <span v-if="scene !== null && scene.first_page !== null"> : p.{{ scene.first_page }} 
+                        <span v-if="scene !== null && scene.final_page !== null"> ~ p.{{ scene.final_page}}</span>
                       </span>
 
                       <!-- 使用状況 -->
@@ -114,8 +114,8 @@
 
               <div>
                 <label for="prop_name_edit">小道具名</label>
-                <input type="text" id="prop_name_edit" class="form__item" v-model="editForm_prop.name" @input="handleNameInput" required>
-                <input type="text" name="furigana" id="prop_furigana_edit" class="form__item form__item--furigana" v-model="editForm_prop.kana" required>
+                <input type="text" id="prop_name_edit" class="form__item" v-model="editForm_prop.name" @input="handleNameInput" placeholder="小道具" required>
+                <input type="text" name="furigana" id="prop_furigana_edit" class="form__item form__item--furigana" v-model="editForm_prop.kana" placeholder="ふりがな" required>
               </div>            
               
               <div>所有者: 
@@ -156,7 +156,7 @@
                   </li>
                 </ul>
                 <div v-else>
-                  <textarea id="prop_comment_edit" class="form__item" v-model="editForm_prop.memo"></textarea>
+                  <textarea id="prop_comment_edit" class="form__item" v-model="editForm_prop.memo" placeholder="メモ"></textarea>
                 </div>
               </div>
 
@@ -930,7 +930,7 @@ export default {
     // 削除confirmのモーダル表示 
     openModal_confirmDelete (id) {
       this.showContent_confirmDelete = true;
-      this.postMessage_Delete = 'これを行うと、紐づけられてたこの小道具を使用するシーンも全て削除されます。本当に削除しますか？';
+      this.postMessage_Delete = 'この小道具を削除すると、紐づけられてたこの小道具を使用するシーンも全て削除されます。\n本当に削除しますか？';
     },
     // 削除confirmのモーダル非表示_OKの場合
     async closeModal_confirmDelete_OK() {

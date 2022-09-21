@@ -26,9 +26,9 @@
           </div>
         </div>
          
-        <input type="text" class="form__item" id="prop_input" v-model="registerForm.prop" @input="handleNameInput" required>
+        <input type="text" class="form__item" id="prop_input" v-model="registerForm.prop" @input="handleNameInput" placeholder="小道具" required>
         <label for="furigana">ふりがな</label>
-        <input type="text" name="furigana" id="furigana" v-model="registerForm.kana" class="form__item form__item--furigana" required>
+        <input type="text" name="furigana" id="furigana" v-model="registerForm.kana" class="form__item form__item--furigana" placeholder="ふりがな" required>
 
         <!-- 所有者 -->
         <label for="owner">持ち主</label>
@@ -60,9 +60,9 @@
           </div>
         </div>
      
-        <!-- コメント -->
-        <label for="comment_prop">コメント</label>
-        <textarea class="form__item" id="comment_prop" v-model="registerForm.comment"></textarea>
+        <!-- メモ -->
+        <label for="comment_prop">メモ</label>
+        <textarea class="form__item" id="comment_prop" v-model="registerForm.comment" placeholder="メモ"></textarea>
      
         <!-- 写真 -->
         <label for="photo_input">写真</label>

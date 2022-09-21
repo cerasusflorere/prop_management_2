@@ -45,7 +45,7 @@
         <label for="page">ページ数</label>
         <small>例) 22, 24-25</small>
         <small>半角</small>
-        <input type="text"  id="page" class="form__item" v-model="registerForm.pages">
+        <input type="text" id="page" class="form__item" v-model="registerForm.pages" placeholder="ページ数">
 
         <!-- 使用するか -->
         <div>
@@ -68,9 +68,9 @@
           </div>
         </div>
         
-        <!-- コメント -->
-        <label for="comment_scene">コメント</label>
-        <textarea class="form__item" id="comment_scene" v-model="registerForm.comment"></textarea>
+        <!-- メモ -->
+        <label for="comment_scene">メモ</label>
+        <textarea class="form__item" id="comment_scene" v-model="registerForm.comment" placeholder="メモ"></textarea>
 
         <!--- 送信ボタン -->
         <div class="form__button">
@@ -258,6 +258,24 @@ export default {
       return str.replace(/[０-９]/g, function(s) {
         return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
       });
+
+      let pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+      const chars = str.split('');
+      let sets = '';
+      chars.forEach((char, index) => {
+        char.replace(/[０-９]/g, function(s) {
+          const number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+          if(pattern_number.test(number)){
+            sets = sets + number;
+          }else{
+            sets  = 0;
+          }
+        });
+        if(index === chars.length-1){
+          console.log(sets);
+          return sets;
+        }
+      });
     },
 
     // 登録する
@@ -268,31 +286,114 @@ export default {
       first_pages[0] = 0;
       final_pages[0] = 0;
       if(this.registerForm.pages){
-      let pages_before = this.registerForm.pages.split(/,|、|，|\s+/);
+        let pages_before = this.registerForm.pages.split(/,|、|，|\s+/);
         pages_before.forEach(page => {
           page = page.replaceAll(/\s+/g, '');
         });
         let pages_after = pages_before.filter(Boolean);
   
         let pattern = /-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/;
+        let pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
 
         pages_after.forEach((page, index) => {
           if(index === 0){
             if ( pattern.test(page) ) {
               let pages = this.first_finalDivide(page);
-              first_pages[index] = (parseInt(this.hankaku2Zenkaku(pages[0])));
-              final_pages[index] = (parseInt(this.hankaku2Zenkaku(pages[1])));
+
+              const chars_first = pages[0].split('');
+              let sets_first = '';
+              chars_first.forEach((char, index) => {
+                // 一文字ずつになっている
+                const number = this.hankaku2Zenkaku(char);
+                if(pattern_number.test(number)){
+                  sets_first = sets_first + number;
+                }else{
+                  sets_first  = 0;
+                }
+              },);
+
+              const chars_final = pages[1].split('');
+              let sets_final = '';
+              chars_final.forEach((char, index) => {
+                // 一文字ずつになっている
+                const number = this.hankaku2Zenkaku(char);
+                if(pattern_number.test(number)){
+                  sets_final = sets_final + number;
+                }else{
+                  sets_final  = 0;
+                }
+              });
+
+              if(parseInt(sets_first) > parseInt(sets_final)) {
+                sets_final = 0;
+              }
+
+              first_pages[index] = (parseInt(sets_first));
+              final_pages[index] = (parseInt(sets_final));
             }else{
-              first_pages[index] = (parseInt(this.hankaku2Zenkaku(page)));
+              const chars_first = page.split('');
+              let sets_first = '';
+              chars_first.forEach((char, index) => {
+                // 一文字ずつになっている
+                const number = this.hankaku2Zenkaku(char);
+                if(pattern_number.test(number)){
+                  sets_first = sets_first + number;
+                }else{
+                  sets_first  = 0;
+                }
+              });
+
+              first_pages[index] = (parseInt(sets_first));
               final_pages[index] = (0);
             }
           }else{
             if ( pattern.test(page) ) {
               let pages = this.first_finalDivide(page);
-              first_pages.push(parseInt(this.hankaku2Zenkaku(pages[0])));
-              final_pages.push(parseInt(this.hankaku2Zenkaku(pages[1])));
+              
+              const chars_first = pages[0].split('');
+              let sets_first = '';
+              chars_first.forEach((char, index) => {
+                // 一文字ずつになっている
+                const number = this.hankaku2Zenkaku(char);
+                if(pattern_number.test(number)){
+                  sets_first = sets_first + number;
+                }else{
+                  sets_first  = 0;
+                }
+              });
+
+              const chars_final = pages[1].split('');
+              let sets_final = '';
+              chars_final.forEach((char, index) => {
+                // 一文字ずつになっている
+                const number = this.hankaku2Zenkaku(char);
+                if(pattern_number.test(number)){
+                  sets_final = sets_final + number;
+                }else{
+                  sets_final  = 0;
+                }
+              });
+
+              if(parseInt(sets_first) > parseInt(sets_final)) {
+                sets_final = 0;
+              }
+
+              first_pages.push(parseInt(sets_first));
+              final_pages.push(parseInt(sets_final));
             }else{
-              first_pages.push(parseInt(this.hankaku2Zenkaku(page)));
+              const chars_first = page.split('');
+              let sets_first = '';
+              chars_first.forEach((char, index) => {
+                // 一文字ずつになっている
+                const number = this.hankaku2Zenkaku(char);
+                if(pattern_number.test(number)){
+                  sets_first = sets_first + number;
+                }else{
+                  sets_first  = 0;
+                }
+              });
+
+              first_pages.push(parseInt(sets_first));
               final_pages.push(0);
             }
           }          

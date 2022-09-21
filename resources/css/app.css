@@ -429,6 +429,7 @@ figure {
 .content {
   z-index: 2;
   width: 50%;
+  min-width: 19em;
   background-color: white;
 }
 

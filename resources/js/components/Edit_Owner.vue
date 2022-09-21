@@ -162,7 +162,7 @@ export default {
     // 削除confirmのモーダル表示 
     openModal_confirmDelete (id) {
       this.showContent_confirmDelete = true;
-      this.postMessage_Delete = 'これを行うと、紐づけられてたこの方が所有するする小道具も全て削除されます。本当に削除しますか？';
+      this.postMessage_Delete = 'この持ち主を削除すると、紐づけられてたこの方が所有するする小道具も全て削除されます。\n本当に削除しますか？';
     },
     // 削除confirmのモーダル非表示_OKの場合
     async closeModal_confirmDelete_OK() {

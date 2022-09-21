@@ -37,8 +37,8 @@
               <div>所有者: <span v-if="scene.prop.owner">{{ scene.prop.owner.name }}</span></div>
 
               <!-- 何ページ -->
-              <span v-if="scene !== null && scene.first_page !== null">p. {{ scene.first_page }} 
-                <span v-if="scene !== null && scene.final_page !== null"> ~ p. {{ scene.final_page}}</span>
+              <span v-if="scene !== null && scene.first_page !== null">p.{{ scene.first_page }} 
+                <span v-if="scene !== null && scene.final_page !== null"> ~ p.{{ scene.final_page}}</span>
               </span>
 
               <!-- 使用状況 -->
@@ -139,7 +139,7 @@
                 ~ p. <input class="form__item" v-model="editForm_scene.final_page">
               </div>
               <div v-else>
-                <input type="text"  id="page" class="form__item" v-model="editForm_scene.pages"></input>
+                <input type="text"  id="page" class="form__item" v-model="editForm_scene.pages" placeholder="ページ数"></input>
               </div>       
 
               <div>
@@ -166,7 +166,7 @@
                   </li>
                 </ul>
                 <div v-else>
-                  <textarea id="prop_comment_edit" class="form__item" v-model="editForm_scene.memo"></textarea>
+                  <textarea id="prop_comment_edit" class="form__item" v-model="editForm_scene.memo" placeholder="メモ"></textarea>
                 </div>
               </div>
             </div>
@@ -621,14 +621,61 @@
         }else if(this.editForm_scene.usage_stage === "right"){
           usage_right = 1;
         }
+
+        let pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+
         if(this.editSceneMode_detail === 1){
           // 元々ページ数の指定があった
           this.editSceneMode_detail = "change"
+
+          let sets_first = '';
+          if(this.editForm_scene.first_page === null){
+            sets_first = this.editForm_scene.first_page;
+          }else if(this.editForm_scene.first_page.length > 1){
+            const chars_first = this.editForm_scene.first_page.split('');
+            chars_first.forEach((char, index) => {
+              // 一文字ずつになっている
+              const number = this.hankaku2Zenkaku(char);
+              if(pattern_number.test(number)){
+                sets_first = sets_first + number;
+              }else{
+                sets_first  = 0;
+              }
+            });
+          }else if(!pattern_number.test(this.editForm_scene.first_page)){
+            sets_first = this.hankaku2Zenkaku(this.editForm_scene.first_page);
+          }          
+
+          let sets_final = '';
+          if(this.editForm_scene.final_page === null){
+            sets_final = 0;
+          }else if(this.editForm_scene.final_page.length > 1){
+            const chars_final = this.editForm_scene.final_page.split('');
+            chars_final.forEach((char, index) => {
+              // 一文字ずつになっている
+              const number = this.hankaku2Zenkaku(char);
+              if(pattern_number.test(number)){
+                sets_final = sets_final + number;
+              }else{
+                sets_final  = 0;
+              }
+            });
+          }else if(this.editForm_scene.final_page.length === 1 && !pattern_number.test(this.editForm_scene.final_page)){
+            sets_final = this.hankaku2Zenkaku(this.editForm_scene.final_page);
+          }else if(pattern_number.test(this.editForm_scene.final_page)){
+            sets_final = this.editForm_scene.final_page;
+          }
+          
+
+          if(parseInt(sets_first) > parseInt(sets_final)) {
+            sets_final = 0;
+          }
+
           const response = await axios.post('/api/scenes/'+ this.scene.id, {
             character_id: this.editForm_scene.character_id,
             prop_id: this.editForm_scene.prop_id,
-            first_page: this.editForm_scene.first_page,
-            final_page: this.editForm_scene.final_page,
+            first_page: parseInt(sets_first), //this.editForm_scene.first_page,
+            final_page: parseInt(sets_final), //this.editForm_scene.final_page,
             usage: this.editForm_scene.usage,
             usage_guraduation: this.editForm_scene.usage_guraduation,
             usage_left: usage_left,
@@ -673,20 +720,114 @@
               if(index === 0){
                 if ( pattern.test(page) ) {
                   let pages = this.first_finalDivide(page);
-                  first_pages[index] = (parseInt(this.hankaku2Zenkaku(pages[0])));
-                  final_pages[index] = (parseInt(this.hankaku2Zenkaku(pages[1])));
+
+                  const chars_first = pages[0].split('');
+                  let sets_first = '';
+                  chars_first.forEach((char, index) => {
+                    // 一文字ずつになっている
+                    const number = this.hankaku2Zenkaku(char);
+                    if(pattern_number.test(number)){
+                      sets_first = sets_first + number;
+                    }else{
+                      sets_first  = 0;
+                    }
+                  });
+
+                  const chars_final = pages[1].split('');
+                  let sets_final = '';
+                  chars_final.forEach((char, index) => {
+                    // 一文字ずつになっている
+                    const number = this.hankaku2Zenkaku(char);
+                    if(pattern_number.test(number)){
+                      sets_final = sets_final + number;
+                    }else{
+                      sets_final  = 0;
+                    }
+                  });
+
+                  if(parseInt(sets_first) > parseInt(sets_final)) {
+                    sets_final = 0;
+                  }
+
+                  first_pages[index] = (parseInt(sets_first));
+                  final_pages[index] = (parseInt(sets_final));
+
+                  // first_pages[index] = (parseInt(this.hankaku2Zenkaku(pages[0])));
+                  // final_pages[index] = (parseInt(this.hankaku2Zenkaku(pages[1])));
                 }else{
-                  first_pages[index] = (parseInt(this.hankaku2Zenkaku(page)));
+                  const chars_first = page.split('');
+                  let sets_first = '';
+                  chars_first.forEach((char, index) => {
+                    // 一文字ずつになっている
+                    const number = this.hankaku2Zenkaku(char);
+                    if(pattern_number.test(number)){
+                      sets_first = sets_first + number;
+                    }else{
+                      sets_first  = 0;
+                    }
+                  });
+
+                  first_pages[index] = (parseInt(sets_first));
                   final_pages[index] = (0);
+        
+                  // first_pages[index] = (parseInt(this.hankaku2Zenkaku(page)));
+                  // final_pages[index] = (0);
                 }
               }else{
                 if ( pattern.test(page) ) {
                   let pages = this.first_finalDivide(page);
-                  first_pages.push(parseInt(this.hankaku2Zenkaku(pages[0])));
-                  final_pages.push(parseInt(this.hankaku2Zenkaku(pages[1])));
+
+                  const chars_first = pages[0].split('');
+                  let sets_first = '';
+                  chars_first.forEach((char, index) => {
+                    // 一文字ずつになっている
+                    const number = this.hankaku2Zenkaku(char);
+                    if(pattern_number.test(number)){
+                      sets_first = sets_first + number;
+                    }else{
+                      sets_first  = 0;
+                    }
+                  });
+
+                  const chars_final = pages[1].split('');
+                  let sets_final = '';
+                  chars_final.forEach((char, index) => {
+                    // 一文字ずつになっている
+                    const number = this.hankaku2Zenkaku(char);
+                    if(pattern_number.test(number)){
+                      sets_final = sets_final + number;
+                    }else{
+                      sets_final  = 0;
+                    }
+                  });
+
+                  if(parseInt(sets_first) > parseInt(sets_final)) {
+                    sets_final = 0;
+                  }
+
+                  first_pages.push(parseInt(sets_first));
+                  final_pages.push(parseInt(sets_final));
+
+                  // first_pages.push(parseInt(this.hankaku2Zenkaku(pages[0])));
+                  // final_pages.push(parseInt(this.hankaku2Zenkaku(pages[1])));
                 }else{
-                  first_pages.push(parseInt(this.hankaku2Zenkaku(page)));
+                  const chars_first = page.split('');
+                  let sets_first = '';
+                  chars_first.forEach((char, index) => {
+                    // 一文字ずつになっている
+                    const number = this.hankaku2Zenkaku(char);
+                    if(pattern_number.test(number)){
+                      sets_first = sets_first + number;
+                    }else{
+                      sets_first  = 0;
+                    }
+                  });
+
+                  first_pages.push(parseInt(sets_first));
                   final_pages.push(0);
+
+                  // first_pages.push(parseInt(this.hankaku2Zenkaku(page)));
+                  // final_pages.push(0);
                 }
               }          
             });

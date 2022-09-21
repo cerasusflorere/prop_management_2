@@ -206,7 +206,7 @@ export default {
     // 削除confirmのモーダル表示 
     openModal_confirmDelete () {
       this.showContent_confirmDelete = true;
-      this.postMessage_Delete = 'これを行うと、この登場人物が小道具を使用シーンが全て削除されます。本当に削除しますか？';
+      this.postMessage_Delete = 'この登場人物を削除すると、この登場人物が小道具を使用シーンが全て削除されます。\n本当に削除しますか？';
     },
     // 削除confirmのモーダル非表示_OKの場合
     async closeModal_confirmDelete_OK() {

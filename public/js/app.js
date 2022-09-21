@@ -3671,7 +3671,7 @@ var autokana;
     // 削除confirmのモーダル表示 
     openModal_confirmDelete: function openModal_confirmDelete(id) {
       this.showContent_confirmDelete = true;
-      this.postMessage_Delete = 'これを行うと、紐づけられてたこの小道具を使用するシーンも全て削除されます。本当に削除しますか？';
+      this.postMessage_Delete = 'この小道具を削除すると、紐づけられてたこの小道具を使用するシーンも全て削除されます。\n本当に削除しますか？';
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
@@ -4421,7 +4421,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this10 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
-        var usage_left, usage_right, response, first_pages, final_pages, pages_before, pages_after, pattern, memo, last_flag;
+        var usage_left, usage_right, pattern_number, sets_first, chars_first, sets_final, chars_final, response, first_pages, final_pages, pages_before, pages_after, pattern, memo, last_flag;
         return _regeneratorRuntime().wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
@@ -4435,39 +4435,89 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   usage_right = 1;
                 }
 
+                pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+
                 if (!(_this10.editSceneMode_detail === 1)) {
-                  _context9.next = 18;
+                  _context9.next = 24;
                   break;
                 }
 
                 // 元々ページ数の指定があった
                 _this10.editSceneMode_detail = "change";
-                _context9.next = 7;
+                sets_first = '';
+
+                if (_this10.editForm_scene.first_page === null) {
+                  sets_first = _this10.editForm_scene.first_page;
+                } else if (_this10.editForm_scene.first_page.length > 1) {
+                  chars_first = _this10.editForm_scene.first_page.split('');
+                  chars_first.forEach(function (_char, index) {
+                    // 一文字ずつになっている
+                    var number = _this10.hankaku2Zenkaku(_char);
+
+                    if (pattern_number.test(number)) {
+                      sets_first = sets_first + number;
+                    } else {
+                      sets_first = 0;
+                    }
+                  });
+                } else if (!pattern_number.test(_this10.editForm_scene.first_page)) {
+                  sets_first = _this10.hankaku2Zenkaku(_this10.editForm_scene.first_page);
+                }
+
+                sets_final = '';
+
+                if (_this10.editForm_scene.final_page === null) {
+                  sets_final = 0;
+                } else if (_this10.editForm_scene.final_page.length > 1) {
+                  chars_final = _this10.editForm_scene.final_page.split('');
+                  chars_final.forEach(function (_char2, index) {
+                    // 一文字ずつになっている
+                    var number = _this10.hankaku2Zenkaku(_char2);
+
+                    if (pattern_number.test(number)) {
+                      sets_final = sets_final + number;
+                    } else {
+                      sets_final = 0;
+                    }
+                  });
+                } else if (_this10.editForm_scene.final_page.length === 1 && !pattern_number.test(_this10.editForm_scene.final_page)) {
+                  sets_final = _this10.hankaku2Zenkaku(_this10.editForm_scene.final_page);
+                } else if (pattern_number.test(_this10.editForm_scene.final_page)) {
+                  sets_final = _this10.editForm_scene.final_page;
+                }
+
+                if (parseInt(sets_first) > parseInt(sets_final)) {
+                  sets_final = 0;
+                }
+
+                _context9.next = 13;
                 return axios.post('/api/scenes/' + _this10.scene.id, {
                   character_id: _this10.editForm_scene.character_id,
                   prop_id: _this10.editForm_scene.prop_id,
-                  first_page: _this10.editForm_scene.first_page,
-                  final_page: _this10.editForm_scene.final_page,
+                  first_page: parseInt(sets_first),
+                  //this.editForm_scene.first_page,
+                  final_page: parseInt(sets_final),
+                  //this.editForm_scene.final_page,
                   usage: _this10.editForm_scene.usage,
                   usage_guraduation: _this10.editForm_scene.usage_guraduation,
                   usage_left: usage_left,
                   usage_right: usage_right
                 });
 
-              case 7:
+              case 13:
                 response = _context9.sent;
 
                 if (!(response.status === 422)) {
-                  _context9.next = 11;
+                  _context9.next = 17;
                   break;
                 }
 
                 _this10.errors.error = response.data.errors;
                 return _context9.abrupt("return", false);
 
-              case 11:
+              case 17:
                 if (!(response.status !== 204)) {
-                  _context9.next = 14;
+                  _context9.next = 20;
                   break;
                 }
 
@@ -4475,7 +4525,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context9.abrupt("return", false);
 
-              case 14:
+              case 20:
                 _this10.editSceneMode_detail = 100;
 
                 if (_this10.editSceneMode_memo === 0 && _this10.editSceneMode_prop === 0) {
@@ -4483,10 +4533,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this10.editSceneMode_prop = 100;
                 }
 
-                _context9.next = 19;
+                _context9.next = 25;
                 break;
 
-              case 18:
+              case 24:
                 if (_this10.editSceneMode_detail === 2) {
                   // ページ数を新たに指定
                   _this10.editSceneMode_detail = "change"; // ページを分割
@@ -4508,21 +4558,123 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                         if (pattern.test(page)) {
                           var pages = _this10.first_finalDivide(page);
 
-                          first_pages[index] = parseInt(_this10.hankaku2Zenkaku(pages[0]));
-                          final_pages[index] = parseInt(_this10.hankaku2Zenkaku(pages[1]));
+                          var _chars_first = pages[0].split('');
+
+                          var _sets_first = '';
+
+                          _chars_first.forEach(function (_char3, index) {
+                            // 一文字ずつになっている
+                            var number = _this10.hankaku2Zenkaku(_char3);
+
+                            if (pattern_number.test(number)) {
+                              _sets_first = _sets_first + number;
+                            } else {
+                              _sets_first = 0;
+                            }
+                          });
+
+                          var _chars_final = pages[1].split('');
+
+                          var _sets_final = '';
+
+                          _chars_final.forEach(function (_char4, index) {
+                            // 一文字ずつになっている
+                            var number = _this10.hankaku2Zenkaku(_char4);
+
+                            if (pattern_number.test(number)) {
+                              _sets_final = _sets_final + number;
+                            } else {
+                              _sets_final = 0;
+                            }
+                          });
+
+                          if (parseInt(_sets_first) > parseInt(_sets_final)) {
+                            _sets_final = 0;
+                          }
+
+                          first_pages[index] = parseInt(_sets_first);
+                          final_pages[index] = parseInt(_sets_final); // first_pages[index] = (parseInt(this.hankaku2Zenkaku(pages[0])));
+                          // final_pages[index] = (parseInt(this.hankaku2Zenkaku(pages[1])));
                         } else {
-                          first_pages[index] = parseInt(_this10.hankaku2Zenkaku(page));
-                          final_pages[index] = 0;
+                          var _chars_first2 = page.split('');
+
+                          var _sets_first2 = '';
+
+                          _chars_first2.forEach(function (_char5, index) {
+                            // 一文字ずつになっている
+                            var number = _this10.hankaku2Zenkaku(_char5);
+
+                            if (pattern_number.test(number)) {
+                              _sets_first2 = _sets_first2 + number;
+                            } else {
+                              _sets_first2 = 0;
+                            }
+                          });
+
+                          first_pages[index] = parseInt(_sets_first2);
+                          final_pages[index] = 0; // first_pages[index] = (parseInt(this.hankaku2Zenkaku(page)));
+                          // final_pages[index] = (0);
                         }
                       } else {
                         if (pattern.test(page)) {
                           var _pages = _this10.first_finalDivide(page);
 
-                          first_pages.push(parseInt(_this10.hankaku2Zenkaku(_pages[0])));
-                          final_pages.push(parseInt(_this10.hankaku2Zenkaku(_pages[1])));
+                          var _chars_first3 = _pages[0].split('');
+
+                          var _sets_first3 = '';
+
+                          _chars_first3.forEach(function (_char6, index) {
+                            // 一文字ずつになっている
+                            var number = _this10.hankaku2Zenkaku(_char6);
+
+                            if (pattern_number.test(number)) {
+                              _sets_first3 = _sets_first3 + number;
+                            } else {
+                              _sets_first3 = 0;
+                            }
+                          });
+
+                          var _chars_final2 = _pages[1].split('');
+
+                          var _sets_final2 = '';
+
+                          _chars_final2.forEach(function (_char7, index) {
+                            // 一文字ずつになっている
+                            var number = _this10.hankaku2Zenkaku(_char7);
+
+                            if (pattern_number.test(number)) {
+                              _sets_final2 = _sets_final2 + number;
+                            } else {
+                              _sets_final2 = 0;
+                            }
+                          });
+
+                          if (parseInt(_sets_first3) > parseInt(_sets_final2)) {
+                            _sets_final2 = 0;
+                          }
+
+                          first_pages.push(parseInt(_sets_first3));
+                          final_pages.push(parseInt(_sets_final2)); // first_pages.push(parseInt(this.hankaku2Zenkaku(pages[0])));
+                          // final_pages.push(parseInt(this.hankaku2Zenkaku(pages[1])));
                         } else {
-                          first_pages.push(parseInt(_this10.hankaku2Zenkaku(page)));
-                          final_pages.push(0);
+                          var _chars_first4 = page.split('');
+
+                          var _sets_first4 = '';
+
+                          _chars_first4.forEach(function (_char8, index) {
+                            // 一文字ずつになっている
+                            var number = _this10.hankaku2Zenkaku(_char8);
+
+                            if (pattern_number.test(number)) {
+                              _sets_first4 = _sets_first4 + number;
+                            } else {
+                              _sets_first4 = 0;
+                            }
+                          });
+
+                          first_pages.push(parseInt(_sets_first4));
+                          final_pages.push(0); // first_pages.push(parseInt(this.hankaku2Zenkaku(page)));
+                          // final_pages.push(0);
                         }
                       }
                     });
@@ -4651,7 +4803,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }(), _this10);
                 }
 
-              case 19:
+              case 25:
               case "end":
                 return _context9.stop();
             }
@@ -6009,7 +6161,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     // 削除confirmのモーダル表示 
     openModal_confirmDelete: function openModal_confirmDelete() {
       this.showContent_confirmDelete = true;
-      this.postMessage_Delete = 'これを行うと、この登場人物が小道具を使用シーンが全て削除されます。本当に削除しますか？';
+      this.postMessage_Delete = 'この登場人物を削除すると、この登場人物が小道具を使用シーンが全て削除されます。\n本当に削除しますか？';
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
@@ -6369,7 +6521,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     // 削除confirmのモーダル表示 
     openModal_confirmDelete: function openModal_confirmDelete(id) {
       this.showContent_confirmDelete = true;
-      this.postMessage_Delete = 'これを行うと、紐づけられてたこの方が所有するする小道具も全て削除されます。本当に削除しますか？';
+      this.postMessage_Delete = 'この持ち主を削除すると、紐づけられてたこの方が所有するする小道具も全て削除されます。\n本当に削除しますか？';
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
@@ -6731,7 +6883,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     // 削除confirmのモーダル表示 
     openModal_confirmDelete: function openModal_confirmDelete(id) {
       this.showContent_confirmDelete = true;
-      this.postMessage_Delete = 'これを行うと、紐づけられてた登場人物、その登場人物が小道具を使用するシーンも全て削除されます。本当に削除しますか？';
+      this.postMessage_Delete = 'この区分を削除すると、紐づけられてた登場人物、その登場人物が小道具を使用するシーンも全て削除されます。\n本当に削除しますか？';
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
@@ -7948,6 +8100,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return str.replace(/[０-９]/g, function (s) {
         return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
       });
+      var pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+
+      var chars = str.split('');
+      var sets = '';
+      chars.forEach(function (_char, index) {
+        _char.replace(/[０-９]/g, function (s) {
+          var number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+
+          if (pattern_number.test(number)) {
+            sets = sets + number;
+          } else {
+            sets = 0;
+          }
+        });
+
+        if (index === chars.length - 1) {
+          console.log(sets);
+          return sets;
+        }
+      });
     },
     // 登録する
     register: function register() {
@@ -7966,25 +8138,120 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         });
         var pages_after = pages_before.filter(Boolean);
         var pattern = /-|ー|‐|―|⁻|－|～|—|₋|ｰ|~/;
+        var pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+
         pages_after.forEach(function (page, index) {
           if (index === 0) {
             if (pattern.test(page)) {
               var pages = _this4.first_finalDivide(page);
 
-              first_pages[index] = parseInt(_this4.hankaku2Zenkaku(pages[0]));
-              final_pages[index] = parseInt(_this4.hankaku2Zenkaku(pages[1]));
+              var chars_first = pages[0].split('');
+              var sets_first = '';
+              chars_first.forEach(function (_char2, index) {
+                // 一文字ずつになっている
+                var number = _this4.hankaku2Zenkaku(_char2);
+
+                if (pattern_number.test(number)) {
+                  sets_first = sets_first + number;
+                } else {
+                  sets_first = 0;
+                }
+              });
+              var chars_final = pages[1].split('');
+              var sets_final = '';
+              chars_final.forEach(function (_char3, index) {
+                // 一文字ずつになっている
+                var number = _this4.hankaku2Zenkaku(_char3);
+
+                if (pattern_number.test(number)) {
+                  sets_final = sets_final + number;
+                } else {
+                  sets_final = 0;
+                }
+              });
+
+              if (parseInt(sets_first) > parseInt(sets_final)) {
+                sets_final = 0;
+              }
+
+              first_pages[index] = parseInt(sets_first);
+              final_pages[index] = parseInt(sets_final);
             } else {
-              first_pages[index] = parseInt(_this4.hankaku2Zenkaku(page));
+              var _chars_first = page.split('');
+
+              var _sets_first = '';
+
+              _chars_first.forEach(function (_char4, index) {
+                // 一文字ずつになっている
+                var number = _this4.hankaku2Zenkaku(_char4);
+
+                if (pattern_number.test(number)) {
+                  _sets_first = _sets_first + number;
+                } else {
+                  _sets_first = 0;
+                }
+              });
+
+              first_pages[index] = parseInt(_sets_first);
               final_pages[index] = 0;
             }
           } else {
             if (pattern.test(page)) {
               var _pages = _this4.first_finalDivide(page);
 
-              first_pages.push(parseInt(_this4.hankaku2Zenkaku(_pages[0])));
-              final_pages.push(parseInt(_this4.hankaku2Zenkaku(_pages[1])));
+              var _chars_first2 = _pages[0].split('');
+
+              var _sets_first2 = '';
+
+              _chars_first2.forEach(function (_char5, index) {
+                // 一文字ずつになっている
+                var number = _this4.hankaku2Zenkaku(_char5);
+
+                if (pattern_number.test(number)) {
+                  _sets_first2 = _sets_first2 + number;
+                } else {
+                  _sets_first2 = 0;
+                }
+              });
+
+              var _chars_final = _pages[1].split('');
+
+              var _sets_final = '';
+
+              _chars_final.forEach(function (_char6, index) {
+                // 一文字ずつになっている
+                var number = _this4.hankaku2Zenkaku(_char6);
+
+                if (pattern_number.test(number)) {
+                  _sets_final = _sets_final + number;
+                } else {
+                  _sets_final = 0;
+                }
+              });
+
+              if (parseInt(_sets_first2) > parseInt(_sets_final)) {
+                _sets_final = 0;
+              }
+
+              first_pages.push(parseInt(_sets_first2));
+              final_pages.push(parseInt(_sets_final));
             } else {
-              first_pages.push(parseInt(_this4.hankaku2Zenkaku(page)));
+              var _chars_first3 = page.split('');
+
+              var _sets_first3 = '';
+
+              _chars_first3.forEach(function (_char7, index) {
+                // 一文字ずつになっている
+                var number = _this4.hankaku2Zenkaku(_char7);
+
+                if (pattern_number.test(number)) {
+                  _sets_first3 = _sets_first3 + number;
+                } else {
+                  _sets_first3 = 0;
+                }
+              });
+
+              first_pages.push(parseInt(_sets_first3));
               final_pages.push(0);
             }
           }
@@ -9644,11 +9911,12 @@ var render = function render() {
     attrs: {
       id: "confirm_dialog_delete_title"
     }
-  }, [_vm._v("\n      最終確認\n    ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n        最終確認\n      ")]), _vm._v(" "), _c("div", {
+    staticClass: "dialog-message",
     attrs: {
       id: "confirm_dialog_delete_message"
     }
-  }, [_vm._v("\n      " + _vm._s(_vm.confirm_dialog_delete_message) + "\n    ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n" + _vm._s(_vm.confirm_dialog_delete_message) + "\n      ")]), _vm._v(" "), _c("div", {
     staticClass: "button-area--together"
   }, [_c("button", {
     staticClass: "button button--inverse button--confirm",
@@ -9875,7 +10143,7 @@ var render = function render() {
   }, [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.prop.prop_comments.length ? _c("ul", _vm._l(_vm.prop.prop_comments, function (comment) {
     return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
   }), 0) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("シーン:")]), _vm._v(" "), _vm.prop.scenes.length ? _c("ol", _vm._l(_vm.prop.scenes, function (scene) {
-    return _c("li", [_c("span", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), scene !== null && scene.first_page !== null ? _c("span", [_vm._v(" : p. " + _vm._s(scene.first_page) + " \n                      "), scene !== null && scene.final_page !== null ? _c("span", [_vm._v(" ~ p. " + _vm._s(scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), scene.usage ? _c("span", {
+    return _c("li", [_c("span", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), scene !== null && scene.first_page !== null ? _c("span", [_vm._v(" : p." + _vm._s(scene.first_page) + " \n                      "), scene !== null && scene.final_page !== null ? _c("span", [_vm._v(" ~ p." + _vm._s(scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), scene.usage ? _c("span", {
       staticClass: "usage-show"
     }, [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), scene.usage_guraduation ? _c("span", {
       staticClass: "usage-show"
@@ -9978,6 +10246,7 @@ var render = function render() {
     attrs: {
       type: "text",
       id: "prop_name_edit",
+      placeholder: "小道具",
       required: ""
     },
     domProps: {
@@ -10002,6 +10271,7 @@ var render = function render() {
       type: "text",
       name: "furigana",
       id: "prop_furigana_edit",
+      placeholder: "ふりがな",
       required: ""
     },
     domProps: {
@@ -10249,7 +10519,8 @@ var render = function render() {
     }],
     staticClass: "form__item",
     attrs: {
-      id: "prop_comment_edit"
+      id: "prop_comment_edit",
+      placeholder: "メモ"
     },
     domProps: {
       value: _vm.editForm_prop.memo
@@ -10418,7 +10689,7 @@ var render = function render() {
       Cancel_Delete: _vm.closeModal_confirmDelete_Cancel,
       OK_Delete: _vm.closeModal_confirmDelete_OK
     }
-  }), _vm._v(" "), _c("div", [_c("h1", [_vm._v(_vm._s(_vm.scene.character.name))])]), _vm._v(" "), _c("div", [_vm._v("小道具：" + _vm._s(_vm.scene.prop.name))]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.scene.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.scene.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _vm.scene !== null && _vm.scene.first_page !== null ? _c("span", [_vm._v("p. " + _vm._s(_vm.scene.first_page) + " \n              "), _vm.scene !== null && _vm.scene.final_page !== null ? _c("span", [_vm._v(" ~ p. " + _vm._s(_vm.scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", [_vm.scene.usage ? _c("span", {
+  }), _vm._v(" "), _c("div", [_c("h1", [_vm._v(_vm._s(_vm.scene.character.name))])]), _vm._v(" "), _c("div", [_vm._v("小道具：" + _vm._s(_vm.scene.prop.name))]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.scene.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.scene.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _vm.scene !== null && _vm.scene.first_page !== null ? _c("span", [_vm._v("p." + _vm._s(_vm.scene.first_page) + " \n              "), _vm.scene !== null && _vm.scene.final_page !== null ? _c("span", [_vm._v(" ~ p." + _vm._s(_vm.scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", [_vm.scene.usage ? _c("span", {
     staticClass: "usage-show"
   }, [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), _vm.scene.usage_guraduation ? _c("span", {
     staticClass: "usage-show"
@@ -10711,7 +10982,8 @@ var render = function render() {
     staticClass: "form__item",
     attrs: {
       type: "text",
-      id: "page"
+      id: "page",
+      placeholder: "ページ数"
     },
     domProps: {
       value: _vm.editForm_scene.pages
@@ -10820,7 +11092,8 @@ var render = function render() {
     }],
     staticClass: "form__item",
     attrs: {
-      id: "prop_comment_edit"
+      id: "prop_comment_edit",
+      placeholder: "メモ"
     },
     domProps: {
       value: _vm.editForm_scene.memo
@@ -11664,6 +11937,7 @@ var render = function render() {
     attrs: {
       type: "text",
       id: "prop_input",
+      placeholder: "小道具",
       required: ""
     },
     domProps: {
@@ -11692,6 +11966,7 @@ var render = function render() {
       type: "text",
       name: "furigana",
       id: "furigana",
+      placeholder: "ふりがな",
       required: ""
     },
     domProps: {
@@ -11889,7 +12164,7 @@ var render = function render() {
     attrs: {
       "for": "comment_prop"
     }
-  }, [_vm._v("コメント")]), _vm._v(" "), _c("textarea", {
+  }, [_vm._v("メモ")]), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11898,7 +12173,8 @@ var render = function render() {
     }],
     staticClass: "form__item",
     attrs: {
-      id: "comment_prop"
+      id: "comment_prop",
+      placeholder: "メモ"
     },
     domProps: {
       value: _vm.registerForm.comment
@@ -12199,7 +12475,8 @@ var render = function render() {
     staticClass: "form__item",
     attrs: {
       type: "text",
-      id: "page"
+      id: "page",
+      placeholder: "ページ数"
     },
     domProps: {
       value: _vm.registerForm.pages
@@ -12358,7 +12635,7 @@ var render = function render() {
     attrs: {
       "for": "comment_scene"
     }
-  }, [_vm._v("コメント")]), _vm._v(" "), _c("textarea", {
+  }, [_vm._v("メモ")]), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -12367,7 +12644,8 @@ var render = function render() {
     }],
     staticClass: "form__item",
     attrs: {
-      id: "comment_scene"
+      id: "comment_scene",
+      placeholder: "メモ"
     },
     domProps: {
       value: _vm.registerForm.comment
@@ -12572,6 +12850,7 @@ var render = function render() {
     attrs: {
       id: "section_input",
       type: "text",
+      placeholder: "区分",
       required: ""
     },
     domProps: {
@@ -12641,6 +12920,7 @@ var render = function render() {
     attrs: {
       id: "character_input",
       type: "text",
+      placeholder: "登場人物",
       required: ""
     },
     domProps: {
@@ -12676,6 +12956,7 @@ var render = function render() {
     attrs: {
       id: "owner_input",
       type: "text",
+      placeholder: "持ち主",
       required: ""
     },
     domProps: {
@@ -15522,7 +15803,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  margin: 0;\n  font-size: 2em;\n}\n\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\nlabel {\n  display: block;\n  margin-bottom: 0.5rem;\n}\ninput[type=checkbox], input[type=radio] {\n  display: block;\n  margin-bottom: 0.7rem;\n  margin-left: 0.7rem;\n}\n/* form */\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n.button-area--together {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n}\n.button-area--showhow {\n  margin-bottom: 0.5em;\n}\n.button-area--download {\n  margin-top: 1em;\n  margin-bottom: 0.5em;\n}\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  margin: 0.1em;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.list-button:hover {\n  cursor: pointer;\n}\n.checkbox-area--together {\n  display: flex;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n/* 写真 */\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n  cursor: pointer;\n}\n.navbar__brand:hover {\n  color: #c0c0c0;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.19em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  min-width: 9.5em;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n.menu-content ul li a:hover {\n  color: #169b62\n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n\n\n/* 小道具投稿 */\n.form__item--furigana {\n  width: 50%;\n  padding-top: 0.3em;\n  padding-bottom: 0.3em;\n}\n.edit-area .form__item--furigana {\n  width: 80%;\n}\n\n\n\n/* 表 */ /* シーンも小道具も同一 */\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.phone th {\n  width: 20%;\n}\n.phone td {\n  width: 70%;\n}\n\n.th-non { \n  color: #222;\n  background: white;\n}\n.td-color {\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.PC .th-memo {\n  width: 10em;\n}\n\n\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #4fac7b;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n  cursor: pointer;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 100%;\n}\n.detail-box>div {\n  width:50%;\n  height: 100%;\n  padding: 0.5em;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n\n/* Confirm＿Dialog */\n/* 横並びボタン */\n.button--confirm {\n  width: 50%;\n  padding: 0.5em;\n}\n.button--danger {\n  background: #e61919;\n  border-color: #e61919;\n}\n.dialog-message {\n  display: flex;\n  white-space: pre-wrap;\n  justify-content: center;\n}\n\n\n/* Show_Prop 写真リスト */\n.usage-show {\n  margin-right: 0.2em;\n}\n\n/* Detail_Prop 小道具詳細 */\n.area--detail-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n}\n.button--area--detail-box {\n  padding-right: 0.5em;\n}\n.detail-box--img {\n  display: flex;\n  justify-content: center;\n  max-width: 100%;\n  max-height: 100%;\n}\n.detail-box ul, .detail-box ol {\n  margin: 0.2em;\n}\n.detail-box ul ul {\n  margin: 0;\n}\n.edit-area li {\n  list-style-type: none;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  margin: 0;\n  font-size: 2em;\n}\n\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\nlabel {\n  display: block;\n  margin-bottom: 0.5rem;\n}\ninput[type=checkbox], input[type=radio] {\n  display: block;\n  margin-bottom: 0.7rem;\n  margin-left: 0.7rem;\n}\n/* form */\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n.button-area--together {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n}\n.button-area--showhow {\n  margin-bottom: 0.5em;\n}\n.button-area--download {\n  margin-top: 1em;\n  margin-bottom: 0.5em;\n}\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  margin: 0.1em;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.list-button:hover {\n  cursor: pointer;\n}\n.checkbox-area--together {\n  display: flex;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n/* 写真 */\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n  cursor: pointer;\n}\n.navbar__brand:hover {\n  color: #c0c0c0;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.19em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  min-width: 9.5em;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n.menu-content ul li a:hover {\n  color: #169b62\n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n\n\n/* 小道具投稿 */\n.form__item--furigana {\n  width: 50%;\n  padding-top: 0.3em;\n  padding-bottom: 0.3em;\n}\n.edit-area .form__item--furigana {\n  width: 80%;\n}\n\n\n\n/* 表 */ /* シーンも小道具も同一 */\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.phone th {\n  width: 20%;\n}\n.phone td {\n  width: 70%;\n}\n\n.th-non { \n  color: #222;\n  background: white;\n}\n.td-color {\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.PC .th-memo {\n  width: 10em;\n}\n\n\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #4fac7b;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n  cursor: pointer;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  min-width: 19em;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 100%;\n}\n.detail-box>div {\n  width:50%;\n  height: 100%;\n  padding: 0.5em;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n\n/* Confirm＿Dialog */\n/* 横並びボタン */\n.button--confirm {\n  width: 50%;\n  padding: 0.5em;\n}\n.button--danger {\n  background: #e61919;\n  border-color: #e61919;\n}\n.dialog-message {\n  display: flex;\n  white-space: pre-wrap;\n  justify-content: center;\n}\n\n\n/* Show_Prop 写真リスト */\n.usage-show {\n  margin-right: 0.2em;\n}\n\n/* Detail_Prop 小道具詳細 */\n.area--detail-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n}\n.button--area--detail-box {\n  padding-right: 0.5em;\n}\n.detail-box--img {\n  display: flex;\n  justify-content: center;\n  max-width: 100%;\n  max-height: 100%;\n}\n.detail-box ul, .detail-box ol {\n  margin: 0.2em;\n}\n.detail-box ul ul {\n  margin: 0;\n}\n.edit-area li {\n  list-style-type: none;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

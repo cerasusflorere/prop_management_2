@@ -4,8 +4,8 @@
       <div id="confirm_dialog_delete_title">
         最終確認
       </div>
-      <div id="confirm_dialog_delete_message">
-        {{ confirm_dialog_delete_message }}
+      <div id="confirm_dialog_delete_message" class="dialog-message">
+{{ confirm_dialog_delete_message }}
       </div>
 
       <div class="button-area--together">

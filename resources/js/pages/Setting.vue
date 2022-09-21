@@ -51,7 +51,7 @@
       <form class="form"  @submit.prevent="register_section">
         <!-- 区分 -->
         <label for="section_input">区分</label>
-        <input id="section_input" type="text" class="form__item" v-model="registerForm_section" required>
+        <input id="section_input" type="text" class="form__item" v-model="registerForm_section" placeholder="区分" required>
 
         <!--- 送信ボタン -->
         <div class="form__button">
@@ -72,7 +72,7 @@
 
         <!-- 登場人物 -->
         <label for="character_input">登場人物</label>
-        <input id="character_input" type="text" class="form__item" v-model="registerForm_character.character" required>
+        <input id="character_input" type="text" class="form__item" v-model="registerForm_character.character" placeholder="登場人物" required>
 
         <!--- 送信ボタン -->
         <div class="form__button">
@@ -84,7 +84,7 @@
       <form class="form" @submit.prevent="register_owner">
         <!-- 持ち主 -->
         <label for="owner_input">持ち主</label>
-        <input id="owner_input" type="text" class="form__item" v-model="registerForm_owner" required>
+        <input id="owner_input" type="text" class="form__item" v-model="registerForm_owner" placeholder="持ち主" required>
 
         <!--- 送信ボタン -->
         <div class="form__button">
