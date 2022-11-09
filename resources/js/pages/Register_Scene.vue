@@ -5,7 +5,7 @@
         <input type="radio" id="passo" v-model="season" value="passo">
         <label for="passo">中間公演</label>
 
-        <input type="radio" id="guraduation" v-model="season" value="guradution">
+        <input type="radio" id="guraduation" v-model="season" value="guraduation">
         <label for="guraduation">卒業公演</label>
       </div>
 
@@ -43,9 +43,15 @@
 
         <!-- ページ数 -->
         <label for="page">ページ数</label>
-        <small>例) 22, 24-25</small>
-        <small>半角</small>
-        <input type="text" id="page" class="form__item" v-model="registerForm.pages" placeholder="ページ数">
+        <div class="page-area">
+          <small>例) 22, 24-25</small>
+          <small>半角</small>
+          <span class="checkbox-area--together">
+            <label for="all_page">全シーン</label>
+            <input type="checkbox" id="all_page" v-model="select_all_page">
+          </span>
+        </div>
+        <input type="text" id="page" class="form__item" v-model="registerForm.pages" :disabled="select_all_page" placeholder="ページ数">
 
         <!-- 使用するか -->
         <div>
@@ -55,10 +61,10 @@
           </div>
           <div v-show="season_tag === 2">
             <div class="checkbox-area--together">
-              <label for="usage_scene_guradutaion">卒業公演での使用</label>
-              <input type="checkbox" id="usage_scene_guradutaion" v-model="registerForm.usage_guraduation" @change="selectGuraduation">
+              <label for="usage_scene_guraduation">卒業公演での使用</label>
+              <input type="checkbox" id="usage_scene_guraduation" v-model="registerForm.usage_guraduation" @change="selectGuraduation">
             </div>
-            <div v-if="guradutaion_tag" class="checkbox-area--together">
+            <div v-if="guraduation_tag" class="checkbox-area--together">
               <input type="radio" id="usage_scene_left" value="usage_left" v-model="registerForm.usage_stage">            
               <label for="usage_scene_left">上手</label>
 
@@ -99,11 +105,13 @@ export default {
       selectedAttr: '',
       selectedCharacters: '',
       optionCharacters: null,
+      // 全ページ使用するか
+      select_all_page: false,
       // 中間公演or卒業公演
       season: null,
       season_tag: null,
       // 卒業公演
-      guradutaion_tag: 0,
+      guraduation_tag: 0,
       // 小道具登録
       showContent: false,
       postFlag: "",
@@ -166,18 +174,18 @@ export default {
       }else if(month === 11){
         const year = today.getFullYear();
         const passo_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
-        if(passo_day <= day){
+        if(passo_day >= day){
           this.season = "passo";
         }else{
-          this.season = "guradutaion";
+          this.season = "guraduation";
         }
       }else if(month > 11 && month < 3){
-        this.season = "guradutaion";
+        this.season = "guraduation";
       }else if(month === 3){
         const year = today.getFullYear();
         const guraduation_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
-        if(guraduation_day <= day){          
-          this.season = "guradutaion";
+        if(guraduation_day >= day){          
+          this.season = "guraduation";
         }else{
           this.season = "passo";
         }
@@ -216,10 +224,10 @@ export default {
 
     // 卒業公演の使用にチェックが付いたか
     selectGuraduation() {
-      if(!this.guradutaion_tag){
-        this.guradutaion_tag = 1;
+      if(!this.guraduation_tag){
+        this.guraduation_tag = 1;
       }else{
-        this.guradutaion_tag = 0;
+        this.guraduation_tag = 0;
         this.registerForm.usage_stage = null;
       }
     },
@@ -243,8 +251,9 @@ export default {
       this.registerForm.usage_guraduation = '';
       this.registerForm.usage_stage = null;
       this.registerForm.comment = '';
+      this.select_all_page = false;
       this.season_tag = null;
-      this.guradutaion_tag = 0;
+      this.guraduation_tag = 0;
       this.choicePerformance();
     },
 
@@ -280,6 +289,9 @@ export default {
 
     // 登録する
     register () {
+      if(this.select_all_page){
+        this.registerForm.pages = '1-1000';
+      }
       // ページを分割
       let first_pages = [];
       let final_pages = [];
@@ -537,7 +549,7 @@ export default {
       async handler(season) {
         if(this.season === "passo"){
           this.season_tag = 1;
-        }else if(this.season === "guradution"){
+        }else if(this.season === "guraduation"){
           this.season_tag = 2;
         }
       },

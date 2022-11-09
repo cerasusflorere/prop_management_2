@@ -1,11 +1,24 @@
 <template>
   <!-- 表示エリア -->
   <div>
-    <div v-if="!sizeScreen" class="PC">
-      <!-- ダウンロードボタン -->
-      <div class="button-area--download">
-        <button type="button" @click="downloadScenes" class="button button--inverse"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
-      </div>
+    <!-- ボタンエリア -->
+    <div v-if="scenes.length" class="button-area">
+      <div class="button-area--small">
+        <!-- 検索 -->
+        <div class="button-area--small-small">
+          <button type="button" @click="openModal_searchScene(Math.random())" class="button button--inverse button--small"><i class="fas fa-search fa-fw"></i>検索</button>
+        </div>
+        <searchScene :postSearch="postSearch" v-show="showContent_search" @close="closeModal_searchScene" />
+
+        <!-- ダウンロードボタン -->
+        <!-- リスト表示かつPCかつデータがある時 -->
+        <div v-if="!sizeScreen && showScenes.length" class="button-area--small-small">
+          <button type="button" @click="downloadScenes" class="button button--inverse button--small"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
+        </div>
+      </div>      
+    </div>
+
+    <div v-if="!sizeScreen && showScenes.length" class="PC">
       <table>
         <thead>
           <tr>
@@ -22,12 +35,13 @@
             <th>更新日時</th>
           </tr>
         </thead>
-        <tbody v-if="showScenes.length">
+        <tbody>
           <tr v-for="(scene, index) in showScenes">
               <!-- index -->
               <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
               <!-- 何ページから -->
-              <td v-if="scene.first_page">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
+              <td v-if="scene.first_page && scene.final_page != 1000">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
+              <td v-if="scene.first_page == 1 && scene.final_page == 1000">全シーン</td>
               <td v-if="!scene.first_page"></td>
               <!-- 登場人物 -->
               <td>{{ scene.character.name }}</td>
@@ -74,8 +88,9 @@
               <tr>
                 <!-- ページ数 -->
                 <th>ページ数</th>
-                <td v-if="scene.first_page">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
-                <td v-if="!scene.first_page"></td>  
+                <td v-if="scene.first_page && scene.final_page != 1000">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
+                <td v-if="scene.first_page == 1 && scene.final_page == 1000">全シーン</td>
+                <td v-if="!scene.first_page"></td>
               </tr>
               <tr>
                 <!-- 登場人物 -->
@@ -134,7 +149,7 @@
         </div>
 
         <div v-else>
-          小道具は登録されていません。 
+          使用シーンは登録されていません。 
         </div>
       </div>
 
@@ -150,13 +165,15 @@
 
   import detailScene from '../components/Detail_Scene.vue';
   import detailProp from '../components/Detail_Prop.vue';
+  import searchScene from '../components/Search_Scene.vue';
   import ExcelJS from 'exceljs';
 
   export default {
     // このページの上で表示するコンポーネント
     components: {
       detailScene,
-      detailProp
+      detailProp,
+      searchScene
     },
     data() {
       return{
@@ -171,7 +188,12 @@
         postScene: "",
         // 小道具詳細
         showContent_prop: false,
-        postProp: ""
+        postProp: "",
+        // シーン検索カスタム
+        showContent_search: false,
+        postSearch: "",
+        // ページの並び順
+        page_order: [],
       }
     },
     watch: {
@@ -201,6 +223,350 @@
         
         this.scenes = response.data; // オリジナルデータ
         this.showScenes = JSON.parse(JSON.stringify(this.scenes));
+
+        this.page_order[0] = 1000;
+        for(let i=1; i < 100; i++ ){
+          this.page_order[i] = i;
+        }
+
+        this.sort_Standard(this.showScenes);
+      },
+
+      sort_Standard(array){
+        const regex_str = /[^ぁ-んー]/g; // ひらがな以外
+        const regex_number = /[^0-9]/g; // 数字以外
+        const regex_alf = /[^A-Z]/g; // アルファベット
+        array.sort((a, b) => {
+          // 最初のページで並び替え
+          if(a.first_page !== b.first_page){
+            return a.first_page - b.first_page
+          }
+          // 最後のページで並び替え
+          if(a.final_page !== b.final_page){
+            return this.page_order.indexOf(a.final_page) - this.page_order.indexOf(b.final_page);
+          }
+          // 登場人物idで並び替え
+          if(a.character_id !== b.character_id){
+            return a.character_id - b.character_id;
+          }
+          // kanaで並び替え
+          if(a.prop.kana !== b.prop.kana){
+            const a_str = a.prop.kana.replace(regex_str, "");
+            const b_str = b.prop.kana.replace(regex_str, "");
+            let a_number = a.prop.kana.replace(regex_number, "");
+            let b_number = b.prop.kana.replace(regex_number, "");
+            const a_alf = a.prop.kana.replace(regex_alf, "");
+            const b_alf = b.prop.kana.replace(regex_alf, "");
+
+            if(a_str !== b_str){
+              let sort_str = a_str;
+              if([...b_str].length < [...a_str].length){
+                sort_str = b_str;
+              } 
+              for(let i=0; i < [...sort_str].length; i++){
+                if(a_str.codePointAt(i) !== b_str.codePointAt(i)){
+                  if(a_str.codePointAt(i) > b_str.codePointAt(i)){
+                    return 1;
+                  }else if(a_str.codePointAt(i) < b_str.codePointAt(i)){
+                    return -1;
+                  }
+                }          
+              }
+            }
+
+            if(a_number !== b_number){
+              if(!a_number){
+                a_number = 0;
+              }
+              if(!b_number){
+                b_number = 0;
+              }
+
+              if(parseInt(a_number) > parseInt(b_number)){
+                return 1;
+              }else if(parseInt(a_number) < parseInt(b_number)){
+                return -1;
+              }
+            }
+
+            if(a_alf !== b_alf){
+              if(a_alf.codePointAt(0) > b_alf.codePointAt(0)){
+                return 1;
+              }else if(a_alf.codePointAt(0) < b_alf.codePointAt(0)){
+                return -1;
+              }else{
+                return 0;
+              }
+            }
+          }
+          return 0;
+        });
+
+        this.showScenes = array;
+      },
+      
+      // エスケープ処理
+      h(unsafeText){
+        if(typeof unsafeText !== 'string'){
+            return unsafeText;
+        }
+        return unsafeText.replace(
+          /[&'`"<>]/g, 
+          function(match) {
+            return {
+              '&': '&amp;',
+              "'": '&#x27;',
+              '`': '&#x60;',
+              '"': '&quot;',
+              '<': '&lt;',
+              '>': '&gt;',
+            }[match]
+          } 
+        );
+      },
+
+      // 検索カスタムのモーダル表示 
+      openModal_searchScene (number) {
+        this.showContent_search = true;
+        this.postSearch = number;
+      },
+      // 検索カスタムのモーダル非表示
+      closeModal_searchScene(sort, name, refine) {
+        this.showContent_search = false;
+        if(sort !== null && refine !== null){
+          let array_original = this.scenes.filter((a) => eval(refine));
+          let array = array_original;
+          const regex_str = /[^ぁ-んー]/g; // ひらがな以外
+          const regex_number = /[^0-9]/g; // 数字以外
+          const regex_alf = /[^A-Z]/g; // アルファベット
+          
+          if(sort === "character"){
+            array.sort((a, b) => {
+              // 登場人物idで並び替え
+              if(a.character_id !== b.character_id){
+                return a.character_id - b.character_id;
+              }
+              // 最初のページで並び替え
+              if(a.first_page !== b.first_page){
+                return a.first_page - b.first_page
+              }
+              // 最後のページで並び替え
+              if(a.final_page !== b.final_page){
+                return this.page_order.indexOf(a.final_page) - this.page_order.indexOf(b.final_page);
+              }
+
+              // kanaで並び替え
+              if(a.prop.kana !== b.prop.kana){
+                const a_str = a.prop.kana.replace(regex_str, "");
+                const b_str = b.prop.kana.replace(regex_str, "");
+                let a_number = a.prop.kana.replace(regex_number, "");
+                let b_number = b.prop.kana.replace(regex_number, "");
+                const a_alf = a.prop.kana.replace(regex_alf, "");
+                const b_alf = b.prop.kana.replace(regex_alf, "");
+
+                if(a_str !== b_str){
+                  let sort_str = a_str;
+                  if([...b_str].length < [...a_str].length){
+                    sort_str = b_str;
+                  } 
+                  for(let i=0; i < [...sort_str].length; i++){
+                    if(a_str.codePointAt(i) !== b_str.codePointAt(i)){
+                      if(a_str.codePointAt(i) > b_str.codePointAt(i)){
+                        return 1;
+                      }else if(a_str.codePointAt(i) < b_str.codePointAt(i)){
+                        return -1;
+                      }
+                    }          
+                  }
+                }
+
+                if(a_number !== b_number){
+                  if(!a_number){
+                    a_number = 0;
+                  }
+                  if(!b_number){
+                    b_number = 0;
+                  }
+
+                  if(parseInt(a_number) > parseInt(b_number)){
+                    return 1;
+                  }else if(parseInt(a_number) < parseInt(b_number)){
+                    return -1;
+                  }
+                }
+
+                if(a_alf !== b_alf){
+                  if(a_alf.codePointAt(0) > b_alf.codePointAt(0)){
+                    return 1;
+                  }else if(a_alf.codePointAt(0) < b_alf.codePointAt(0)){
+                    return -1;
+                  }else{
+                    return 0;
+                  }
+                }
+              }
+
+              return 0;
+            });
+
+            this.showScenes = array;
+          }else if(sort === "created_at"){
+            array.sort((a, b) => {
+              if(a.created_at !== b.created_at){
+                // 一致不一致はnew Dateせずに
+                return new Date(a.created_at) - new Date(b.created_at);
+              }
+
+              // 最初のページで並び替え
+              if(a.first_page !== b.first_page){
+                return a.first_page - b.first_page
+              }
+              // 最後のページで並び替え
+              if(a.final_page !== b.final_page){
+                return this.page_order.indexOf(a.final_page) - this.page_order.indexOf(b.final_page);
+              }
+
+              // 登場人物idで並び替え
+              if(a.character_id !== b.character_id){
+                return a.character_id - b.character_id;
+              }
+
+              // kanaで並び替え
+              if(a.prop.kana !== b.prop.kana){
+                console.log(a.prop.kana);
+                console.log(b.prop.kana);
+                const a_str = a.prop.kana.replace(regex_str, "");
+                const b_str = b.prop.kana.replace(regex_str, "");
+                let a_number = a.prop.kana.replace(regex_number, "");
+                let b_number = b.prop.kana.replace(regex_number, "");
+                const a_alf = a.prop.kana.replace(regex_alf, "");
+                const b_alf = b.prop.kana.replace(regex_alf, "");
+
+                if(a_str !== b_str){
+                  let sort_str = a_str;
+                  if([...b_str].length < [...a_str].length){
+                    sort_str = b_str;
+                  } 
+                  for(let i=0; i < [...sort_str].length; i++){
+                    if(a_str.codePointAt(i) !== b_str.codePointAt(i)){
+                      if(a_str.codePointAt(i) > b_str.codePointAt(i)){
+                        return 1;
+                      }else if(a_str.codePointAt(i) < b_str.codePointAt(i)){
+                        return -1;
+                      }
+                    }          
+                  }
+                }
+
+                if(a_number !== b_number){
+                  if(!a_number){
+                    a_number = 0;
+                  }
+                  if(!b_number){
+                    b_number = 0;
+                  }
+
+                  if(parseInt(a_number) > parseInt(b_number)){
+                    return 1;
+                  }else if(parseInt(a_number) < parseInt(b_number)){
+                    return -1;
+                  }
+                }
+
+                if(a_alf !== b_alf){
+                  if(a_alf.codePointAt(0) > b_alf.codePointAt(0)){
+                    return 1;
+                  }else if(a_alf.codePointAt(0) < b_alf.codePointAt(0)){
+                    return -1;
+                  }else{
+                    return 0;
+                  }
+                }
+              }
+              
+              return 0;
+            });
+
+            this.showScenes = array;
+          }else if(sort === "updated_at"){
+            array.sort((a, b) => {
+              if(a.updated_at !== b.updated_at){
+                return new Date(a.updated_at) - new Date(b.updated_at);
+              }
+              
+              // 最初のページで並び替え
+              if(a.first_page !== b.first_page){
+                return a.first_page - b.first_page
+              }
+              // 最後のページで並び替え
+              if(a.final_page !== b.final_page){
+                return this.page_order.indexOf(a.final_page) - this.page_order.indexOf(b.final_page);
+              }
+
+              // 登場人物idで並び替え
+              if(a.character_id !== b.character_id){
+                return a.character_id - b.character_id;
+              }
+
+              // kanaで並び替え
+              if(a.prop.kana !== b.prop.kana){
+                const a_str = a.prop.kana.replace(regex_str, "");
+                const b_str = b.prop.kana.replace(regex_str, "");
+                let a_number = a.prop.kana.replace(regex_number, "");
+                let b_number = b.prop.kana.replace(regex_number, "");
+                const a_alf = a.prop.kana.replace(regex_alf, "");
+                const b_alf = b.prop.kana.replace(regex_alf, "");
+
+                if(a_str !== b_str){
+                  let sort_str = a_str;
+                  if([...b_str].length < [...a_str].length){
+                    sort_str = b_str;
+                  } 
+                  for(let i=0; i < [...sort_str].length; i++){
+                    if(a_str.codePointAt(i) !== b_str.codePointAt(i)){
+                      if(a_str.codePointAt(i) > b_str.codePointAt(i)){
+                        return 1;
+                      }else if(a_str.codePointAt(i) < b_str.codePointAt(i)){
+                        return -1;
+                      }
+                    }          
+                  }
+                }
+
+                if(a_number !== b_number){
+                  if(!a_number){
+                    a_number = 0;
+                  }
+                  if(!b_number){
+                    b_number = 0;
+                  }
+
+                  if(parseInt(a_number) > parseInt(b_number)){
+                    return 1;
+                  }else if(parseInt(a_number) < parseInt(b_number)){
+                    return -1;
+                  }
+                }
+
+                if(a_alf !== b_alf){
+                  if(a_alf.codePointAt(0) > b_alf.codePointAt(0)){
+                    return 1;
+                  }else if(a_alf.codePointAt(0) < b_alf.codePointAt(0)){
+                    return -1;
+                  }else{
+                    return 0;
+                  }
+                }
+              }
+              
+              return 0;
+            });
+
+            this.showScenes = array;
+          }else{
+            this.sort_Standard(array);
+          }          
+        }      
       },
 
       // 使用シーン詳細のモーダル表示 

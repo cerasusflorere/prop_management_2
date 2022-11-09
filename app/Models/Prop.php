@@ -11,15 +11,15 @@ class Prop extends Model
 {
     /** 取得時にJSONに含める属性 */
     protected $visible = [
-        'id', 'name', 'kana', 'owner_id', 'public_id',
-        'url', 'usage', 'usage_guraduation','usage_left', 'usage_right', 'created_at', 'updated_at',
+        'id', 'name', 'kana', 'owner_id', 'location',
+        'public_id', 'url', 'usage', 'usage_guraduation','usage_left', 'usage_right', 'created_at', 'updated_at',
         'owner', 'prop_comments', 'scenes',
     ];
  
     /** 登録時にJSONに含める属性 */
     protected $fillable = [
-        'name', 'kana', 'owner_id', 'public_id',
-        'url', 'usage', 'usage_guraduation', 'usage_left', 'usage_right'
+        'name', 'kana', 'owner_id', 'location', 
+        'public_id', 'url', 'usage', 'usage_guraduation', 'usage_left', 'usage_right'
     ];
 
     public function getCreatedAtAttribute()

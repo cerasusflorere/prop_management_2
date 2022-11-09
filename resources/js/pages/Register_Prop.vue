@@ -6,7 +6,7 @@
         <input type="radio" id="prop_passo" v-model="season_prop" value="passo">
         <label for="prop_passo">中間公演</label>       
 
-        <input type="radio" id="prop_guraduation" v-model="season_prop" value="guradution">
+        <input type="radio" id="prop_guraduation" v-model="season_prop" value="guraduation">
         <label for="prop_guraduation">卒業公演</label>
       </div>
 
@@ -39,6 +39,12 @@
           </option>
         </select>
 
+        <!-- ピッコロにあるか -->
+        <div class="checkbox-area--together">
+          <label for="costume_location">ピッコロに持ってきた</label>
+          <input type="checkbox" id="costume_location" v-model="registerForm.location"></input>    
+        </div>
+
         <!-- 使用するか -->
         <div>
           <div v-show="season_tag_prop === 1" class="checkbox-area--together">
@@ -47,10 +53,10 @@
           </div>
           <div v-show="season_tag_prop === 2">
             <div class="checkbox-area--together">
-              <label for="prop_usage_scene_guradutaion">卒業公演での使用</label>
-              <input type="checkbox" id="prop_usage_scene_guradutaion" v-model="registerForm.usage_guraduation_prop" @change="selectGuraduation_Prop">
+              <label for="prop_usage_scene_guraduation">卒業公演での使用</label>
+              <input type="checkbox" id="prop_usage_scene_guraduation" v-model="registerForm.usage_guraduation_prop" @change="selectGuraduation_Prop">
             </div>
-            <div v-if="guradutaion_tag_prop" class="checkbox-area--together">
+            <div v-if="guraduation_tag_prop" class="checkbox-area--together">
               <input type="radio" id="prop_usage_scene_left" value="usage_left" v-model="registerForm.usage_stage_prop">            
               <label for="prop_usage_scene_left">上手</label>
 
@@ -124,7 +130,7 @@ export default {
       season_prop: null,
       season_tag_prop: null,
       // 卒業公演
-      guradutaion_tag_prop: 0,
+      guraduation_tag_prop: 0,
       // 写真プレビュー
       preview: null,
       // overlayのクラス
@@ -139,6 +145,7 @@ export default {
         prop: '',
         kana: '',
         owner: '',
+        location: false,
         usage_prop: '',
         usage_guraduation_prop: 0,
         usage_stage_prop: null,
@@ -194,18 +201,18 @@ export default {
       }else if(month === 11){
         const year = today.getFullYear();
         const passo_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
-        if(passo_day <= day){
+        if(passo_day >= day){
           this.season_prop = "passo";
         }else{
-          this.season_prop = "guradutaion";
+          this.season_prop = "guraduation";
         }
       }else if(month > 11 && month < 3){
-        this.season_prop = "guradutaion";
+        this.season_prop = "guraduation";
       }else if(month === 3){
         const year = today.getFullYear();
         const guraduation_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
-        if(guraduation_day <= day){          
-          this.season_prop = "guradutaion";
+        if(guraduation_day >= day){          
+          this.season_prop = "guraduation";
         }else{
           this.season_prop = "passo";
         }
@@ -244,10 +251,10 @@ export default {
 
     // 卒業公演の使用にチェックが付いたか
     selectGuraduation_Prop() {
-      if(!this.guradutaion_tag_prop){
-        this.guradutaion_tag_prop = 1;
+      if(!this.guraduation_tag_prop){
+        this.guraduation_tag_prop = 1;
       }else{
-        this.guradutaion_tag_prop = 0;
+        this.guraduation_tag_prop = 0;
         this.registerForm.usage_stage_prop = null;
       }
     },
@@ -336,6 +343,7 @@ export default {
       this.registerForm.prop = '';
       this.registerForm.kana = '';
       this.registerForm.owner = '';
+      this.registerForm.location = false;
       this.registerForm.usage_prop = '';
       this.registerForm.usage_guraduation_prop = '';
       this.registerForm.usage_stage_prop = null;
@@ -366,6 +374,11 @@ export default {
       formData.append('kana', this.registerForm.kana);
       formData.append('owner_id', this.registerForm.owner);
       formData.append('memo', this.registerForm.comment);
+      if(this.registerForm.location){
+        formData.append('location', 1);
+      }else{
+        formData.append('location', 0);
+      }
       formData.append('usage', this.registerForm.usage_prop);
       formData.append('usage_guraduation', this.registerForm.usage_guraduation_prop);
       if(this.registerForm.usage_stage_prop === "usage_left"){
@@ -424,7 +437,7 @@ export default {
       async handler(season_prop) {
         if(this.season_prop === "passo"){
           this.season_tag_prop = 1;
-        }else if(this.season_prop === "guradution"){
+        }else if(this.season_prop === "guraduation"){
           this.season_tag_prop = 2;
         }
       },

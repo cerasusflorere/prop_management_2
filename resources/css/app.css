@@ -168,6 +168,61 @@ img {
 .navbar__brand:hover {
   color: #c0c0c0;
 }
+.countdown_and_hamburger {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-direction: row;
+}
+/* カウントダウン */
+.countdown__box {
+  margin-right: 4.8em;
+  width: 10em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+.countdown__message_area {
+  padding-bottom: 0.2em;
+}
+.countdown_number {
+  font-size: 1.8em;
+  font-weight: 500;
+}
+.countdown_number_red {
+  color: red;
+}
+.countdown_day {
+  margin-right: 0.5em;
+}
+.countdown_message {
+  font-size: 1.8em;
+  font-weight: 700;
+  margin-right: 0.5em;
+  background-image: linear-gradient(
+		70deg,
+    #169b62 45%, 
+    #FFF 50%,
+    #ff883e 55%
+	);
+	background-size: 500% 100%;
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+	animation: shine 2s infinite;
+}
+@keyframes shine {
+	0% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+.countdown__image_area {
+  max-width: 25%;
+}
 /* ハンバーガーメニュー　*/
 .menu-btn {
   z-index: 90;
@@ -328,6 +383,9 @@ main {
 
 
 /* 表 */ /* シーンも小道具も同一 */
+.phone {
+  text-align: center;
+}
 table {
   margin: auto;
   width: 95%;
@@ -345,6 +403,10 @@ table th {/*table内のthに対して*/
   padding: 0.5em;/*上下左右10pxずつ*/
   color: #169b62;/*文字色 緑*/
   background: #ddefe3;/*背景色*/
+}
+.phone div table {
+  display: inline-block;
+  width: auto;
 }
 .phone th {
   width: 20%;
@@ -480,6 +542,53 @@ figure {
 /* Show_Prop 写真リスト */
 .usage-show {
   margin-right: 0.2em;
+}
+
+/* 小道具検索 */
+.cotent-search {
+  min-width: 30em;
+}
+.button-search--close button {
+  border: none;
+  background: none;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+.form-search {
+  padding: 0.5em 1em;
+}
+.search-sort-area {
+  margin-bottom: 0.8em;
+}
+.search-span {
+  font-weight: bold;
+}
+.search--select-area--box {
+  margin-bottom: 0.4em;
+}
+.search--input {
+  margin-bottom: 0.5em;
+}
+.search--label {
+  font-size: 0.8em;
+  margin-top: 0.5em;
+  margin-bottom: 0.2em;
+} 
+.search--select-area {
+  margin-bottom: 0.4em;
+}
+.serach--select-area-colors {
+  display: flex;
+  justify-content: space-between;
+}
+.serach--select-area-colors div {
+  width: 48%;
+}
+.search--select-area--performance {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 1.5em;
 }
 
 /* Detail_Prop 小道具詳細 */

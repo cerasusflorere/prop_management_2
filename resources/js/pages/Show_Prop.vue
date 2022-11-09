@@ -1,30 +1,41 @@
 <template>
   <div>
     <!-- ボタンエリア -->
-    <div>
+    <div class="button-area">
       <!--表示切替ボタン-->
       <div v-show="tabProp === 1" class="button-area--showhow">
-       <button type="button" @click="switchDisplay_prop" class="button button--inverse"><i class="fas fa-th fa-fw"></i>写真ブロック</button>
+        <button type="button" @click="switchDisplay_prop" class="button button--inverse"><i class="fas fa-th fa-fw"></i>写真ブロック</button>
       </div>
       <div v-show="tabProp === 2" class="button-area--showhow">
-       <button type="button" @click="switchDisplay_prop" class="button button--inverse"><i class="fas fa-list-ul fa-fw"></i>リスト</button>
+        <button type="button" @click="switchDisplay_prop" class="button button--inverse"><i class="fas fa-list-ul fa-fw"></i>リスト</button>
       </div>
+
+      <div v-if="props.length" class="button-area--small">
+        <!-- 検索 -->
+        <div class="button-area--small-small">
+          <button type="button" @click="openModal_searchProp(Math.random())" class="button button--inverse button--small"><i class="fas fa-search fa-fw"></i>検索</button>
+        </div>
+        <searchProp :postSearch="postSearch" v-show="showContent_search" @close="closeModal_searchProp" />
+
+        <!-- ダウンロードボタン -->
+        <!-- リスト表示かつPCかつデータがある時 -->
+        <div v-show="tabProp === 1" v-if="!sizeScreen && showProps.length" class="button-area--small-small">
+          <button type="button" @click="downloadProps" class="button button--inverse button--small"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
+        </div>
+      </div> 
     </div>
 
 
     <!-- 表示エリア -->
     <div v-show="tabProp === 1">
       <div v-if="!sizeScreen" class="PC">
-        <!-- ダウンロードボタン -->
-        <div class="button-area--download">
-          <button type="button" @click="downloadProps" class="button button--inverse"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
-        </div>
-        <table>
+        <table v-if="showProps.length">
           <thead>
             <tr>
               <th class="th-non"></th>
               <th>小道具名</th>
               <th>持ち主</th>
+              <th>ピッコロ</th>
               <th>中間</th>
               <th>卒業</th>
               <th>上手</th>
@@ -34,13 +45,16 @@
               <th>更新日時</th>
             </tr>
           </thead>
-          <tbody v-if="showProps.length">
+          <tbody>
             <tr v-for="(prop, index) in showProps">
               <td class="td-color">{{ index + 1 }}</td>
               <!-- 小道具名 -->
               <td type="button" class="list-button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</td>
               <!-- 持ち主 -->
               <td v-if="prop.owner">{{ prop.owner.name }}</td>
+              <td v-else></td>
+              <!-- ピッコロに持ってきたか -->
+              <td v-if="prop.location"><i class="fas fa-check fa-fw"></i></td>
               <td v-else></td>
               <!-- 中間発表-->
               <td v-if="prop.usage"><i class="fas fa-check fa-fw"></i></td>
@@ -89,6 +103,12 @@
                 <!-- 持ち主 -->
                 <th>持ち主</th>
                 <td v-if="prop.owner">{{ prop.owner.name }}</td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- ピッコロに持ってきたか -->
+                <th>ピッコロにあるか</th>
+                <td v-if="prop.location"><i class="fas fa-check fa-fw"></i></td>
                 <td v-else></td>
               </tr>
               <tr>
@@ -157,11 +177,16 @@
             <div>
               <!-- 小道具名 -->
               <div>
-                {{ prop.name}}
+                {{ prop.name }}
               </div>
               <!-- 持ち主 -->
               <div v-if="prop.owner">
                 {{ prop.owner.name }}
+              </div>
+              <!-- ピッコロに持ってきたか -->
+              <div>
+                <span class="usage-show">ピッコロにあるか:</span>
+                <span v-if="prop.location" class="usage-show"><i class="fas fa-check fa-fw"></i></span>
               </div>
 
               <div>
@@ -199,12 +224,14 @@
   import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util';
 
   import detailProp from '../components/Detail_Prop.vue';
+  import searchProp from '../components/Search_Prop.vue';
   import ExcelJS from 'exceljs';
 
   export default {
     // このページの上で表示するコンポーネント
     components: {
-      detailProp
+      detailProp,
+      searchProp
     },
     data() {
       return{
@@ -218,7 +245,10 @@
         showProps: [],
         // 小道具詳細
         showContent: false,
-        postProp: ""
+        postProp: "",
+        // 小道具検索カスタム
+        showContent_search: false,
+        postSearch: ""
       }
     },
     watch: {
@@ -248,6 +278,81 @@
 
         this.props = response.data; // オリジナルデータ
         this.showProps = JSON.parse(JSON.stringify(this.props));
+      },
+
+      // エスケープ処理
+      h(unsafeText){
+        if(typeof unsafeText !== 'string'){
+            return unsafeText;
+        }
+        return unsafeText.replace(
+          /[&'`"<>]/g, 
+          function(match) {
+            return {
+              '&': '&amp;',
+              "'": '&#x27;',
+              '`': '&#x60;',
+              '"': '&quot;',
+              '<': '&lt;',
+              '>': '&gt;',
+            }[match]
+          } 
+        );
+      },
+
+      // 検索カスタムのモーダル表示 
+      openModal_searchProp (number) {
+        this.showContent_search = true;
+        this.postSearch = number;
+      },
+      // 検索カスタムのモーダル非表示
+      async closeModal_searchProp(sort, name, refine) {
+        this.showContent_search = false;
+        if(sort !== null && refine !== null){
+          let array_original = this.props.filter((a) => eval(refine));
+          let array = [];
+
+          if(this.h(name.input)){
+            if(name.scope === "memo_together"){
+              // メモを含めて検索
+              array = array_original.filter((a) => {
+                if(a.name.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
+                  return a;
+                }else if(a.kana.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
+                  return a;
+                }else if(a.prop_comments[0]){
+                  if(a.prop_comments[0].memo.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1){
+                    return a;
+                  }                  
+                }
+              });
+            }else{
+              // 小道具名のみで検索
+              array = array_original.filter((a) => {
+                if(a.name.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
+                  return a;
+                }else if(a.kana.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
+                  return a;
+                }
+              });
+            }
+          }else{
+            // 入力検索しない
+            array = array_original;
+          }
+          
+          if(sort === "owner"){
+            array.sort((a, b) => a.owner_id - b.owner_id);
+          }else if(sort === "created_at"){
+            array.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+          }else if(sort === "updated_at"){
+            array.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+          }else{
+            array.sort((a, b) => a.kana - b.kana);
+          }
+
+          this.showProps = array;
+        }      
       },
       
       // 表示切替

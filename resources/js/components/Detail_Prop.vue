@@ -33,6 +33,8 @@
               
               <div>所有者: <span v-if="prop.owner">{{ prop.owner.name }}</span></div>
 
+              <div>ピッコロに持ってきたか: <span v-if="prop.location" class="usage-show"><i class="fas fa-check fa-fw"></i></span></div>
+
               <div>
                 <!-- 中間発表 -->
                 <span v-if="prop.usage" class="usage-show">Ⓟ</span>
@@ -115,7 +117,8 @@
               <div>
                 <label for="prop_name_edit">小道具名</label>
                 <input type="text" id="prop_name_edit" class="form__item" v-model="editForm_prop.name" @input="handleNameInput" placeholder="小道具" required>
-                <input type="text" name="furigana" id="prop_furigana_edit" class="form__item form__item--furigana" v-model="editForm_prop.kana" placeholder="ふりがな" required>
+                <!-- <input type="text" name="furigana" id="prop_furigana_edit" class="form__item form__item--furigana" v-model="editForm_prop.kana" placeholder="ふりがな" required> -->
+                <input type="text" name="furigana" :id="prop.id" class="form__item form__item--furigana" v-model="editForm_prop.kana" placeholder="ふりがな" required>
               </div>            
               
               <div>所有者: 
@@ -125,6 +128,12 @@
                     {{ owner.name }}
                   </option>
                 </select>
+              </div>
+
+              <!-- ピッコロに持ってきたか -->
+              <div  class="checkbox-area--together">
+                <label for="prop_location_edit" class="form__check__label">ピッコロに持ってきたか</label>
+                <input type="checkbox" id="prop_location_edit" class="form__check__input" v-model="editForm_prop.location">
               </div>
 
               <!-- 使用するか -->
@@ -292,6 +301,7 @@ export default {
           name: ''
         },
         owner_id: '',
+        location: 0,
         url: '',
         public_id: '',
         usage: 0,
@@ -341,6 +351,12 @@ export default {
           await this.fetchProp();
           await this.fetchOwners();
           await this.fetchProps();
+
+          // ふりがなのinput要素のidは省略可能
+          // 使用シーン登録時のid=propと被るから
+          const autokana_id = '#'+ this.prop.id;
+          autokana = AutoKana.bind(autokana_id);
+          autokana.input = this.prop.kana;
 
           const content_dom = this.$refs.content_detail_prop;
           const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
@@ -412,6 +428,8 @@ export default {
         this.editForm_prop.owner_id = this.prop.owner_id;
         this.editForm_prop.owner.name = this.prop.owner.name;
       }
+
+      this.editForm_prop.location = this.prop.location;
 
       this.editForm_prop.url = this.prop.url;
       this.editForm_prop.public_id = this.prop.public_id;
@@ -617,6 +635,7 @@ export default {
       this.editForm_prop.kana = null;
       this.editForm_prop.owner.name = '';
       this.editForm_prop.owner_id = '';
+      this.editForm_prop.location = 0;
       this.editForm_prop.url = '';
       this.editForm_prop.public_id = '';
       this.editForm_prop.usage = 0;
@@ -649,7 +668,7 @@ export default {
 
     // 編集エラー
     confirmProp () {
-      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
+      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.location !== this.editForm_prop.location  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
         if(!this.prop.owner_id && !this.editForm_prop.owner_id){
           this.editPropMode_detail = 0;
         }else{
@@ -697,10 +716,15 @@ export default {
         }
       }, this);
 
+      let location = '持ってきてない';
       let usage = '';
       let usage_guraduation = '';
       let usage_left = '';
       let usage_right = '';
+
+      if(this.editForm_prop.location) {
+        location = '持ってきてる';
+      }
 
       if(this.editForm_prop.usage) { 
         usage = 'Ⓟ ';
@@ -730,7 +754,7 @@ export default {
         photo = '変更しない';
       }
 
-      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name+'\nふりがな：'+this.editForm_prop.kana+'\n持ち主：'+this.editForm_prop.owner.name +'\n使用状況：'+usage+usage_guraduation+usage_left+usage_right+'\nメモ：'+memos+'\n写真：'+photo;
+      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name+'\nふりがな：'+this.editForm_prop.kana+'\n持ち主：'+this.editForm_prop.owner.name + '\nピッコロに：'+location +'\n使用状況：'+usage+usage_guraduation+usage_left+usage_right+'\nメモ：'+memos+'\n写真：'+photo;
     },
     // 編集confirmのモーダル非表示_OKの場合
     async closeModal_confirmEdit_OK() {
@@ -759,6 +783,7 @@ export default {
           name: this.editForm_prop.name,
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
+          location: this.editForm_prop.location,
           usage: this.editForm_prop.usage,
           usage_guraduation: this.editForm_prop.usage_guraduation,
           usage_left: this.editForm_prop.usage_left,
@@ -787,6 +812,7 @@ export default {
         formData.append('name', this.editForm_prop.name);
         formData.append('kana', this.editForm_prop.kana);
         formData.append('owner_id', this.editForm_prop.owner_id);
+        formData.append('location', this.editForm_prop.location);
         formData.append('usage', this.editForm_prop.usage);
         formData.append('usage_guraduation', this.editForm_prop.usage_guraduation);
         formData.append('usage_left', this.editForm_prop.usage_left);
@@ -816,6 +842,7 @@ export default {
           name: this.editForm_prop.name,
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
+          location: this.editForm_prop.location,
           public_id: this.editForm_prop.public_id,
           usage: this.editForm_prop.usage,
           usage_guraduation: this.editForm_prop.usage_guraduation,
@@ -845,6 +872,7 @@ export default {
         formData.append('name', this.editForm_prop.name);
         formData.append('kana', this.editForm_prop.kana);
         formData.append('owner_id', this.editForm_prop.owner_id);
+        formData.append('location', this.editForm_prop.location);
         formData.append('public_id', this.editForm_prop.public_id);
         formData.append('usage', this.editForm_prop.usage);
         formData.append('usage_guraduation', this.editForm_prop.usage_guraduation);
