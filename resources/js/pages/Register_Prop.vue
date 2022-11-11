@@ -154,7 +154,10 @@ export default {
         photo: ''
       },
       // 登録状態
-      loading: false
+      loading: false,
+      // ユニコード
+      first_uni: 9312, // ①
+      final_uni: 9331  // ⑳
     }
   },
   mounted() {
@@ -367,11 +370,172 @@ export default {
       }
     },
 
+    // 全角→半角（数字）
+    Zenkaku2hankaku_number(str) {
+      return str.replace(/[０-９]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+
+      let pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+      const chars = str.split('');
+      let sets = '';
+      chars.forEach((char, index) => {
+        char.replace(/[０-９]/g, function(s) {
+          const number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+          if(pattern_number.test(number)){
+            sets = sets + number;
+          }else{
+            sets  = 0;
+          }
+        });
+        if(index === chars.length-1){
+          return sets;
+        }
+      });
+    },
+
+    // 全角→半角（アルファベット）
+    Zenkaku2hankaku_alf(str) {
+      return str.replace(/[ａ-ｚＡ-Ｚ]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+
+      let pattern_alf = /^([A-Z]\d)$/; // 0~9の数字かどうか
+      const chars = str.split('');
+      let sets = '';
+      chars.forEach((char, index) => {
+        char.replace(/[ａ-ｚＡ-Ｚ]/g, function(s) {
+          const number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+          if(pattern_number.test(number)){
+            sets = sets + number;
+          }else{
+            sets  = 0;
+          }
+        });
+        if(index === chars.length-1){
+          return sets;
+        }
+      });
+    },
+
+    // 半角→全角（カタカナ）
+    hunkaku2Zenkaku_str(str) {
+      const kanaMap = {
+        'ｶﾞ': 'ガ', 'ｷﾞ': 'ギ', 'ｸﾞ': 'グ', 'ｹﾞ': 'ゲ', 'ｺﾞ': 'ゴ',
+        'ｻﾞ': 'ザ', 'ｼﾞ': 'ジ', 'ｽﾞ': 'ズ', 'ｾﾞ': 'ゼ', 'ｿﾞ': 'ゾ',
+        'ﾀﾞ': 'ダ', 'ﾁﾞ': 'ヂ', 'ﾂﾞ': 'ヅ', 'ﾃﾞ': 'デ', 'ﾄﾞ': 'ド',
+        'ﾊﾞ': 'バ', 'ﾋﾞ': 'ビ', 'ﾌﾞ': 'ブ', 'ﾍﾞ': 'ベ', 'ﾎﾞ': 'ボ',
+        'ﾊﾟ': 'パ', 'ﾋﾟ': 'ピ', 'ﾌﾟ': 'プ', 'ﾍﾟ': 'ペ', 'ﾎﾟ': 'ポ',
+        'ｳﾞ': 'ヴ', 'ﾜﾞ': 'ヷ', 'ｦﾞ': 'ヺ',
+        'ｱ': 'ア', 'ｲ': 'イ', 'ｳ': 'ウ', 'ｴ': 'エ', 'ｵ': 'オ',
+        'ｶ': 'カ', 'ｷ': 'キ', 'ｸ': 'ク', 'ｹ': 'ケ', 'ｺ': 'コ',
+        'ｻ': 'サ', 'ｼ': 'シ', 'ｽ': 'ス', 'ｾ': 'セ', 'ｿ': 'ソ',
+        'ﾀ': 'タ', 'ﾁ': 'チ', 'ﾂ': 'ツ', 'ﾃ': 'テ', 'ﾄ': 'ト',
+        'ﾅ': 'ナ', 'ﾆ': 'ニ', 'ﾇ': 'ヌ', 'ﾈ': 'ネ', 'ﾉ': 'ノ',
+        'ﾊ': 'ハ', 'ﾋ': 'ヒ', 'ﾌ': 'フ', 'ﾍ': 'ヘ', 'ﾎ': 'ホ',
+        'ﾏ': 'マ', 'ﾐ': 'ミ', 'ﾑ': 'ム', 'ﾒ': 'メ', 'ﾓ': 'モ',
+        'ﾔ': 'ヤ', 'ﾕ': 'ユ', 'ﾖ': 'ヨ',
+        'ﾗ': 'ラ', 'ﾘ': 'リ', 'ﾙ': 'ル', 'ﾚ': 'レ', 'ﾛ': 'ロ',
+        'ﾜ': 'ワ', 'ｦ': 'ヲ', 'ﾝ': 'ン',
+        'ｧ': 'ァ', 'ｨ': 'ィ', 'ｩ': 'ゥ', 'ｪ': 'ェ', 'ｫ': 'ォ',
+        'ｯ': 'ッ', 'ｬ': 'ャ', 'ｭ': 'ュ', 'ｮ': 'ョ',
+        '｡': '。', '､': '、', 'ｰ': 'ー', '｢': '「', '｣': '」', '･': '・'
+      };
+      let reg = new RegExp('(' + Object.keys(kanaMap).join('|') + ')', 'g');
+      return str.replace(reg, function(s){
+        return kanaMap[s];
+      }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
+    },
+
+    /** 文字列内のカタカナをひらがなに変換します。 */
+    kata2Hira(str) {
+      return str.replace(/[\u30A1-\u30FA]/g, ch =>
+       String.fromCharCode(ch.charCodeAt(0) - 0x60)
+      );
+    },
+
     // 登録する
     async register_prop () {
+      const regex_str = /[^ぁ-んー]/g; // ひらがな以外
+      const regex_number = /[^0-9]/g; // 数字以外
+      const regex_alf = /[^A-Z]/g; // アルファベット
+      let kana = '';
+      let kanas = [...this.registerForm.kana];
+      let pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+      let pattern_alf = /^([A-Z]\d*)$/; // A~Zのアルファベットかどうか*いる
+      let names = [...this.registerForm.prop];
+      let name_last = names[names.length-1];
+
+      if(this.first_uni <= name_last.charCodeAt(0) && name_last.charCodeAt(0) <= this.final_uni){
+        // 囲み文字の処理
+        const name_last_point_diff = name_last.charCodeAt(0)-this.first_uni + 1;
+        name_last = name_last_point_diff;
+      }else{
+        // 囲み文字じゃなかった
+        name_last = this.Zenkaku2hankaku_number(name_last);
+        if(pattern_number.test(name_last)){
+          // 数字だった
+          for(let i = 2; i<names.length+1; i++){
+            // 遡る
+            let name_candidate = this.Zenkaku2hankaku_number(names[names.length-i]);
+            if(pattern_number.test(name_candidate)){
+              name_last = String(name_candidate) + String(name_last);
+              name_last = Number(name_last);
+            }else{
+              break;
+            }
+          }
+        }else{
+          // 数字じゃなかった=文字だった
+          name_last = this.Zenkaku2hankaku_alf(name_last);
+          if(pattern_alf.test(name_last.toUpperCase())){
+            // アルファベットだった
+            name_last = name_last.toUpperCase();
+            for(let i = 2; i<names.length+1; i++){
+              // 遡る
+              let name_candidate = this.Zenkaku2hankaku_alf(names[names.length-i]);
+              if(pattern_alf.test(name_candidate)){
+                name_last = name_candidate.toUpperCase() + name_last;
+              }else{
+                break;
+              }
+            }
+          }else{
+            // アルファベットじゃなかった=ひらがなかカタカナだった
+            name_last = '';
+          }
+        }
+      }
+
+      kanas.forEach(a => {
+        // 一文字ずつになっている
+        const number = this.Zenkaku2hankaku_number(a);
+        if(pattern_number.test(number)){
+          // 数字だった
+          kana = kana + number;
+        }else{
+          // 数字じゃなかった=文字だった
+          const alf = this.Zenkaku2hankaku_alf(number);
+          if(pattern_alf.test(alf.toUpperCase())){
+            // アルファベットだった
+            kana = kana + alf.toUpperCase();
+          }else{
+            // アルファベットじゃなかった=ひらがなかカタカナだった
+            const str = this.hunkaku2Zenkaku_str(alf);
+            kana = kana + this.kata2Hira(str);
+          }
+        }
+      });
+      if(name_last){
+        if(kana.slice( eval('-'+String(name_last).length))!== String(name_last) ){
+          // 最後のマークが名前と一致しない場合追加する
+          kana = kana + String(name_last);
+        }
+      }
+
       const formData = new FormData();
       formData.append('name', this.registerForm.prop);
-      formData.append('kana', this.registerForm.kana);
+      formData.append('kana', kana);
       formData.append('owner_id', this.registerForm.owner);
       formData.append('memo', this.registerForm.comment);
       if(this.registerForm.location){

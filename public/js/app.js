@@ -8014,6 +8014,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vanilla_autokana__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vanilla_autokana__WEBPACK_IMPORTED_MODULE_4__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -8081,7 +8093,12 @@ var autokana;
         photo: ''
       },
       // 登録状態
-      loading: false
+      loading: false,
+      // ユニコード
+      first_uni: 9312,
+      // ①
+      final_uni: 9331 // ⑳
+
     };
   },
   mounted: function mounted() {
@@ -8420,19 +8437,321 @@ var autokana;
         });
       }
     },
+    // 全角→半角（数字）
+    Zenkaku2hankaku_number: function Zenkaku2hankaku_number(str) {
+      return str.replace(/[０-９]/g, function (s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+      var pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+
+      var chars = str.split('');
+      var sets = '';
+      chars.forEach(function (_char, index) {
+        _char.replace(/[０-９]/g, function (s) {
+          var number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+
+          if (pattern_number.test(number)) {
+            sets = sets + number;
+          } else {
+            sets = 0;
+          }
+        });
+
+        if (index === chars.length - 1) {
+          return sets;
+        }
+      });
+    },
+    // 全角→半角（アルファベット）
+    Zenkaku2hankaku_alf: function Zenkaku2hankaku_alf(str) {
+      return str.replace(/[ａ-ｚＡ-Ｚ]/g, function (s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+      var pattern_alf = /^([A-Z]\d)$/; // 0~9の数字かどうか
+
+      var chars = str.split('');
+      var sets = '';
+      chars.forEach(function (_char2, index) {
+        _char2.replace(/[ａ-ｚＡ-Ｚ]/g, function (s) {
+          var number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+
+          if (pattern_number.test(number)) {
+            sets = sets + number;
+          } else {
+            sets = 0;
+          }
+        });
+
+        if (index === chars.length - 1) {
+          return sets;
+        }
+      });
+    },
+    // 半角→全角（カタカナ）
+    hunkaku2Zenkaku_str: function hunkaku2Zenkaku_str(str) {
+      var kanaMap = {
+        'ｶﾞ': 'ガ',
+        'ｷﾞ': 'ギ',
+        'ｸﾞ': 'グ',
+        'ｹﾞ': 'ゲ',
+        'ｺﾞ': 'ゴ',
+        'ｻﾞ': 'ザ',
+        'ｼﾞ': 'ジ',
+        'ｽﾞ': 'ズ',
+        'ｾﾞ': 'ゼ',
+        'ｿﾞ': 'ゾ',
+        'ﾀﾞ': 'ダ',
+        'ﾁﾞ': 'ヂ',
+        'ﾂﾞ': 'ヅ',
+        'ﾃﾞ': 'デ',
+        'ﾄﾞ': 'ド',
+        'ﾊﾞ': 'バ',
+        'ﾋﾞ': 'ビ',
+        'ﾌﾞ': 'ブ',
+        'ﾍﾞ': 'ベ',
+        'ﾎﾞ': 'ボ',
+        'ﾊﾟ': 'パ',
+        'ﾋﾟ': 'ピ',
+        'ﾌﾟ': 'プ',
+        'ﾍﾟ': 'ペ',
+        'ﾎﾟ': 'ポ',
+        'ｳﾞ': 'ヴ',
+        'ﾜﾞ': 'ヷ',
+        'ｦﾞ': 'ヺ',
+        'ｱ': 'ア',
+        'ｲ': 'イ',
+        'ｳ': 'ウ',
+        'ｴ': 'エ',
+        'ｵ': 'オ',
+        'ｶ': 'カ',
+        'ｷ': 'キ',
+        'ｸ': 'ク',
+        'ｹ': 'ケ',
+        'ｺ': 'コ',
+        'ｻ': 'サ',
+        'ｼ': 'シ',
+        'ｽ': 'ス',
+        'ｾ': 'セ',
+        'ｿ': 'ソ',
+        'ﾀ': 'タ',
+        'ﾁ': 'チ',
+        'ﾂ': 'ツ',
+        'ﾃ': 'テ',
+        'ﾄ': 'ト',
+        'ﾅ': 'ナ',
+        'ﾆ': 'ニ',
+        'ﾇ': 'ヌ',
+        'ﾈ': 'ネ',
+        'ﾉ': 'ノ',
+        'ﾊ': 'ハ',
+        'ﾋ': 'ヒ',
+        'ﾌ': 'フ',
+        'ﾍ': 'ヘ',
+        'ﾎ': 'ホ',
+        'ﾏ': 'マ',
+        'ﾐ': 'ミ',
+        'ﾑ': 'ム',
+        'ﾒ': 'メ',
+        'ﾓ': 'モ',
+        'ﾔ': 'ヤ',
+        'ﾕ': 'ユ',
+        'ﾖ': 'ヨ',
+        'ﾗ': 'ラ',
+        'ﾘ': 'リ',
+        'ﾙ': 'ル',
+        'ﾚ': 'レ',
+        'ﾛ': 'ロ',
+        'ﾜ': 'ワ',
+        'ｦ': 'ヲ',
+        'ﾝ': 'ン',
+        'ｧ': 'ァ',
+        'ｨ': 'ィ',
+        'ｩ': 'ゥ',
+        'ｪ': 'ェ',
+        'ｫ': 'ォ',
+        'ｯ': 'ッ',
+        'ｬ': 'ャ',
+        'ｭ': 'ュ',
+        'ｮ': 'ョ',
+        '｡': '。',
+        '､': '、',
+        'ｰ': 'ー',
+        '｢': '「',
+        '｣': '」',
+        '･': '・'
+      };
+      var reg = new RegExp('(' + Object.keys(kanaMap).join('|') + ')', 'g');
+      return str.replace(reg, function (s) {
+        return kanaMap[s];
+      }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
+    },
+
+    /** 文字列内のカタカナをひらがなに変換します。 */
+    kata2Hira: function kata2Hira(str) {
+      return str.replace(/[\u30A1-\u30FA]/g, function (ch) {
+        return String.fromCharCode(ch.charCodeAt(0) - 0x60);
+      });
+    },
     // 登録する
     register_prop: function register_prop() {
       var _this7 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        var formData, response;
+        var regex_str, regex_number, regex_alf, kana, kanas, pattern_number, pattern_alf, names, name_last, name_last_point_diff, i, name_candidate, _i, _name_candidate, formData, response;
+
         return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
+                regex_str = /[^ぁ-んー]/g; // ひらがな以外
+
+                regex_number = /[^0-9]/g; // 数字以外
+
+                regex_alf = /[^A-Z]/g; // アルファベット
+
+                kana = '';
+                kanas = _toConsumableArray(_this7.registerForm.kana);
+                pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+
+                pattern_alf = /^([A-Z]\d*)$/; // A~Zのアルファベットかどうか*いる
+
+                names = _toConsumableArray(_this7.registerForm.prop);
+                name_last = names[names.length - 1];
+
+                if (!(_this7.first_uni <= name_last.charCodeAt(0) && name_last.charCodeAt(0) <= _this7.final_uni)) {
+                  _context5.next = 14;
+                  break;
+                }
+
+                // 囲み文字の処理
+                name_last_point_diff = name_last.charCodeAt(0) - _this7.first_uni + 1;
+                name_last = name_last_point_diff;
+                _context5.next = 47;
+                break;
+
+              case 14:
+                // 囲み文字じゃなかった
+                name_last = _this7.Zenkaku2hankaku_number(name_last);
+
+                if (!pattern_number.test(name_last)) {
+                  _context5.next = 30;
+                  break;
+                }
+
+                i = 2;
+
+              case 17:
+                if (!(i < names.length + 1)) {
+                  _context5.next = 28;
+                  break;
+                }
+
+                // 遡る
+                name_candidate = _this7.Zenkaku2hankaku_number(names[names.length - i]);
+
+                if (!pattern_number.test(name_candidate)) {
+                  _context5.next = 24;
+                  break;
+                }
+
+                name_last = String(name_candidate) + String(name_last);
+                name_last = Number(name_last);
+                _context5.next = 25;
+                break;
+
+              case 24:
+                return _context5.abrupt("break", 28);
+
+              case 25:
+                i++;
+                _context5.next = 17;
+                break;
+
+              case 28:
+                _context5.next = 47;
+                break;
+
+              case 30:
+                // 数字じゃなかった=文字だった
+                name_last = _this7.Zenkaku2hankaku_alf(name_last);
+
+                if (!pattern_alf.test(name_last.toUpperCase())) {
+                  _context5.next = 46;
+                  break;
+                }
+
+                // アルファベットだった
+                name_last = name_last.toUpperCase();
+                _i = 2;
+
+              case 34:
+                if (!(_i < names.length + 1)) {
+                  _context5.next = 44;
+                  break;
+                }
+
+                // 遡る
+                _name_candidate = _this7.Zenkaku2hankaku_alf(names[names.length - _i]);
+
+                if (!pattern_alf.test(_name_candidate)) {
+                  _context5.next = 40;
+                  break;
+                }
+
+                name_last = _name_candidate.toUpperCase() + name_last;
+                _context5.next = 41;
+                break;
+
+              case 40:
+                return _context5.abrupt("break", 44);
+
+              case 41:
+                _i++;
+                _context5.next = 34;
+                break;
+
+              case 44:
+                _context5.next = 47;
+                break;
+
+              case 46:
+                // アルファベットじゃなかった=ひらがなかカタカナだった
+                name_last = '';
+
+              case 47:
+                kanas.forEach(function (a) {
+                  // 一文字ずつになっている
+                  var number = _this7.Zenkaku2hankaku_number(a);
+
+                  if (pattern_number.test(number)) {
+                    // 数字だった
+                    kana = kana + number;
+                  } else {
+                    // 数字じゃなかった=文字だった
+                    var alf = _this7.Zenkaku2hankaku_alf(number);
+
+                    if (pattern_alf.test(alf.toUpperCase())) {
+                      // アルファベットだった
+                      kana = kana + alf.toUpperCase();
+                    } else {
+                      // アルファベットじゃなかった=ひらがなかカタカナだった
+                      var str = _this7.hunkaku2Zenkaku_str(alf);
+
+                      kana = kana + _this7.kata2Hira(str);
+                    }
+                  }
+                });
+
+                if (name_last) {
+                  if (kana.slice(eval('-' + String(name_last).length)) !== String(name_last)) {
+                    // 最後のマークが名前と一致しない場合追加する
+                    kana = kana + String(name_last);
+                  }
+                }
+
                 formData = new FormData();
                 formData.append('name', _this7.registerForm.prop);
-                formData.append('kana', _this7.registerForm.kana);
+                formData.append('kana', kana);
                 formData.append('owner_id', _this7.registerForm.owner);
                 formData.append('memo', _this7.registerForm.comment);
 
@@ -8457,14 +8776,14 @@ var autokana;
                 }
 
                 formData.append('photo', _this7.registerForm.photo);
-                _context5.next = 12;
+                _context5.next = 61;
                 return axios.post('/api/props', formData);
 
-              case 12:
+              case 61:
                 response = _context5.sent;
 
                 if (!(response.status === 422)) {
-                  _context5.next = 17;
+                  _context5.next = 66;
                   break;
                 }
 
@@ -8477,9 +8796,9 @@ var autokana;
 
                 return _context5.abrupt("return", false);
 
-              case 17:
+              case 66:
                 if (!(response.status !== 201)) {
-                  _context5.next = 21;
+                  _context5.next = 70;
                   break;
                 }
 
@@ -8493,7 +8812,7 @@ var autokana;
 
                 return _context5.abrupt("return", false);
 
-              case 21:
+              case 70:
                 // 諸々データ削除
                 _this7.reset(); // メッセージ登録
 
@@ -8503,7 +8822,7 @@ var autokana;
                   timeout: 6000
                 });
 
-              case 23:
+              case 72:
               case "end":
                 return _context5.stop();
             }
