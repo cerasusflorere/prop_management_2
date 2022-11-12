@@ -334,6 +334,9 @@ export default {
       // 編集confirm
       showContent_confirmEdit: false,
       postMessage_Edit: "",
+      // ユニコード
+      first_uni: 9312, // ①
+      final_uni: 9331,  // ⑳
       // 編集範囲
       editPropMode_detail: "",
       editPropMode_memo: "",
@@ -427,6 +430,9 @@ export default {
       if(this.prop.owner_id){
         this.editForm_prop.owner_id = this.prop.owner_id;
         this.editForm_prop.owner.name = this.prop.owner.name;
+      }else{
+        this.editForm_prop.owner_id = '';
+        this.editForm_prop.owner.name = '';
       }
 
       this.editForm_prop.location = this.prop.location;
@@ -666,15 +672,180 @@ export default {
       }
     },
 
+    // 全角→半角（数字）
+    Zenkaku2hankaku_number(str) {
+      return str.replace(/[０-９]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+
+      let pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+      const chars = str.split('');
+      let sets = '';
+      chars.forEach((char, index) => {
+        char.replace(/[０-９]/g, function(s) {
+          const number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+          if(pattern_number.test(number)){
+            sets = sets + number;
+          }else{
+            sets  = 0;
+          }
+        });
+        if(index === chars.length-1){
+          return sets;
+        }
+      });
+    },
+
+    // 全角→半角（アルファベット）
+    Zenkaku2hankaku_alf(str) {
+      return str.replace(/[ａ-ｚＡ-Ｚ]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+
+      let pattern_alf = /^([A-Z]\d)$/; // 0~9の数字かどうか
+      const chars = str.split('');
+      let sets = '';
+      chars.forEach((char, index) => {
+        char.replace(/[ａ-ｚＡ-Ｚ]/g, function(s) {
+          const number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+          if(pattern_number.test(number)){
+            sets = sets + number;
+          }else{
+            sets  = 0;
+          }
+        });
+        if(index === chars.length-1){
+          return sets;
+        }
+      });
+    },
+
+    // 半角→全角（カタカナ）
+    hunkaku2Zenkaku_str(str) {
+      const kanaMap = {
+        'ｶﾞ': 'ガ', 'ｷﾞ': 'ギ', 'ｸﾞ': 'グ', 'ｹﾞ': 'ゲ', 'ｺﾞ': 'ゴ',
+        'ｻﾞ': 'ザ', 'ｼﾞ': 'ジ', 'ｽﾞ': 'ズ', 'ｾﾞ': 'ゼ', 'ｿﾞ': 'ゾ',
+        'ﾀﾞ': 'ダ', 'ﾁﾞ': 'ヂ', 'ﾂﾞ': 'ヅ', 'ﾃﾞ': 'デ', 'ﾄﾞ': 'ド',
+        'ﾊﾞ': 'バ', 'ﾋﾞ': 'ビ', 'ﾌﾞ': 'ブ', 'ﾍﾞ': 'ベ', 'ﾎﾞ': 'ボ',
+        'ﾊﾟ': 'パ', 'ﾋﾟ': 'ピ', 'ﾌﾟ': 'プ', 'ﾍﾟ': 'ペ', 'ﾎﾟ': 'ポ',
+        'ｳﾞ': 'ヴ', 'ﾜﾞ': 'ヷ', 'ｦﾞ': 'ヺ',
+        'ｱ': 'ア', 'ｲ': 'イ', 'ｳ': 'ウ', 'ｴ': 'エ', 'ｵ': 'オ',
+        'ｶ': 'カ', 'ｷ': 'キ', 'ｸ': 'ク', 'ｹ': 'ケ', 'ｺ': 'コ',
+        'ｻ': 'サ', 'ｼ': 'シ', 'ｽ': 'ス', 'ｾ': 'セ', 'ｿ': 'ソ',
+        'ﾀ': 'タ', 'ﾁ': 'チ', 'ﾂ': 'ツ', 'ﾃ': 'テ', 'ﾄ': 'ト',
+        'ﾅ': 'ナ', 'ﾆ': 'ニ', 'ﾇ': 'ヌ', 'ﾈ': 'ネ', 'ﾉ': 'ノ',
+        'ﾊ': 'ハ', 'ﾋ': 'ヒ', 'ﾌ': 'フ', 'ﾍ': 'ヘ', 'ﾎ': 'ホ',
+        'ﾏ': 'マ', 'ﾐ': 'ミ', 'ﾑ': 'ム', 'ﾒ': 'メ', 'ﾓ': 'モ',
+        'ﾔ': 'ヤ', 'ﾕ': 'ユ', 'ﾖ': 'ヨ',
+        'ﾗ': 'ラ', 'ﾘ': 'リ', 'ﾙ': 'ル', 'ﾚ': 'レ', 'ﾛ': 'ロ',
+        'ﾜ': 'ワ', 'ｦ': 'ヲ', 'ﾝ': 'ン',
+        'ｧ': 'ァ', 'ｨ': 'ィ', 'ｩ': 'ゥ', 'ｪ': 'ェ', 'ｫ': 'ォ',
+        'ｯ': 'ッ', 'ｬ': 'ャ', 'ｭ': 'ュ', 'ｮ': 'ョ',
+        '｡': '。', '､': '、', 'ｰ': 'ー', '｢': '「', '｣': '」', '･': '・'
+      };
+      let reg = new RegExp('(' + Object.keys(kanaMap).join('|') + ')', 'g');
+      return str.replace(reg, function(s){
+        return kanaMap[s];
+      }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
+    },
+
+    /** 文字列内のカタカナをひらがなに変換します。 */
+    kata2Hira(str) {
+      return str.replace(/[\u30A1-\u30FA]/g, ch =>
+       String.fromCharCode(ch.charCodeAt(0) - 0x60)
+      );
+    },
+
+
     // 編集エラー
     confirmProp () {
-      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.location !== this.editForm_prop.location  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
-        if(!this.prop.owner_id && !this.editForm_prop.owner_id){
-          this.editPropMode_detail = 0;
+      const regex_str = /[^ぁ-んー]/g; // ひらがな以外
+      const regex_number = /[^0-9]/g; // 数字以外
+      const regex_alf = /[^A-Z]/g; // アルファベット
+      let kana = '';
+      let kanas = [...this.editForm_prop.kana];
+      let pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+      let pattern_alf = /^([A-Z]\d*)$/; // A~Zのアルファベットかどうか*いる
+      let names = [...this.editForm_prop.name];
+      let name_last = names[names.length-1];
+
+      if(this.first_uni <= name_last.charCodeAt(0) && name_last.charCodeAt(0) <= this.final_uni){
+        // 囲み文字の処理
+        const name_last_point_diff = name_last.charCodeAt(0)-this.first_uni + 1;
+        name_last = name_last_point_diff;
+      }else{
+        // 囲み文字じゃなかった
+        name_last = this.Zenkaku2hankaku_number(name_last);
+        if(pattern_number.test(name_last)){
+          // 数字だった
+          for(let i = 2; i<names.length+1; i++){
+            // 遡る
+            let name_candidate = this.Zenkaku2hankaku_number(names[names.length-i]);
+            if(pattern_number.test(name_candidate)){
+              name_last = String(name_candidate) + String(name_last);
+              name_last = Number(name_last);
+            }else{
+              break;
+            }
+          }
         }else{
+          // 数字じゃなかった=文字だった
+          name_last = this.Zenkaku2hankaku_alf(name_last);
+          if(pattern_alf.test(name_last.toUpperCase())){
+            // アルファベットだった
+            name_last = name_last.toUpperCase();
+            for(let i = 2; i<names.length+1; i++){
+              // 遡る
+              let name_candidate = this.Zenkaku2hankaku_alf(names[names.length-i]);
+              if(pattern_alf.test(name_candidate)){
+                name_last = name_candidate.toUpperCase() + name_last;
+              }else{
+                break;
+              }
+            }
+          }else{
+            // アルファベットじゃなかった=ひらがなかカタカナだった
+            name_last = '';
+          }
+        }
+      }
+
+      kanas.forEach(a => {
+        // 一文字ずつになっている
+        const number = this.Zenkaku2hankaku_number(a);
+        if(pattern_number.test(number)){
+          // 数字だった
+          kana = kana + number;
+        }else{
+          // 数字じゃなかった=文字だった
+          const alf = this.Zenkaku2hankaku_alf(number);
+          if(pattern_alf.test(alf.toUpperCase())){
+            // アルファベットだった
+            kana = kana + alf.toUpperCase();
+          }else{
+            // アルファベットじゃなかった=ひらがなかカタカナだった
+            const str = this.hunkaku2Zenkaku_str(alf);
+            kana = kana + this.kata2Hira(str);
+          }
+        }
+      });
+      if(name_last){
+        if(kana.slice( eval('-'+String(name_last).length))!== String(name_last) ){
+          // 最後のマークが名前と一致しない場合追加する
+          kana = kana + String(name_last);
+        }
+      }
+      this.editForm_prop.kana = kana;
+      
+      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || ((this.prop.owner_id !== this.editForm_prop.owner_id) || (!this.prop.owner_id && !this.editForm_prop.owner_id)) || this.prop.location !== this.editForm_prop.location  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
+        // 怪しい
+        // if(!this.prop.owner_id && !this.editForm_prop.owner_id){
+        //   console.log('なんで');
+        //   this.editPropMode_detail = 0;
+        // }else{
           // 写真をアップデートしない
           this.editPropMode_detail = 1; // 'photo_non_update'
-        }        
+        // }        
       }else if(this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo && this.editForm_prop.photo !== 1){
         // 写真新規
         this.editPropMode_detail = 2; // 'photo_store'
