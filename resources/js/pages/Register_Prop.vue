@@ -356,6 +356,8 @@ export default {
       this.$el.querySelector('input[type="file"]').value = null;
       this.errors.photo = null;
 
+      this.guraduation_tag_prop = 0;
+
       if(this.val){
         // 調整
         this.$nextTick(() => {

@@ -11,12 +11,24 @@
       </div>
 
       <div v-if="props.length" class="button-area--small">
-        <!-- 検索 -->
-        <div class="button-area--small-small">
-          <button type="button" @click="openModal_searchProp(Math.random())" class="button button--inverse button--small"><i class="fas fa-search fa-fw"></i>検索</button>
-        </div>
-        <searchProp :postSearch="postSearch" v-show="showContent_search" @close="closeModal_searchProp" />
+        <di class="button-area--together-left">
+          <!-- 検索 -->
+          <div class="button-area--small-small">
+            <button type="button" @click="openModal_searchProp(Math.random())" class="button button--inverse button--small"><i class="fas fa-search fa-fw"></i>検索</button>
+          </div>
+          <searchProp :postSearch="postSearch" v-show="showContent_search" @close="closeModal_searchProp" />
 
+          <!-- 選択削除 -->
+          <div class="button-area--small-small">
+            <button type="button" @click="showDeleteBox" class="button button--inverse button--small button--deletechoice"><i class="fas fa-check-square fa-fw"></i>選択削除</button>
+          </div>
+
+          <!-- 選択削除実行 -->
+          <div v-if="delete_flag" class="button-area--small-small">
+            <button type="button" @click="deleteProps" class="button button--inverse button--small button--deletechoice"><i class="fas fa-trash-alt fa-fw"></i>選択削除</button>
+          </div>
+        </di>
+        
         <!-- ダウンロードボタン -->
         <!-- リスト表示かつPCかつデータがある時 -->
         <div v-show="tabProp === 1" v-if="!sizeScreen && showProps.length" class="button-area--small-small">
@@ -32,6 +44,9 @@
         <table v-if="showProps.length">
           <thead>
             <tr>
+              <th v-if="delete_flag" class="th-non">
+                <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllProps"></input>
+              </th>
               <th class="th-non"></th>
               <th>小道具名</th>
               <th>持ち主</th>
@@ -47,6 +62,9 @@
           </thead>
           <tbody>
             <tr v-for="(prop, index) in showProps">
+              <td v-if="delete_flag">
+                <input type="checkbox" class="checkbox-delete" v-model="delete_ids[prop.id]"></input>
+              </td>
               <td class="td-color">{{ index + 1 }}</td>
               <!-- 小道具名 -->
               <td type="button" class="list-button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</td>
@@ -248,7 +266,12 @@
         postProp: "",
         // 小道具検索カスタム
         showContent_search: false,
-        postSearch: ""
+        postSearch: "",
+        // 選択削除ボタン
+        delete_flag: false,
+        // 選択削除
+        delete_ids: [],
+        delete_many: 0
       }
     },
     watch: {
@@ -278,6 +301,10 @@
 
         this.props = response.data; // オリジナルデータ
         this.showProps = JSON.parse(JSON.stringify(this.props));
+        
+        this.props.forEach((prop) => {
+          this.delete_ids.push(false);
+        }, this);
       },
 
       // エスケープ処理
@@ -374,6 +401,45 @@
         this.showContent = false;
         await this.fetchProps();
       },
+
+      // 選択削除ボタン出現
+      showDeleteBox() {
+        if(this.delete_flag){
+          this.delete_flag = false;
+        }else{
+          this.delete_flag = true;
+        }
+      },
+
+      // 選択削除（選択）
+      choiceDeleteAllProps() {
+        if(!this.delete_many){
+          this.delete_many = 1;
+          this.showProps.forEach((prop) => {
+            // リアクティブにするため
+            this.$set(this.delete_ids, prop.id, true);
+          }, this);
+        }else{
+          this.delete_many = 0;
+          this.showProps.forEach((prop) => {
+            this.$set(this.delete_ids, prop.id, false);
+          }, this);
+        }
+      },
+
+      // 選択削除（実行）
+      async deleteProps() {
+        let ids = [];
+        this.showProps.forEach((prop) => {
+          if(this.delete_ids[prop.id]){
+            ids.push(prop.id);
+          }
+        });
+        console.log(ids);
+        const response = await axios.delete('/api/props_many/' + ids);
+        await this.fetchProps();
+      },
+
 
       // ダウンロード
       // downloadProps() {

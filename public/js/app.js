@@ -2898,8 +2898,6 @@ var autokana;
                 }
 
                 _this3.editForm_prop.location = _this3.prop.location;
-                console.log(_this3.prop.location);
-                console.log(_this3.editForm_prop.location);
                 _this3.editForm_prop.url = _this3.prop.url;
                 _this3.editForm_prop.public_id = _this3.prop.public_id;
                 _this3.editForm_prop.usage = _this3.prop.usage;
@@ -2934,7 +2932,7 @@ var autokana;
                 _this3.editPropMode_detail = "";
                 _this3.editPropMode_memo = "";
 
-              case 28:
+              case 26:
               case "end":
                 return _context3.stop();
             }
@@ -3473,6 +3471,7 @@ var autokana;
       this.editForm_prop.kana = kana;
 
       if (this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || !this.prop.owner_id && !this.editForm_prop.owner_id || this.prop.location !== this.editForm_prop.location || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && (this.prop.public_id && this.editForm_prop.photo === 1 || !this.prop.public_id && !this.editForm_prop.photo)) {
+        // 怪しい
         // if(!this.prop.owner_id && !this.editForm_prop.owner_id){
         //   console.log('なんで');
         //   this.editPropMode_detail = 0;
@@ -8698,6 +8697,7 @@ var autokana;
       this.registerForm.photo = '';
       this.$el.querySelector('input[type="file"]').value = null;
       this.errors.photo = null;
+      this.guraduation_tag_prop = 0;
 
       if (this.val) {
         // 調整
@@ -10537,7 +10537,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       postProp: "",
       // 小道具検索カスタム
       showContent_search: false,
-      postSearch: ""
+      postSearch: "",
+      // 選択削除ボタン
+      delete_flag: false,
+      // 選択削除
+      delete_ids: [],
+      delete_many: 0
     };
   },
   watch: {
@@ -10604,7 +10609,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 _this2.showProps = JSON.parse(JSON.stringify(_this2.props));
 
-              case 8:
+                _this2.props.forEach(function (prop) {
+                  _this2.delete_ids.push(false);
+                }, _this2);
+
+              case 9:
               case "end":
                 return _context2.stop();
             }
@@ -10744,19 +10753,79 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee4);
       }))();
     },
+    // 選択削除ボタン出現
+    showDeleteBox: function showDeleteBox() {
+      if (this.delete_flag) {
+        this.delete_flag = false;
+      } else {
+        this.delete_flag = true;
+      }
+    },
+    // 選択削除（選択）
+    choiceDeleteAllProps: function choiceDeleteAllProps() {
+      var _this5 = this;
+
+      if (!this.delete_many) {
+        this.delete_many = 1;
+        this.showProps.forEach(function (prop) {
+          // リアクティブにするため
+          _this5.$set(_this5.delete_ids, prop.id, true);
+        }, this);
+      } else {
+        this.delete_many = 0;
+        this.showProps.forEach(function (prop) {
+          _this5.$set(_this5.delete_ids, prop.id, false);
+        }, this);
+      }
+    },
+    // 選択削除（実行）
+    deleteProps: function deleteProps() {
+      var _this6 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var ids, response;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                ids = [];
+
+                _this6.showProps.forEach(function (prop) {
+                  if (_this6.delete_ids[prop.id]) {
+                    ids.push(prop.id);
+                  }
+                });
+
+                console.log(ids);
+                _context5.next = 5;
+                return axios["delete"]('/api/props_many/' + ids);
+
+              case 5:
+                response = _context5.sent;
+                _context5.next = 8;
+                return _this6.fetchProps();
+
+              case 8:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
+      }))();
+    },
     // ダウンロード
     // downloadProps() {
     //   const response = axios.post('/api/props_list', this.showProps);
     // }
     // ダウンロード
     downloadProps: function downloadProps() {
-      var _this5 = this;
+      var _this7 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
         var workbook, worksheet, font, fill, uint8Array, blob, a, today, filename;
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
                 // ①初期化
                 workbook = new (exceljs__WEBPACK_IMPORTED_MODULE_3___default().Workbook)(); // workbookを作成
@@ -10874,7 +10943,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 worksheet.getCell('G1').font = font;
                 worksheet.getCell('G1').fill = fill;
 
-                _this5.showProps.forEach(function (prop, index) {
+                _this7.showProps.forEach(function (prop, index) {
                   var datas = [];
                   datas.push(prop.name);
 
@@ -10927,18 +10996,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }); // ③ファイル生成
 
 
-                _context5.next = 24;
+                _context6.next = 24;
                 return workbook.xlsx.writeBuffer();
 
               case 24:
-                uint8Array = _context5.sent;
+                uint8Array = _context6.sent;
                 // xlsxの場合
                 blob = new Blob([uint8Array], {
                   type: 'application/octet-binary'
                 });
                 a = document.createElement('a');
                 a.href = (window.URL || window.webkitURL).createObjectURL(blob);
-                today = _this5.formatDate(new Date());
+                today = _this7.formatDate(new Date());
                 filename = 'Props_list_' + 'all' + '_' + today + '.xlsx';
                 a.download = filename;
                 a.click();
@@ -10946,10 +11015,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 33:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
           }
-        }, _callee5);
+        }, _callee6);
       }))();
     },
     // 日付をyyyy-mm-ddで返す
@@ -16350,6 +16419,8 @@ var render = function render() {
     staticClass: "fas fa-list-ul fa-fw"
   }), _vm._v("リスト")])]), _vm._v(" "), _vm.props.length ? _c("div", {
     staticClass: "button-area--small"
+  }, [_c("di", {
+    staticClass: "button-area--together-left"
   }, [_c("div", {
     staticClass: "button-area--small-small"
   }, [_c("button", {
@@ -16377,7 +16448,31 @@ var render = function render() {
     on: {
       close: _vm.closeModal_searchProp
     }
-  }), _vm._v(" "), !_vm.sizeScreen && _vm.showProps.length ? _c("div", {
+  }), _vm._v(" "), _c("div", {
+    staticClass: "button-area--small-small"
+  }, [_c("button", {
+    staticClass: "button button--inverse button--small button--deletechoice",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.showDeleteBox
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-check-square fa-fw"
+  }), _vm._v("選択削除")])]), _vm._v(" "), _vm.delete_flag ? _c("div", {
+    staticClass: "button-area--small-small"
+  }, [_c("button", {
+    staticClass: "button button--inverse button--small button--deletechoice",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.deleteProps
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-trash-alt fa-fw"
+  }), _vm._v("選択削除")])]) : _vm._e()], 1), _vm._v(" "), !_vm.sizeScreen && _vm.showProps.length ? _c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -16404,8 +16499,56 @@ var render = function render() {
     }]
   }, [!_vm.sizeScreen ? _c("div", {
     staticClass: "PC"
-  }, [_vm.showProps.length ? _c("table", [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_vm.showProps, function (prop, index) {
-    return _c("tr", [_c("td", {
+  }, [_vm.showProps.length ? _c("table", [_c("thead", [_c("tr", [_vm.delete_flag ? _c("th", {
+    staticClass: "th-non"
+  }, [_c("input", {
+    staticClass: "checkbox-delete",
+    attrs: {
+      type: "checkbox"
+    },
+    on: {
+      click: _vm.choiceDeleteAllProps
+    }
+  })]) : _vm._e(), _vm._v(" "), _c("th", {
+    staticClass: "th-non"
+  }), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("ピッコロ")]), _vm._v(" "), _c("th", [_vm._v("中間")]), _vm._v(" "), _c("th", [_vm._v("卒業")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", {
+    staticClass: "th-memo"
+  }, [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]), _vm._v(" "), _c("tbody", _vm._l(_vm.showProps, function (prop, index) {
+    return _c("tr", [_vm.delete_flag ? _c("td", [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.delete_ids[prop.id],
+        expression: "delete_ids[prop.id]"
+      }],
+      staticClass: "checkbox-delete",
+      attrs: {
+        type: "checkbox"
+      },
+      domProps: {
+        checked: Array.isArray(_vm.delete_ids[prop.id]) ? _vm._i(_vm.delete_ids[prop.id], null) > -1 : _vm.delete_ids[prop.id]
+      },
+      on: {
+        change: function change($event) {
+          var $$a = _vm.delete_ids[prop.id],
+              $$el = $event.target,
+              $$c = $$el.checked ? true : false;
+
+          if (Array.isArray($$a)) {
+            var $$v = null,
+                $$i = _vm._i($$a, $$v);
+
+            if ($$el.checked) {
+              $$i < 0 && _vm.$set(_vm.delete_ids, prop.id, $$a.concat([$$v]));
+            } else {
+              $$i > -1 && _vm.$set(_vm.delete_ids, prop.id, $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+            }
+          } else {
+            _vm.$set(_vm.delete_ids, prop.id, $$c);
+          }
+        }
+      }
+    })]) : _vm._e(), _vm._v(" "), _c("td", {
       staticClass: "td-color"
     }, [_vm._v(_vm._s(index + 1))]), _vm._v(" "), _c("td", {
       staticClass: "list-button",
@@ -16523,16 +16666,7 @@ var render = function render() {
   })], 1);
 };
 
-var staticRenderFns = [function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("thead", [_c("tr", [_c("th", {
-    staticClass: "th-non"
-  }), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("ピッコロ")]), _vm._v(" "), _c("th", [_vm._v("中間")]), _vm._v(" "), _c("th", [_vm._v("卒業")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", {
-    staticClass: "th-memo"
-  }, [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]);
-}];
+var staticRenderFns = [];
 render._withStripped = true;
 
 
@@ -19162,7 +19296,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  margin: 0;\n  font-size: 2em;\n}\n\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\nlabel {\n  display: block;\n  margin-bottom: 0.5rem;\n}\ninput[type=checkbox], input[type=radio] {\n  display: block;\n  margin-bottom: 0.7rem;\n  margin-left: 0.7rem;\n}\n/* form */\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n.button-area--together {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n}\n.button-area--showhow {\n  margin-bottom: 0.5em;\n}\n.button-area--download {\n  margin-top: 1em;\n  margin-bottom: 0.5em;\n}\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  margin: 0.1em;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.list-button:hover {\n  cursor: pointer;\n}\n.checkbox-area--together {\n  display: flex;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n/* 写真 */\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n  cursor: pointer;\n}\n.navbar__brand:hover {\n  color: #c0c0c0;\n}\n.countdown_and_hamburger {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  flex-direction: row;\n}\n/* カウントダウン */\n.countdown__box {\n  margin-right: 4.8em;\n  width: 10em;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-end;\n}\n.countdown__message_area {\n  padding-bottom: 0.2em;\n}\n.countdown_number {\n  font-size: 1.8em;\n  font-weight: 500;\n}\n.countdown_number_red {\n  color: red;\n}\n.countdown_day {\n  margin-right: 0.5em;\n}\n.countdown_message {\n  font-size: 1.8em;\n  font-weight: 700;\n  margin-right: 0.5em;\n  background-image: linear-gradient(\n\t\t70deg,\n    #169b62 45%, \n    #FFF 50%,\n    #ff883e 55%\n\t);\n\tbackground-size: 500% 100%;\n\tbackground-clip: text;\n\t-webkit-background-clip: text;\n\tcolor: transparent;\n\t-webkit-animation: shine 2s infinite;\n\t        animation: shine 2s infinite;\n}\n@-webkit-keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n@keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n.countdown__image_area {\n  max-width: 25%;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.19em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  min-width: 9.5em;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n.menu-content ul li a:hover {\n  color: #169b62\n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n\n\n/* 小道具投稿 */\n.form__item--furigana {\n  width: 50%;\n  padding-top: 0.3em;\n  padding-bottom: 0.3em;\n}\n.edit-area .form__item--furigana {\n  width: 80%;\n}\n\n\n\n/* 表 */ /* シーンも小道具も同一 */\n.phone {\n  text-align: center;\n}\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.phone div table {\n  display: inline-block;\n  width: auto;\n}\n.phone th {\n  width: 20%;\n}\n.phone td {\n  width: 70%;\n}\n\n.th-non { \n  color: #222;\n  background: white;\n}\n.td-color {\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.PC .th-memo {\n  width: 10em;\n}\n\n\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #4fac7b;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n  cursor: pointer;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  min-width: 19em;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 100%;\n}\n.detail-box>div {\n  width:50%;\n  height: 100%;\n  padding: 0.5em;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n\n/* Confirm＿Dialog */\n/* 横並びボタン */\n.button--confirm {\n  width: 50%;\n  padding: 0.5em;\n}\n.button--danger {\n  background: #e61919;\n  border-color: #e61919;\n}\n.dialog-message {\n  display: flex;\n  white-space: pre-wrap;\n  justify-content: center;\n}\n\n\n/* Show_Prop 写真リスト */\n.usage-show {\n  margin-right: 0.2em;\n}\n\n/* 小道具検索 */\n.cotent-search {\n  min-width: 30em;\n}\n.button-search--close button {\n  border: none;\n  background: none;\n  font-size: 1.2em;\n  cursor: pointer;\n}\n.form-search {\n  padding: 0.5em 1em;\n}\n.search-sort-area {\n  margin-bottom: 0.8em;\n}\n.search-span {\n  font-weight: bold;\n}\n.search--select-area--box {\n  margin-bottom: 0.4em;\n}\n.search--input {\n  margin-bottom: 0.5em;\n}\n.search--label {\n  font-size: 0.8em;\n  margin-top: 0.5em;\n  margin-bottom: 0.2em;\n} \n.search--select-area {\n  margin-bottom: 0.4em;\n}\n.serach--select-area-colors {\n  display: flex;\n  justify-content: space-between;\n}\n.serach--select-area-colors div {\n  width: 48%;\n}\n.search--select-area--performance {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-right: 1.5em;\n}\n\n/* Detail_Prop 小道具詳細 */\n.area--detail-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n}\n.button--area--detail-box {\n  padding-right: 0.5em;\n}\n.detail-box--img {\n  display: flex;\n  justify-content: center;\n  max-width: 100%;\n  max-height: 100%;\n}\n.detail-box ul, .detail-box ol {\n  margin: 0.2em;\n}\n.detail-box ul ul {\n  margin: 0;\n}\n.edit-area li {\n  list-style-type: none;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  margin: 0;\n  font-size: 2em;\n}\n\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\nlabel {\n  display: block;\n  margin-bottom: 0.5rem;\n}\ninput[type=checkbox], input[type=radio] {\n  display: block;\n  margin-bottom: 0.7rem;\n  margin-left: 0.7rem;\n}\n/* form */\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n.button-area--together {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n}\n\n.button-area--showhow {\n  margin-bottom: 0.5em;\n}\n.button-area--download {\n  margin-top: 1em;\n  margin-bottom: 0.5em;\n}\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  margin: 0.1em;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.list-button:hover {\n  cursor: pointer;\n}\n.checkbox-area--together {\n  display: flex;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n/* 写真 */\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n  cursor: pointer;\n}\n.navbar__brand:hover {\n  color: #c0c0c0;\n}\n.countdown_and_hamburger {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  flex-direction: row;\n}\n/* カウントダウン */\n.countdown__box {\n  margin-right: 4.8em;\n  width: 10em;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-end;\n}\n.countdown__message_area {\n  padding-bottom: 0.2em;\n}\n.countdown_number {\n  font-size: 1.8em;\n  font-weight: 500;\n}\n.countdown_number_red {\n  color: red;\n}\n.countdown_day {\n  margin-right: 0.5em;\n}\n.countdown_message {\n  font-size: 1.8em;\n  font-weight: 700;\n  margin-right: 0.5em;\n  background-image: linear-gradient(\n\t\t70deg,\n    #169b62 45%, \n    #FFF 50%,\n    #ff883e 55%\n\t);\n\tbackground-size: 500% 100%;\n\tbackground-clip: text;\n\t-webkit-background-clip: text;\n\tcolor: transparent;\n\t-webkit-animation: shine 2s infinite;\n\t        animation: shine 2s infinite;\n}\n@-webkit-keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n@keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n.countdown__image_area {\n  max-width: 25%;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.19em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  min-width: 9.5em;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n.menu-content ul li a:hover {\n  color: #169b62\n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n\n\n/* 小道具投稿 */\n.form__item--furigana {\n  width: 50%;\n  padding-top: 0.3em;\n  padding-bottom: 0.3em;\n}\n.edit-area .form__item--furigana {\n  width: 80%;\n}\n\n/* 検索ボタン（選択削除） */\n.button-area--together-left {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-start;\n}\n.button--deletechoice {\n  display: flex;\n  align-items: flex-end;\n}\n.button--deletechoice i {\n  font-size: 0.8em;\n}\n\n/* 表 */ /* シーンも小道具も同一 */\n.phone {\n  text-align: center;\n}\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.phone div table {\n  display: inline-block;\n  width: auto;\n}\n.phone th {\n  width: 20%;\n}\n.phone td {\n  width: 70%;\n}\n\n.th-non { \n  color: #222;\n  background: white;\n}\ninput.checkbox-delete {\n  /* 優先順位あげてる */\n  margin: 0;\n  margin-left: 0.3rem;\n}\n.td-color {\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.PC .th-memo {\n  width: 10em;\n}\n\n\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #4fac7b;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n  cursor: pointer;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  min-width: 19em;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 100%;\n}\n.detail-box>div {\n  width:50%;\n  height: 100%;\n  padding: 0.5em;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n\n/* Confirm＿Dialog */\n/* 横並びボタン */\n.button--confirm {\n  width: 50%;\n  padding: 0.5em;\n}\n.button--danger {\n  background: #e61919;\n  border-color: #e61919;\n}\n.dialog-message {\n  display: flex;\n  white-space: pre-wrap;\n  justify-content: center;\n}\n\n\n/* Show_Prop 写真リスト */\n.usage-show {\n  margin-right: 0.2em;\n}\n\n/* 小道具検索 */\n.cotent-search {\n  min-width: 30em;\n}\n.button-search--close button {\n  border: none;\n  background: none;\n  font-size: 1.2em;\n  cursor: pointer;\n}\n.form-search {\n  padding: 0.5em 1em;\n}\n.search-sort-area {\n  margin-bottom: 0.8em;\n}\n.search-span {\n  font-weight: bold;\n}\n.search--select-area--box {\n  margin-bottom: 0.4em;\n}\n.search--input {\n  margin-bottom: 0.5em;\n}\n.search--label {\n  font-size: 0.8em;\n  margin-top: 0.5em;\n  margin-bottom: 0.2em;\n} \n.search--select-area {\n  margin-bottom: 0.4em;\n}\n.serach--select-area-colors {\n  display: flex;\n  justify-content: space-between;\n}\n.serach--select-area-colors div {\n  width: 48%;\n}\n.search--select-area--performance {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-right: 1.5em;\n}\n\n/* Detail_Prop 小道具詳細 */\n.area--detail-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n}\n.button--area--detail-box {\n  padding-right: 0.5em;\n}\n.detail-box--img {\n  display: flex;\n  justify-content: center;\n  max-width: 100%;\n  max-height: 100%;\n}\n.detail-box ul, .detail-box ol {\n  margin: 0.2em;\n}\n.detail-box ul ul {\n  margin: 0;\n}\n.edit-area li {\n  list-style-type: none;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

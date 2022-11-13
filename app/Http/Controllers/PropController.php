@@ -530,6 +530,55 @@ class PropController extends Controller
     }
 
     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy_many($id_s)
+    {
+        $ids = explode(',', $id_s);
+        DB::beginTransaction();
+
+        try {
+            $public_ids_all = Prop::select('public_id')
+                            ->find($ids)->toArray();
+            $public_ids = [];
+            foreach($public_ids_all as $public_id){
+                if($public_id['public_id']){
+                    array_push($public_ids, $public_id['public_id']);
+                }
+            }
+
+            $prop = '';
+            foreach($ids as $id){
+                var_dump($id);
+                $prop = Prop::where('id', $id)
+                        ->delete(); 
+            }
+                
+
+            DB::commit();
+
+            dump($prop);
+            if(!$prop){
+                throw new Exception('意図されない処理が実行されました。');
+            }
+
+            foreach($public_ids as $public_id){
+                Cloudinary::destroy($public_id);
+            }
+
+        }catch (\Exception $exception) {
+            DB::rollBack();
+            
+            throw $exception;
+        }
+
+        return response($prop, 204) ?? abort(404);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

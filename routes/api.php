@@ -84,6 +84,9 @@ Route::post('/props_deep/{id}', 'App\Http\Controllers\PropController@update_deep
 // 小道具削除
 Route::delete('/props/{id}', 'App\Http\Controllers\PropController@destroy')->name('prop.destroy');
 
+// 小道具複数削除
+Route::delete('/props_many/{id}', 'App\Http\Controllers\PropController@destroy_many')->name('prop.destroy_many');
+
 // 小道具一覧ダウンロード
 Route::post('/props_list', 'App\Http\Controllers\PropController@down')->name('prop.down');
 
