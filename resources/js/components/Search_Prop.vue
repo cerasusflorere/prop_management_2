@@ -1,10 +1,18 @@
 <template>
     <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']" @click.self="$emit('close', null, null, null)">
       <div class="content cotent-search content-confirm-dialog panel" ref="content_search_prop">
-        <!-- 閉じるボタン -->
-        <div class="button-search--close">
-          <button type="button" @click.self="$emit('close', null, null, null)">×</button>
+        <div class="button-search--area">
+          <!-- 閉じるボタン -->
+          <div class="button-search--close">
+            <button type="button" @click.self="$emit('close', null, null, null)">×</button>
+          </div>
+
+          <!-- リセットボタン -->
+          <div>
+            <button type="button" class="button button--reset" @click="resetSearchProp"><i class="fas fa-undo-alt fa-fw"></i>リセット</button>
+          </div>
         </div>
+
         <form class="form form-search"  @submit.prevent="searchProp">
           <div class="search-sort-area">
             <span class="search-span"><i class="fas fa-sort fa-fw"></i></i>並び替え</span>
@@ -62,6 +70,19 @@
                 <span class="checkbox-area--together">
                   <input type="checkbox" id="search_prop_location_no" class="form__check__input" v-model="search_prop.prop_search.location_no">
                   <label for="search_prop_location_no" class="form__check__label">持ってきてない</label>
+                </span>
+              </div>
+
+              <!-- これで決定か -->
+              <div class="search-search--select-area checkbox-area--together">
+                <label>決定</label>
+                <span class="checkbox-area--together">
+                  <input type="checkbox" id="search_prop_decision" class="form__check__input" v-model="search_prop.prop_search.decision">
+                  <label for="search_prop_decision" class="form__check__label">してる</label>
+                </span>
+                <span class="checkbox-area--together">
+                  <input type="checkbox" id="search_prop_decision_no" class="form__check__input" v-model="search_prop.prop_search.decision_no">
+                  <label for="search_prop_decision_no" class="form__check__label">してない</label>
                 </span>
               </div>
   
@@ -130,6 +151,8 @@
               owner: 0,
               location: false,
               location_no: false,
+              decision: false,
+              decision_no: false,
               usage: false,
               usage_guraduation: false,
               usage_left: false,
@@ -196,6 +219,7 @@
           let name_scope = '!=' + 100;
           let owner_id = '!=' + 0;
           let location = '!=' + 100;
+          let decision = '!=' + 100;
           let usage = '!=' + 100;
           let usage_guraduation = '!=' + 100;
           let usage_left = '!=' + 100;
@@ -219,6 +243,12 @@
           }else if(!this.search_prop.prop_search.location && this.search_prop.prop_search.location_no){
             location = '===' + 0;
           }
+
+          if(this.search_prop.prop_search.decision && !this.search_prop.prop_search.decision_no){
+            decision = '===' + 1;
+          }else if(!this.search_prop.prop_search.decision && this.search_prop.prop_search.decision_no){
+            decision = '===' + 0;
+          }
   
           if(this.search_prop.prop_search.usage){
             usage = '===' + 1;
@@ -236,10 +266,27 @@
             usage_right = '===' + 1;
           }
   
-          const refine = 'a.owner_id' + owner_id +  '&& a.location' + location + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
+          const refine = 'a.owner_id' + owner_id +  '&& a.location' + location + '&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
   
           this.$emit('close', this.search_prop.prop_sort, this.search_prop.prop_search.name, refine);
         },
+
+        // リセット
+        resetSearchProp() {
+          this.search_prop.prop_sort = 'kana';
+          this.search_prop.prop_search.name.input = null;
+          this.search_prop.prop_search.name.scope = 'name_only';
+          this.search_prop.prop_search.owner = 0;
+          this.search_prop.prop_search.location = false;
+          this.search_prop.prop_search.location_no = false;
+          this.search_prop.prop_search.decision = false;
+          this.search_prop.prop_search.decision_no = false;
+          this.search_prop.prop_search.usage = false;
+          this.search_prop.prop_search.usage = false;
+          this.search_prop.prop_search.usage_guraduation = false;
+          this.search_prop.prop_search.usage_left = false;
+          this.search_prop.prop_search.usage_right = false;
+        }
       }
     }
   </script>

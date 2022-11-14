@@ -971,7 +971,7 @@ export default {
           name: this.editForm_prop.name,
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
-          location: this.editForm_prop.location,          
+          location: this.editForm_prop.location,
           decision: this.editForm_prop.decision,
           usage: this.editForm_prop.usage,
           usage_guraduation: this.editForm_prop.usage_guraduation,

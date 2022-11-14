@@ -78,8 +78,11 @@ Route::post('/props', 'App\Http\Controllers\PropController@store')->name('prop.s
 // 小道具更新
 Route::post('/props/{id}', 'App\Http\Controllers\PropController@update')->name('prop.update');
 
-// 小道具更新
+// 小道具更新(使用)
 Route::post('/props_deep/{id}', 'App\Http\Controllers\PropController@update_deep')->name('prop.update_deep');
+
+// 小道具複数更新
+Route::post('/props_many/{id}', 'App\Http\Controllers\PropController@update_many')->name('prop.update_many');
 
 // 小道具削除
 Route::delete('/props/{id}', 'App\Http\Controllers\PropController@destroy')->name('prop.destroy');

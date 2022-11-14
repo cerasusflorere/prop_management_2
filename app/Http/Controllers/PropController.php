@@ -499,6 +499,72 @@ class PropController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update_many(Request $request, $id_s)
+    {
+        $ids = explode(',', $id_s);
+        $yes_no = !empty($request->yes_no) ? 1 : 0;
+        if($request->method == 'location'){
+            // ピッコロに持ってきたか
+            $affected= Prop::whereIn('id', $ids)
+                    ->update(['location' => $yes_no]);
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'decision'){
+            // これで決定か
+            $affected= Prop::whereIn('id', $ids)
+                    ->update(['decision' => $yes_no]);
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'usage'){
+            // 中間発表で使用するか
+            $affected= Prop::whereIn('id', $ids)
+                    ->update(['usage' => $yes_no]);
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'usage_guraduation'){
+            // 卒業公演で使用するか
+            $affected= Prop::whereIn('id', $ids)
+                    ->update(['usage_guraduation' => $yes_no]);
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'usage_left'){
+            // 上手で使用するか
+            if($yes_no){
+                $affected= Prop::whereIn('id', $ids)
+                    ->update(['usage_guraduation' => 1, 'usage_left' => 1]);
+            }else{
+                $affected= Prop::whereIn('id', $ids)
+                    ->update(['usage_left' => 0]);
+            }            
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'usage_right'){
+            // 下手で使用するか
+            if($yes_no){
+                $affected= Prop::whereIn('id', $ids)
+                    ->update(['usage_guraduation' => 1, 'usage_right' => 1]);
+            }else{
+                $affected= Prop::whereIn('id', $ids)
+                    ->update(['usage_right' => 0]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -556,16 +622,12 @@ class PropController extends Controller
             }
 
             $prop = '';
-            foreach($ids as $id){
-                var_dump($id);
-                $prop = Prop::where('id', $id)
+            $prop = Prop::whereIn('id', $ids)
                         ->delete(); 
-            }
                 
 
             DB::commit();
 
-            dump($prop);
             if(!$prop){
                 throw new Exception('意図されない処理が実行されました。');
             }

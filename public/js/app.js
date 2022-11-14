@@ -2606,6 +2606,86 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Custom_Dialog_Edit.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Custom_Dialog_Edit.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  // モーダルとして表示
+  name: 'custmDialog_Edit',
+  props: {
+    custom_dialog_edit_message: {
+      type: String,
+      required: true
+    }
+  },
+  data: function data() {
+    return {
+      // overlayのクラス
+      overlay_class: 1,
+      // 小道具か使用シーンか
+      prop_scene_flag: 1,
+      // 1:小道具、2:使用シーン
+      // 選択項目(小道具)
+      editCustomProp: null
+    };
+  },
+  watch: {
+    custom_dialog_edit_message: {
+      handler: function handler(custom_dialog_edit_message) {
+        var _this = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          var content_dom, content_rect;
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  content_dom = _this.$refs.content_custom_dialog_edit;
+                  content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+                  if (content_rect.top < 0) {
+                    _this.overlay_class = 0;
+                  } else {
+                    _this.overlay_class = 1;
+                  }
+
+                  if (_this.custom_dialog_edit_message.indexOf('小道具')) {
+                    prop_scene_flag = 1;
+                  } else {
+                    prop_scene_flag = 2;
+                  }
+
+                case 4:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }))();
+      },
+      immediate: true
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js&":
 /*!******************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js& ***!
@@ -7735,6 +7815,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           owner: 0,
           location: false,
           location_no: false,
+          decision: false,
+          decision_no: false,
           usage: false,
           usage_guraduation: false,
           usage_left: false,
@@ -7843,6 +7925,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var name_scope = '!=' + 100;
       var owner_id = '!=' + 0;
       var location = '!=' + 100;
+      var decision = '!=' + 100;
       var usage = '!=' + 100;
       var usage_guraduation = '!=' + 100;
       var usage_left = '!=' + 100;
@@ -7868,6 +7951,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         location = '===' + 0;
       }
 
+      if (this.search_prop.prop_search.decision && !this.search_prop.prop_search.decision_no) {
+        decision = '===' + 1;
+      } else if (!this.search_prop.prop_search.decision && this.search_prop.prop_search.decision_no) {
+        decision = '===' + 0;
+      }
+
       if (this.search_prop.prop_search.usage) {
         usage = '===' + 1;
       }
@@ -7884,8 +7973,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         usage_right = '===' + 1;
       }
 
-      var refine = 'a.owner_id' + owner_id + '&& a.location' + location + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
+      var refine = 'a.owner_id' + owner_id + '&& a.location' + location + '&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
       this.$emit('close', this.search_prop.prop_sort, this.search_prop.prop_search.name, refine);
+    },
+    // リセット
+    resetSearchProp: function resetSearchProp() {
+      this.search_prop.prop_sort = 'kana';
+      this.search_prop.prop_search.name.input = null;
+      this.search_prop.prop_search.name.scope = 'name_only';
+      this.search_prop.prop_search.owner = 0;
+      this.search_prop.prop_search.location = false;
+      this.search_prop.prop_search.location_no = false;
+      this.search_prop.prop_search.decision = false;
+      this.search_prop.prop_search.decision_no = false;
+      this.search_prop.prop_search.usage = false;
+      this.search_prop.prop_search.usage = false;
+      this.search_prop.prop_search.usage_guraduation = false;
+      this.search_prop.prop_search.usage_left = false;
+      this.search_prop.prop_search.usage_right = false;
     }
   }
 });
@@ -10522,9 +10627,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
 /* harmony import */ var _components_Detail_Prop_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Detail_Prop.vue */ "./resources/js/components/Detail_Prop.vue");
 /* harmony import */ var _components_Search_Prop_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Search_Prop.vue */ "./resources/js/components/Search_Prop.vue");
-/* harmony import */ var _components_Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
-/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! exceljs */ "./node_modules/exceljs/dist/exceljs.min.js");
-/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(exceljs__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _components_Custom_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Custom_Dialog_Edit.vue */ "./resources/js/components/Custom_Dialog_Edit.vue");
+/* harmony import */ var _components_Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/Confirm_Dialog_Edit.vue */ "./resources/js/components/Confirm_Dialog_Edit.vue");
+/* harmony import */ var _components_Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
+/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! exceljs */ "./node_modules/exceljs/dist/exceljs.min.js");
+/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(exceljs__WEBPACK_IMPORTED_MODULE_6__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
@@ -10538,12 +10645,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // このページの上で表示するコンポーネント
   components: {
     detailProp: _components_Detail_Prop_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
     searchProp: _components_Search_Prop_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
-    confirmDialog_Delete: _components_Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+    customDialog_Edit: _components_Custom_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    confirmDialog_Edit: _components_Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
+    confirmDialog_Delete: _components_Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
   },
   data: function data() {
     return {
@@ -10565,11 +10676,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       custom_sort: null,
       custom_name: null,
       custom_refine: null,
-      // 選択削除ボタン
-      delete_flag: false,
-      // 選択削除
-      delete_ids: [],
-      delete_many: 0,
+      // 選択ボタン
+      choice_flag: false,
+      // 選択
+      choice_ids: [],
+      choice_many: 0,
+      // 編集custom
+      showContent_customEdit: false,
+      postMessage_CustomEdit: "",
+      edit_custom: null,
+      yes_no: null,
+      // 編集confirm
+      showContent_confirmEdit: false,
+      postMessage_Edit: "",
       // 削除confirm
       showContent_confirmDelete: false,
       postMessage_Delete: ""
@@ -10640,7 +10759,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this2.showProps = JSON.parse(JSON.stringify(_this2.props));
 
                 _this2.props.forEach(function (prop) {
-                  _this2.delete_ids.push(false);
+                  _this2.choice_ids.push(false);
                 }, _this2);
 
                 if (!(_this2.custom_sort || _this2.custom_name || _this2.custom_refine)) {
@@ -10794,50 +10913,212 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee4);
       }))();
     },
-    // 選択削除ボタン出現
+    // 選択ボタン出現
     showCheckBox: function showCheckBox() {
       var _this5 = this;
 
-      if (this.delete_flag) {
-        this.delete_flag = false;
-        this.delete_many = 0;
+      if (this.choice_flag) {
+        this.choice_flag = false;
+        this.choice_many = 0;
         this.props.forEach(function (prop) {
-          _this5.$set(_this5.delete_ids, prop.id, false);
+          _this5.$set(_this5.choice_ids, prop.id, false);
         }, this);
       } else {
-        this.delete_flag = true;
+        this.choice_flag = true;
       }
     },
-    // 選択削除（全選択）
+    // 選択（全選択）
     choiceDeleteAllProps: function choiceDeleteAllProps() {
       var _this6 = this;
 
-      if (!this.delete_many) {
-        this.delete_many = 1;
+      if (!this.choice_many) {
+        this.choice_many = 1;
         this.showProps.forEach(function (prop) {
           // リアクティブにするため
-          _this6.$set(_this6.delete_ids, prop.id, true);
+          _this6.$set(_this6.choice_ids, prop.id, true);
         }, this);
       } else {
-        this.delete_many = 0;
+        this.choice_many = 0;
         this.showProps.forEach(function (prop) {
-          _this6.$set(_this6.delete_ids, prop.id, false);
+          _this6.$set(_this6.choice_ids, prop.id, false);
         }, this);
       }
     },
+    // 編集customのモーダル表示 
+    openModal_customEdit: function openModal_customEdit() {
+      this.showContent_customEdit = true;
+      this.postMessage_Edit = '小道具の編集項目について選択してください。';
+    },
+    // 編集customのモーダル非表示_OKの場合
+    closeModal_customEdit_OK: function closeModal_customEdit_OK(edit_custom_flag) {
+      var _this7 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var yes;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                if (edit_custom_flag !== null) {
+                  _this7.showContent_customEdit = false;
+
+                  _this7.$emit('close');
+
+                  yes = edit_custom_flag.indexOf('yes');
+
+                  if (yes !== -1) {
+                    _this7.yes_no = 1;
+                    _this7.edit_custom = edit_custom_flag.replace('_yes', '');
+                  } else {
+                    _this7.yes_no = 0;
+                    _this7.edit_custom = edit_custom_flag.replace('_no', '');
+                  }
+
+                  _this7.openModal_confirmEdit();
+                }
+
+              case 1:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
+      }))();
+    },
+    // 編集customのモーダル非表示_Cancelの場合
+    closeModal_customEdit_Cancel: function closeModal_customEdit_Cancel() {
+      this.showContent_customEdit = false;
+    },
+    // 編集confirmのモーダル表示 
+    openModal_confirmEdit: function openModal_confirmEdit() {
+      var _this8 = this;
+
+      this.showContent_confirmEdit = true;
+      var edit_props_name = '';
+      var edit_custom_show;
+      var yes_no_show;
+
+      if (this.props.length === this.showProps.length && this.choice_many) {
+        edit_props_name = '全て\n';
+      }
+
+      this.showProps.forEach(function (prop, index) {
+        if (_this8.choice_ids[prop.id]) {
+          edit_props_name = edit_props_name + '・' + prop.name + '\n';
+        }
+      }, this);
+
+      if (this.edit_custom === 'location') {
+        edit_custom_show = 'ピッコロに持ってきて';
+      } else if (this.edit_custom === 'decision') {
+        edit_custom_show = '決定して';
+      } else if (this.edit_custom === 'usage') {
+        edit_custom_show = '中間発表で使用して';
+      } else if (this.edit_custom === 'usage_guraduation') {
+        edit_custom_show = '卒業公演で使用して';
+      } else if (this.edit_custom === 'usage_left') {
+        edit_custom_show = '上手で使用して';
+      } else if (this.edit_custom === 'usage_right') {
+        edit_custom_show = '下手で使用して';
+      }
+
+      if (this.yes_no === 1) {
+        yes_no_show = 'る';
+      } else {
+        yes_no_show = 'ない';
+      }
+
+      this.postMessage_Edit = '以下の小道具を' + edit_custom_show + yes_no_show + 'と変更します。\n本当に変更しますか？\n' + edit_props_name;
+    },
+    // 編集confirmのモーダル非表示_OKの場合
+    closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
+      var _this9 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _this9.showContent_confirmEdit = false;
+
+                _this9.$emit('close');
+
+                _context6.next = 4;
+                return _this9.EditProps();
+
+              case 4:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }))();
+    },
+    // 編集confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmEdit_Cancel: function closeModal_confirmEdit_Cancel() {
+      this.showContent_confirmEdit = false;
+      this.openModal_customEdit();
+    },
+    // 選択編集(実行)
+    EditProps: function EditProps() {
+      var _this10 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+        var ids, yes_no, response;
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                ids = [];
+
+                _this10.showProps.forEach(function (prop) {
+                  if (_this10.choice_ids[prop.id]) {
+                    ids.push(prop.id);
+                  }
+                });
+
+                if (_this10.yes_no === 1) {
+                  yes_no = 1;
+                } else {
+                  yes_no = null;
+                }
+
+                _context7.next = 5;
+                return axios.post('/api/props_many/' + ids, {
+                  method: _this10.edit_custom,
+                  yes_no: yes_no
+                });
+
+              case 5:
+                response = _context7.sent;
+                _context7.next = 8;
+                return _this10.fetchProps();
+
+              case 8:
+                // 選択削除閉じる
+                _this10.showCheckBox();
+
+              case 9:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7);
+      }))();
+    },
     // 削除confirmのモーダル表示 
     openModal_confirmDelete: function openModal_confirmDelete(id) {
-      var _this7 = this;
+      var _this11 = this;
 
       this.showContent_confirmDelete = true;
       var delete_props_name = '';
 
-      if (this.props.length === this.showProps.length && this.delete_many) {
+      if (this.props.length === this.showProps.length && this.choice_many) {
         delete_props_name = '全て\n';
       }
 
       this.showProps.forEach(function (prop, index) {
-        if (_this7.delete_ids[prop.id]) {
+        if (_this11.choice_ids[prop.id]) {
           delete_props_name = delete_props_name + '・' + prop.name + '\n';
         }
       }, this);
@@ -10845,26 +11126,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this8 = this;
+      var _this12 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
-                _this8.showContent_confirmDelete = false;
+                _this12.showContent_confirmDelete = false;
 
-                _this8.$emit('close');
+                _this12.$emit('close');
 
-                _context5.next = 4;
-                return _this8.deleteProps();
+                _context8.next = 4;
+                return _this12.deleteProps();
 
               case 4:
               case "end":
-                return _context5.stop();
+                return _context8.stop();
             }
           }
-        }, _callee5);
+        }, _callee8);
       }))();
     },
     // 削除confirmのモーダル非表示_Cancelの場合
@@ -10873,41 +11154,40 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 選択削除（実行）
     deleteProps: function deleteProps() {
-      var _this9 = this;
+      var _this13 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
         var ids, response;
-        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
                 ids = [];
 
-                _this9.showProps.forEach(function (prop) {
-                  if (_this9.delete_ids[prop.id]) {
+                _this13.showProps.forEach(function (prop) {
+                  if (_this13.choice_ids[prop.id]) {
                     ids.push(prop.id);
                   }
                 });
 
-                console.log(ids);
-                _context6.next = 5;
+                _context9.next = 4;
                 return axios["delete"]('/api/props_many/' + ids);
 
-              case 5:
-                response = _context6.sent;
-                _context6.next = 8;
-                return _this9.fetchProps();
+              case 4:
+                response = _context9.sent;
+                _context9.next = 7;
+                return _this13.fetchProps();
+
+              case 7:
+                // 選択削除閉じる
+                _this13.showCheckBox();
 
               case 8:
-                // 選択削除閉じる
-                _this9.showCheckBox();
-
-              case 9:
               case "end":
-                return _context6.stop();
+                return _context9.stop();
             }
           }
-        }, _callee6);
+        }, _callee9);
       }))();
     },
     // ダウンロード
@@ -10916,16 +11196,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     // }
     // ダウンロード
     downloadProps: function downloadProps() {
-      var _this10 = this;
+      var _this14 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
         var workbook, worksheet, font, fill, uint8Array, blob, a, today, filename;
-        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
           while (1) {
-            switch (_context7.prev = _context7.next) {
+            switch (_context10.prev = _context10.next) {
               case 0:
                 // ①初期化
-                workbook = new (exceljs__WEBPACK_IMPORTED_MODULE_4___default().Workbook)(); // workbookを作成
+                workbook = new (exceljs__WEBPACK_IMPORTED_MODULE_6___default().Workbook)(); // workbookを作成
 
                 workbook.addWorksheet('Sheet1'); // worksheetを追加
 
@@ -11064,7 +11344,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 worksheet.getCell('I1').font = font;
                 worksheet.getCell('I1').fill = fill;
 
-                _this10.showProps.forEach(function (prop, index) {
+                _this14.showProps.forEach(function (prop, index) {
                   var datas = [];
                   datas.push(prop.name);
 
@@ -11129,18 +11409,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }); // ③ファイル生成
 
 
-                _context7.next = 28;
+                _context10.next = 28;
                 return workbook.xlsx.writeBuffer();
 
               case 28:
-                uint8Array = _context7.sent;
+                uint8Array = _context10.sent;
                 // xlsxの場合
                 blob = new Blob([uint8Array], {
                   type: 'application/octet-binary'
                 });
                 a = document.createElement('a');
                 a.href = (window.URL || window.webkitURL).createObjectURL(blob);
-                today = _this10.formatDate(new Date());
+                today = _this14.formatDate(new Date());
                 filename = 'Props_list_' + 'all' + '_' + today + '.xlsx';
                 a.download = filename;
                 a.click();
@@ -11148,10 +11428,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 37:
               case "end":
-                return _context7.stop();
+                return _context10.stop();
             }
           }
-        }, _callee7);
+        }, _callee10);
       }))();
     },
     // 日付をyyyy-mm-ddで返す
@@ -12087,7 +12367,7 @@ var render = function render() {
     on: {
       click: function click($event) {
         if ($event.target !== $event.currentTarget) return null;
-        return _vm.$emit("close");
+        return _vm.$emit("Cancel_Edit");
       }
     }
   }, [_c("div", {
@@ -12129,6 +12409,408 @@ var render = function render() {
   }, [_c("i", {
     staticClass: "fas fa-edit fa-fw"
   }), _vm._v("編集")])])])]);
+};
+
+var staticRenderFns = [];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Custom_Dialog_Edit.vue?vue&type=template&id=40a2e2fe&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Custom_Dialog_Edit.vue?vue&type=template&id=40a2e2fe& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("div", {
+    "class": [_vm.overlay_class === 1 ? "overlay" : "overlay overlay-custom"],
+    on: {
+      click: function click($event) {
+        if ($event.target !== $event.currentTarget) return null;
+        return _vm.$emit("Cancel_CustomEdit");
+      }
+    }
+  }, [_c("div", {
+    ref: "content_custom_dialog_edit",
+    staticClass: "content content-confirm-dialog panel"
+  }, [_c("div", {
+    attrs: {
+      id: "confirm_dialog_edit_title"
+    }
+  }, [_vm._v("\n        編集項目選択\n      ")]), _vm._v(" "), _c("div", {
+    staticClass: "dialog-message",
+    attrs: {
+      id: "custom_dialog_edit_message"
+    }
+  }, [_vm._v("\n" + _vm._s(_vm.custom_dialog_edit_message) + "\n      ")]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.prop_scene_flag === 1,
+      expression: "prop_scene_flag === 1"
+    }]
+  }, [_c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_location"
+    }
+  }, [_vm._v("ピッコロに持ってきたか")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_location_yes",
+      value: "location_yes"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "location_yes")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "location_yes";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_location_yes"
+    }
+  }, [_vm._v("持ってきてる")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_location_no",
+      value: "location_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "location_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "location_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_location_no"
+    }
+  }, [_vm._v("持ってきてない")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_decision"
+    }
+  }, [_vm._v("これで決定か")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_decision_yes",
+      value: "decision_yes"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "decision_yes")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "decision_yes";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_decision_yes"
+    }
+  }, [_vm._v("決定してる")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_decision_no",
+      value: "decision_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "decision_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "decision_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_decision_no"
+    }
+  }, [_vm._v("決定してない")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_usage"
+    }
+  }, [_vm._v("中間発表")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_usage_yes",
+      value: "usage_yes"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "usage_yes")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "usage_yes";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_usage_yes"
+    }
+  }, [_vm._v("使う")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_usage_no",
+      value: "usage_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "usage_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "usage_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_usage_no"
+    }
+  }, [_vm._v("使わない")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_usage_guraduation"
+    }
+  }, [_vm._v("卒業公演")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_usage_guraduation_yes",
+      value: "usage_guraduation_yes"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "usage_guraduation_yes")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "usage_guraduation_yes";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_usage_guraduation_yes"
+    }
+  }, [_vm._v("使う")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_usage_guraduation_no",
+      value: "usage_guraduation_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "usage_guraduation_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "usage_guraduation_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_usage_guraduation_no"
+    }
+  }, [_vm._v("使わない")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_usage_left"
+    }
+  }, [_vm._v("上手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_usage_left_yes",
+      value: "usage_left_yes"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "usage_left_yes")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "usage_left_yes";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_usage_left_yes"
+    }
+  }, [_vm._v("使う")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_usage_left_no",
+      value: "usage_left_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "usage_left_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "usage_left_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_usage_left_no"
+    }
+  }, [_vm._v("使わない")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_usage_right"
+    }
+  }, [_vm._v("下手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_usage_right_yes",
+      value: "usage_right_yes"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "usage_right_yes")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "usage_right_yes";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_usage_right_yes"
+    }
+  }, [_vm._v("使う")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_usage_right_no",
+      value: "usage_right_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "usage_right_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "usage_right_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_usage_right_no"
+    }
+  }, [_vm._v("使わない")])])]), _vm._v(" "), _c("div", {
+    staticClass: "button-area--together"
+  }, [_c("button", {
+    staticClass: "button button--inverse button--confirm",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.$emit("Cancel_CustomEdit");
+      }
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-ban fa-fw"
+  }), _vm._v("キャンセル")]), _vm._v(" "), _c("button", {
+    staticClass: "button button--inverse button--confirm button--danger",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.$emit("OK_CustomEdit", _vm.editCustomProp);
+      }
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-edit fa-fw"
+  }), _vm._v("決定")])])])]);
 };
 
 var staticRenderFns = [];
@@ -14132,6 +14814,8 @@ var render = function render() {
     ref: "content_search_prop",
     staticClass: "content cotent-search content-confirm-dialog panel"
   }, [_c("div", {
+    staticClass: "button-search--area"
+  }, [_c("div", {
     staticClass: "button-search--close"
   }, [_c("button", {
     attrs: {
@@ -14143,7 +14827,17 @@ var render = function render() {
         return _vm.$emit("close", null, null, null);
       }
     }
-  }, [_vm._v("×")])]), _vm._v(" "), _c("form", {
+  }, [_vm._v("×")])]), _vm._v(" "), _c("div", [_c("button", {
+    staticClass: "button button--reset",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.resetSearchProp
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-undo-alt fa-fw"
+  }), _vm._v("リセット")])])]), _vm._v(" "), _c("form", {
     staticClass: "form form-search",
     on: {
       submit: function submit($event) {
@@ -14461,6 +15155,92 @@ var render = function render() {
       "for": "search_prop_location_no"
     }
   }, [_vm._v("持ってきてない")])])]), _vm._v(" "), _c("div", {
+    staticClass: "search-search--select-area checkbox-area--together"
+  }, [_c("label", [_vm._v("決定")]), _vm._v(" "), _c("span", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_prop.prop_search.decision,
+      expression: "search_prop.prop_search.decision"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_prop_decision"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_prop.prop_search.decision) ? _vm._i(_vm.search_prop.prop_search.decision, null) > -1 : _vm.search_prop.prop_search.decision
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_prop.prop_search.decision,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_prop.prop_search, "decision", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_prop.prop_search, "decision", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_prop.prop_search, "decision", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_prop_decision"
+    }
+  }, [_vm._v("してる")])]), _vm._v(" "), _c("span", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_prop.prop_search.decision_no,
+      expression: "search_prop.prop_search.decision_no"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_prop_decision_no"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_prop.prop_search.decision_no) ? _vm._i(_vm.search_prop.prop_search.decision_no, null) > -1 : _vm.search_prop.prop_search.decision_no
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_prop.prop_search.decision_no,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_prop.prop_search, "decision_no", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_prop.prop_search, "decision_no", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_prop.prop_search, "decision_no", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_prop_decision_no"
+    }
+  }, [_vm._v("してない")])])]), _vm._v(" "), _c("div", {
     staticClass: "search--select-area checkbox-area--together"
   }, [_c("span", {
     staticClass: "checkbox-area--together search--select-area--performance"
@@ -16679,7 +17459,47 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "fas fa-check-square fa-fw"
-  }), _vm._v("選択")])]), _vm._v(" "), _vm.delete_flag ? _c("div", {
+  }), _vm._v("選択")])]), _vm._v(" "), _vm.choice_flag ? _c("div", {
+    staticClass: "button-area--small-small"
+  }, [_c("button", {
+    staticClass: "button button--inverse button--small button--choice",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.openModal_customEdit
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-edit fa-fw"
+  }), _vm._v("選択編集")])]) : _vm._e(), _vm._v(" "), _c("customDialog_Edit", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_customEdit,
+      expression: "showContent_customEdit"
+    }],
+    attrs: {
+      custom_dialog_edit_message: _vm.postMessage_CustomEdit
+    },
+    on: {
+      Cancel_CustomEdit: _vm.closeModal_customEdit_Cancel,
+      OK_CustomEdit: _vm.closeModal_customEdit_OK
+    }
+  }), _vm._v(" "), _c("confirmDialog_Edit", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_confirmEdit,
+      expression: "showContent_confirmEdit"
+    }],
+    attrs: {
+      confirm_dialog_edit_message: _vm.postMessage_Edit
+    },
+    on: {
+      Cancel_Edit: _vm.closeModal_confirmEdit_Cancel,
+      OK_Edit: _vm.closeModal_confirmEdit_OK
+    }
+  }), _vm._v(" "), _vm.choice_flag ? _c("div", {
     staticClass: "button-area--small-small"
   }, [_c("button", {
     staticClass: "button button--inverse button--small button--choice",
@@ -16732,7 +17552,7 @@ var render = function render() {
     }]
   }, [!_vm.sizeScreen ? _c("div", {
     staticClass: "PC"
-  }, [_vm.showProps.length ? _c("table", [_c("thead", [_c("tr", [_vm.delete_flag ? _c("th", {
+  }, [_vm.showProps.length ? _c("table", [_c("thead", [_c("tr", [_vm.choice_flag ? _c("th", {
     staticClass: "th-non"
   }, [_c("input", {
     staticClass: "checkbox-delete",
@@ -16747,23 +17567,23 @@ var render = function render() {
   }), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("ピッコロ")]), _vm._v(" "), _c("th", [_vm._v("決定")]), _vm._v(" "), _c("th", [_vm._v("中間")]), _vm._v(" "), _c("th", [_vm._v("卒業")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", {
     staticClass: "th-memo"
   }, [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]), _vm._v(" "), _c("tbody", _vm._l(_vm.showProps, function (prop, index) {
-    return _c("tr", [_vm.delete_flag ? _c("td", [_c("input", {
+    return _c("tr", [_vm.choice_flag ? _c("td", [_c("input", {
       directives: [{
         name: "model",
         rawName: "v-model",
-        value: _vm.delete_ids[prop.id],
-        expression: "delete_ids[prop.id]"
+        value: _vm.choice_ids[prop.id],
+        expression: "choice_ids[prop.id]"
       }],
       staticClass: "checkbox-delete",
       attrs: {
         type: "checkbox"
       },
       domProps: {
-        checked: Array.isArray(_vm.delete_ids[prop.id]) ? _vm._i(_vm.delete_ids[prop.id], null) > -1 : _vm.delete_ids[prop.id]
+        checked: Array.isArray(_vm.choice_ids[prop.id]) ? _vm._i(_vm.choice_ids[prop.id], null) > -1 : _vm.choice_ids[prop.id]
       },
       on: {
         change: function change($event) {
-          var $$a = _vm.delete_ids[prop.id],
+          var $$a = _vm.choice_ids[prop.id],
               $$el = $event.target,
               $$c = $$el.checked ? true : false;
 
@@ -16772,12 +17592,12 @@ var render = function render() {
                 $$i = _vm._i($$a, $$v);
 
             if ($$el.checked) {
-              $$i < 0 && _vm.$set(_vm.delete_ids, prop.id, $$a.concat([$$v]));
+              $$i < 0 && _vm.$set(_vm.choice_ids, prop.id, $$a.concat([$$v]));
             } else {
-              $$i > -1 && _vm.$set(_vm.delete_ids, prop.id, $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+              $$i > -1 && _vm.$set(_vm.choice_ids, prop.id, $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
             }
           } else {
-            _vm.$set(_vm.delete_ids, prop.id, $$c);
+            _vm.$set(_vm.choice_ids, prop.id, $$c);
           }
         }
       }
@@ -16811,9 +17631,60 @@ var render = function render() {
   }), 0)]) : _vm._e(), _vm._v(" "), !_vm.showProps.length ? _c("div", [_vm._v("\n        小道具は登録されていません。 \n      ")]) : _vm._e()]) : _c("div", {
     staticClass: "phone"
   }, [_vm.showProps.length ? _c("div", [_c("table", _vm._l(_vm.showProps, function (prop, index) {
-    return _c("div", [_c("tr", [_c("th", {
+    return _c("div", [_vm.choice_flag ? _c("tr", {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: index === 0,
+        expression: "index === 0"
+      }]
+    }, [_c("th", {
       staticClass: "th-non"
-    }), _vm._v(" "), _c("td", {
+    }, [_c("input", {
+      staticClass: "checkbox-delete",
+      attrs: {
+        type: "checkbox"
+      },
+      on: {
+        click: _vm.choiceDeleteAllProps
+      }
+    })]), _vm._v(" "), _c("td")]) : _vm._e(), _vm._v(" "), _c("tr", [_c("th", {
+      staticClass: "th-non"
+    }, [_vm.choice_flag ? _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.choice_ids[prop.id],
+        expression: "choice_ids[prop.id]"
+      }],
+      staticClass: "checkbox-delete",
+      attrs: {
+        type: "checkbox"
+      },
+      domProps: {
+        checked: Array.isArray(_vm.choice_ids[prop.id]) ? _vm._i(_vm.choice_ids[prop.id], null) > -1 : _vm.choice_ids[prop.id]
+      },
+      on: {
+        change: function change($event) {
+          var $$a = _vm.choice_ids[prop.id],
+              $$el = $event.target,
+              $$c = $$el.checked ? true : false;
+
+          if (Array.isArray($$a)) {
+            var $$v = null,
+                $$i = _vm._i($$a, $$v);
+
+            if ($$el.checked) {
+              $$i < 0 && _vm.$set(_vm.choice_ids, prop.id, $$a.concat([$$v]));
+            } else {
+              $$i > -1 && _vm.$set(_vm.choice_ids, prop.id, $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+            }
+          } else {
+            _vm.$set(_vm.choice_ids, prop.id, $$c);
+          }
+        }
+      }
+    }) : _vm._e()]), _vm._v(" "), _c("td", {
       staticClass: "td-color"
     }, [_vm._v(_vm._s(index + 1))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("td", {
       staticClass: "list-button",
@@ -16847,14 +17718,54 @@ var render = function render() {
       value: _vm.tabProp === 2,
       expression: "tabProp === 2"
     }]
-  }, [_vm.showProps.length ? _c("div", {
+  }, [_vm.showProps.length && _vm.choice_flag ? _c("div", [_c("input", {
+    attrs: {
+      type: "checkbox"
+    },
+    on: {
+      click: _vm.choiceDeleteAllProps
+    }
+  })]) : _vm._e(), _vm._v(" "), _vm.showProps.length ? _c("div", {
     staticClass: "grid"
   }, _vm._l(_vm.showProps, function (prop) {
     return _c("div", {
       staticClass: "grid__item"
     }, [_c("div", {
       staticClass: "photo"
-    }, [_c("figure", {
+    }, [_vm.choice_flag ? _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.choice_ids[prop.id],
+        expression: "choice_ids[prop.id]"
+      }],
+      attrs: {
+        type: "checkbox"
+      },
+      domProps: {
+        checked: Array.isArray(_vm.choice_ids[prop.id]) ? _vm._i(_vm.choice_ids[prop.id], null) > -1 : _vm.choice_ids[prop.id]
+      },
+      on: {
+        change: function change($event) {
+          var $$a = _vm.choice_ids[prop.id],
+              $$el = $event.target,
+              $$c = $$el.checked ? true : false;
+
+          if (Array.isArray($$a)) {
+            var $$v = null,
+                $$i = _vm._i($$a, $$v);
+
+            if ($$el.checked) {
+              $$i < 0 && _vm.$set(_vm.choice_ids, prop.id, $$a.concat([$$v]));
+            } else {
+              $$i > -1 && _vm.$set(_vm.choice_ids, prop.id, $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+            }
+          } else {
+            _vm.$set(_vm.choice_ids, prop.id, $$c);
+          }
+        }
+      }
+    }) : _vm._e(), _vm._v(" "), _c("figure", {
       staticClass: "photo__wrapper",
       attrs: {
         type: "button"
@@ -19539,7 +20450,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  margin: 0;\n  font-size: 2em;\n}\n\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\nlabel {\n  display: block;\n  margin-bottom: 0.5rem;\n}\ninput[type=checkbox], input[type=radio] {\n  display: block;\n  margin-bottom: 0.7rem;\n  margin-left: 0.7rem;\n}\n/* form */\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n.button-area--together {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n}\n\n.button-area--showhow {\n  margin-bottom: 0.5em;\n}\n.button-area--download {\n  margin-top: 1em;\n  margin-bottom: 0.5em;\n}\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  margin: 0.1em;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.list-button:hover {\n  cursor: pointer;\n}\n.checkbox-area--together {\n  display: flex;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n/* 写真 */\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n  cursor: pointer;\n}\n.navbar__brand:hover {\n  color: #c0c0c0;\n}\n.countdown_and_hamburger {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  flex-direction: row;\n}\n/* カウントダウン */\n.countdown__box {\n  margin-right: 4.8em;\n  width: 10em;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-end;\n}\n.countdown__message_area {\n  padding-bottom: 0.2em;\n}\n.countdown_number {\n  font-size: 1.8em;\n  font-weight: 500;\n}\n.countdown_number_red {\n  color: red;\n}\n.countdown_day {\n  margin-right: 0.5em;\n}\n.countdown_message {\n  font-size: 1.8em;\n  font-weight: 700;\n  margin-right: 0.5em;\n  background-image: linear-gradient(\n\t\t70deg,\n    #169b62 45%, \n    #FFF 50%,\n    #ff883e 55%\n\t);\n\tbackground-size: 500% 100%;\n\tbackground-clip: text;\n\t-webkit-background-clip: text;\n\tcolor: transparent;\n\t-webkit-animation: shine 2s infinite;\n\t        animation: shine 2s infinite;\n}\n@-webkit-keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n@keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n.countdown__image_area {\n  max-width: 25%;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.19em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  min-width: 9.5em;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n.menu-content ul li a:hover {\n  color: #169b62\n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n\n\n/* 小道具投稿 */\n.form__item--furigana {\n  width: 50%;\n  padding-top: 0.3em;\n  padding-bottom: 0.3em;\n}\n.edit-area .form__item--furigana {\n  width: 80%;\n}\n\n/* 検索ボタン（選択削除） */\n.button-area--together-left {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-start;\n}\n.button--choice {\n  display: flex;\n  align-items: flex-end;\n}\n\n/* 表 */ /* シーンも小道具も同一 */\n.phone {\n  text-align: center;\n}\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.phone div table {\n  display: inline-block;\n  width: auto;\n}\n.phone th {\n  width: 20%;\n}\n.phone td {\n  width: 70%;\n}\n\n.th-non { \n  color: #222;\n  background: white;\n}\ninput.checkbox-delete {\n  /* 優先順位あげてる */\n  margin: 0;\n  margin-left: 0.3rem;\n}\n.td-color {\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.PC .th-memo {\n  width: 10em;\n}\n\n\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #4fac7b;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n  cursor: pointer;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  min-width: 19em;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 100%;\n}\n.detail-box>div {\n  width:50%;\n  height: 100%;\n  padding: 0.5em;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n\n/* Confirm＿Dialog */\n/* 横並びボタン */\n.button--confirm {\n  width: 50%;\n  padding: 0.5em;\n}\n.button--danger {\n  background: #e61919;\n  border-color: #e61919;\n}\n.dialog-message {\n  display: flex;\n  white-space: pre-wrap;\n  justify-content: center;\n}\n\n\n/* Show_Prop 写真リスト */\n.usage-show {\n  margin-right: 0.2em;\n}\n\n/* 小道具検索 */\n.cotent-search {\n  min-width: 30em;\n}\n.button-search--close button {\n  border: none;\n  background: none;\n  font-size: 1.2em;\n  cursor: pointer;\n}\n.form-search {\n  padding: 0.5em 1em;\n}\n.search-sort-area {\n  margin-bottom: 0.8em;\n}\n.search-span {\n  font-weight: bold;\n}\n.search--select-area--box {\n  margin-bottom: 0.4em;\n}\n.search--input {\n  margin-bottom: 0.5em;\n}\n.search--label {\n  font-size: 0.8em;\n  margin-top: 0.5em;\n  margin-bottom: 0.2em;\n} \n.search--select-area {\n  margin-bottom: 0.4em;\n}\n.serach--select-area-colors {\n  display: flex;\n  justify-content: space-between;\n}\n.serach--select-area-colors div {\n  width: 48%;\n}\n.search--select-area--performance {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-right: 1.5em;\n}\n\n/* Detail_Prop 小道具詳細 */\n.area--detail-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n}\n.button--area--detail-box {\n  padding-right: 0.5em;\n}\n.detail-box--img {\n  display: flex;\n  justify-content: center;\n  max-width: 100%;\n  max-height: 100%;\n}\n.detail-box ul, .detail-box ol {\n  margin: 0.2em;\n}\n.detail-box ul ul {\n  margin: 0;\n}\n.edit-area li {\n  list-style-type: none;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  margin: 0;\n  font-size: 2em;\n}\n\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\nlabel {\n  display: block;\n  margin-bottom: 0.5rem;\n}\ninput[type=checkbox], input[type=radio] {\n  display: block;\n  margin-bottom: 0.7rem;\n  margin-left: 0.7rem;\n}\n/* form */\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n.button-area--together {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n}\n\n.button-area--showhow {\n  margin-bottom: 0.5em;\n}\n.button-area--download {\n  margin-top: 1em;\n  margin-bottom: 0.5em;\n}\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  margin: 0.1em;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.list-button:hover {\n  cursor: pointer;\n}\n.checkbox-area--together {\n  display: flex;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n/* 写真 */\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n  cursor: pointer;\n}\n.navbar__brand:hover {\n  color: #c0c0c0;\n}\n.countdown_and_hamburger {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  flex-direction: row;\n}\n/* カウントダウン */\n.countdown__box {\n  margin-right: 4.8em;\n  width: 10em;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-end;\n}\n.countdown__message_area {\n  padding-bottom: 0.2em;\n}\n.countdown_number {\n  font-size: 1.8em;\n  font-weight: 500;\n}\n.countdown_number_red {\n  color: red;\n}\n.countdown_day {\n  margin-right: 0.5em;\n}\n.countdown_message {\n  font-size: 1.8em;\n  font-weight: 700;\n  margin-right: 0.5em;\n  background-image: linear-gradient(\n\t\t70deg,\n    #169b62 45%, \n    #FFF 50%,\n    #ff883e 55%\n\t);\n\tbackground-size: 500% 100%;\n\tbackground-clip: text;\n\t-webkit-background-clip: text;\n\tcolor: transparent;\n\t-webkit-animation: shine 2s infinite;\n\t        animation: shine 2s infinite;\n}\n@-webkit-keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n@keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n.countdown__image_area {\n  max-width: 25%;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.19em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  min-width: 9.5em;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n.menu-content ul li a:hover {\n  color: #169b62\n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n\n\n/* 小道具投稿 */\n.form__item--furigana {\n  width: 50%;\n  padding-top: 0.3em;\n  padding-bottom: 0.3em;\n}\n.edit-area .form__item--furigana {\n  width: 80%;\n}\n\n/* 検索ボタン（選択削除） */\n.button-area--together-left {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-start;\n}\n.button--choice {\n  display: flex;\n  align-items: flex-end;\n}\n\n/* 表 */ /* シーンも小道具も同一 */\n.phone {\n  text-align: center;\n}\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.phone div table {\n  display: inline-block;\n  width: auto;\n}\n.phone th {\n  width: 20%;\n}\n.phone td {\n  width: 70%;\n}\n\n.th-non { \n  color: #222;\n  background: white;\n}\ninput.checkbox-delete {\n  /* 優先順位あげてる */\n  margin: 0;\n  margin-left: 0.3rem;\n}\n.td-color {\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.PC .th-memo {\n  width: 10em;\n}\n\n\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #4fac7b;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n  cursor: pointer;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  min-width: 19em;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 100%;\n}\n.detail-box>div {\n  width:50%;\n  height: 100%;\n  padding: 0.5em;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n\n/* Confirm＿Dialog */\n/* 横並びボタン */\n.button--confirm {\n  width: 50%;\n  padding: 0.5em;\n}\n.button--danger {\n  background: #e61919;\n  border-color: #e61919;\n}\n.dialog-message {\n  display: flex;\n  white-space: pre-wrap;\n  justify-content: center;\n}\n\n\n/* Show_Prop 写真リスト */\n.usage-show {\n  margin-right: 0.2em;\n}\n\n/* 小道具検索 */\n.cotent-search {\n  min-width: 30em;\n}\n.button-search--area {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n}\n.button-search--close button {\n  border: none;\n  background: none;\n  font-size: 1.2em;\n  cursor: pointer;\n}\n.button--reset {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n  font-size: 0.8rem;\n}\n.form-search {\n  padding: 0.5em 1em;\n}\n.search-sort-area {\n  margin-bottom: 0.8em;\n}\n.search-span {\n  font-weight: bold;\n}\n.search--select-area--box {\n  margin-bottom: 0.4em;\n}\n.search--input {\n  margin-bottom: 0.5em;\n}\n.search--label {\n  font-size: 0.8em;\n  margin-top: 0.5em;\n  margin-bottom: 0.2em;\n} \n.search--select-area {\n  margin-bottom: 0.4em;\n}\n.serach--select-area-colors {\n  display: flex;\n  justify-content: space-between;\n}\n.serach--select-area-colors div {\n  width: 48%;\n}\n.search--select-area--performance {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-right: 1.5em;\n}\n\n/* Detail_Prop 小道具詳細 */\n.area--detail-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n}\n.button--area--detail-box {\n  padding-right: 0.5em;\n}\n.detail-box--img {\n  display: flex;\n  justify-content: center;\n  max-width: 100%;\n  max-height: 100%;\n}\n.detail-box ul, .detail-box ol {\n  margin: 0.2em;\n}\n.detail-box ul ul {\n  margin: 0;\n}\n.edit-area li {\n  list-style-type: none;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -20278,6 +21189,45 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
 /* hot reload */
 if (false) { var api; }
 component.options.__file = "resources/js/components/Confirm_Dialog_Edit.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Custom_Dialog_Edit.vue":
+/*!********************************************************!*\
+  !*** ./resources/js/components/Custom_Dialog_Edit.vue ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Custom_Dialog_Edit_vue_vue_type_template_id_40a2e2fe___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Custom_Dialog_Edit.vue?vue&type=template&id=40a2e2fe& */ "./resources/js/components/Custom_Dialog_Edit.vue?vue&type=template&id=40a2e2fe&");
+/* harmony import */ var _Custom_Dialog_Edit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Custom_Dialog_Edit.vue?vue&type=script&lang=js& */ "./resources/js/components/Custom_Dialog_Edit.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Custom_Dialog_Edit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Custom_Dialog_Edit_vue_vue_type_template_id_40a2e2fe___WEBPACK_IMPORTED_MODULE_0__.render,
+  _Custom_Dialog_Edit_vue_vue_type_template_id_40a2e2fe___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Custom_Dialog_Edit.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
@@ -21026,6 +21976,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Custom_Dialog_Edit.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/Custom_Dialog_Edit.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Custom_Dialog_Edit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Custom_Dialog_Edit.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Custom_Dialog_Edit.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Custom_Dialog_Edit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js&":
 /*!**************************************************************************!*\
   !*** ./resources/js/components/Detail_Prop.vue?vue&type=script&lang=js& ***!
@@ -21313,6 +22279,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Edit_vue_vue_type_template_id_635f3487___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Confirm_Dialog_Edit_vue_vue_type_template_id_635f3487___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Confirm_Dialog_Edit.vue?vue&type=template&id=635f3487& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Confirm_Dialog_Edit.vue?vue&type=template&id=635f3487&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Custom_Dialog_Edit.vue?vue&type=template&id=40a2e2fe&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/Custom_Dialog_Edit.vue?vue&type=template&id=40a2e2fe& ***!
+  \***************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Custom_Dialog_Edit_vue_vue_type_template_id_40a2e2fe___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Custom_Dialog_Edit_vue_vue_type_template_id_40a2e2fe___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Custom_Dialog_Edit_vue_vue_type_template_id_40a2e2fe___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Custom_Dialog_Edit.vue?vue&type=template&id=40a2e2fe& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Custom_Dialog_Edit.vue?vue&type=template&id=40a2e2fe&");
 
 
 /***/ }),

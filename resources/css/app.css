@@ -563,11 +563,24 @@ figure {
 .cotent-search {
   min-width: 30em;
 }
+.button-search--area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
 .button-search--close button {
   border: none;
   background: none;
   font-size: 1.2em;
   cursor: pointer;
+}
+.button--reset {
+  background: #222;
+  border-color: #222;
+  color: #fff;
+  transition: opacity 300ms ease-in-out;
+  font-size: 0.8rem;
 }
 .form-search {
   padding: 0.5em 1em;

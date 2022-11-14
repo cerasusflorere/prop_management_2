@@ -22,9 +22,16 @@
           <div class="button-area--small-small">
             <button type="button" @click="showCheckBox" class="button button--inverse button--small button--choice"><i class="fas fa-check-square fa-fw"></i>選択</button>
           </div>
+          
+          <!-- 選択編集 -->
+          <div v-if="choice_flag" class="button-area--small-small">
+            <button type="button" @click="openModal_customEdit" class="button button--inverse button--small button--choice"><i class="fas fa-edit fa-fw"></i>選択編集</button>
+          </div>
+          <customDialog_Edit :custom_dialog_edit_message="postMessage_CustomEdit" v-show="showContent_customEdit" @Cancel_CustomEdit="closeModal_customEdit_Cancel" @OK_CustomEdit="closeModal_customEdit_OK"/>
+          <confirmDialog_Edit :confirm_dialog_edit_message="postMessage_Edit" v-show="showContent_confirmEdit" @Cancel_Edit="closeModal_confirmEdit_Cancel" @OK_Edit="closeModal_confirmEdit_OK"/>
 
           <!-- 選択削除実行 -->
-          <div v-if="delete_flag" class="button-area--small-small">
+          <div v-if="choice_flag" class="button-area--small-small">
             <button type="button" @click="openModal_confirmDelete" class="button button--inverse button--small button--choice"><i class="fas fa-trash-alt fa-fw"></i>選択削除</button>
           </div>
           <confirmDialog_Delete :confirm_dialog_delete_message="postMessage_Delete" v-show="showContent_confirmDelete" @Cancel_Delete="closeModal_confirmDelete_Cancel" @OK_Delete="closeModal_confirmDelete_OK"/>
@@ -45,7 +52,7 @@
         <table v-if="showProps.length">
           <thead>
             <tr>
-              <th v-if="delete_flag" class="th-non">
+              <th v-if="choice_flag" class="th-non">
                 <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllProps"></input>
               </th>
               <th class="th-non"></th>
@@ -64,8 +71,8 @@
           </thead>
           <tbody>
             <tr v-for="(prop, index) in showProps">
-              <td v-if="delete_flag">
-                <input type="checkbox" class="checkbox-delete" v-model="delete_ids[prop.id]"></input>
+              <td v-if="choice_flag">
+                <input type="checkbox" class="checkbox-delete" v-model="choice_ids[prop.id]"></input>
               </td>
               <td class="td-color">{{ index + 1 }}</td>
               <!-- 小道具名 -->
@@ -111,10 +118,18 @@
 
       <div v-else class="phone">
         <div v-if="showProps.length">
-          <table>
+          <table>            
             <div v-for="(prop, index) in showProps">
+              <tr v-show="index === 0" v-if="choice_flag">
+                <th class="th-non">
+                  <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllProps"></input>
+                </th>
+                <td></td>
+              </tr>
               <tr>
-                <th class="th-non"></th>
+                <th class="th-non">
+                  <input type="checkbox" v-if="choice_flag" class="checkbox-delete" v-model="choice_ids[prop.id]"></input>
+                </th>
                 <td class="td-color">{{ index + 1 }}</td> 
               </tr>
               <tr>
@@ -193,9 +208,13 @@
     </div>
 
     <div v-show="tabProp === 2">
+      <div v-if="showProps.length && choice_flag">
+        <input type="checkbox" @click="choiceDeleteAllProps"></input>
+      </div>
       <div class="grid" v-if="showProps.length">
         <div class="grid__item" v-for="prop in showProps">
           <div class="photo">
+            <input type="checkbox" v-if="choice_flag" v-model="choice_ids[prop.id]"></input>
             <figure class="photo__wrapper" type="button" @click="openModal_propDetail(prop.id)">
               <img
                 class="photo__image"
@@ -260,7 +279,9 @@
 
   import detailProp from '../components/Detail_Prop.vue';
   import searchProp from '../components/Search_Prop.vue';
-  import confirmDialog_Delete from '../components/Confirm_Dialog_Delete.vue'
+  import customDialog_Edit from '../components/Custom_Dialog_Edit.vue';
+  import confirmDialog_Edit from '../components/Confirm_Dialog_Edit.vue';
+  import confirmDialog_Delete from '../components/Confirm_Dialog_Delete.vue';
   import ExcelJS from 'exceljs';
 
   export default {
@@ -268,6 +289,8 @@
     components: {
       detailProp,
       searchProp,
+      customDialog_Edit,
+      confirmDialog_Edit,
       confirmDialog_Delete
     },
     data() {
@@ -289,11 +312,19 @@
         custom_sort: null,
         custom_name: null,
         custom_refine: null,        
-        // 選択削除ボタン
-        delete_flag: false,
-        // 選択削除
-        delete_ids: [],
-        delete_many: 0,
+        // 選択ボタン
+        choice_flag: false,
+        // 選択
+        choice_ids: [],
+        choice_many: 0,
+        // 編集custom
+        showContent_customEdit: false,
+        postMessage_CustomEdit: "",
+        edit_custom: null,
+        yes_no: null,
+        // 編集confirm
+        showContent_confirmEdit: false,
+        postMessage_Edit: "",
         // 削除confirm
         showContent_confirmDelete: false,
         postMessage_Delete: ""
@@ -328,7 +359,7 @@
         this.showProps = JSON.parse(JSON.stringify(this.props));
         
         this.props.forEach((prop) => {
-          this.delete_ids.push(false);
+          this.choice_ids.push(false);
         }, this);
 
         if(this.custom_sort || this.custom_name || this.custom_refine){
@@ -434,44 +465,142 @@
         await this.fetchProps();
       },
 
-      // 選択削除ボタン出現
+      // 選択ボタン出現
       showCheckBox() {
-        if(this.delete_flag){
-          this.delete_flag = false;
-          this.delete_many = 0;
+        if(this.choice_flag){
+          this.choice_flag = false;
+          this.choice_many = 0;
           this.props.forEach((prop) => {
-            this.$set(this.delete_ids, prop.id, false);
+            this.$set(this.choice_ids, prop.id, false);
           }, this);
         }else{
-          this.delete_flag = true;
+          this.choice_flag = true;
         }
       },
 
-      // 選択削除（全選択）
+      // 選択（全選択）
       choiceDeleteAllProps() {
-        if(!this.delete_many){
-          this.delete_many = 1;
+        if(!this.choice_many){
+          this.choice_many = 1;
           this.showProps.forEach((prop) => {
             // リアクティブにするため
-            this.$set(this.delete_ids, prop.id, true);
+            this.$set(this.choice_ids, prop.id, true);
           }, this);
         }else{
-          this.delete_many = 0;
+          this.choice_many = 0;
           this.showProps.forEach((prop) => {
-            this.$set(this.delete_ids, prop.id, false);
+            this.$set(this.choice_ids, prop.id, false);
           }, this);
         }
+      },
+
+      // 編集customのモーダル表示 
+      openModal_customEdit () {
+        this.showContent_customEdit = true;
+        this.postMessage_Edit = '小道具の編集項目について選択してください。';
+      },
+      // 編集customのモーダル非表示_OKの場合
+      async closeModal_customEdit_OK(edit_custom_flag) {
+        if(edit_custom_flag !== null){
+          this.showContent_customEdit = false;
+          this.$emit('close');
+          const yes = edit_custom_flag.indexOf('yes');
+          if(yes !== -1){
+            this.yes_no = 1;
+            this.edit_custom =  edit_custom_flag.replace('_yes', '');
+          }else{
+            this.yes_no = 0;
+            this.edit_custom = edit_custom_flag.replace('_no', '');
+          }
+          this.openModal_confirmEdit();
+        }        
+      },
+      // 編集customのモーダル非表示_Cancelの場合
+      closeModal_customEdit_Cancel() {
+        this.showContent_customEdit = false;
+      },
+
+      // 編集confirmのモーダル表示 
+      openModal_confirmEdit () {
+        this.showContent_confirmEdit = true;
+        let edit_props_name = '';
+        let edit_custom_show;
+        let yes_no_show;
+        if(this.props.length === this.showProps.length && this.choice_many){
+          edit_props_name ='全て\n';
+        }
+        this.showProps.forEach((prop, index) => {
+          if(this.choice_ids[prop.id]){
+            edit_props_name = edit_props_name + '・' + prop.name + '\n';
+          }
+        }, this);
+
+        if(this.edit_custom === 'location'){
+          edit_custom_show = 'ピッコロに持ってきて';
+        }else if(this.edit_custom === 'decision'){
+          edit_custom_show = '決定して'
+        }else if(this.edit_custom === 'usage'){
+          edit_custom_show = '中間発表で使用して';
+        }else if(this.edit_custom === 'usage_guraduation'){
+          edit_custom_show = '卒業公演で使用して';
+        }else if(this.edit_custom === 'usage_left'){
+          edit_custom_show = '上手で使用して';
+        }else if(this.edit_custom === 'usage_right'){
+          edit_custom_show = '下手で使用して';
+        }
+        
+        if(this.yes_no === 1){
+          yes_no_show = 'る';
+        }else{
+          yes_no_show = 'ない';
+        }
+
+        this.postMessage_Edit = '以下の小道具を' + edit_custom_show + yes_no_show + 'と変更します。\n本当に変更しますか？\n' + edit_props_name;
+      },
+      // 編集confirmのモーダル非表示_OKの場合
+      async closeModal_confirmEdit_OK() {
+        this.showContent_confirmEdit = false;
+        this.$emit('close');
+        await this.EditProps();
+      },
+      // 編集confirmのモーダル非表示_Cancelの場合
+      closeModal_confirmEdit_Cancel() {
+        this.showContent_confirmEdit = false;
+        this.openModal_customEdit();
+      },
+
+      // 選択編集(実行)
+      async EditProps() {
+        let ids = [];
+        let yes_no;
+        this.showProps.forEach((prop) => {
+          if(this.choice_ids[prop.id]){
+            ids.push(prop.id);
+          }
+        });
+        if(this.yes_no === 1){
+          yes_no = 1;
+        }else{
+          yes_no = null;
+        }
+        const response = await axios.post('/api/props_many/' + ids, {
+          method: this.edit_custom,
+          yes_no: yes_no
+        });
+        await this.fetchProps();
+        // 選択削除閉じる
+        this.showCheckBox();
       },
 
       // 削除confirmのモーダル表示 
       openModal_confirmDelete (id) {
         this.showContent_confirmDelete = true;
         let delete_props_name = '';
-        if(this.props.length === this.showProps.length && this.delete_many){
+        if(this.props.length === this.showProps.length && this.choice_many){
           delete_props_name ='全て\n';
         }
         this.showProps.forEach((prop, index) => {
-          if(this.delete_ids[prop.id]){
+          if(this.choice_ids[prop.id]){
             delete_props_name = delete_props_name + '・' + prop.name + '\n';
           }
         }, this);
@@ -492,11 +621,10 @@
       async deleteProps() {
         let ids = [];
         this.showProps.forEach((prop) => {
-          if(this.delete_ids[prop.id]){
+          if(this.choice_ids[prop.id]){
             ids.push(prop.id);
           }
         });
-        console.log(ids);
         const response = await axios.delete('/api/props_many/' + ids);
         await this.fetchProps();
         // 選択削除閉じる
