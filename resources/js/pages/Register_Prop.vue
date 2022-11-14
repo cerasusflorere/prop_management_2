@@ -41,8 +41,14 @@
 
         <!-- ピッコロにあるか -->
         <div class="checkbox-area--together">
-          <label for="costume_location">ピッコロに持ってきた</label>
-          <input type="checkbox" id="costume_location" v-model="registerForm.location"></input>    
+          <label for="prop_location">ピッコロに持ってきた</label>
+          <input type="checkbox" id="prop_location" v-model="registerForm.location"></input>    
+        </div>
+
+        <!-- これで決定か -->
+        <div class="checkbox-area--together">
+          <label for="prop_decision">これで決定</label>
+          <input type="checkbox" id="prop_decision" v-model="registerForm.decision"></input>    
         </div>
 
         <!-- 使用するか -->
@@ -146,6 +152,7 @@ export default {
         kana: '',
         owner: '',
         location: false,
+        decision: false,
         usage_prop: '',
         usage_guraduation_prop: 0,
         usage_stage_prop: null,
@@ -347,6 +354,7 @@ export default {
       this.registerForm.kana = '';
       this.registerForm.owner = '';
       this.registerForm.location = false;
+      this.registerForm.decision = false;
       this.registerForm.usage_prop = '';
       this.registerForm.usage_guraduation_prop = '';
       this.registerForm.usage_stage_prop = null;
@@ -544,6 +552,11 @@ export default {
         formData.append('location', 1);
       }else{
         formData.append('location', 0);
+      }
+      if(this.registerForm.decision){
+        formData.append('decision', 1);
+      }else{
+        formData.append('decision', 0);
       }
       formData.append('usage', this.registerForm.usage_prop);
       formData.append('usage_guraduation', this.registerForm.usage_guraduation_prop);

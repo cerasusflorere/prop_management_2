@@ -35,6 +35,8 @@
 
               <div>ピッコロに持ってきたか: <span v-if="prop.location" class="usage-show"><i class="fas fa-check fa-fw"></i></span></div>
 
+              <div>これで決定か: <span v-if="prop.decision" class="usage-show"><i class="fas fa-check fa-fw"></i></span></div>
+
               <div>
                 <!-- 中間発表 -->
                 <span v-if="prop.usage" class="usage-show">Ⓟ</span>
@@ -134,6 +136,12 @@
               <div  class="checkbox-area--together">
                 <label for="prop_location_edit" class="form__check__label">ピッコロに持ってきたか</label>
                 <input type="checkbox" id="prop_location_edit" class="form__check__input" v-model="editForm_prop.location">
+              </div>
+
+              <!-- これで決定か -->
+              <div  class="checkbox-area--together">
+                <label for="prop_decision_edit" class="form__check__label">これで決定か</label>
+                <input type="checkbox" id="prop_decision_edit" class="form__check__input" v-model="editForm_prop.decision">
               </div>
 
               <!-- 使用するか -->
@@ -302,6 +310,7 @@ export default {
         },
         owner_id: '',
         location: 0,
+        decision: 0,
         url: '',
         public_id: '',
         usage: 0,
@@ -436,6 +445,8 @@ export default {
       }
 
       this.editForm_prop.location = this.prop.location;
+
+      this.editForm_prop.decision = this.prop.decision;
 
       this.editForm_prop.url = this.prop.url;
       this.editForm_prop.public_id = this.prop.public_id;
@@ -642,6 +653,7 @@ export default {
       this.editForm_prop.owner.name = '';
       this.editForm_prop.owner_id = '';
       this.editForm_prop.location = 0;
+      this.editForm_prop.decision = 0;
       this.editForm_prop.url = '';
       this.editForm_prop.public_id = '';
       this.editForm_prop.usage = 0;
@@ -837,7 +849,7 @@ export default {
       }
       this.editForm_prop.kana = kana;
       
-      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || ((this.prop.owner_id !== this.editForm_prop.owner_id) || (!this.prop.owner_id && !this.editForm_prop.owner_id)) || this.prop.location !== this.editForm_prop.location  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
+      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || ((this.prop.owner_id !== this.editForm_prop.owner_id) || (!this.prop.owner_id && !this.editForm_prop.owner_id)) || this.prop.location !== this.editForm_prop.location  || this.prop.decision !== this.editForm_prop.decision  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
         // 怪しい
         // if(!this.prop.owner_id && !this.editForm_prop.owner_id){
         //   console.log('なんで');
@@ -888,6 +900,7 @@ export default {
       }, this);
 
       let location = '持ってきてない';
+      let decision = 'してない';
       let usage = '';
       let usage_guraduation = '';
       let usage_left = '';
@@ -895,6 +908,10 @@ export default {
 
       if(this.editForm_prop.location) {
         location = '持ってきてる';
+      }
+
+      if(this.editForm_prop.decision) {
+        decision = 'してる';
       }
 
       if(this.editForm_prop.usage) { 
@@ -925,7 +942,7 @@ export default {
         photo = '変更しない';
       }
 
-      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name+'\nふりがな：'+this.editForm_prop.kana+'\n持ち主：'+this.editForm_prop.owner.name + '\nピッコロに：'+location +'\n使用状況：'+usage+usage_guraduation+usage_left+usage_right+'\nメモ：'+memos+'\n写真：'+photo;
+      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name+'\nふりがな：'+this.editForm_prop.kana+'\n持ち主：'+this.editForm_prop.owner.name + '\nピッコロに：'+location + '\n決定：'+decision + '\n使用状況：'+usage+usage_guraduation+usage_left+usage_right+'\nメモ：'+memos+'\n写真：'+photo;
     },
     // 編集confirmのモーダル非表示_OKの場合
     async closeModal_confirmEdit_OK() {
@@ -954,7 +971,8 @@ export default {
           name: this.editForm_prop.name,
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
-          location: this.editForm_prop.location,
+          location: this.editForm_prop.location,          
+          decision: this.editForm_prop.decision,
           usage: this.editForm_prop.usage,
           usage_guraduation: this.editForm_prop.usage_guraduation,
           usage_left: this.editForm_prop.usage_left,
@@ -984,6 +1002,7 @@ export default {
         formData.append('kana', this.editForm_prop.kana);
         formData.append('owner_id', this.editForm_prop.owner_id);
         formData.append('location', this.editForm_prop.location);
+        formData.append('decision', this.editForm_prop.decision);
         formData.append('usage', this.editForm_prop.usage);
         formData.append('usage_guraduation', this.editForm_prop.usage_guraduation);
         formData.append('usage_left', this.editForm_prop.usage_left);
@@ -1014,6 +1033,7 @@ export default {
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
           location: this.editForm_prop.location,
+          decision: this.editForm_prop.decision,
           public_id: this.editForm_prop.public_id,
           usage: this.editForm_prop.usage,
           usage_guraduation: this.editForm_prop.usage_guraduation,
@@ -1044,6 +1064,7 @@ export default {
         formData.append('kana', this.editForm_prop.kana);
         formData.append('owner_id', this.editForm_prop.owner_id);
         formData.append('location', this.editForm_prop.location);
+        formData.append('decision', this.editForm_prop.decision);
         formData.append('public_id', this.editForm_prop.public_id);
         formData.append('usage', this.editForm_prop.usage);
         formData.append('usage_guraduation', this.editForm_prop.usage_guraduation);

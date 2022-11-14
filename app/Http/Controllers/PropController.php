@@ -62,6 +62,7 @@ class PropController extends Controller
         }
         $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
         $location = !empty($request->location) ? 1 : 0;
+        $decision = !empty($request->decision) ? 1 : 0;
         $usage = !empty($request->usage) ? 1 : 0;
         $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
         $usage_left = !empty($request->usage_left) ? 1 : 0;
@@ -70,7 +71,7 @@ class PropController extends Controller
         DB::beginTransaction();
 
         try {
-            $prop = Prop::create(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+            $prop = Prop::create(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
             if($request->memo){
                 $prop_comment = Props_Comment::create(['prop_id' => $prop->id, 'memo' => $request->memo]);
             }            
@@ -167,13 +168,14 @@ class PropController extends Controller
             // 写真更新しない
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
             $location = !empty($request->location) ? 1 : 0;
+            $decision = !empty($request->decision) ? 1 : 0;
             $usage = !empty($request->usage) ? 1 : 0;
             $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
             $usage_left = !empty($request->usage_left) ? 1 : 0;
             $usage_right = !empty($request->usage_right) ? 1 : 0;
 
             $affected = Prop::where('id', $id)
-                   ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                   ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
 
             // レスポンスコードは204(No Content)を返却する
             return response($affected, 204);
@@ -192,6 +194,7 @@ class PropController extends Controller
 
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
             $location = !empty($request->location) ? 1 : 0;
+            $decision = !empty($request->decision) ? 1 : 0;
             $usage = !empty($request->usage) ? 1 : 0;
             $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
             $usage_left = !empty($request->usage_left) ? 1 : 0;
@@ -201,7 +204,7 @@ class PropController extends Controller
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location,'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 
                 DB::commit();
             }catch (\Exception $exception) {
@@ -221,6 +224,7 @@ class PropController extends Controller
             // 写真削除
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
             $location = !empty($request->location) ? 1 : 0;
+            $decision = !empty($request->decision) ? 1 : 0;
             $usage = !empty($request->usage) ? 1 : 0;
             $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
             $usage_left = !empty($request->usage_left) ? 1 : 0;
@@ -230,7 +234,7 @@ class PropController extends Controller
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location,'public_id' => null, 'url' => null, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'decision' => $decision, 'public_id' => null, 'url' => null, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 
                 DB::commit();
 
@@ -262,6 +266,7 @@ class PropController extends Controller
             }
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
             $location = !empty($request->location) ? 1 : 0;
+            $decision = !empty($request->decision) ? 1 : 0;
             $usage = !empty($request->usage) ? 1 : 0;
             $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
             $usage_left = !empty($request->usage_left) ? 1 : 0;
@@ -271,7 +276,7 @@ class PropController extends Controller
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location,'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 
                 DB::commit();
 

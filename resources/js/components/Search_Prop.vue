@@ -16,7 +16,7 @@
               <label for="sort_prop_owner">持ち主順</label>
   
               <input type="radio" id="sort_prop_created_at" v-model="search_prop.prop_sort" value="created_at">
-              <label for="sort_prop_created_at">作成日順</label>
+              <label for="sort_prop_created_at">登録日順</label>
   
               <input type="radio" id="sort_prop_updated_at" v-model="search_prop.prop_sort" value="updated_at">
               <label for="sort_prop_updated_at">更新日順</label>

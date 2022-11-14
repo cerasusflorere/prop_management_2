@@ -387,12 +387,9 @@ main {
   flex-direction: row;
   justify-content: flex-start;
 }
-.button--deletechoice {
+.button--choice {
   display: flex;
   align-items: flex-end;
-}
-.button--deletechoice i {
-  font-size: 0.8em;
 }
 
 /* 表 */ /* シーンも小道具も同一 */

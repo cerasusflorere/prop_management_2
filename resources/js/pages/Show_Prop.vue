@@ -18,15 +18,16 @@
           </div>
           <searchProp :postSearch="postSearch" v-show="showContent_search" @close="closeModal_searchProp" />
 
-          <!-- 選択削除 -->
+          <!-- 選択 -->
           <div class="button-area--small-small">
-            <button type="button" @click="showDeleteBox" class="button button--inverse button--small button--deletechoice"><i class="fas fa-check-square fa-fw"></i>選択削除</button>
+            <button type="button" @click="showCheckBox" class="button button--inverse button--small button--choice"><i class="fas fa-check-square fa-fw"></i>選択</button>
           </div>
 
           <!-- 選択削除実行 -->
           <div v-if="delete_flag" class="button-area--small-small">
-            <button type="button" @click="deleteProps" class="button button--inverse button--small button--deletechoice"><i class="fas fa-trash-alt fa-fw"></i>選択削除</button>
+            <button type="button" @click="openModal_confirmDelete" class="button button--inverse button--small button--choice"><i class="fas fa-trash-alt fa-fw"></i>選択削除</button>
           </div>
+          <confirmDialog_Delete :confirm_dialog_delete_message="postMessage_Delete" v-show="showContent_confirmDelete" @Cancel_Delete="closeModal_confirmDelete_Cancel" @OK_Delete="closeModal_confirmDelete_OK"/>
         </di>
         
         <!-- ダウンロードボタン -->
@@ -51,6 +52,7 @@
               <th>小道具名</th>
               <th>持ち主</th>
               <th>ピッコロ</th>
+              <th>決定</th>
               <th>中間</th>
               <th>卒業</th>
               <th>上手</th>
@@ -73,6 +75,9 @@
               <td v-else></td>
               <!-- ピッコロに持ってきたか -->
               <td v-if="prop.location"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+              <!-- これで決定か -->
+              <td v-if="prop.decision"><i class="fas fa-check fa-fw"></i></td>
               <td v-else></td>
               <!-- 中間発表-->
               <td v-if="prop.usage"><i class="fas fa-check fa-fw"></i></td>
@@ -130,6 +135,12 @@
                 <td v-else></td>
               </tr>
               <tr>
+                <!-- これで決定か -->
+                <th>決定か</th>
+                <td v-if="prop.decision"><i class="fas fa-check fa-fw"></i></td>
+                <td v-else></td>
+              </tr>
+              <tr>
                 <!-- 中間発表 -->
                 <th>中間</th>
                 <td v-if="prop.usage"><i class="fas fa-check fa-fw"></i></td>
@@ -176,7 +187,7 @@
         </div>
 
         <div v-else>
-          小道具は登録されていません。 
+          該当の小道具は登録されていません。 
         </div>
       </div>
     </div>
@@ -207,6 +218,12 @@
                 <span v-if="prop.location" class="usage-show"><i class="fas fa-check fa-fw"></i></span>
               </div>
 
+              <!-- これで決定か -->
+              <div>
+                <span class="usage-show">これで決定か:</span>
+                <span v-if="prop.decision" class="usage-show"><i class="fas fa-check fa-fw"></i></span>
+              </div>
+
               <div>
                 <!-- 中間発表 -->
                 <span v-if="prop.usage" class="usage-show">Ⓟ</span>
@@ -231,7 +248,7 @@
       </div>
 
       <div v-else>
-        小道具は登録されていません。
+        該当の小道具は登録されていません。
       </div>
     </div> 
     <detailProp :postProp="postProp" v-show="showContent" @close="closeModal_propDetail" /> 
@@ -243,13 +260,15 @@
 
   import detailProp from '../components/Detail_Prop.vue';
   import searchProp from '../components/Search_Prop.vue';
+  import confirmDialog_Delete from '../components/Confirm_Dialog_Delete.vue'
   import ExcelJS from 'exceljs';
 
   export default {
     // このページの上で表示するコンポーネント
     components: {
       detailProp,
-      searchProp
+      searchProp,
+      confirmDialog_Delete
     },
     data() {
       return{
@@ -267,11 +286,17 @@
         // 小道具検索カスタム
         showContent_search: false,
         postSearch: "",
+        custom_sort: null,
+        custom_name: null,
+        custom_refine: null,        
         // 選択削除ボタン
         delete_flag: false,
         // 選択削除
         delete_ids: [],
-        delete_many: 0
+        delete_many: 0,
+        // 削除confirm
+        showContent_confirmDelete: false,
+        postMessage_Delete: ""
       }
     },
     watch: {
@@ -305,6 +330,10 @@
         this.props.forEach((prop) => {
           this.delete_ids.push(false);
         }, this);
+
+        if(this.custom_sort || this.custom_name || this.custom_refine){
+          await this.closeModal_searchProp(this.custom_sort, this.custom_name, this.custom_refine);
+        }
       },
 
       // エスケープ処理
@@ -336,6 +365,9 @@
       async closeModal_searchProp(sort, name, refine) {
         this.showContent_search = false;
         if(sort !== null && refine !== null){
+          this.custom_sort = sort;
+          this.custom_name = name;
+          this.custom_refine = refine;
           let array_original = this.props.filter((a) => eval(refine));
           let array = [];
 
@@ -403,15 +435,19 @@
       },
 
       // 選択削除ボタン出現
-      showDeleteBox() {
+      showCheckBox() {
         if(this.delete_flag){
           this.delete_flag = false;
+          this.delete_many = 0;
+          this.props.forEach((prop) => {
+            this.$set(this.delete_ids, prop.id, false);
+          }, this);
         }else{
           this.delete_flag = true;
         }
       },
 
-      // 選択削除（選択）
+      // 選択削除（全選択）
       choiceDeleteAllProps() {
         if(!this.delete_many){
           this.delete_many = 1;
@@ -427,6 +463,31 @@
         }
       },
 
+      // 削除confirmのモーダル表示 
+      openModal_confirmDelete (id) {
+        this.showContent_confirmDelete = true;
+        let delete_props_name = '';
+        if(this.props.length === this.showProps.length && this.delete_many){
+          delete_props_name ='全て\n';
+        }
+        this.showProps.forEach((prop, index) => {
+          if(this.delete_ids[prop.id]){
+            delete_props_name = delete_props_name + '・' + prop.name + '\n';
+          }
+        }, this);
+        this.postMessage_Delete = '以下の小道具を削除すると、紐づけられてたこの小道具を使用するシーンも全て削除されます。\n本当に削除しますか？\n' + delete_props_name;
+      },
+      // 削除confirmのモーダル非表示_OKの場合
+      async closeModal_confirmDelete_OK() {
+        this.showContent_confirmDelete = false;
+        this.$emit('close');
+        await this.deleteProps();
+      },
+      // 削除confirmのモーダル非表示_Cancelの場合
+      closeModal_confirmDelete_Cancel() {
+        this.showContent_confirmDelete = false;
+      },
+
       // 選択削除（実行）
       async deleteProps() {
         let ids = [];
@@ -438,6 +499,8 @@
         console.log(ids);
         const response = await axios.delete('/api/props_many/' + ids);
         await this.fetchProps();
+        // 選択削除閉じる
+        this.showCheckBox();
       },
 
 
@@ -457,6 +520,8 @@
         worksheet.columns = [
           { header: '小道具名', key: 'name', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '持ち主', key: 'owner', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: 'ピッコロ', key: 'location', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '決定', key: 'decision', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '中間発表', key: 'usage', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '卒業公演', key: 'usage_guraduation', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '上手', key: 'usage_left', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
@@ -484,6 +549,10 @@
         worksheet.getCell('F1').fill = fill;
         worksheet.getCell('G1').font = font;
         worksheet.getCell('G1').fill = fill;
+        worksheet.getCell('H1').font = font;
+        worksheet.getCell('H1').fill = fill;
+        worksheet.getCell('I1').font = font;
+        worksheet.getCell('I1').fill = fill;
 
         this.showProps.forEach((prop, index) => {
           let datas = [];
@@ -491,6 +560,18 @@
 
           if(prop.owner){
             datas.push(prop.owner.name);
+          }else{
+            datas.push(null);
+          }
+
+          if(prop.location){
+            datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(prop.decision){
+            datas.push('〇');
           }else{
             datas.push(null);
           }
