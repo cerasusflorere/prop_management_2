@@ -35,6 +35,13 @@
 
               <div>ピッコロに持ってきたか: <span v-if="prop.location" class="usage-show"><i class="fas fa-check fa-fw"></i></span></div>
 
+              <div>
+                作るかどうか: 
+                <span v-if="prop.handmade === 1" class="usage-show">完</span>
+                <span v-else-if="prop.handmade === 2" class="usage-show">仕</span>
+                <span v-else-if="prop.handmade === 3" class="usage-show">未</span>
+              </div>
+
               <div>これで決定か: <span v-if="prop.decision" class="usage-show"><i class="fas fa-check fa-fw"></i></span></div>
 
               <div>
@@ -136,6 +143,24 @@
               <div  class="checkbox-area--together">
                 <label for="prop_location_edit" class="form__check__label">ピッコロに持ってきたか</label>
                 <input type="checkbox" id="prop_location_edit" class="form__check__input" v-model="editForm_prop.location">
+              </div>
+
+              <!-- 作る必要があるか -->
+              <div class="checkbox-area--together">
+                <label for="prop_handmade_edit">作る必要がある</label>
+                <input type="checkbox" id="prop_handmade_edit" v-model="editForm_prop.handmade"></input>
+
+                <div class="checkbox-area--together">
+                <!-- 作る必要があるなら -->
+                  <input type="radio" id="prop_handmade_complete_edit" :disabled="!editForm_prop.handmade" value=1 v-model="editForm_prop.handmade_complete"></input>
+                  <label for="prop_handmade_complete_edit">完成</label>
+
+                  <input type="radio" id="prop_handmade_progress_edit" :disabled="!editForm_prop.handmade" value=2 v-model="editForm_prop.handmade_complete"></input>
+                  <label for="prop_handmade_progress_edit">仕掛中</label>
+
+                  <input type="radio" id="prop_handmade_unfinished_edit" :disabled="!editForm_prop.handmade" value=3 v-model="editForm_prop.handmade_complete"></input>
+                  <label for="prop_handmade_unfinished_edit">未着手</label>
+                </div>          
               </div>
 
               <!-- これで決定か -->
@@ -310,6 +335,8 @@ export default {
         },
         owner_id: '',
         location: 0,
+        handmade: 0,
+        handmade_complete: 1,
         decision: 0,
         url: '',
         public_id: '',
@@ -445,6 +472,14 @@ export default {
       }
 
       this.editForm_prop.location = this.prop.location;
+
+      this.editForm_prop.handmade = this.prop.handmade; // 0: 作らない、1: 完成、2: 仕掛中、3: 未着手
+
+      if(this.prop.handmade){
+        this.editForm_prop.handmade_complete = this.prop.handmade;
+      }else{
+        this.editForm_prop.handmade_complete = 1;
+      }
 
       this.editForm_prop.decision = this.prop.decision;
 
@@ -653,6 +688,8 @@ export default {
       this.editForm_prop.owner.name = '';
       this.editForm_prop.owner_id = '';
       this.editForm_prop.location = 0;
+      this.editForm_prop.handmade = 0;
+      this.editForm_prop.handmade_complete = 1;
       this.editForm_prop.decision = 0;
       this.editForm_prop.url = '';
       this.editForm_prop.public_id = '';
@@ -781,6 +818,7 @@ export default {
       let names = [...this.editForm_prop.name];
       let name_last = names[names.length-1];
 
+      // kan正規表現
       if(this.first_uni <= name_last.charCodeAt(0) && name_last.charCodeAt(0) <= this.final_uni){
         // 囲み文字の処理
         const name_last_point_diff = name_last.charCodeAt(0)-this.first_uni + 1;
@@ -849,7 +887,13 @@ export default {
       }
       this.editForm_prop.kana = kana;
       
-      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || ((this.prop.owner_id !== this.editForm_prop.owner_id) || (!this.prop.owner_id && !this.editForm_prop.owner_id)) || this.prop.location !== this.editForm_prop.location  || this.prop.decision !== this.editForm_prop.decision  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
+      if(!this.editForm_prop.handmade){
+        this.editForm_prop.handmade = 0;
+      }else{
+        this.editForm_prop.handmade = this.editForm_prop.handmade_complete;
+      }
+
+      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || ((this.prop.owner_id !== this.editForm_prop.owner_id) || (!this.prop.owner_id && !this.editForm_prop.owner_id)) || this.prop.location !== this.editForm_prop.location || this.prop.handmade !== this.editForm_prop.handmade || this.prop.decision !== this.editForm_prop.decision  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
         // 怪しい
         // if(!this.prop.owner_id && !this.editForm_prop.owner_id){
         //   console.log('なんで');
@@ -900,6 +944,7 @@ export default {
       }, this);
 
       let location = '持ってきてない';
+      let handmade = '作らない';
       let decision = 'してない';
       let usage = '';
       let usage_guraduation = '';
@@ -908,6 +953,14 @@ export default {
 
       if(this.editForm_prop.location) {
         location = '持ってきてる';
+      }
+
+      if(this.editForm_prop.handmade == 1){
+        handmade = '作る: 完成';
+      }else if(this.editForm_prop.handmade == 2){
+        handmade = '作る: 仕掛中';
+      }else if(this.editForm_prop.handmade == 3){
+        handmade = '作る: 未着手';
       }
 
       if(this.editForm_prop.decision) {
@@ -942,7 +995,7 @@ export default {
         photo = '変更しない';
       }
 
-      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name+'\nふりがな：'+this.editForm_prop.kana+'\n持ち主：'+this.editForm_prop.owner.name + '\nピッコロに：'+location + '\n決定：'+decision + '\n使用状況：'+usage+usage_guraduation+usage_left+usage_right+'\nメモ：'+memos+'\n写真：'+photo;
+      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name+'\nふりがな：'+this.editForm_prop.kana+'\n持ち主：'+this.editForm_prop.owner.name + '\nピッコロに：'+location + '\n'+handmade +'\n決定：'+decision + '\n使用状況：'+usage+usage_guraduation+usage_left+usage_right+'\nメモ：'+memos+'\n写真：'+photo;
     },
     // 編集confirmのモーダル非表示_OKの場合
     async closeModal_confirmEdit_OK() {
@@ -957,9 +1010,12 @@ export default {
     // 編集confirmのモーダル非表示_Cancelの場合
     closeModal_confirmEdit_Cancel() {
       this.showContent_confirmEdit= false;
-      this.editForm_prop.owner = "";
+      this.editForm_prop.owner.name = "";
       this.editPropMode_detail = "";
       this.editPropMode_memo = "";
+      if(this.editForm_prop.handmade){
+        this.editForm_prop.handmade = true;
+      }
     },
 
     // 基本情報を編集する
@@ -972,6 +1028,7 @@ export default {
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
           location: this.editForm_prop.location,
+          handmade: this.editForm_prop.handmade,
           decision: this.editForm_prop.decision,
           usage: this.editForm_prop.usage,
           usage_guraduation: this.editForm_prop.usage_guraduation,
@@ -1002,6 +1059,7 @@ export default {
         formData.append('kana', this.editForm_prop.kana);
         formData.append('owner_id', this.editForm_prop.owner_id);
         formData.append('location', this.editForm_prop.location);
+        formData.append('handmade', this.editForm_prop.handmade);
         formData.append('decision', this.editForm_prop.decision);
         formData.append('usage', this.editForm_prop.usage);
         formData.append('usage_guraduation', this.editForm_prop.usage_guraduation);
@@ -1033,6 +1091,7 @@ export default {
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
           location: this.editForm_prop.location,
+          handmade: this.editForm_prop.handmade,
           decision: this.editForm_prop.decision,
           public_id: this.editForm_prop.public_id,
           usage: this.editForm_prop.usage,
@@ -1064,6 +1123,7 @@ export default {
         formData.append('kana', this.editForm_prop.kana);
         formData.append('owner_id', this.editForm_prop.owner_id);
         formData.append('location', this.editForm_prop.location);
+        formData.append('handmade', this.editForm_prop.handmade);
         formData.append('decision', this.editForm_prop.decision);
         formData.append('public_id', this.editForm_prop.public_id);
         formData.append('usage', this.editForm_prop.usage);

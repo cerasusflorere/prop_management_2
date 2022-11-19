@@ -2756,6 +2756,8 @@ var autokana;
         },
         owner_id: '',
         location: 0,
+        handmade: 0,
+        handmade_complete: 1,
         decision: 0,
         url: '',
         public_id: '',
@@ -2979,6 +2981,14 @@ var autokana;
                 }
 
                 _this3.editForm_prop.location = _this3.prop.location;
+                _this3.editForm_prop.handmade = _this3.prop.handmade; // 0: 作らない、1: 完成、2: 仕掛中、3: 未着手
+
+                if (_this3.prop.handmade) {
+                  _this3.editForm_prop.handmade_complete = _this3.prop.handmade;
+                } else {
+                  _this3.editForm_prop.handmade_complete = 1;
+                }
+
                 _this3.editForm_prop.decision = _this3.prop.decision;
                 _this3.editForm_prop.url = _this3.prop.url;
                 _this3.editForm_prop.public_id = _this3.prop.public_id;
@@ -3014,7 +3024,7 @@ var autokana;
                 _this3.editPropMode_detail = "";
                 _this3.editPropMode_memo = "";
 
-              case 27:
+              case 29:
               case "end":
                 return _context3.stop();
             }
@@ -3268,6 +3278,8 @@ var autokana;
       this.editForm_prop.owner.name = '';
       this.editForm_prop.owner_id = '';
       this.editForm_prop.location = 0;
+      this.editForm_prop.handmade = 0;
+      this.editForm_prop.handmade_complete = 1;
       this.editForm_prop.decision = 0;
       this.editForm_prop.url = '';
       this.editForm_prop.public_id = '';
@@ -3473,7 +3485,7 @@ var autokana;
 
       var names = _toConsumableArray(this.editForm_prop.name);
 
-      var name_last = names[names.length - 1];
+      var name_last = names[names.length - 1]; // kan正規表現
 
       if (this.first_uni <= name_last.charCodeAt(0) && name_last.charCodeAt(0) <= this.final_uni) {
         // 囲み文字の処理
@@ -3553,7 +3565,13 @@ var autokana;
 
       this.editForm_prop.kana = kana;
 
-      if (this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || !this.prop.owner_id && !this.editForm_prop.owner_id || this.prop.location !== this.editForm_prop.location || this.prop.decision !== this.editForm_prop.decision || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && (this.prop.public_id && this.editForm_prop.photo === 1 || !this.prop.public_id && !this.editForm_prop.photo)) {
+      if (!this.editForm_prop.handmade) {
+        this.editForm_prop.handmade = 0;
+      } else {
+        this.editForm_prop.handmade = this.editForm_prop.handmade_complete;
+      }
+
+      if (this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || !this.prop.owner_id && !this.editForm_prop.owner_id || this.prop.location !== this.editForm_prop.location || this.prop.handmade !== this.editForm_prop.handmade || this.prop.decision !== this.editForm_prop.decision || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && (this.prop.public_id && this.editForm_prop.photo === 1 || !this.prop.public_id && !this.editForm_prop.photo)) {
         // 怪しい
         // if(!this.prop.owner_id && !this.editForm_prop.owner_id){
         //   console.log('なんで');
@@ -3603,6 +3621,7 @@ var autokana;
         }
       }, this);
       var location = '持ってきてない';
+      var handmade = '作らない';
       var decision = 'してない';
       var usage = '';
       var usage_guraduation = '';
@@ -3611,6 +3630,14 @@ var autokana;
 
       if (this.editForm_prop.location) {
         location = '持ってきてる';
+      }
+
+      if (this.editForm_prop.handmade == 1) {
+        handmade = '作る: 完成';
+      } else if (this.editForm_prop.handmade == 2) {
+        handmade = '作る: 仕掛中';
+      } else if (this.editForm_prop.handmade == 3) {
+        handmade = '作る: 未着手';
       }
 
       if (this.editForm_prop.decision) {
@@ -3648,7 +3675,7 @@ var autokana;
         photo = '変更しない';
       }
 
-      this.postMessage_Edit = '以下のように編集します。\n小道具名：' + this.editForm_prop.name + '\nふりがな：' + this.editForm_prop.kana + '\n持ち主：' + this.editForm_prop.owner.name + '\nピッコロに：' + location + '\n決定：' + decision + '\n使用状況：' + usage + usage_guraduation + usage_left + usage_right + '\nメモ：' + memos + '\n写真：' + photo;
+      this.postMessage_Edit = '以下のように編集します。\n小道具名：' + this.editForm_prop.name + '\nふりがな：' + this.editForm_prop.kana + '\n持ち主：' + this.editForm_prop.owner.name + '\nピッコロに：' + location + '\n' + handmade + '\n決定：' + decision + '\n使用状況：' + usage + usage_guraduation + usage_left + usage_right + '\nメモ：' + memos + '\n写真：' + photo;
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
@@ -3689,9 +3716,13 @@ var autokana;
     // 編集confirmのモーダル非表示_Cancelの場合
     closeModal_confirmEdit_Cancel: function closeModal_confirmEdit_Cancel() {
       this.showContent_confirmEdit = false;
-      this.editForm_prop.owner = "";
+      this.editForm_prop.owner.name = "";
       this.editPropMode_detail = "";
       this.editPropMode_memo = "";
+
+      if (this.editForm_prop.handmade) {
+        this.editForm_prop.handmade = true;
+      }
     },
     // 基本情報を編集する
     editProp: function editProp() {
@@ -3716,6 +3747,7 @@ var autokana;
                   kana: _this15.editForm_prop.kana,
                   owner_id: _this15.editForm_prop.owner_id,
                   location: _this15.editForm_prop.location,
+                  handmade: _this15.editForm_prop.handmade,
                   decision: _this15.editForm_prop.decision,
                   usage: _this15.editForm_prop.usage,
                   usage_guraduation: _this15.editForm_prop.usage_guraduation,
@@ -3751,12 +3783,12 @@ var autokana;
                   _this15.editPropMode_memo = 100;
                 }
 
-                _context8.next = 52;
+                _context8.next = 53;
                 break;
 
               case 14:
                 if (!(_this15.editPropMode_detail === 2)) {
-                  _context8.next = 40;
+                  _context8.next = 41;
                   break;
                 }
 
@@ -3767,29 +3799,30 @@ var autokana;
                 formData.append('kana', _this15.editForm_prop.kana);
                 formData.append('owner_id', _this15.editForm_prop.owner_id);
                 formData.append('location', _this15.editForm_prop.location);
+                formData.append('handmade', _this15.editForm_prop.handmade);
                 formData.append('decision', _this15.editForm_prop.decision);
                 formData.append('usage', _this15.editForm_prop.usage);
                 formData.append('usage_guraduation', _this15.editForm_prop.usage_guraduation);
                 formData.append('usage_left', _this15.editForm_prop.usage_left);
                 formData.append('usage_right', _this15.editForm_prop.usage_right);
                 formData.append('photo', _this15.editForm_prop.photo);
-                _context8.next = 29;
+                _context8.next = 30;
                 return axios.post('/api/props/' + _this15.prop.id, formData);
 
-              case 29:
+              case 30:
                 _response = _context8.sent;
 
                 if (!(_response.status === 422)) {
-                  _context8.next = 33;
+                  _context8.next = 34;
                   break;
                 }
 
                 _this15.errors.error = _response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 33:
+              case 34:
                 if (!(_response.status !== 204)) {
-                  _context8.next = 36;
+                  _context8.next = 37;
                   break;
                 }
 
@@ -3797,29 +3830,30 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 36:
+              case 37:
                 _this15.editPropMode_detail = 100;
 
                 if (_this15.editPropMode_memo === 0) {
                   _this15.editPropMode_memo = 100;
                 }
 
-                _context8.next = 52;
+                _context8.next = 53;
                 break;
 
-              case 40:
+              case 41:
                 if (!(_this15.editPropMode_detail === 3)) {
-                  _context8.next = 52;
+                  _context8.next = 53;
                   break;
                 }
 
-                _context8.next = 43;
+                _context8.next = 44;
                 return axios.post('/api/props/' + _this15.prop.id, {
                   method: 'photo_delete',
                   name: _this15.editForm_prop.name,
                   kana: _this15.editForm_prop.kana,
                   owner_id: _this15.editForm_prop.owner_id,
                   location: _this15.editForm_prop.location,
+                  handmade: _this15.editForm_prop.handmade,
                   decision: _this15.editForm_prop.decision,
                   public_id: _this15.editForm_prop.public_id,
                   usage: _this15.editForm_prop.usage,
@@ -3828,20 +3862,20 @@ var autokana;
                   usage_right: _this15.editForm_prop.usage_right
                 });
 
-              case 43:
+              case 44:
                 _response2 = _context8.sent;
 
                 if (!(_response2.status === 422)) {
-                  _context8.next = 47;
+                  _context8.next = 48;
                   break;
                 }
 
                 _this15.errors.error = _response2.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 47:
+              case 48:
                 if (!(_response2.status !== 204)) {
-                  _context8.next = 50;
+                  _context8.next = 51;
                   break;
                 }
 
@@ -3849,16 +3883,16 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 50:
+              case 51:
                 _this15.editPropMode_detail = 100;
 
                 if (_this15.editPropMode_memo === 0) {
                   _this15.editPropMode_memo = 100;
                 }
 
-              case 52:
+              case 53:
                 if (!(_this15.editPropMode_detail === 4)) {
-                  _context8.next = 77;
+                  _context8.next = 79;
                   break;
                 }
 
@@ -3875,6 +3909,8 @@ var autokana;
 
                 _formData.append('location', _this15.editForm_prop.location);
 
+                _formData.append('handmade', _this15.editForm_prop.handmade);
+
                 _formData.append('decision', _this15.editForm_prop.decision);
 
                 _formData.append('public_id', _this15.editForm_prop.public_id);
@@ -3889,23 +3925,23 @@ var autokana;
 
                 _formData.append('photo', _this15.editForm_prop.photo);
 
-                _context8.next = 68;
+                _context8.next = 70;
                 return axios.post('/api/props/' + _this15.prop.id, _formData);
 
-              case 68:
+              case 70:
                 _response3 = _context8.sent;
 
                 if (!(_response3.status === 422)) {
-                  _context8.next = 72;
+                  _context8.next = 74;
                   break;
                 }
 
                 _this15.errors.error = _response3.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 72:
+              case 74:
                 if (!(_response3.status !== 204)) {
-                  _context8.next = 75;
+                  _context8.next = 77;
                   break;
                 }
 
@@ -3913,14 +3949,14 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 75:
+              case 77:
                 _this15.editPropMode_detail = 100;
 
                 if (_this15.editPropMode_memo === 0) {
                   _this15.editPropMode_memo = 100;
                 }
 
-              case 77:
+              case 79:
               case "end":
                 return _context8.stop();
             }
@@ -8478,6 +8514,8 @@ var autokana;
         kana: '',
         owner: '',
         location: false,
+        handmade: false,
+        handmade_complete: 1,
         decision: false,
         usage_prop: '',
         usage_guraduation_prop: 0,
@@ -8808,6 +8846,8 @@ var autokana;
       this.registerForm.kana = '';
       this.registerForm.owner = '';
       this.registerForm.location = false;
+      this.registerForm.handmade = false;
+      this.registerForm.handmade_complete = 1;
       this.registerForm.decision = false;
       this.registerForm.usage_prop = '';
       this.registerForm.usage_guraduation_prop = '';
@@ -9012,7 +9052,7 @@ var autokana;
                 pattern_alf = /^([A-Z]\d*)$/; // A~Zのアルファベットかどうか*いる
 
                 names = _toConsumableArray(_this7.registerForm.prop);
-                name_last = names[names.length - 1];
+                name_last = names[names.length - 1]; // kana正規表現
 
                 if (!(_this7.first_uni <= name_last.charCodeAt(0) && name_last.charCodeAt(0) <= _this7.final_uni)) {
                   _context5.next = 14;
@@ -9157,6 +9197,18 @@ var autokana;
                   formData.append('location', 0);
                 }
 
+                if (_this7.registerForm.handmade) {
+                  if (_this7.registerForm.handmade_complete === 1) {
+                    formData.append('handmade', 1); // 手作りしなければいけない、完成
+                  } else if (_this7.registerForm.handmade_complete === 2) {
+                    formData.append('handmade', 2); // 手作りしなければいけない、仕掛中
+                  } else {
+                    formData.append('handmade', 3); // 手作りしなければいけない、未着手
+                  }
+                } else {
+                  formData.append('handmade', 0); // 手作りしなくていい
+                }
+
                 if (_this7.registerForm.decision) {
                   formData.append('decision', 1);
                 } else {
@@ -9178,14 +9230,14 @@ var autokana;
                 }
 
                 formData.append('photo', _this7.registerForm.photo);
-                _context5.next = 62;
+                _context5.next = 63;
                 return axios.post('/api/props', formData);
 
-              case 62:
+              case 63:
                 response = _context5.sent;
 
                 if (!(response.status === 422)) {
-                  _context5.next = 67;
+                  _context5.next = 68;
                   break;
                 }
 
@@ -9198,9 +9250,9 @@ var autokana;
 
                 return _context5.abrupt("return", false);
 
-              case 67:
+              case 68:
                 if (!(response.status !== 201)) {
-                  _context5.next = 71;
+                  _context5.next = 72;
                   break;
                 }
 
@@ -9214,7 +9266,7 @@ var autokana;
 
                 return _context5.abrupt("return", false);
 
-              case 71:
+              case 72:
                 // 諸々データ削除
                 _this7.reset(); // メッセージ登録
 
@@ -9224,7 +9276,7 @@ var autokana;
                   timeout: 6000
                 });
 
-              case 73:
+              case 74:
               case "end":
                 return _context5.stop();
             }
@@ -11244,6 +11296,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }
                   }
                 }, {
+                  header: '作るか',
+                  key: 'handmade',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
                   header: '決定',
                   key: 'decision',
                   width: 12,
@@ -11343,6 +11405,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 worksheet.getCell('H1').fill = fill;
                 worksheet.getCell('I1').font = font;
                 worksheet.getCell('I1').fill = fill;
+                worksheet.getCell('J1').font = font;
+                worksheet.getCell('J1').fill = fill;
 
                 _this14.showProps.forEach(function (prop, index) {
                   var datas = [];
@@ -11356,6 +11420,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   if (prop.location) {
                     datas.push('〇');
+                  } else {
+                    datas.push(null);
+                  }
+
+                  if (prop.handmade === 1) {
+                    datas.push('済');
+                  } else if (prop.handmade === 2) {
+                    datas.push('未');
                   } else {
                     datas.push(null);
                   }
@@ -11409,10 +11481,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }); // ③ファイル生成
 
 
-                _context10.next = 28;
+                _context10.next = 30;
                 return workbook.xlsx.writeBuffer();
 
-              case 28:
+              case 30:
                 uint8Array = _context10.sent;
                 // xlsxの場合
                 blob = new Blob([uint8Array], {
@@ -11426,7 +11498,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 a.click();
                 a.remove();
 
-              case 37:
+              case 39:
               case "end":
                 return _context10.stop();
             }
@@ -12933,7 +13005,13 @@ var render = function render() {
     staticClass: "usage-show"
   }, [_c("i", {
     staticClass: "fas fa-check fa-fw"
-  })]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("これで決定か: "), _vm.prop.decision ? _c("span", {
+  })]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("\n              作るかどうか: \n              "), _vm.prop.handmade === 1 ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("完")]) : _vm.prop.handmade === 2 ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("仕")]) : _vm.prop.handmade === 3 ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("未")]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("これで決定か: "), _vm.prop.decision ? _c("span", {
     staticClass: "usage-show"
   }, [_c("i", {
     staticClass: "fas fa-check fa-fw"
@@ -13166,6 +13244,123 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_handmade_edit"
+    }
+  }, [_vm._v("作る必要がある")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.handmade,
+      expression: "editForm_prop.handmade"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "prop_handmade_edit"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.editForm_prop.handmade) ? _vm._i(_vm.editForm_prop.handmade, null) > -1 : _vm.editForm_prop.handmade
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.editForm_prop.handmade,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.editForm_prop, "handmade", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.editForm_prop, "handmade", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.editForm_prop, "handmade", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.handmade_complete,
+      expression: "editForm_prop.handmade_complete"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_handmade_complete_edit",
+      disabled: !_vm.editForm_prop.handmade,
+      value: "1"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editForm_prop.handmade_complete, "1")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.editForm_prop, "handmade_complete", "1");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_handmade_complete_edit"
+    }
+  }, [_vm._v("完成")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.handmade_complete,
+      expression: "editForm_prop.handmade_complete"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_handmade_progress_edit",
+      disabled: !_vm.editForm_prop.handmade,
+      value: "2"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editForm_prop.handmade_complete, "2")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.editForm_prop, "handmade_complete", "2");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_handmade_progress_edit"
+    }
+  }, [_vm._v("仕掛中")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.handmade_complete,
+      expression: "editForm_prop.handmade_complete"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_handmade_unfinished_edit",
+      disabled: !_vm.editForm_prop.handmade,
+      value: "3"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editForm_prop.handmade_complete, "3")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.editForm_prop, "handmade_complete", "3");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_handmade_unfinished_edit"
+    }
+  }, [_vm._v("未着手")])])]), _vm._v(" "), _c("div", {
     staticClass: "checkbox-area--together"
   }, [_c("label", {
     staticClass: "form__check__label",
@@ -16287,6 +16482,123 @@ var render = function render() {
     staticClass: "checkbox-area--together"
   }, [_c("label", {
     attrs: {
+      "for": "prop_handmade"
+    }
+  }, [_vm._v("作る必要がある")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.handmade,
+      expression: "registerForm.handmade"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "prop_handmade"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.registerForm.handmade) ? _vm._i(_vm.registerForm.handmade, null) > -1 : _vm.registerForm.handmade
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.registerForm.handmade,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.registerForm, "handmade", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.registerForm, "handmade", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.registerForm, "handmade", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.handmade_complete,
+      expression: "registerForm.handmade_complete"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_handmade_complete",
+      disabled: !_vm.registerForm.handmade,
+      value: "1"
+    },
+    domProps: {
+      checked: _vm._q(_vm.registerForm.handmade_complete, "1")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.registerForm, "handmade_complete", "1");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_handmade_complete"
+    }
+  }, [_vm._v("完成")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.handmade_complete,
+      expression: "registerForm.handmade_complete"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_handmade_progress",
+      disabled: !_vm.registerForm.handmade,
+      value: "2"
+    },
+    domProps: {
+      checked: _vm._q(_vm.registerForm.handmade_complete, "2")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.registerForm, "handmade_complete", "2");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_handmade_progress"
+    }
+  }, [_vm._v("仕掛中")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.handmade_complete,
+      expression: "registerForm.handmade_complete"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_handmade_unfinished",
+      disabled: !_vm.registerForm.handmade,
+      value: "3"
+    },
+    domProps: {
+      checked: _vm._q(_vm.registerForm.handmade_complete, "3")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.registerForm, "handmade_complete", "3");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_handmade_unfinished"
+    }
+  }, [_vm._v("未着手")])])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
       "for": "prop_decision"
     }
   }, [_vm._v("これで決定")]), _vm._v(" "), _c("input", {
@@ -17564,7 +17876,7 @@ var render = function render() {
     }
   })]) : _vm._e(), _vm._v(" "), _c("th", {
     staticClass: "th-non"
-  }), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("ピッコロ")]), _vm._v(" "), _c("th", [_vm._v("決定")]), _vm._v(" "), _c("th", [_vm._v("中間")]), _vm._v(" "), _c("th", [_vm._v("卒業")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", {
+  }), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("ピッコロ")]), _vm._v(" "), _c("th", [_vm._v("作るか")]), _vm._v(" "), _c("th", [_vm._v("決定")]), _vm._v(" "), _c("th", [_vm._v("中間")]), _vm._v(" "), _c("th", [_vm._v("卒業")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", {
     staticClass: "th-memo"
   }, [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]), _vm._v(" "), _c("tbody", _vm._l(_vm.showProps, function (prop, index) {
     return _c("tr", [_vm.choice_flag ? _c("td", [_c("input", {
@@ -17615,7 +17927,7 @@ var render = function render() {
       }
     }, [_vm._v(_vm._s(prop.name))]), _vm._v(" "), prop.owner ? _c("td", [_vm._v(_vm._s(prop.owner.name))]) : _c("td"), _vm._v(" "), prop.location ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
-    })]) : _c("td"), _vm._v(" "), prop.decision ? _c("td", [_c("i", {
+    })]) : _c("td"), _vm._v(" "), prop.handmade === 1 ? _c("td", [_vm._v("完")]) : prop.handmade === 2 ? _c("td", [_vm._v("仕")]) : prop.handmade === 3 ? _c("td", [_vm._v("未")]) : _c("td"), _vm._v(" "), prop.decision ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td"), _vm._v(" "), prop.usage ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
@@ -17698,7 +18010,7 @@ var render = function render() {
       }
     }, [_vm._v(_vm._s(prop.name))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("持ち主")]), _vm._v(" "), prop.owner ? _c("td", [_vm._v(_vm._s(prop.owner.name))]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("ピッコロにあるか")]), _vm._v(" "), prop.location ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
-    })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("決定か")]), _vm._v(" "), prop.decision ? _c("td", [_c("i", {
+    })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("作るか")]), _vm._v(" "), prop.handmade === 1 ? _c("td", [_vm._v("完")]) : prop.handmade === 2 ? _c("td", [_vm._v("仕")]) : prop.handmade === 3 ? _c("td", [_vm._v("未")]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("決定か")]), _vm._v(" "), prop.decision ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("中間")]), _vm._v(" "), prop.usage ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
@@ -17788,6 +18100,14 @@ var render = function render() {
     }, [_c("i", {
       staticClass: "fas fa-check fa-fw"
     })]) : _vm._e()]), _vm._v(" "), _c("div", [_c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("作るかどうか:")]), _vm._v(" "), prop.handmade === 1 ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("済")]) : prop.handmade === 2 ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("仕")]) : prop.handmade === 3 ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("未")]) : _vm._e()]), _vm._v(" "), _c("div", [_c("span", {
       staticClass: "usage-show"
     }, [_vm._v("これで決定か:")]), _vm._v(" "), prop.decision ? _c("span", {
       staticClass: "usage-show"

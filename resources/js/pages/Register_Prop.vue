@@ -45,6 +45,24 @@
           <input type="checkbox" id="prop_location" v-model="registerForm.location"></input>    
         </div>
 
+        <!-- 作る必要があるか -->
+        <div class="checkbox-area--together">
+          <label for="prop_handmade">作る必要がある</label>
+          <input type="checkbox" id="prop_handmade" v-model="registerForm.handmade"></input>
+
+          <div class="checkbox-area--together">
+            <!-- 作る必要があるなら -->
+            <input type="radio" id="prop_handmade_complete" :disabled="!registerForm.handmade" value=1 v-model="registerForm.handmade_complete"></input>
+            <label for="prop_handmade_complete">完成</label>
+
+            <input type="radio" id="prop_handmade_progress" :disabled="!registerForm.handmade" value=2 v-model="registerForm.handmade_complete"></input>
+            <label for="prop_handmade_progress">仕掛中</label>
+
+            <input type="radio" id="prop_handmade_unfinished" :disabled="!registerForm.handmade" value=3 v-model="registerForm.handmade_complete"></input>
+            <label for="prop_handmade_unfinished">未着手</label>
+          </div>          
+        </div>
+
         <!-- これで決定か -->
         <div class="checkbox-area--together">
           <label for="prop_decision">これで決定</label>
@@ -152,6 +170,8 @@ export default {
         kana: '',
         owner: '',
         location: false,
+        handmade: false,
+        handmade_complete: 1,
         decision: false,
         usage_prop: '',
         usage_guraduation_prop: 0,
@@ -354,6 +374,8 @@ export default {
       this.registerForm.kana = '';
       this.registerForm.owner = '';
       this.registerForm.location = false;
+      this.registerForm.handmade = false;
+      this.registerForm.handmade_complete = 1;
       this.registerForm.decision = false;
       this.registerForm.usage_prop = '';
       this.registerForm.usage_guraduation_prop = '';
@@ -476,6 +498,7 @@ export default {
       let names = [...this.registerForm.prop];
       let name_last = names[names.length-1];
 
+      // kana正規表現
       if(this.first_uni <= name_last.charCodeAt(0) && name_last.charCodeAt(0) <= this.final_uni){
         // 囲み文字の処理
         const name_last_point_diff = name_last.charCodeAt(0)-this.first_uni + 1;
@@ -552,6 +575,17 @@ export default {
         formData.append('location', 1);
       }else{
         formData.append('location', 0);
+      }
+      if(this.registerForm.handmade){
+        if(this.registerForm.handmade_complete === 1){
+          formData.append('handmade', 1); // 手作りしなければいけない、完成
+        }else if(this.registerForm.handmade_complete === 2){
+          formData.append('handmade', 2); // 手作りしなければいけない、仕掛中
+        }else{
+          formData.append('handmade', 3); // 手作りしなければいけない、未着手
+        }
+      }else{
+        formData.append('handmade', 0); // 手作りしなくていい
       }
       if(this.registerForm.decision){
         formData.append('decision', 1);

@@ -59,6 +59,7 @@
               <th>小道具名</th>
               <th>持ち主</th>
               <th>ピッコロ</th>
+              <th>作るか</th>
               <th>決定</th>
               <th>中間</th>
               <th>卒業</th>
@@ -82,6 +83,11 @@
               <td v-else></td>
               <!-- ピッコロに持ってきたか -->
               <td v-if="prop.location"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+              <!-- 作るかどうか -->
+              <td v-if="prop.handmade === 1">完</td>
+              <td v-else-if="prop.handmade === 2">仕</td>
+              <td v-else-if="prop.handmade === 3">未</td>
               <td v-else></td>
               <!-- これで決定か -->
               <td v-if="prop.decision"><i class="fas fa-check fa-fw"></i></td>
@@ -147,6 +153,14 @@
                 <!-- ピッコロに持ってきたか -->
                 <th>ピッコロにあるか</th>
                 <td v-if="prop.location"><i class="fas fa-check fa-fw"></i></td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 作るかどうか -->
+                <th>作るか</th>
+                <td v-if="prop.handmade === 1">完</td>
+                <td v-else-if="prop.handmade === 2">仕</td>
+                <td v-else-if="prop.handmade === 3">未</td>
                 <td v-else></td>
               </tr>
               <tr>
@@ -235,6 +249,14 @@
               <div>
                 <span class="usage-show">ピッコロにあるか:</span>
                 <span v-if="prop.location" class="usage-show"><i class="fas fa-check fa-fw"></i></span>
+              </div>
+
+              <!-- 作るかどうか -->
+              <div>
+                <span class="usage-show">作るかどうか:</span>
+                <span v-if="prop.handmade === 1" class="usage-show">済</span>
+                <span v-else-if="prop.handmade === 2" class="usage-show">仕</span>
+                <span v-else-if="prop.handmade === 3" class="usage-show">未</span>
               </div>
 
               <!-- これで決定か -->
@@ -649,6 +671,7 @@
           { header: '小道具名', key: 'name', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '持ち主', key: 'owner', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: 'ピッコロ', key: 'location', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '作るか', key: 'handmade', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '決定', key: 'decision', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '中間発表', key: 'usage', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '卒業公演', key: 'usage_guraduation', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
@@ -681,6 +704,8 @@
         worksheet.getCell('H1').fill = fill;
         worksheet.getCell('I1').font = font;
         worksheet.getCell('I1').fill = fill;
+        worksheet.getCell('J1').font = font;
+        worksheet.getCell('J1').fill = fill;
 
         this.showProps.forEach((prop, index) => {
           let datas = [];
@@ -694,6 +719,14 @@
 
           if(prop.location){
             datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(prop.handmade === 1){
+            datas.push('済');
+          }else if(prop.handmade === 2){
+            datas.push('未');
           }else{
             datas.push(null);
           }
