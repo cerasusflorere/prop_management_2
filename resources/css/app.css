@@ -643,3 +643,9 @@ figure {
 .edit-area li {
   list-style-type: none;
 }
+
+/* 選択編集 */
+.checkbox-area--column {
+  display: flex;
+  flex-direction: column;
+}

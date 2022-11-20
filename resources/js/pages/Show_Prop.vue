@@ -527,12 +527,18 @@
           this.showContent_customEdit = false;
           this.$emit('close');
           const yes = edit_custom_flag.indexOf('yes');
+          const no = edit_custom_flag.indexOf('no');
+          const handmade_custom = edit_custom_flag.split('_');
           if(yes !== -1){
             this.yes_no = 1;
             this.edit_custom =  edit_custom_flag.replace('_yes', '');
-          }else{
+          }else if(no !== -1){
             this.yes_no = 0;
             this.edit_custom = edit_custom_flag.replace('_no', '');
+          }else{
+            this.yes_no = 1;
+            console.log(handmade_custom[1]);
+            this.edit_custom = handmade_custom[1];
           }
           this.openModal_confirmEdit();
         }        
@@ -569,10 +575,21 @@
           edit_custom_show = '上手で使用して';
         }else if(this.edit_custom === 'usage_right'){
           edit_custom_show = '下手で使用して';
+        }else if(this.edit_custom === 'handmade'){
+          edit_custom_show = '作';
+        }else{
+          edit_custom_show = '作ら';
         }
         
         if(this.yes_no === 1){
           yes_no_show = 'る';
+          if(this.edit_custom === 'complete'){
+            yes_no_show = yes_no_show + ': 完成';
+          }else if(this.edit_custom === 'progress'){
+            yes_no_show = yes_no_show + ': 仕掛中';
+          }else if(this.edit_custom === 'unfinished'){
+            yes_no_show = yes_no_show + ': 未着手';
+          }
         }else{
           yes_no_show = 'ない';
         }
@@ -594,6 +611,7 @@
       // 選択編集(実行)
       async EditProps() {
         let ids = [];
+        let method = this.edit_custom;
         let yes_no;
         this.showProps.forEach((prop) => {
           if(this.choice_ids[prop.id]){
@@ -602,11 +620,21 @@
         });
         if(this.yes_no === 1){
           yes_no = 1;
+          if(this.edit_custom === 'complete'){
+            yes_no = 1;
+            method = 'handmade';
+          }else if(this.edit_custom === 'progress'){
+            yes_no = 2;
+            method = 'handmade';
+          }else if(this.edit_custom === 'unfinished'){
+            yes_no = 3;
+            method = 'handmade';
+          }
         }else{
           yes_no = null;
         }
         const response = await axios.post('/api/props_many/' + ids, {
-          method: this.edit_custom,
+          method: method,
           yes_no: yes_no
         });
         await this.fetchProps();

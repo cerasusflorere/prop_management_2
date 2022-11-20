@@ -7851,6 +7851,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           owner: 0,
           location: false,
           location_no: false,
+          handmade: false,
+          handmade_no: false,
+          handmade_complete: true,
+          handmade_progress: true,
+          handmade_unfinished: true,
           decision: false,
           decision_no: false,
           usage: false,
@@ -7961,6 +7966,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var name_scope = '!=' + 100;
       var owner_id = '!=' + 0;
       var location = '!=' + 100;
+      var handmade = '(a.handmade !=' + 100;
       var decision = '!=' + 100;
       var usage = '!=' + 100;
       var usage_guraduation = '!=' + 100;
@@ -7987,6 +7993,35 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         location = '===' + 0;
       }
 
+      if (this.search_prop.prop_search.handmade && !this.search_prop.prop_search.handmade_no) {
+        handmade = '(a.handmade !==' + 0;
+
+        if (this.search_prop.prop_search.handmade_complete) {
+          handmade = '(a.handmade ===' + 1;
+
+          if (this.search_prop.prop_search.handmade_progress) {
+            handmade = handmade + '|| a.handmade === ' + 2;
+          }
+
+          if (this.search_prop.prop_search.handmade_unfinished) {
+            handmade = handmade + '|| a.handmade === ' + 3;
+          }
+        } else if (this.search_prop.prop_search.handmade_progress) {
+          handmade = '(a.handmade ===' + 2;
+
+          if (this.search_prop.prop_search.handmade_unfinished) {
+            handmade = handmade + '|| a.handmade === ' + 3;
+          }
+        } else {
+          handmade = '(a.handmade ===' + 3;
+        }
+      } else if (!this.search_prop.prop_search.handmade && this.search_prop.prop_search.handmade_no) {
+        handmade = '(a.handmade ===' + 0;
+      }
+
+      handmade = handmade + ')';
+      console.log(handmade);
+
       if (this.search_prop.prop_search.decision && !this.search_prop.prop_search.decision_no) {
         decision = '===' + 1;
       } else if (!this.search_prop.prop_search.decision && this.search_prop.prop_search.decision_no) {
@@ -8009,7 +8044,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         usage_right = '===' + 1;
       }
 
-      var refine = 'a.owner_id' + owner_id + '&& a.location' + location + '&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
+      var refine = 'a.owner_id' + owner_id + '&& a.location' + location + '&&' + handmade + '&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
+      console.log(refine);
       this.$emit('close', this.search_prop.prop_sort, this.search_prop.prop_search.name, refine);
     },
     // リセット
@@ -8020,6 +8056,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.search_prop.prop_search.owner = 0;
       this.search_prop.prop_search.location = false;
       this.search_prop.prop_search.location_no = false;
+      this.search_prop.prop_search.handmade = false;
+      this.search_prop.prop_search.handmade_no = false;
+      this.search_prop.prop_search.handmade_complete = false;
+      this.search_prop.prop_search.handmade_progress = false;
+      this.search_prop.prop_search.handmade_unfinished = false;
       this.search_prop.prop_search.decision = false;
       this.search_prop.prop_search.decision_no = false;
       this.search_prop.prop_search.usage = false;
@@ -11006,7 +11047,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this7 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        var yes;
+        var yes, no, handmade_custom;
         return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
@@ -11017,13 +11058,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this7.$emit('close');
 
                   yes = edit_custom_flag.indexOf('yes');
+                  no = edit_custom_flag.indexOf('no');
+                  handmade_custom = edit_custom_flag.split('_');
 
                   if (yes !== -1) {
                     _this7.yes_no = 1;
                     _this7.edit_custom = edit_custom_flag.replace('_yes', '');
-                  } else {
+                  } else if (no !== -1) {
                     _this7.yes_no = 0;
                     _this7.edit_custom = edit_custom_flag.replace('_no', '');
+                  } else {
+                    _this7.yes_no = 1;
+                    console.log(handmade_custom[1]);
+                    _this7.edit_custom = handmade_custom[1];
                   }
 
                   _this7.openModal_confirmEdit();
@@ -11072,10 +11119,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         edit_custom_show = '上手で使用して';
       } else if (this.edit_custom === 'usage_right') {
         edit_custom_show = '下手で使用して';
+      } else if (this.edit_custom === 'handmade') {
+        edit_custom_show = '作';
+      } else {
+        edit_custom_show = '作ら';
       }
 
       if (this.yes_no === 1) {
         yes_no_show = 'る';
+
+        if (this.edit_custom === 'complete') {
+          yes_no_show = yes_no_show + ': 完成';
+        } else if (this.edit_custom === 'progress') {
+          yes_no_show = yes_no_show + ': 仕掛中';
+        } else if (this.edit_custom === 'unfinished') {
+          yes_no_show = yes_no_show + ': 未着手';
+        }
       } else {
         yes_no_show = 'ない';
       }
@@ -11116,12 +11175,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this10 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
-        var ids, yes_no, response;
+        var ids, method, yes_no, response;
         return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
                 ids = [];
+                method = _this10.edit_custom;
 
                 _this10.showProps.forEach(function (prop) {
                   if (_this10.choice_ids[prop.id]) {
@@ -11131,26 +11191,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 if (_this10.yes_no === 1) {
                   yes_no = 1;
+
+                  if (_this10.edit_custom === 'complete') {
+                    yes_no = 1;
+                    method = 'handmade';
+                  } else if (_this10.edit_custom === 'progress') {
+                    yes_no = 2;
+                    method = 'handmade';
+                  } else if (_this10.edit_custom === 'unfinished') {
+                    yes_no = 3;
+                    method = 'handmade';
+                  }
                 } else {
                   yes_no = null;
                 }
 
-                _context7.next = 5;
+                _context7.next = 6;
                 return axios.post('/api/props_many/' + ids, {
-                  method: _this10.edit_custom,
+                  method: method,
                   yes_no: yes_no
                 });
 
-              case 5:
+              case 6:
                 response = _context7.sent;
-                _context7.next = 8;
+                _context7.next = 9;
                 return _this10.fetchProps();
 
-              case 8:
+              case 9:
                 // 選択削除閉じる
                 _this10.showCheckBox();
 
-              case 9:
+              case 10:
               case "end":
                 return _context7.stop();
             }
@@ -12587,6 +12658,114 @@ var render = function render() {
       "for": "prop_location_no"
     }
   }, [_vm._v("持ってきてない")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_handmade"
+    }
+  }, [_vm._v("作るかどうか")]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--column"
+  }, [_c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_handmade_comolete",
+      value: "handmade_comolete"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "handmade_comolete")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "handmade_comolete";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_handmade_comolete"
+    }
+  }, [_vm._v("完成")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_handmade_progress",
+      value: "handmade_progress"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "handmade_progress")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "handmade_progress";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_handmade_progress"
+    }
+  }, [_vm._v("仕掛中")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_handmade_unfinished",
+      value: "handmade_unfinished"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "handmade_unfinished")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "handmade_unfinished";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_handmade_unfinished"
+    }
+  }, [_vm._v("未着手")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomProp,
+      expression: "editCustomProp"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_handmade_no",
+      value: "handmade_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomProp, "handmade_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomProp = "handmade_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_handmade_no"
+    }
+  }, [_vm._v("作らない")])])])]), _vm._v(" "), _c("div", {
     staticClass: "checkbox-area--together"
   }, [_c("label", {
     attrs: {
@@ -15350,6 +15529,223 @@ var render = function render() {
       "for": "search_prop_location_no"
     }
   }, [_vm._v("持ってきてない")])])]), _vm._v(" "), _c("div", {
+    staticClass: "search-search--select-area checkbox-area--together"
+  }, [_c("span", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_prop.prop_search.handmade,
+      expression: "search_prop.prop_search.handmade"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_prop_handmade"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_prop.prop_search.handmade) ? _vm._i(_vm.search_prop.prop_search.handmade, null) > -1 : _vm.search_prop.prop_search.handmade
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_prop.prop_search.handmade,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_prop.prop_search, "handmade", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_prop.prop_search, "handmade", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_prop.prop_search, "handmade", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_prop_handmade"
+    }
+  }, [_vm._v("作る")])]), _vm._v(" "), _c("span", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_prop.prop_search.handmade_no,
+      expression: "search_prop.prop_search.handmade_no"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_prop_handmade_no"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_prop.prop_search.handmade_no) ? _vm._i(_vm.search_prop.prop_search.handmade_no, null) > -1 : _vm.search_prop.prop_search.handmade_no
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_prop.prop_search.handmade_no,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_prop.prop_search, "handmade_no", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_prop.prop_search, "handmade_no", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_prop.prop_search, "handmade_no", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_prop_handmade_no"
+    }
+  }, [_vm._v("作らない")])])]), _vm._v(" "), _c("div", {
+    staticClass: "search-search--select-area checkbox-area--together"
+  }, [_c("span", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_prop.prop_search.handmade_complete,
+      expression: "search_prop.prop_search.handmade_complete"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_prop_handmade_complete",
+      disabled: !_vm.search_prop.prop_search.handmade
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_prop.prop_search.handmade_complete) ? _vm._i(_vm.search_prop.prop_search.handmade_complete, null) > -1 : _vm.search_prop.prop_search.handmade_complete
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_prop.prop_search.handmade_complete,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_prop.prop_search, "handmade_complete", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_prop.prop_search, "handmade_complete", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_prop.prop_search, "handmade_complete", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_prop_handmade_complete"
+    }
+  }, [_vm._v("完成")])]), _vm._v(" "), _c("span", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_prop.prop_search.handmade_progress,
+      expression: "search_prop.prop_search.handmade_progress"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_prop_handmade_proguress",
+      disabled: !_vm.search_prop.prop_search.handmade
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_prop.prop_search.handmade_progress) ? _vm._i(_vm.search_prop.prop_search.handmade_progress, null) > -1 : _vm.search_prop.prop_search.handmade_progress
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_prop.prop_search.handmade_progress,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_prop.prop_search, "handmade_progress", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_prop.prop_search, "handmade_progress", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_prop.prop_search, "handmade_progress", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_prop_handmade_proguress"
+    }
+  }, [_vm._v("仕掛中")])]), _vm._v(" "), _c("span", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_prop.prop_search.handmade_unfinished,
+      expression: "search_prop.prop_search.handmade_unfinished"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_prop_handmade_unfinished",
+      disabled: !_vm.search_prop.prop_search.handmade
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_prop.prop_search.handmade_unfinished) ? _vm._i(_vm.search_prop.prop_search.handmade_unfinished, null) > -1 : _vm.search_prop.prop_search.handmade_unfinished
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_prop.prop_search.handmade_unfinished,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_prop.prop_search, "handmade_unfinished", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_prop.prop_search, "handmade_unfinished", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_prop.prop_search, "handmade_unfinished", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_prop_handmade_unfinished"
+    }
+  }, [_vm._v("未着手")])])]), _vm._v(" "), _c("div", {
     staticClass: "search-search--select-area checkbox-area--together"
   }, [_c("label", [_vm._v("決定")]), _vm._v(" "), _c("span", {
     staticClass: "checkbox-area--together"
@@ -20770,7 +21166,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  margin: 0;\n  font-size: 2em;\n}\n\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\nlabel {\n  display: block;\n  margin-bottom: 0.5rem;\n}\ninput[type=checkbox], input[type=radio] {\n  display: block;\n  margin-bottom: 0.7rem;\n  margin-left: 0.7rem;\n}\n/* form */\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n.button-area--together {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n}\n\n.button-area--showhow {\n  margin-bottom: 0.5em;\n}\n.button-area--download {\n  margin-top: 1em;\n  margin-bottom: 0.5em;\n}\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  margin: 0.1em;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.list-button:hover {\n  cursor: pointer;\n}\n.checkbox-area--together {\n  display: flex;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n/* 写真 */\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n  cursor: pointer;\n}\n.navbar__brand:hover {\n  color: #c0c0c0;\n}\n.countdown_and_hamburger {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  flex-direction: row;\n}\n/* カウントダウン */\n.countdown__box {\n  margin-right: 4.8em;\n  width: 10em;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-end;\n}\n.countdown__message_area {\n  padding-bottom: 0.2em;\n}\n.countdown_number {\n  font-size: 1.8em;\n  font-weight: 500;\n}\n.countdown_number_red {\n  color: red;\n}\n.countdown_day {\n  margin-right: 0.5em;\n}\n.countdown_message {\n  font-size: 1.8em;\n  font-weight: 700;\n  margin-right: 0.5em;\n  background-image: linear-gradient(\n\t\t70deg,\n    #169b62 45%, \n    #FFF 50%,\n    #ff883e 55%\n\t);\n\tbackground-size: 500% 100%;\n\tbackground-clip: text;\n\t-webkit-background-clip: text;\n\tcolor: transparent;\n\t-webkit-animation: shine 2s infinite;\n\t        animation: shine 2s infinite;\n}\n@-webkit-keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n@keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n.countdown__image_area {\n  max-width: 25%;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.19em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  min-width: 9.5em;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n.menu-content ul li a:hover {\n  color: #169b62\n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n\n\n/* 小道具投稿 */\n.form__item--furigana {\n  width: 50%;\n  padding-top: 0.3em;\n  padding-bottom: 0.3em;\n}\n.edit-area .form__item--furigana {\n  width: 80%;\n}\n\n/* 検索ボタン（選択削除） */\n.button-area--together-left {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-start;\n}\n.button--choice {\n  display: flex;\n  align-items: flex-end;\n}\n\n/* 表 */ /* シーンも小道具も同一 */\n.phone {\n  text-align: center;\n}\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.phone div table {\n  display: inline-block;\n  width: auto;\n}\n.phone th {\n  width: 20%;\n}\n.phone td {\n  width: 70%;\n}\n\n.th-non { \n  color: #222;\n  background: white;\n}\ninput.checkbox-delete {\n  /* 優先順位あげてる */\n  margin: 0;\n  margin-left: 0.3rem;\n}\n.td-color {\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.PC .th-memo {\n  width: 10em;\n}\n\n\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #4fac7b;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n  cursor: pointer;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  min-width: 19em;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 100%;\n}\n.detail-box>div {\n  width:50%;\n  height: 100%;\n  padding: 0.5em;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n\n/* Confirm＿Dialog */\n/* 横並びボタン */\n.button--confirm {\n  width: 50%;\n  padding: 0.5em;\n}\n.button--danger {\n  background: #e61919;\n  border-color: #e61919;\n}\n.dialog-message {\n  display: flex;\n  white-space: pre-wrap;\n  justify-content: center;\n}\n\n\n/* Show_Prop 写真リスト */\n.usage-show {\n  margin-right: 0.2em;\n}\n\n/* 小道具検索 */\n.cotent-search {\n  min-width: 30em;\n}\n.button-search--area {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n}\n.button-search--close button {\n  border: none;\n  background: none;\n  font-size: 1.2em;\n  cursor: pointer;\n}\n.button--reset {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n  font-size: 0.8rem;\n}\n.form-search {\n  padding: 0.5em 1em;\n}\n.search-sort-area {\n  margin-bottom: 0.8em;\n}\n.search-span {\n  font-weight: bold;\n}\n.search--select-area--box {\n  margin-bottom: 0.4em;\n}\n.search--input {\n  margin-bottom: 0.5em;\n}\n.search--label {\n  font-size: 0.8em;\n  margin-top: 0.5em;\n  margin-bottom: 0.2em;\n} \n.search--select-area {\n  margin-bottom: 0.4em;\n}\n.serach--select-area-colors {\n  display: flex;\n  justify-content: space-between;\n}\n.serach--select-area-colors div {\n  width: 48%;\n}\n.search--select-area--performance {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-right: 1.5em;\n}\n\n/* Detail_Prop 小道具詳細 */\n.area--detail-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n}\n.button--area--detail-box {\n  padding-right: 0.5em;\n}\n.detail-box--img {\n  display: flex;\n  justify-content: center;\n  max-width: 100%;\n  max-height: 100%;\n}\n.detail-box ul, .detail-box ol {\n  margin: 0.2em;\n}\n.detail-box ul ul {\n  margin: 0;\n}\n.edit-area li {\n  list-style-type: none;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  margin: 0;\n  font-size: 2em;\n}\n\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\nlabel {\n  display: block;\n  margin-bottom: 0.5rem;\n}\ninput[type=checkbox], input[type=radio] {\n  display: block;\n  margin-bottom: 0.7rem;\n  margin-left: 0.7rem;\n}\n/* form */\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n.button-area--together {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n}\n\n.button-area--showhow {\n  margin-bottom: 0.5em;\n}\n.button-area--download {\n  margin-top: 1em;\n  margin-bottom: 0.5em;\n}\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  margin: 0.1em;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.list-button:hover {\n  cursor: pointer;\n}\n.checkbox-area--together {\n  display: flex;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n/* 写真 */\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n  cursor: pointer;\n}\n.navbar__brand:hover {\n  color: #c0c0c0;\n}\n.countdown_and_hamburger {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  flex-direction: row;\n}\n/* カウントダウン */\n.countdown__box {\n  margin-right: 4.8em;\n  width: 10em;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-end;\n}\n.countdown__message_area {\n  padding-bottom: 0.2em;\n}\n.countdown_number {\n  font-size: 1.8em;\n  font-weight: 500;\n}\n.countdown_number_red {\n  color: red;\n}\n.countdown_day {\n  margin-right: 0.5em;\n}\n.countdown_message {\n  font-size: 1.8em;\n  font-weight: 700;\n  margin-right: 0.5em;\n  background-image: linear-gradient(\n\t\t70deg,\n    #169b62 45%, \n    #FFF 50%,\n    #ff883e 55%\n\t);\n\tbackground-size: 500% 100%;\n\tbackground-clip: text;\n\t-webkit-background-clip: text;\n\tcolor: transparent;\n\t-webkit-animation: shine 2s infinite;\n\t        animation: shine 2s infinite;\n}\n@-webkit-keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n@keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n.countdown__image_area {\n  max-width: 25%;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.19em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  min-width: 9.5em;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n.menu-content ul li a:hover {\n  color: #169b62\n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n\n\n/* 小道具投稿 */\n.form__item--furigana {\n  width: 50%;\n  padding-top: 0.3em;\n  padding-bottom: 0.3em;\n}\n.edit-area .form__item--furigana {\n  width: 80%;\n}\n\n/* 検索ボタン（選択削除） */\n.button-area--together-left {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-start;\n}\n.button--choice {\n  display: flex;\n  align-items: flex-end;\n}\n\n/* 表 */ /* シーンも小道具も同一 */\n.phone {\n  text-align: center;\n}\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.phone div table {\n  display: inline-block;\n  width: auto;\n}\n.phone th {\n  width: 20%;\n}\n.phone td {\n  width: 70%;\n}\n\n.th-non { \n  color: #222;\n  background: white;\n}\ninput.checkbox-delete {\n  /* 優先順位あげてる */\n  margin: 0;\n  margin-left: 0.3rem;\n}\n.td-color {\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.PC .th-memo {\n  width: 10em;\n}\n\n\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #4fac7b;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n  cursor: pointer;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  min-width: 19em;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 100%;\n}\n.detail-box>div {\n  width:50%;\n  height: 100%;\n  padding: 0.5em;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n\n/* Confirm＿Dialog */\n/* 横並びボタン */\n.button--confirm {\n  width: 50%;\n  padding: 0.5em;\n}\n.button--danger {\n  background: #e61919;\n  border-color: #e61919;\n}\n.dialog-message {\n  display: flex;\n  white-space: pre-wrap;\n  justify-content: center;\n}\n\n\n/* Show_Prop 写真リスト */\n.usage-show {\n  margin-right: 0.2em;\n}\n\n/* 小道具検索 */\n.cotent-search {\n  min-width: 30em;\n}\n.button-search--area {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n}\n.button-search--close button {\n  border: none;\n  background: none;\n  font-size: 1.2em;\n  cursor: pointer;\n}\n.button--reset {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n  font-size: 0.8rem;\n}\n.form-search {\n  padding: 0.5em 1em;\n}\n.search-sort-area {\n  margin-bottom: 0.8em;\n}\n.search-span {\n  font-weight: bold;\n}\n.search--select-area--box {\n  margin-bottom: 0.4em;\n}\n.search--input {\n  margin-bottom: 0.5em;\n}\n.search--label {\n  font-size: 0.8em;\n  margin-top: 0.5em;\n  margin-bottom: 0.2em;\n} \n.search--select-area {\n  margin-bottom: 0.4em;\n}\n.serach--select-area-colors {\n  display: flex;\n  justify-content: space-between;\n}\n.serach--select-area-colors div {\n  width: 48%;\n}\n.search--select-area--performance {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-right: 1.5em;\n}\n\n/* Detail_Prop 小道具詳細 */\n.area--detail-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n}\n.button--area--detail-box {\n  padding-right: 0.5em;\n}\n.detail-box--img {\n  display: flex;\n  justify-content: center;\n  max-width: 100%;\n  max-height: 100%;\n}\n.detail-box ul, .detail-box ol {\n  margin: 0.2em;\n}\n.detail-box ul ul {\n  margin: 0;\n}\n.edit-area li {\n  list-style-type: none;\n}\n\n/* 選択編集 */\n.checkbox-area--column {\n  display: flex;\n  flex-direction: column;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

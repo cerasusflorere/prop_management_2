@@ -73,6 +73,32 @@
                 </span>
               </div>
 
+              <!-- 作るかどうか -->
+              <div class="search-search--select-area checkbox-area--together">
+                <span class="checkbox-area--together">
+                  <input type="checkbox" id="search_prop_handmade" class="form__check__input" v-model="search_prop.prop_search.handmade">
+                  <label for="search_prop_handmade" class="form__check__label">作る</label>
+                </span>
+                <span class="checkbox-area--together">
+                  <input type="checkbox" id="search_prop_handmade_no" class="form__check__input" v-model="search_prop.prop_search.handmade_no">
+                  <label for="search_prop_handmade_no" class="form__check__label">作らない</label>
+                </span>
+              </div>
+              <div class="search-search--select-area checkbox-area--together">
+                <span class="checkbox-area--together">
+                  <input type="checkbox" id="search_prop_handmade_complete" class="form__check__input" :disabled="!search_prop.prop_search.handmade" v-model="search_prop.prop_search.handmade_complete">
+                  <label for="search_prop_handmade_complete" class="form__check__label">完成</label>
+                </span>
+                <span class="checkbox-area--together">
+                  <input type="checkbox" id="search_prop_handmade_proguress" class="form__check__input" :disabled="!search_prop.prop_search.handmade" v-model="search_prop.prop_search.handmade_progress">
+                  <label for="search_prop_handmade_proguress" class="form__check__label">仕掛中</label>
+                </span>
+                <span class="checkbox-area--together">
+                  <input type="checkbox" id="search_prop_handmade_unfinished" class="form__check__input" :disabled="!search_prop.prop_search.handmade" v-model="search_prop.prop_search.handmade_unfinished">
+                  <label for="search_prop_handmade_unfinished" class="form__check__label">未着手</label>
+                </span>
+              </div>
+
               <!-- これで決定か -->
               <div class="search-search--select-area checkbox-area--together">
                 <label>決定</label>
@@ -151,6 +177,11 @@
               owner: 0,
               location: false,
               location_no: false,
+              handmade: false,
+              handmade_no: false,
+              handmade_complete: true,
+              handmade_progress: true,
+              handmade_unfinished: true,
               decision: false,
               decision_no: false,
               usage: false,
@@ -219,6 +250,7 @@
           let name_scope = '!=' + 100;
           let owner_id = '!=' + 0;
           let location = '!=' + 100;
+          let handmade = '(a.handmade !=' + 100;
           let decision = '!=' + 100;
           let usage = '!=' + 100;
           let usage_guraduation = '!=' + 100;
@@ -244,6 +276,30 @@
             location = '===' + 0;
           }
 
+          if(this.search_prop.prop_search.handmade && !this.search_prop.prop_search.handmade_no){
+            handmade = '(a.handmade !==' + 0;
+            if(this.search_prop.prop_search.handmade_complete) {
+              handmade = '(a.handmade ===' + 1;
+              if(this.search_prop.prop_search.handmade_progress){
+                handmade = handmade + '|| a.handmade === ' + 2;
+              }
+              if(this.search_prop.prop_search.handmade_unfinished) {
+                handmade = handmade + '|| a.handmade === ' + 3;
+              }
+            }else if(this.search_prop.prop_search.handmade_progress){
+              handmade = '(a.handmade ===' + 2;
+              if(this.search_prop.prop_search.handmade_unfinished) {
+                handmade = handmade + '|| a.handmade === ' + 3;
+              }
+            }else{
+              handmade ='(a.handmade ===' +  3;
+            }
+          }else if(!this.search_prop.prop_search.handmade && this.search_prop.prop_search.handmade_no){
+            handmade = '(a.handmade ===' + 0;
+          }
+          handmade = handmade + ')';
+          console.log(handmade);
+
           if(this.search_prop.prop_search.decision && !this.search_prop.prop_search.decision_no){
             decision = '===' + 1;
           }else if(!this.search_prop.prop_search.decision && this.search_prop.prop_search.decision_no){
@@ -266,8 +322,9 @@
             usage_right = '===' + 1;
           }
   
-          const refine = 'a.owner_id' + owner_id +  '&& a.location' + location + '&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
+          const refine = 'a.owner_id' + owner_id +  '&& a.location' + location + '&&' + handmade +'&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
   
+          console.log(refine);
           this.$emit('close', this.search_prop.prop_sort, this.search_prop.prop_search.name, refine);
         },
 
@@ -279,6 +336,11 @@
           this.search_prop.prop_search.owner = 0;
           this.search_prop.prop_search.location = false;
           this.search_prop.prop_search.location_no = false;
+          this.search_prop.prop_search.handmade = false;
+          this.search_prop.prop_search.handmade_no = false;
+          this.search_prop.prop_search.handmade_complete = false;
+          this.search_prop.prop_search.handmade_progress = false;
+          this.search_prop.prop_search.handmade_unfinished = false;
           this.search_prop.prop_search.decision = false;
           this.search_prop.prop_search.decision_no = false;
           this.search_prop.prop_search.usage = false;

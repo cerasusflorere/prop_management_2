@@ -548,11 +548,23 @@ class PropController extends Controller
     public function update_many(Request $request, $id_s)
     {
         $ids = explode(',', $id_s);
-        $yes_no = !empty($request->yes_no) ? 1 : 0;
+        if($request->method !== 'handmade'){
+            $yes_no = !empty($request->yes_no) ? 1 : 0;
+        }else{
+            $yes_no = intval($request->yes_no);
+        }
+        
         if($request->method == 'location'){
             // ピッコロに持ってきたか
             $affected= Prop::whereIn('id', $ids)
                     ->update(['location' => $yes_no]);
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'handmade'){
+            // 作るかどうか
+            $affected= Prop::whereIn('id', $ids)
+                    ->update(['handmade' => $yes_no]);
 
             // レスポンスコードは204(No Content)を返却する
             return response($affected, 204);

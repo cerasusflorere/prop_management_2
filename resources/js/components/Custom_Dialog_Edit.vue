@@ -10,63 +10,82 @@
 
       <div v-show="prop_scene_flag === 1">
         <div class="checkbox-area--together">
-            <!-- ピッコロに持ってきたか -->
-            <label for="prop_location">ピッコロに持ってきたか</label>
+          <!-- ピッコロに持ってきたか -->
+          <label for="prop_location">ピッコロに持ってきたか</label>
 
-            <input type="radio" id="prop_location_yes" value="location_yes" v-model="editCustomProp">
-            <label for="prop_location_yes">持ってきてる</label>
-            <input type="radio" id="prop_location_no" value="location_no" v-model="editCustomProp">
-            <label for="prop_location_no">持ってきてない</label>
+          <input type="radio" id="prop_location_yes" value="location_yes" v-model="editCustomProp">
+          <label for="prop_location_yes">持ってきてる</label>
+          <input type="radio" id="prop_location_no" value="location_no" v-model="editCustomProp">
+          <label for="prop_location_no">持ってきてない</label>
         </div>
 
         <div class="checkbox-area--together">
-            <!-- これで決定か -->
-            <label for="prop_decision">これで決定か</label>
-
-            <input type="radio" id="prop_decision_yes" value="decision_yes" v-model="editCustomProp">
-            <label for="prop_decision_yes">決定してる</label>
-            <input type="radio" id="prop_decision_no" value="decision_no" v-model="editCustomProp">
-            <label for="prop_decision_no">決定してない</label>
+          <!-- 作るかどうか -->
+          <label for="prop_handmade">作るかどうか</label>
+          <div class="checkbox-area--column">
+            <div class="checkbox-area--together">
+              <input type="radio" id="prop_handmade_comolete" value="handmade_comolete" v-model="editCustomProp">
+              <label for="prop_handmade_comolete">完成</label>
+              <input type="radio" id="prop_handmade_progress" value="handmade_progress" v-model="editCustomProp">
+              <label for="prop_handmade_progress">仕掛中</label>
+              <input type="radio" id="prop_handmade_unfinished" value="handmade_unfinished" v-model="editCustomProp">
+              <label for="prop_handmade_unfinished">未着手</label>
+            </div>
+            <div class="checkbox-area--together">
+              <input type="radio" id="prop_handmade_no" value="handmade_no" v-model="editCustomProp">
+              <label for="prop_handmade_no">作らない</label>
+            </div>
+          </div>          
         </div>
 
         <div class="checkbox-area--together">
-            <!-- 中間発表で使用するか -->
-            <label for="prop_usage">中間発表</label>
+          <!-- これで決定か -->
+          <label for="prop_decision">これで決定か</label>
 
-            <input type="radio" id="prop_usage_yes" value="usage_yes" v-model="editCustomProp">
-            <label for="prop_usage_yes">使う</label>
-            <input type="radio" id="prop_usage_no" value="usage_no" v-model="editCustomProp">
-            <label for="prop_usage_no">使わない</label>
+          <input type="radio" id="prop_decision_yes" value="decision_yes" v-model="editCustomProp">
+          <label for="prop_decision_yes">決定してる</label>
+          <input type="radio" id="prop_decision_no" value="decision_no" v-model="editCustomProp">
+          <label for="prop_decision_no">決定してない</label>
         </div>
 
         <div class="checkbox-area--together">
-            <!-- 卒業公演で使用するか -->
-            <label for="prop_usage_guraduation">卒業公演</label>
+          <!-- 中間発表で使用するか -->
+          <label for="prop_usage">中間発表</label>
 
-            <input type="radio" id="prop_usage_guraduation_yes" value="usage_guraduation_yes" v-model="editCustomProp">
-            <label for="prop_usage_guraduation_yes">使う</label>
-            <input type="radio" id="prop_usage_guraduation_no" value="usage_guraduation_no" v-model="editCustomProp">
-            <label for="prop_usage_guraduation_no">使わない</label>
+          <input type="radio" id="prop_usage_yes" value="usage_yes" v-model="editCustomProp">
+          <label for="prop_usage_yes">使う</label>
+          <input type="radio" id="prop_usage_no" value="usage_no" v-model="editCustomProp">
+          <label for="prop_usage_no">使わない</label>
         </div>
 
         <div class="checkbox-area--together">
-            <!-- 上手で使用するか -->
-            <label for="prop_usage_left">上手</label>
+          <!-- 卒業公演で使用するか -->
+          <label for="prop_usage_guraduation">卒業公演</label>
 
-            <input type="radio" id="prop_usage_left_yes" value="usage_left_yes" v-model="editCustomProp">
-            <label for="prop_usage_left_yes">使う</label>
-            <input type="radio" id="prop_usage_left_no" value="usage_left_no" v-model="editCustomProp">
-            <label for="prop_usage_left_no">使わない</label>
+          <input type="radio" id="prop_usage_guraduation_yes" value="usage_guraduation_yes" v-model="editCustomProp">
+          <label for="prop_usage_guraduation_yes">使う</label>
+          <input type="radio" id="prop_usage_guraduation_no" value="usage_guraduation_no" v-model="editCustomProp">
+          <label for="prop_usage_guraduation_no">使わない</label>
         </div>
 
         <div class="checkbox-area--together">
-            <!-- 下手で使用するか -->
-            <label for="prop_usage_right">下手</label>
+          <!-- 上手で使用するか -->
+          <label for="prop_usage_left">上手</label>
 
-            <input type="radio" id="prop_usage_right_yes" value="usage_right_yes" v-model="editCustomProp">
-            <label for="prop_usage_right_yes">使う</label>
-            <input type="radio" id="prop_usage_right_no" value="usage_right_no" v-model="editCustomProp">
-            <label for="prop_usage_right_no">使わない</label>
+          <input type="radio" id="prop_usage_left_yes" value="usage_left_yes" v-model="editCustomProp">
+          <label for="prop_usage_left_yes">使う</label>
+          <input type="radio" id="prop_usage_left_no" value="usage_left_no" v-model="editCustomProp">
+          <label for="prop_usage_left_no">使わない</label>
+        </div>
+
+        <div class="checkbox-area--together">
+          <!-- 下手で使用するか -->
+          <label for="prop_usage_right">下手</label>
+
+          <input type="radio" id="prop_usage_right_yes" value="usage_right_yes" v-model="editCustomProp">
+          <label for="prop_usage_right_yes">使う</label>
+          <input type="radio" id="prop_usage_right_no" value="usage_right_no" v-model="editCustomProp">
+          <label for="prop_usage_right_no">使わない</label>
         </div>
       </div>
 
