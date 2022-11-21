@@ -53,6 +53,12 @@
         </div>
         <input type="text" id="page" class="form__item" v-model="registerForm.pages" :disabled="select_all_page" placeholder="ページ数">
 
+        <!-- これで決定か -->
+        <div class="checkbox-area--together">
+          <label for="decision">これで決定</label>
+          <input type="checkbox" id="decision" v-model="registerForm.decision"></input>    
+        </div>
+
         <!-- 使用するか -->
         <div>
           <div v-show="season_tag === 1" class="checkbox-area--together">
@@ -73,6 +79,15 @@
             </div>
           </div>
         </div>
+
+        <!-- 誰がセットする -->
+        <label for="setting">セットする人</label>
+        <select id="setting" class="form__item"  v-model="registerForm.setting">
+          <option disabled value="">学生一覧</option>
+          <option v-for="student in optionSettings" v-bind:value="student.id">
+            {{ student.name }}
+          </option>
+        </select>
         
         <!-- メモ -->
         <label for="comment_scene">メモ</label>
@@ -101,6 +116,7 @@ export default {
       // 取得するデータ
       characters: [],
       optionProps: [],
+      optionSettings: [],
       // 連動プルダウン
       selectedAttr: '',
       selectedCharacters: '',
@@ -120,9 +136,11 @@ export default {
         character: '',
         prop: '',
         pages: '',
+        decision: '',
         usage: '',
         usage_guraduation: 0,
         usage_stage: null,
+        setting: '',
         comment: ''
       }
     }
@@ -157,6 +175,18 @@ export default {
       }
 
       this.optionProps = response.data;      
+    },
+
+    // 学生一覧を取得
+    async fetchSettings () {
+      const response = await axios.get('/api/informations/owners');
+
+      if (response.status !== 200) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
+
+      this.optionSettings = response.data;
     },
 
     // 連動プルダウン
@@ -246,10 +276,12 @@ export default {
       this.selectedAttr = '';
       this.registerForm.character = '';
       this.registerForm.prop = '';
+      this.registerForm.decision = '';
       this.registerForm.pages = '';
       this.registerForm.usage = '';
       this.registerForm.usage_guraduation = '';
       this.registerForm.usage_stage = null;
+      this.registerForm.setting = '';
       this.registerForm.comment = '';
       this.select_all_page = false;
       this.season_tag = null;
@@ -427,10 +459,12 @@ export default {
           prop_id: this.registerForm.prop,
           first_page: page,
           final_page: final_pages[index],
+          decision: this.registerForm.decision,
           usage: this.registerForm.usage,
           usage_guraduation: this.registerForm.usage_guraduation,
           usage_left: usage_left,
           usage_right: usage_right,
+          setting_id: this.registerForm.setting,
           memo: this.registerForm.comment
         });
 
@@ -541,6 +575,7 @@ export default {
       async handler () {
         await this.fetchCharacters();
         await this.fetchProps();
+        await this.fetchSettings();
         await this.choicePerformance();
       },
       immediate: true

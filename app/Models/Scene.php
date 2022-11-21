@@ -11,14 +11,14 @@ class Scene extends Model
     /** 取得時にJSONに含める属性 */
     protected $visible = [
         'id', 'character_id', 'prop_id', 
-        'first_page', 'final_page', 'usage', 'usage_guraduation', 'usage_left', 'usage_right', 'created_at', 'updated_at',
-        'character', 'prop', 'scene_comments',
+        'first_page', 'final_page', 'decision', 'usage', 'usage_guraduation', 'usage_left', 'usage_right', 'setting_id', 'created_at', 'updated_at',
+        'character', 'prop', 'setting', 'scene_comments'
     ];
 
-    /** JSONに含める属性 */
+    /** 登録時にJSONに含める属性 */
     protected $fillable = [
         'character_id', 'prop_id', 
-        'first_page', 'final_page', 'usage', 'usage_guraduation', 'usage_left', 'usage_right'
+        'first_page', 'final_page', 'decision', 'usage', 'usage_guraduation', 'usage_left', 'usage_right', 'setting_id'
     ];
 
     public function getCreatedAtAttribute()
@@ -47,6 +47,15 @@ class Scene extends Model
     public function prop()
     {
         return $this->belongsTo('App\Models\Prop');
+    }
+
+    /**
+     * リレーションシップ - ownersテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function setting()
+    {
+        return $this->belongsTo('App\Models\Owner');
     }
 
     /**

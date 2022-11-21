@@ -130,8 +130,9 @@
                 <input type="text" name="furigana" :id="prop.id" class="form__item form__item--furigana" v-model="editForm_prop.kana" placeholder="ふりがな" required>
               </div>            
               
-              <div>所有者: 
-                <select id="prop_owner_edit" class="form__item"  v-model="editForm_prop.owner_id">
+              <div>
+                <label for="prop_owner_edit">所有者:</label> 
+                <select id="prop_owner_edit" class="form__item" v-model="editForm_prop.owner_id">
                   <option disabled value="">持ち主一覧</option>
                   <option v-for="owner in optionOwners" v-bind:value="owner.id">
                     {{ owner.name }}
@@ -995,7 +996,7 @@ export default {
         photo = '変更しない';
       }
 
-      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name+'\nふりがな：'+this.editForm_prop.kana+'\n持ち主：'+this.editForm_prop.owner.name + '\nピッコロに：'+location + '\n'+handmade +'\n決定：'+decision + '\n使用状況：'+usage+usage_guraduation+usage_left+usage_right+'\nメモ：'+memos+'\n写真：'+photo;
+      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name + '\nふりがな：'+this.editForm_prop.kana + '\n持ち主：'+this.editForm_prop.owner.name + '\nピッコロに：'+location + '\n'+handmade + '\n決定：'+decision + '\n使用状況：'+usage+usage_guraduation+usage_left+usage_right + '\nメモ：'+memos + '\n写真：'+photo;
     },
     // 編集confirmのモーダル非表示_OKの場合
     async closeModal_confirmEdit_OK() {

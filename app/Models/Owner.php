@@ -9,12 +9,12 @@ class Owner extends Model
 {
     /** JSONに含める属性 */
     protected $visible = [
-        'id', 'name', 'props',
+        'id', 'name', 'props', 'scenes'
     ];
 
     /** 登録時にJSONに含める属性 */
     protected $fillable = [
-        'name',
+        'name'
     ];
 
     /**
@@ -24,5 +24,14 @@ class Owner extends Model
     public function props()
     {
         return $this->hasMany('App\Models\Prop');
+    }
+
+    /**
+     * リレーションシップ - scenesテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function scenes()
+    {
+        return $this->hasMany('App\Models\Scene');
     }
 }

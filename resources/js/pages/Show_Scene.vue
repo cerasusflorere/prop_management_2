@@ -25,11 +25,13 @@
             <th class="th-non"></th>
             <th>ページ数</th>
             <th>登場人物</th>
-            <th>小道具名</th> 
+            <th>小道具名</th>
+            <th>決定か</th>
             <th>中間発表</th>
             <th>卒業公演</th>
             <th>上手</th>
-            <th>下手</th>         
+            <th>下手</th>
+            <th>セットする人</th>        
             <th class="th-memo">メモ</th>
             <th>登録日時</th>
             <th>更新日時</th>
@@ -47,6 +49,9 @@
               <td>{{ scene.character.name }}</td>
               <!-- 小道具名 -->
               <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
+              <!-- これで決定か -->
+              <td v-if="scene.decision"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td> 
               <!-- 中間発表 -->
               <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
               <td v-else></td> 
@@ -58,6 +63,9 @@
               <td v-else></td>
               <!-- 下手 -->
               <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+              <!-- セットする人 -->
+              <td v-if="scene.setting">{{ scene.setting.name }}</td>
               <td v-else></td>
               <!-- メモ -->
               <td v-if="scene.scene_comments.length">
@@ -103,6 +111,12 @@
                 <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
               </tr>
               <tr>
+                <!-- これで決定か -->
+                <th>決定か</th>
+                <td v-if="scene.decision"><i class="fas fa-check fa-fw"></i></td>
+                <td v-else></td>
+              </tr>
+              <tr>
                 <!-- 中間発表 -->
                 <th>中間</th>
                 <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
@@ -125,6 +139,11 @@
                 <th>下手</th>
                 <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
                 <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 誰がセットするか-->
+                <th>セットする人</th>
+                <td>{{ scene.setting.name }}</td>
               </tr>
               <tr>
                 <!-- メモ -->
