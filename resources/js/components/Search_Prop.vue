@@ -298,7 +298,6 @@
             handmade = '(a.handmade ===' + 0;
           }
           handmade = handmade + ')';
-          console.log(handmade);
 
           if(this.search_prop.prop_search.decision && !this.search_prop.prop_search.decision_no){
             decision = '===' + 1;
@@ -322,9 +321,8 @@
             usage_right = '===' + 1;
           }
   
-          const refine = 'a.owner_id' + owner_id +  '&& a.location' + location + '&&' + handmade +'&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
+          const refine = 'a.owner_id'+owner_id + '&& a.location'+location + '&&'+handmade +'&& a.decision'+decision + '&& a.usage'+usage + '&& a.usage_guraduation'+usage_guraduation + '&& a.usage_left'+usage_left + '&& a.usage_right'+usage_right;
   
-          console.log(refine);
           this.$emit('close', this.search_prop.prop_sort, this.search_prop.prop_search.name, refine);
         },
 

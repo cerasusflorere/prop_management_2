@@ -143,7 +143,8 @@
               <tr>
                 <!-- 誰がセットするか-->
                 <th>セットする人</th>
-                <td>{{ scene.setting.name }}</td>
+                <td v-if="scene.setting">{{ scene.setting.name }}</td>
+                <td v-else></td>
               </tr>
               <tr>
                 <!-- メモ -->
@@ -208,6 +209,9 @@
         // 小道具詳細
         showContent_prop: false,
         postProp: "",
+        custom_sort: null,
+        custom_name: null,
+        custom_refine: null,
         // シーン検索カスタム
         showContent_search: false,
         postSearch: "",
@@ -248,7 +252,11 @@
           this.page_order[i] = i;
         }
 
-        this.sort_Standard(this.showScenes);
+        if(this.custom_sort || this.custom_name || this.custom_refine){
+          await this.closeModal_searchScene(this.custom_sort, this.custom_name, this.custom_refine);
+        }else{
+          this.sort_Standard(this.showScenes);
+        }        
       },
 
       sort_Standard(array){
@@ -353,8 +361,42 @@
       closeModal_searchScene(sort, name, refine) {
         this.showContent_search = false;
         if(sort !== null && refine !== null){
+
+          this.custom_sort = sort;
+          this.custom_name = name;
+          this.custom_refine = refine;
           let array_original = this.scenes.filter((a) => eval(refine));
-          let array = array_original;
+          let array = [];
+
+          if(this.h(name.input)){
+            if(name.scope === "memo_together"){
+              // メモを含めて検索
+              array = array_original.filter((a) => {
+                if(a.prop.name.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
+                  return a;
+                }else if(a.prop.kana.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
+                  return a;
+                }else if(a.prop.prop_comments[0]){
+                  if(a.prop.prop_comments[0].memo.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1){
+                    return a;
+                  }                  
+                }
+              });
+            }else{
+              // 小道具名のみで検索
+              array = array_original.filter((a) => {
+                if(a.prop.name.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
+                  return a;
+                }else if(a.prop.kana.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
+                  return a;
+                }
+              });
+            }
+          }else{
+            // 入力検索しない
+            array = array_original;
+          }
+
           const regex_str = /[^ぁ-んー]/g; // ひらがな以外
           const regex_number = /[^0-9]/g; // 数字以外
           const regex_alf = /[^A-Z]/g; // アルファベット
@@ -429,6 +471,77 @@
             });
 
             this.showScenes = array;
+          }else if(sort === "prop"){
+            array.sort((a, b) => {
+              // kanaで並び替え
+              if(a.prop.kana !== b.prop.kana){
+                const a_str = a.prop.kana.replace(regex_str, "");
+                const b_str = b.prop.kana.replace(regex_str, "");
+                let a_number = a.prop.kana.replace(regex_number, "");
+                let b_number = b.prop.kana.replace(regex_number, "");
+                const a_alf = a.prop.kana.replace(regex_alf, "");
+                const b_alf = b.prop.kana.replace(regex_alf, "");
+
+                if(a_str !== b_str){
+                  let sort_str = a_str;
+                  if([...b_str].length < [...a_str].length){
+                    sort_str = b_str;
+                  } 
+                  for(let i=0; i < [...sort_str].length; i++){
+                    if(a_str.codePointAt(i) !== b_str.codePointAt(i)){
+                      if(a_str.codePointAt(i) > b_str.codePointAt(i)){
+                        return 1;
+                      }else if(a_str.codePointAt(i) < b_str.codePointAt(i)){
+                        return -1;
+                      }
+                    }          
+                  }
+                }
+
+                if(a_number !== b_number){
+                  if(!a_number){
+                    a_number = 0;
+                  }
+                  if(!b_number){
+                    b_number = 0;
+                  }
+
+                  if(parseInt(a_number) > parseInt(b_number)){
+                    return 1;
+                  }else if(parseInt(a_number) < parseInt(b_number)){
+                    return -1;
+                  }
+                }
+
+                if(a_alf !== b_alf){
+                  if(a_alf.codePointAt(0) > b_alf.codePointAt(0)){
+                    return 1;
+                  }else if(a_alf.codePointAt(0) < b_alf.codePointAt(0)){
+                    return -1;
+                  }else{
+                    return 0;
+                  }
+                }
+              }
+
+              // 登場人物idで並び替え
+              if(a.character_id !== b.character_id){
+                return a.character_id - b.character_id;
+              }
+              // 最初のページで並び替え
+              if(a.first_page !== b.first_page){
+                return a.first_page - b.first_page
+              }
+              // 最後のページで並び替え
+              if(a.final_page !== b.final_page){
+                return this.page_order.indexOf(a.final_page) - this.page_order.indexOf(b.final_page);
+              }
+
+              return 0;
+            });
+
+            this.showScenes = array;
+
           }else if(sort === "created_at"){
             array.sort((a, b) => {
               if(a.created_at !== b.created_at){

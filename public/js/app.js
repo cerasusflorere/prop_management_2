@@ -5750,6 +5750,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context14.next = 44;
                 return axios.post('/api/props/' + _this15.editForm_scene.prop_id, {
                   method: 'usage_right_change',
+                  decision: _this15.editForm_scene.decision,
                   usage_guraduation: 1,
                   usage_right: 1
                 });
@@ -8094,7 +8095,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       handmade = handmade + ')';
-      console.log(handmade);
 
       if (this.search_prop.prop_search.decision && !this.search_prop.prop_search.decision_no) {
         decision = '===' + 1;
@@ -8119,7 +8119,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       var refine = 'a.owner_id' + owner_id + '&& a.location' + location + '&&' + handmade + '&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
-      console.log(refine);
       this.$emit('close', this.search_prop.prop_sort, this.search_prop.prop_search.name, refine);
     },
     // リセット
@@ -8187,11 +8186,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       props: [],
       // 登場人物
       characters: [],
-      selectedAttr: '',
+      selectedAttr: 0,
       selectedCharacters: '',
       optionCharacters: null,
       // 持ち主リスト
-      optionOwners: [],
+      optionSettings: [],
       // 検索
       search_scene: {
         scene_sort: "page",
@@ -8200,16 +8199,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             first: null,
             "final": null
           },
+          select_all_page: false,
           section: 0,
           character: 0,
           name: {
             input: null,
             scope: "name_only"
           },
+          decision: false,
+          decision_no: false,
           usage: false,
           usage_guraduation: false,
           usage_left: false,
-          usage_right: false
+          usage_right: false,
+          setting: 0
         }
       }
     };
@@ -8235,7 +8238,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 case 3:
                   _context.next = 5;
-                  return _this.fetchOwners();
+                  return _this.fetchSettings();
 
                 case 5:
                   content_dom = _this.$refs.content_search_scene;
@@ -8347,7 +8350,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.search_scene.scene_search.section = this.selectedAttr;
     },
     // 持ち主を取得
-    fetchOwners: function fetchOwners() {
+    fetchSettings: function fetchSettings() {
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
@@ -8372,7 +8375,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context4.abrupt("return", false);
 
               case 6:
-                _this4.optionOwners = response.data;
+                _this4.optionSettings = response.data;
 
               case 7:
               case "end":
@@ -8404,7 +8407,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        var page, character_id, prop_id, name_input, name_scope, usage, usage_guraduation, usage_left, usage_right, prop_ids, array_original, array, character_ids, refine;
+        var page, character_id, prop_id, name_input, name_scope, decision, usage, usage_guraduation, usage_left, usage_right, setting_id, prop_ids, array_original, array, character_ids, refine;
         return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
@@ -8414,20 +8417,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 prop_id = 'a.prop_id != ' + 0;
                 name_input = '!=' + 100;
                 name_scope = '!=' + 100;
+                decision = '!=' + 100;
                 usage = '!=' + 100;
                 usage_guraduation = '!=' + 100;
                 usage_left = '!=' + 100;
-                usage_right = '!=' + 100; // 小道具 id検索
+                usage_right = '!=' + 100;
+                setting_id = '!=' + 0; // 小道具 id検索
 
                 if (!_this5.search_scene.scene_search.name.input) {
-                  _context5.next = 19;
+                  _context5.next = 20;
                   break;
                 }
 
-                _context5.next = 12;
+                _context5.next = 14;
                 return _this5.fetchProps();
 
-              case 12:
+              case 14:
                 prop_ids = [];
                 array_original = JSON.parse(JSON.stringify(_this5.props));
                 array = [];
@@ -8463,24 +8468,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 prop_ids = array.map(function (a) {
                   return a.id;
                 });
-                prop_id = '(';
-                prop_ids.forEach(function (prop, index) {
-                  prop_id = prop_id + 'a.prop_id === ' + prop;
 
-                  if (index !== prop_ids.length - 1) {
-                    prop_id = prop_id + '||';
-                  } else {
-                    prop_id = prop_id + ')';
-                  }
-                });
+                if (prop_ids.length) {
+                  prop_id = '(';
+                  prop_ids.forEach(function (prop, index) {
+                    prop_id = prop_id + 'a.prop_id === ' + prop;
 
-              case 19:
-                if (_this5.search_scene.scene_search.page.first) {
+                    if (index !== prop_ids.length - 1) {
+                      prop_id = prop_id + '||';
+                    } else {
+                      prop_id = prop_id + ')';
+                    }
+                  });
+                } else {
+                  prop_id = 'a.prop_id === 0';
+                }
+
+              case 20:
+                if (_this5.search_scene.scene_search.page.first && !_this5.search_scene.scene_search.select_all_page) {
                   page = 'a.first_page >= ' + _this5.search_scene.scene_search.page.first;
 
                   if (_this5.search_scene.scene_search.page["final"]) {
-                    page = page + '&& a.first_page <=' + _this5.search_scene.scene_search.page["final"] + '&& a.final_page >= ' + _this5.search_scene.scene_search.page.first + '&& a.final_page <= ' + _this5.search_scene.scene_search.page["final"];
+                    page = page + '&& a.first_page <=' + _this5.search_scene.scene_search.page["final"] + '&& ((a.final_page >= ' + _this5.search_scene.scene_search.page.first + '&& a.final_page <= ' + _this5.search_scene.scene_search.page["final"] + ') || a.final_page === ' + null + ')';
                   }
+                } else if (_this5.search_scene.scene_search.select_all_page) {
+                  page = 'a.first_page === 1 && a.final_page === 1000';
                 }
 
                 if (_this5.search_scene.scene_search.section != 0 && _this5.search_scene.scene_search.character == 0) {
@@ -8505,6 +8517,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   character_id = 'a.character_id === ' + _this5.search_scene.scene_search.character;
                 }
 
+                if (_this5.search_scene.scene_search.decision && !_this5.search_scene.scene_search.decision_no) {
+                  decision = '===' + 1;
+                } else if (!_this5.search_scene.scene_search.decision && _this5.search_scene.scene_search.decision_no) {
+                  decision = '===' + 0;
+                }
+
                 if (_this5.search_scene.scene_search.usage) {
                   usage = '===' + 1;
                 }
@@ -8521,17 +8539,41 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   usage_right = '===' + 1;
                 }
 
-                refine = prop_id + '&&' + page + '&&' + character_id + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
+                if (_this5.search_scene.scene_search.setting != 0) {
+                  setting_id = '===' + _this5.search_scene.scene_search.setting;
+                }
+
+                refine = prop_id + '&&' + page + '&&' + character_id + '&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right + '&& a.setting_id' + setting_id;
 
                 _this5.$emit('close', _this5.search_scene.scene_sort, _this5.search_scene.scene_search.name, refine);
 
-              case 28:
+              case 31:
               case "end":
                 return _context5.stop();
             }
           }
         }, _callee5);
       }))();
+    },
+    // リセット
+    resetSearchScene: function resetSearchScene() {
+      this.search_scene.scene_sort = 'page';
+      this.search_scene.scene_search.page.first = null;
+      this.search_scene.scene_search.page["final"] = null;
+      this.search_scene.scene_search.select_all_page = false;
+      this.selectedAttr = 0;
+      this.search_scene.scene_search.section = 0;
+      this.search_scene.scene_search.character = 0;
+      this.search_scene.scene_search.name.input = null;
+      this.search_scene.scene_search.name.scope = 'name_only';
+      this.search_scene.scene_search.decision = false;
+      this.search_scene.scene_search.decision_no = false;
+      this.search_scene.scene_search.usage = false;
+      this.search_scene.scene_search.usage = false;
+      this.search_scene.scene_search.usage_guraduation = false;
+      this.search_scene.scene_search.usage_left = false;
+      this.search_scene.scene_search.usage_right = false;
+      this.search_scene.scene_search.setting = 0;
     }
   }
 });
@@ -11774,6 +11816,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       // 小道具詳細
       showContent_prop: false,
       postProp: "",
+      custom_sort: null,
+      custom_name: null,
+      custom_refine: null,
       // シーン検索カスタム
       showContent_search: false,
       postSearch: "",
@@ -11850,9 +11895,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this2.page_order[i] = i;
                 }
 
+                if (!(_this2.custom_sort || _this2.custom_name || _this2.custom_refine)) {
+                  _context2.next = 15;
+                  break;
+                }
+
+                _context2.next = 13;
+                return _this2.closeModal_searchScene(_this2.custom_sort, _this2.custom_name, _this2.custom_refine);
+
+              case 13:
+                _context2.next = 16;
+                break;
+
+              case 15:
                 _this2.sort_Standard(_this2.showScenes);
 
-              case 11:
+              case 16:
               case "end":
                 return _context2.stop();
             }
@@ -11972,10 +12030,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.showContent_search = false;
 
       if (sort !== null && refine !== null) {
+        this.custom_sort = sort;
+        this.custom_name = name;
+        this.custom_refine = refine;
         var array_original = this.scenes.filter(function (a) {
           return eval(refine);
         });
-        var array = array_original;
+        var array = [];
+
+        if (this.h(name.input)) {
+          if (name.scope === "memo_together") {
+            // メモを含めて検索
+            array = array_original.filter(function (a) {
+              if (a.prop.name.toLocaleLowerCase().indexOf(_this4.h(name.input).toLocaleLowerCase()) !== -1) {
+                return a;
+              } else if (a.prop.kana.toLocaleLowerCase().indexOf(_this4.h(name.input).toLocaleLowerCase()) !== -1) {
+                return a;
+              } else if (a.prop.prop_comments[0]) {
+                if (a.prop.prop_comments[0].memo.toLocaleLowerCase().indexOf(_this4.h(name.input).toLocaleLowerCase()) !== -1) {
+                  return a;
+                }
+              }
+            });
+          } else {
+            // 小道具名のみで検索
+            array = array_original.filter(function (a) {
+              if (a.prop.name.toLocaleLowerCase().indexOf(_this4.h(name.input).toLocaleLowerCase()) !== -1) {
+                return a;
+              } else if (a.prop.kana.toLocaleLowerCase().indexOf(_this4.h(name.input).toLocaleLowerCase()) !== -1) {
+                return a;
+              }
+            });
+          }
+        } else {
+          // 入力検索しない
+          array = array_original;
+        }
+
         var regex_str = /[^ぁ-んー]/g; // ひらがな以外
 
         var regex_number = /[^0-9]/g; // 数字以外
@@ -12051,6 +12142,80 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   return 0;
                 }
               }
+            }
+
+            return 0;
+          });
+          this.showScenes = array;
+        } else if (sort === "prop") {
+          array.sort(function (a, b) {
+            // kanaで並び替え
+            if (a.prop.kana !== b.prop.kana) {
+              var a_str = a.prop.kana.replace(regex_str, "");
+              var b_str = b.prop.kana.replace(regex_str, "");
+              var a_number = a.prop.kana.replace(regex_number, "");
+              var b_number = b.prop.kana.replace(regex_number, "");
+              var a_alf = a.prop.kana.replace(regex_alf, "");
+              var b_alf = b.prop.kana.replace(regex_alf, "");
+
+              if (a_str !== b_str) {
+                var sort_str = a_str;
+
+                if (_toConsumableArray(b_str).length < _toConsumableArray(a_str).length) {
+                  sort_str = b_str;
+                }
+
+                for (var i = 0; i < _toConsumableArray(sort_str).length; i++) {
+                  if (a_str.codePointAt(i) !== b_str.codePointAt(i)) {
+                    if (a_str.codePointAt(i) > b_str.codePointAt(i)) {
+                      return 1;
+                    } else if (a_str.codePointAt(i) < b_str.codePointAt(i)) {
+                      return -1;
+                    }
+                  }
+                }
+              }
+
+              if (a_number !== b_number) {
+                if (!a_number) {
+                  a_number = 0;
+                }
+
+                if (!b_number) {
+                  b_number = 0;
+                }
+
+                if (parseInt(a_number) > parseInt(b_number)) {
+                  return 1;
+                } else if (parseInt(a_number) < parseInt(b_number)) {
+                  return -1;
+                }
+              }
+
+              if (a_alf !== b_alf) {
+                if (a_alf.codePointAt(0) > b_alf.codePointAt(0)) {
+                  return 1;
+                } else if (a_alf.codePointAt(0) < b_alf.codePointAt(0)) {
+                  return -1;
+                } else {
+                  return 0;
+                }
+              }
+            } // 登場人物idで並び替え
+
+
+            if (a.character_id !== b.character_id) {
+              return a.character_id - b.character_id;
+            } // 最初のページで並び替え
+
+
+            if (a.first_page !== b.first_page) {
+              return a.first_page - b.first_page;
+            } // 最後のページで並び替え
+
+
+            if (a.final_page !== b.final_page) {
+              return _this4.page_order.indexOf(a.final_page) - _this4.page_order.indexOf(b.final_page);
             }
 
             return 0;
@@ -16281,6 +16446,8 @@ var render = function render() {
     ref: "content_search_scene",
     staticClass: "content cotent-search content-confirm-dialog panel"
   }, [_c("div", {
+    staticClass: "button-search--area"
+  }, [_c("div", {
     staticClass: "button-search--close"
   }, [_c("button", {
     attrs: {
@@ -16292,7 +16459,17 @@ var render = function render() {
         return _vm.$emit("close", null, null, null);
       }
     }
-  }, [_vm._v("×")])]), _vm._v(" "), _c("form", {
+  }, [_vm._v("×")])]), _vm._v(" "), _c("div", [_c("button", {
+    staticClass: "button button--reset",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.resetSearchScene
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-undo-alt fa-fw"
+  }), _vm._v("リセット")])])]), _vm._v(" "), _c("form", {
     staticClass: "form form-search",
     on: {
       submit: function submit($event) {
@@ -16361,6 +16538,30 @@ var render = function render() {
     }],
     attrs: {
       type: "radio",
+      id: "sort_scene_prop",
+      value: "prop"
+    },
+    domProps: {
+      checked: _vm._q(_vm.search_scene.scene_sort, "prop")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.search_scene, "scene_sort", "prop");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "sort_scene_prop"
+    }
+  }, [_vm._v("小道具順")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_scene.scene_sort,
+      expression: "search_scene.scene_sort"
+    }],
+    attrs: {
+      type: "radio",
       id: "sort_scene_created_at",
       value: "created_at"
     },
@@ -16376,7 +16577,7 @@ var render = function render() {
     attrs: {
       "for": "sort_scene_created_at"
     }
-  }, [_vm._v("作成日順")]), _vm._v(" "), _c("input", {
+  }, [_vm._v("登録日順")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -16412,6 +16613,48 @@ var render = function render() {
       "for": "search_scene_page"
     }
   }, [_vm._v("ページ")]), _vm._v(" "), _c("div", {
+    staticClass: "page-area"
+  }, [_c("small", [_vm._v("例) 22, 24-25")]), _vm._v(" "), _c("small", [_vm._v("半角")]), _vm._v(" "), _c("span", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "search_scene_all_page"
+    }
+  }, [_vm._v("全シーン")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_scene.scene_search.select_all_page,
+      expression: "search_scene.scene_search.select_all_page"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "search_scene_all_page"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_scene.scene_search.select_all_page) ? _vm._i(_vm.search_scene.scene_search.select_all_page, null) > -1 : _vm.search_scene.scene_search.select_all_page
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_scene.scene_search.select_all_page,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_scene.scene_search, "select_all_page", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_scene.scene_search, "select_all_page", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_scene.scene_search, "select_all_page", $$c);
+        }
+      }
+    }
+  })])]), _vm._v(" "), _c("div", {
     staticClass: "serach--select-area-colors"
   }, [_c("label", {
     staticClass: "search--label",
@@ -16430,7 +16673,8 @@ var render = function render() {
       type: "number",
       min: "1",
       max: "100",
-      id: "search_scene_first_page"
+      id: "search_scene_first_page",
+      disabled: _vm.search_scene.scene_search.select_all_page
     },
     domProps: {
       value: _vm.search_scene.scene_search.page.first
@@ -16459,7 +16703,8 @@ var render = function render() {
       type: "number",
       min: "2",
       max: "100",
-      id: "search_scene_page_finals"
+      id: "search_scene_page_finals",
+      disabled: _vm.search_scene.scene_search.select_all_page
     },
     domProps: {
       value: _vm.search_scene.scene_search.page["final"]
@@ -16548,7 +16793,7 @@ var render = function render() {
         value: character.id
       }
     }, [_vm._v("\n                    " + _vm._s(character.name) + "\n                  ")]) : _vm._e();
-  })], 2)])])])]), _vm._v(" "), _c("div", {
+  })], 2)])])]), _vm._v(" "), _c("div", {
     staticClass: "search--select-area--box"
   }, [_c("label", {
     staticClass: "search--label",
@@ -16628,8 +16873,92 @@ var render = function render() {
       "for": "search_scene_memo_toghether"
     }
   }, [_vm._v("メモ含む")])])]), _vm._v(" "), _c("div", {
-    staticClass: "search--select-area--box"
-  }, [_c("div", {
+    staticClass: "search-search--select-area checkbox-area--together"
+  }, [_c("label", [_vm._v("決定")]), _vm._v(" "), _c("span", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_scene.scene_search.decision,
+      expression: "search_scene.scene_search.decision"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_scene_decision"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_scene.scene_search.decision) ? _vm._i(_vm.search_scene.scene_search.decision, null) > -1 : _vm.search_scene.scene_search.decision
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_scene.scene_search.decision,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_scene.scene_search, "decision", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_scene.scene_search, "decision", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_scene.scene_search, "decision", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_scene_decision"
+    }
+  }, [_vm._v("してる")])]), _vm._v(" "), _c("span", {
+    staticClass: "checkbox-area--together"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_scene.scene_search.decision_no,
+      expression: "search_scene.scene_search.decision_no"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_scene_decision_no"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_scene.scene_search.decision_no) ? _vm._i(_vm.search_scene.scene_search.decision_no, null) > -1 : _vm.search_scene.scene_search.decision_no
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_scene.scene_search.decision_no,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_scene.scene_search, "decision_no", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_scene.scene_search, "decision_no", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_scene.scene_search, "decision_no", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_scene_decision_no"
+    }
+  }, [_vm._v("してない")])])]), _vm._v(" "), _c("div", {
     staticClass: "search--select-area checkbox-area--together"
   }, [_c("span", {
     staticClass: "checkbox-area--together search--select-area--performance"
@@ -16729,7 +17058,7 @@ var render = function render() {
     staticClass: "form__check__input",
     attrs: {
       type: "checkbox",
-      id: "search_scene_usage_left",
+      id: "search_prop_scene_left",
       value: "left"
     },
     domProps: {
@@ -16758,7 +17087,7 @@ var render = function render() {
   }), _vm._v(" "), _c("label", {
     staticClass: "form__check__label",
     attrs: {
-      "for": "search_scene_usage_left"
+      "for": "search_prop_scene_left"
     }
   }, [_vm._v("上手")]), _vm._v(" "), _c("input", {
     directives: [{
@@ -16801,7 +17130,47 @@ var render = function render() {
     attrs: {
       "for": "search_scene_usage_right"
     }
-  }, [_vm._v("下手")])])])])])]), _vm._v(" "), _vm._m(2)])])]);
+  }, [_vm._v("下手")])])])]), _vm._v(" "), _c("div", {
+    staticClass: "search--select-area"
+  }, [_c("label", {
+    staticClass: "search--label",
+    attrs: {
+      "for": "search_scene_owner"
+    }
+  }, [_vm._v("セットする人")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_scene.scene_search.setting,
+      expression: "search_scene.scene_search.setting"
+    }],
+    staticClass: "form__item",
+    attrs: {
+      id: "search_scene_owner"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+
+        _vm.$set(_vm.search_scene.scene_search, "setting", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "0"
+    }
+  }, [_vm._v("選択なし")]), _vm._v(" "), _vm._l(_vm.optionSettings, function (student) {
+    return _c("option", {
+      domProps: {
+        value: student.id
+      }
+    }, [_vm._v("\n                " + _vm._s(student.name) + "\n              ")]);
+  })], 2)])])]), _vm._v(" "), _vm._m(2)])])]);
 };
 
 var staticRenderFns = [function () {
@@ -18959,7 +19328,7 @@ var render = function render() {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("下手")]), _vm._v(" "), scene.usage_right ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
-    })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("セットする人")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.setting.name))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("メモ")]), _vm._v(" "), scene.scene_comments.length ? _c("td", _vm._l(scene.scene_comments, function (memo) {
+    })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("セットする人")]), _vm._v(" "), scene.setting ? _c("td", [_vm._v(_vm._s(scene.setting.name))]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("メモ")]), _vm._v(" "), scene.scene_comments.length ? _c("td", _vm._l(scene.scene_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.created_at))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("更新日時")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.updated_at))])])]);
   }), 0)]) : _c("div", [_vm._v("\n        使用シーンは登録されていません。 \n      ")])]), _vm._v(" "), _c("detailScene", {

@@ -1210,6 +1210,7 @@
               // 卒業公演0→1、下手0→1
               const response_prop = await axios.post('/api/props/'+ this.editForm_scene.prop_id, {
                 method: 'usage_right_change',
+                decision: this.editForm_scene.decision,
                 usage_guraduation: 1,
                 usage_right: 1,
               });

@@ -347,6 +347,7 @@ class PropController extends Controller
      */
     public function update_deep(Request $request, $id)
     {
+        // 使用するか
         if($request->method == 'usage_0_change'){
             // 小道具編集時にしようとした場合
             $usage = Scene::where('id', '<>', $request->id)
@@ -534,7 +535,6 @@ class PropController extends Controller
 
             // レスポンスコードは204(No Content)を返却する
             return response($affected, 204);
-
         }
     }
 
