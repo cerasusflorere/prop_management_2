@@ -158,7 +158,7 @@
               <!-- 個数 -->
               <div class="checkbox-area--together">
                 <label for="prop_quantity_edit">個数</label>
-                <input type="number" id="prop_quantity_edit" class="form__item form__item--furigana" v-model="editForm_prop.quantity" placeholder="個数">
+                <input type="number" id="prop_quantity_edit" class="form__item form__item--furigana" min="1" v-model="editForm_prop.quantity" placeholder="個数">
               </div>
 
               <!-- ピッコロに持ってきたか -->
@@ -552,6 +552,17 @@ export default {
       // }
       this.editPropMode_detail = "";
       this.editPropMode_memo = "";
+
+      // 調整
+      this.$nextTick(() => {
+        const content_dom = this.$refs.content_detail_prop;
+        const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+        if(content_rect.top < 0){
+          this.overlay_class = 0;
+        }else{
+          this.overlay_class = 1;
+        }
+      });
     },
 
     sort_Standard(array){

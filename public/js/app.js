@@ -3039,9 +3039,20 @@ var autokana;
                 // }
 
                 _this3.editPropMode_detail = "";
-                _this3.editPropMode_memo = "";
+                _this3.editPropMode_memo = ""; // 調整
 
-              case 33:
+                _this3.$nextTick(function () {
+                  var content_dom = _this3.$refs.content_detail_prop;
+                  var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+                  if (content_rect.top < 0) {
+                    _this3.overlay_class = 0;
+                  } else {
+                    _this3.overlay_class = 1;
+                  }
+                });
+
+              case 34:
               case "end":
                 return _context3.stop();
             }
@@ -4642,9 +4653,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 _this5.editSceneMode_detail = "";
                 _this5.editSceneMode_memo = "";
-                _this5.editSceneMode_prop = "";
+                _this5.editSceneMode_prop = ""; // 調整
 
-              case 33:
+                _this5.$nextTick(function () {
+                  var content_dom = _this5.$refs.content_detail_scene;
+                  var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+                  if (content_rect.top < 0) {
+                    _this5.overlay_class = 0;
+                  } else {
+                    _this5.overlay_class = 1;
+                  }
+                });
+
+              case 34:
               case "end":
                 return _context5.stop();
             }
@@ -12955,7 +12977,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 // 選択削除閉じる
                 _this12.showCheckBox();
 
-              case 14:
+                _this12.postProp = null;
+
+              case 15:
               case "end":
                 return _context7.stop();
             }
@@ -14654,6 +14678,7 @@ var render = function render() {
     attrs: {
       type: "number",
       id: "prop_quantity_edit",
+      min: "1",
       placeholder: "個数"
     },
     domProps: {
@@ -15546,7 +15571,8 @@ var render = function render() {
     staticClass: "form__check__input",
     attrs: {
       type: "number",
-      id: "scene_quantity_edit"
+      id: "scene_quantity_edit",
+      min: "1"
     },
     domProps: {
       value: _vm.editForm_scene.quantity
@@ -19193,6 +19219,7 @@ var render = function render() {
       type: "number",
       id: "scene_quantity",
       disabled: !_vm.input_quantity,
+      min: "1",
       placeholder: "個数"
     },
     domProps: {

@@ -159,7 +159,7 @@
               <!-- 個数 -->
               <div  class="checkbox-area--together">
                 <label for="scene_quantity_edit" class="form__check__label">個数</label>
-                <input type="number" id="scene_quantity_edit" class="form__check__input" v-model="editForm_scene.quantity" ref="input_scene_quantity">
+                <input type="number" id="scene_quantity_edit" min="1" class="form__check__input" v-model="editForm_scene.quantity" ref="input_scene_quantity">
               </div>
 
               <!-- これで決定か -->
@@ -458,6 +458,17 @@
         this.editSceneMode_detail = "";
         this.editSceneMode_memo = "";
         this.editSceneMode_prop = "";
+
+        // 調整
+        this.$nextTick(() => {
+          const content_dom = this.$refs.content_detail_scene;
+          const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+          if(content_rect.top < 0){
+            this.overlay_class = 0;
+          }else{
+            this.overlay_class = 1;
+          }
+        });
       },
   
       // 登場人物を取得

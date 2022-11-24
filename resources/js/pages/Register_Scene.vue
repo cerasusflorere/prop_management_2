@@ -56,7 +56,7 @@
         <!-- 個数 -->
         <div class="checkbox-area--together">
           <label for="scene_quantity">個数</label>
-          <input type="number" id="scene_quantity" ref="input_scene_quantity" :disabled="!input_quantity" class="form__item form__item--furigana" v-model="registerForm.quantity" placeholder="個数">
+          <input type="number" id="scene_quantity" ref="input_scene_quantity" :disabled="!input_quantity" min="1" class="form__item form__item--furigana" v-model="registerForm.quantity" placeholder="個数">
         </div>
 
         <!-- これで決定か -->

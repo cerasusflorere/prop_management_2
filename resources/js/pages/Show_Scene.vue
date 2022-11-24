@@ -938,6 +938,7 @@
         await this.fetchScenes();
         // 選択削除閉じる
         this.showCheckBox();
+        this.postProp = null;
       },
 
       // 削除confirmのモーダル表示 
