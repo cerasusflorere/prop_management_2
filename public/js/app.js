@@ -2748,6 +2748,8 @@ var autokana;
     return {
       // 表示する小道具のデータ
       prop: [],
+      // ページの並び順
+      page_order: [],
       // 編集データ
       editForm_prop: {
         id: null,
@@ -2812,33 +2814,39 @@ var autokana;
         var _this = this;
 
         return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-          var autokana_id, content_dom, content_rect;
+          var i, autokana_id, content_dom, content_rect;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
                   if (!_this.postProp) {
-                    _context.next = 16;
+                    _context.next = 18;
                     break;
                   }
 
                   _this.overlay_class = 1;
-                  _context.next = 4;
-                  return _this.fetchCharacters();
+                  _this.page_order[0] = 1000;
 
-                case 4:
+                  for (i = 1; i < 100; i++) {
+                    _this.page_order[i] = i;
+                  }
+
                   _context.next = 6;
-                  return _this.fetchProp();
+                  return _this.fetchCharacters();
 
                 case 6:
                   _context.next = 8;
-                  return _this.fetchOwners();
+                  return _this.fetchProp();
 
                 case 8:
                   _context.next = 10;
-                  return _this.fetchProps();
+                  return _this.fetchOwners();
 
                 case 10:
+                  _context.next = 12;
+                  return _this.fetchProps();
+
+                case 12:
                   // ふりがなのinput要素のidは省略可能
                   // 使用シーン登録時のid=propと被るから
                   autokana_id = '#' + _this.prop.id;
@@ -2853,7 +2861,7 @@ var autokana;
                     _this.overlay_class = 1;
                   }
 
-                case 16:
+                case 18:
                 case "end":
                   return _context.stop();
               }
@@ -2946,7 +2954,7 @@ var autokana;
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-        var response;
+        var response, scenes;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -2999,6 +3007,11 @@ var autokana;
                 _this3.editForm_prop.usage_left = _this3.prop.usage_left;
                 _this3.editForm_prop.usage_right = _this3.prop.usage_right;
                 _this3.editForm_prop.prop_comments = JSON.parse(JSON.stringify(_this3.prop.prop_comments));
+                scenes = _this3.prop.scenes;
+
+                _this3.sort_Standard(scenes);
+
+                console.log(_this3.prop.scenes);
                 _this3.editForm_prop.scenes = JSON.parse(JSON.stringify(_this3.prop.scenes));
 
                 if (_this3.prop.usage_guraduation) {
@@ -3026,7 +3039,7 @@ var autokana;
                 _this3.editPropMode_detail = "";
                 _this3.editPropMode_memo = "";
 
-              case 29:
+              case 32:
               case "end":
                 return _context3.stop();
             }
@@ -3034,9 +3047,33 @@ var autokana;
         }, _callee3);
       }))();
     },
+    sort_Standard: function sort_Standard(array) {
+      var _this4 = this;
+
+      array.sort(function (a, b) {
+        // 最初のページで並び替え
+        if (a.first_page !== b.first_page) {
+          return a.first_page - b.first_page;
+        } // 最後のページで並び替え
+
+
+        if (a.final_page !== b.final_page) {
+          return _this4.page_order.indexOf(a.final_page) - _this4.page_order.indexOf(b.final_page);
+        } // 登場人物idで並び替え
+
+
+        if (a.character_id !== b.character_id) {
+          return a.character_id - b.character_id;
+        }
+
+        return 0;
+      });
+      this.prop.scenes = array;
+      console.log(array);
+    },
     // 持ち主を取得
     fetchOwners: function fetchOwners() {
-      var _this4 = this;
+      var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
         var response;
@@ -3055,12 +3092,12 @@ var autokana;
                   break;
                 }
 
-                _this4.$store.commit('error/setCode', response.status);
+                _this5.$store.commit('error/setCode', response.status);
 
                 return _context4.abrupt("return", false);
 
               case 6:
-                _this4.optionOwners = response.data;
+                _this5.optionOwners = response.data;
 
               case 7:
               case "end":
@@ -3072,7 +3109,7 @@ var autokana;
     },
     // 登場人物を取得
     fetchCharacters: function fetchCharacters() {
-      var _this5 = this;
+      var _this6 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
         var response, sections;
@@ -3091,20 +3128,20 @@ var autokana;
                   break;
                 }
 
-                _this5.$store.commit('error/setCode', response.status);
+                _this6.$store.commit('error/setCode', response.status);
 
                 return _context5.abrupt("return", false);
 
               case 6:
-                _this5.characters = response.data; // 区分と登場人物をオブジェクトに変換する
+                _this6.characters = response.data; // 区分と登場人物をオブジェクトに変換する
 
                 sections = new Object();
 
-                _this5.characters.forEach(function (section) {
+                _this6.characters.forEach(function (section) {
                   sections[section.section] = section.characters;
                 });
 
-                _this5.optionCharacters = sections;
+                _this6.optionCharacters = sections;
 
               case 10:
               case "end":
@@ -3120,7 +3157,7 @@ var autokana;
     },
     // 小道具一覧を取得
     fetchProps: function fetchProps() {
-      var _this6 = this;
+      var _this7 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
         var response;
@@ -3139,12 +3176,12 @@ var autokana;
                   break;
                 }
 
-                _this6.$store.commit('error/setCode', response.status);
+                _this7.$store.commit('error/setCode', response.status);
 
                 return _context6.abrupt("return", false);
 
               case 6:
-                _this6.props = response.data;
+                _this7.props = response.data;
 
               case 7:
               case "end":
@@ -3159,7 +3196,7 @@ var autokana;
     },
     // タブ切り替え
     alterTab: function alterTab() {
-      var _this7 = this;
+      var _this8 = this;
 
       if (this.tab === 1) {
         this.tab = 2;
@@ -3167,23 +3204,6 @@ var autokana;
         this.tab = 1;
       } // 調整
 
-
-      this.$nextTick(function () {
-        var content_dom = _this7.$refs.content_detail_prop;
-        var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-
-        if (content_rect.top < 0) {
-          _this7.overlay_class = 0;
-        } else {
-          _this7.overlay_class = 1;
-        }
-      });
-    },
-    // 写真を見せない
-    deletePhoto: function deletePhoto() {
-      var _this8 = this;
-
-      this.editForm_prop.photo = 0; // 調整
 
       this.$nextTick(function () {
         var content_dom = _this8.$refs.content_detail_prop;
@@ -3196,9 +3216,26 @@ var autokana;
         }
       });
     },
+    // 写真を見せない
+    deletePhoto: function deletePhoto() {
+      var _this9 = this;
+
+      this.editForm_prop.photo = 0; // 調整
+
+      this.$nextTick(function () {
+        var content_dom = _this9.$refs.content_detail_prop;
+        var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+        if (content_rect.top < 0) {
+          _this9.overlay_class = 0;
+        } else {
+          _this9.overlay_class = 1;
+        }
+      });
+    },
     // フォームでファイルが選択されたら実行される
     onFileChange: function onFileChange(event) {
-      var _this9 = this;
+      var _this10 = this;
 
       this.errors.photo = null; // 何も選択されていなかったら処理中断
 
@@ -3222,32 +3259,13 @@ var autokana;
         // previewに値が入ると<output>につけたv-ifがtrueと判定される
         // また<output>内部の<img>のsrc属性はpreviewの値を参照しているので
         // 結果として画像が表示される
-        _this9.preview = e.target.result;
+        _this10.preview = e.target.result;
       }; // ファイルを読み込む
       // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
 
 
       reader.readAsDataURL(event.target.files[0]);
       this.editForm_prop.photo = event.target.files[0]; // 調整
-
-      this.$nextTick(function () {
-        var content_dom = _this9.$refs.content_detail_prop;
-        var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-
-        if (content_rect.top < 0) {
-          _this9.overlay_class = 0;
-        } else {
-          _this9.overlay_class = 1;
-        }
-      });
-    },
-    // 画像をクリアするメソッド
-    resetPhoto: function resetPhoto() {
-      var _this10 = this;
-
-      this.preview = null;
-      this.editForm_prop.photo = 0;
-      this.$el.querySelector('input[type="file"]').value = null; // 調整
 
       this.$nextTick(function () {
         var content_dom = _this10.$refs.content_detail_prop;
@@ -3257,6 +3275,25 @@ var autokana;
           _this10.overlay_class = 0;
         } else {
           _this10.overlay_class = 1;
+        }
+      });
+    },
+    // 画像をクリアするメソッド
+    resetPhoto: function resetPhoto() {
+      var _this11 = this;
+
+      this.preview = null;
+      this.editForm_prop.photo = 0;
+      this.$el.querySelector('input[type="file"]').value = null; // 調整
+
+      this.$nextTick(function () {
+        var content_dom = _this11.$refs.content_detail_prop;
+        var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+
+        if (content_rect.top < 0) {
+          _this11.overlay_class = 0;
+        } else {
+          _this11.overlay_class = 1;
         }
       });
     },
@@ -3272,7 +3309,7 @@ var autokana;
     },
     // 諸々リセット
     resetProp: function resetProp() {
-      var _this11 = this;
+      var _this12 = this;
 
       this.editForm_prop.id = null;
       this.editForm_prop.name = null;
@@ -3301,13 +3338,13 @@ var autokana;
       if (this.val) {
         // 調整
         this.$nextTick(function () {
-          var content_dom = _this11.$refs.content_detail_prop;
+          var content_dom = _this12.$refs.content_detail_prop;
           var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
 
           if (content_rect.top < 0) {
-            _this11.overlay_class = 0;
+            _this12.overlay_class = 0;
           } else {
-            _this11.overlay_class = 1;
+            _this12.overlay_class = 1;
           }
         });
       }
@@ -3469,7 +3506,7 @@ var autokana;
     },
     // 編集エラー
     confirmProp: function confirmProp() {
-      var _this12 = this;
+      var _this13 = this;
 
       var regex_str = /[^ぁ-んー]/g; // ひらがな以外
 
@@ -3537,23 +3574,23 @@ var autokana;
 
       kanas.forEach(function (a) {
         // 一文字ずつになっている
-        var number = _this12.Zenkaku2hankaku_number(a);
+        var number = _this13.Zenkaku2hankaku_number(a);
 
         if (pattern_number.test(number)) {
           // 数字だった
           kana = kana + number;
         } else {
           // 数字じゃなかった=文字だった
-          var alf = _this12.Zenkaku2hankaku_alf(number);
+          var alf = _this13.Zenkaku2hankaku_alf(number);
 
           if (pattern_alf.test(alf.toUpperCase())) {
             // アルファベットだった
             kana = kana + alf.toUpperCase();
           } else {
             // アルファベットじゃなかった=ひらがなかカタカナだった
-            var str = _this12.hunkaku2Zenkaku_str(alf);
+            var str = _this13.hunkaku2Zenkaku_str(alf);
 
-            kana = kana + _this12.kata2Hira(str);
+            kana = kana + _this13.kata2Hira(str);
           }
         }
       });
@@ -3614,12 +3651,12 @@ var autokana;
     },
     // 編集confirmのモーダル表示 
     openModal_confirmEdit: function openModal_confirmEdit() {
-      var _this13 = this;
+      var _this14 = this;
 
       this.showContent_confirmEdit = true;
       this.optionOwners.forEach(function (owner) {
-        if (owner.id === _this13.editForm_prop.owner_id) {
-          _this13.editForm_prop.owner.name = owner.name;
+        if (owner.id === _this14.editForm_prop.owner_id) {
+          _this14.editForm_prop.owner.name = owner.name;
         }
       }, this);
       var location = '持ってきてない';
@@ -3664,7 +3701,7 @@ var autokana;
 
       var memos = [];
       this.editForm_prop.prop_comments.forEach(function (memo, index) {
-        if (memo.memo && index !== _this13.editForm_prop.prop_comments.length - 1) {
+        if (memo.memo && index !== _this14.editForm_prop.prop_comments.length - 1) {
           memos.push(memo.memo + '\n　　　');
         } else if (memo.memo) {
           memos.push(memo.memo);
@@ -3681,31 +3718,31 @@ var autokana;
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
-      var _this14 = this;
+      var _this15 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
         return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
-                _this14.showContent_confirmEdit = false;
+                _this15.showContent_confirmEdit = false;
 
-                if (!_this14.editPropMode_detail) {
+                if (!_this15.editPropMode_detail) {
                   _context7.next = 4;
                   break;
                 }
 
                 _context7.next = 4;
-                return _this14.editProp();
+                return _this15.editProp();
 
               case 4:
-                if (!_this14.editPropMode_memo) {
+                if (!_this15.editPropMode_memo) {
                   _context7.next = 7;
                   break;
                 }
 
                 _context7.next = 7;
-                return _this14.editProp_memo();
+                return _this15.editProp_memo();
 
               case 7:
               case "end":
@@ -3728,7 +3765,7 @@ var autokana;
     },
     // 基本情報を編集する
     editProp: function editProp() {
-      var _this15 = this;
+      var _this16 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
         var response, formData, _response, _response2, _formData, _response3;
@@ -3737,24 +3774,24 @@ var autokana;
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                if (!(_this15.editPropMode_detail === 1)) {
+                if (!(_this16.editPropMode_detail === 1)) {
                   _context8.next = 14;
                   break;
                 }
 
                 _context8.next = 3;
-                return axios.post('/api/props/' + _this15.prop.id, {
+                return axios.post('/api/props/' + _this16.prop.id, {
                   method: 'photo_non_update',
-                  name: _this15.editForm_prop.name,
-                  kana: _this15.editForm_prop.kana,
-                  owner_id: _this15.editForm_prop.owner_id,
-                  location: _this15.editForm_prop.location,
-                  handmade: _this15.editForm_prop.handmade,
-                  decision: _this15.editForm_prop.decision,
-                  usage: _this15.editForm_prop.usage,
-                  usage_guraduation: _this15.editForm_prop.usage_guraduation,
-                  usage_left: _this15.editForm_prop.usage_left,
-                  usage_right: _this15.editForm_prop.usage_right
+                  name: _this16.editForm_prop.name,
+                  kana: _this16.editForm_prop.kana,
+                  owner_id: _this16.editForm_prop.owner_id,
+                  location: _this16.editForm_prop.location,
+                  handmade: _this16.editForm_prop.handmade,
+                  decision: _this16.editForm_prop.decision,
+                  usage: _this16.editForm_prop.usage,
+                  usage_guraduation: _this16.editForm_prop.usage_guraduation,
+                  usage_left: _this16.editForm_prop.usage_left,
+                  usage_right: _this16.editForm_prop.usage_right
                 });
 
               case 3:
@@ -3765,7 +3802,7 @@ var autokana;
                   break;
                 }
 
-                _this15.errors.error = response.data.errors;
+                _this16.errors.error = response.data.errors;
                 return _context8.abrupt("return", false);
 
               case 7:
@@ -3774,22 +3811,22 @@ var autokana;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', response.status);
+                _this16.$store.commit('error/setCode', response.status);
 
                 return _context8.abrupt("return", false);
 
               case 10:
-                _this15.editPropMode_detail = 100;
+                _this16.editPropMode_detail = 100;
 
-                if (_this15.editPropMode_memo === 0) {
-                  _this15.editPropMode_memo = 100;
+                if (_this16.editPropMode_memo === 0) {
+                  _this16.editPropMode_memo = 100;
                 }
 
                 _context8.next = 53;
                 break;
 
               case 14:
-                if (!(_this15.editPropMode_detail === 2)) {
+                if (!(_this16.editPropMode_detail === 2)) {
                   _context8.next = 41;
                   break;
                 }
@@ -3797,19 +3834,19 @@ var autokana;
                 // 写真新規投稿
                 formData = new FormData();
                 formData.append('method', 'photo_store');
-                formData.append('name', _this15.editForm_prop.name);
-                formData.append('kana', _this15.editForm_prop.kana);
-                formData.append('owner_id', _this15.editForm_prop.owner_id);
-                formData.append('location', _this15.editForm_prop.location);
-                formData.append('handmade', _this15.editForm_prop.handmade);
-                formData.append('decision', _this15.editForm_prop.decision);
-                formData.append('usage', _this15.editForm_prop.usage);
-                formData.append('usage_guraduation', _this15.editForm_prop.usage_guraduation);
-                formData.append('usage_left', _this15.editForm_prop.usage_left);
-                formData.append('usage_right', _this15.editForm_prop.usage_right);
-                formData.append('photo', _this15.editForm_prop.photo);
+                formData.append('name', _this16.editForm_prop.name);
+                formData.append('kana', _this16.editForm_prop.kana);
+                formData.append('owner_id', _this16.editForm_prop.owner_id);
+                formData.append('location', _this16.editForm_prop.location);
+                formData.append('handmade', _this16.editForm_prop.handmade);
+                formData.append('decision', _this16.editForm_prop.decision);
+                formData.append('usage', _this16.editForm_prop.usage);
+                formData.append('usage_guraduation', _this16.editForm_prop.usage_guraduation);
+                formData.append('usage_left', _this16.editForm_prop.usage_left);
+                formData.append('usage_right', _this16.editForm_prop.usage_right);
+                formData.append('photo', _this16.editForm_prop.photo);
                 _context8.next = 30;
-                return axios.post('/api/props/' + _this15.prop.id, formData);
+                return axios.post('/api/props/' + _this16.prop.id, formData);
 
               case 30:
                 _response = _context8.sent;
@@ -3819,7 +3856,7 @@ var autokana;
                   break;
                 }
 
-                _this15.errors.error = _response.data.errors;
+                _this16.errors.error = _response.data.errors;
                 return _context8.abrupt("return", false);
 
               case 34:
@@ -3828,40 +3865,40 @@ var autokana;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response.status);
+                _this16.$store.commit('error/setCode', _response.status);
 
                 return _context8.abrupt("return", false);
 
               case 37:
-                _this15.editPropMode_detail = 100;
+                _this16.editPropMode_detail = 100;
 
-                if (_this15.editPropMode_memo === 0) {
-                  _this15.editPropMode_memo = 100;
+                if (_this16.editPropMode_memo === 0) {
+                  _this16.editPropMode_memo = 100;
                 }
 
                 _context8.next = 53;
                 break;
 
               case 41:
-                if (!(_this15.editPropMode_detail === 3)) {
+                if (!(_this16.editPropMode_detail === 3)) {
                   _context8.next = 53;
                   break;
                 }
 
                 _context8.next = 44;
-                return axios.post('/api/props/' + _this15.prop.id, {
+                return axios.post('/api/props/' + _this16.prop.id, {
                   method: 'photo_delete',
-                  name: _this15.editForm_prop.name,
-                  kana: _this15.editForm_prop.kana,
-                  owner_id: _this15.editForm_prop.owner_id,
-                  location: _this15.editForm_prop.location,
-                  handmade: _this15.editForm_prop.handmade,
-                  decision: _this15.editForm_prop.decision,
-                  public_id: _this15.editForm_prop.public_id,
-                  usage: _this15.editForm_prop.usage,
-                  usage_guraduation: _this15.editForm_prop.usage_guraduation,
-                  usage_left: _this15.editForm_prop.usage_left,
-                  usage_right: _this15.editForm_prop.usage_right
+                  name: _this16.editForm_prop.name,
+                  kana: _this16.editForm_prop.kana,
+                  owner_id: _this16.editForm_prop.owner_id,
+                  location: _this16.editForm_prop.location,
+                  handmade: _this16.editForm_prop.handmade,
+                  decision: _this16.editForm_prop.decision,
+                  public_id: _this16.editForm_prop.public_id,
+                  usage: _this16.editForm_prop.usage,
+                  usage_guraduation: _this16.editForm_prop.usage_guraduation,
+                  usage_left: _this16.editForm_prop.usage_left,
+                  usage_right: _this16.editForm_prop.usage_right
                 });
 
               case 44:
@@ -3872,7 +3909,7 @@ var autokana;
                   break;
                 }
 
-                _this15.errors.error = _response2.data.errors;
+                _this16.errors.error = _response2.data.errors;
                 return _context8.abrupt("return", false);
 
               case 48:
@@ -3881,19 +3918,19 @@ var autokana;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response2.status);
+                _this16.$store.commit('error/setCode', _response2.status);
 
                 return _context8.abrupt("return", false);
 
               case 51:
-                _this15.editPropMode_detail = 100;
+                _this16.editPropMode_detail = 100;
 
-                if (_this15.editPropMode_memo === 0) {
-                  _this15.editPropMode_memo = 100;
+                if (_this16.editPropMode_memo === 0) {
+                  _this16.editPropMode_memo = 100;
                 }
 
               case 53:
-                if (!(_this15.editPropMode_detail === 4)) {
+                if (!(_this16.editPropMode_detail === 4)) {
                   _context8.next = 79;
                   break;
                 }
@@ -3903,32 +3940,32 @@ var autokana;
 
                 _formData.append('method', 'photo_update');
 
-                _formData.append('name', _this15.editForm_prop.name);
+                _formData.append('name', _this16.editForm_prop.name);
 
-                _formData.append('kana', _this15.editForm_prop.kana);
+                _formData.append('kana', _this16.editForm_prop.kana);
 
-                _formData.append('owner_id', _this15.editForm_prop.owner_id);
+                _formData.append('owner_id', _this16.editForm_prop.owner_id);
 
-                _formData.append('location', _this15.editForm_prop.location);
+                _formData.append('location', _this16.editForm_prop.location);
 
-                _formData.append('handmade', _this15.editForm_prop.handmade);
+                _formData.append('handmade', _this16.editForm_prop.handmade);
 
-                _formData.append('decision', _this15.editForm_prop.decision);
+                _formData.append('decision', _this16.editForm_prop.decision);
 
-                _formData.append('public_id', _this15.editForm_prop.public_id);
+                _formData.append('public_id', _this16.editForm_prop.public_id);
 
-                _formData.append('usage', _this15.editForm_prop.usage);
+                _formData.append('usage', _this16.editForm_prop.usage);
 
-                _formData.append('usage_guraduation', _this15.editForm_prop.usage_guraduation);
+                _formData.append('usage_guraduation', _this16.editForm_prop.usage_guraduation);
 
-                _formData.append('usage_left', _this15.editForm_prop.usage_left);
+                _formData.append('usage_left', _this16.editForm_prop.usage_left);
 
-                _formData.append('usage_right', _this15.editForm_prop.usage_right);
+                _formData.append('usage_right', _this16.editForm_prop.usage_right);
 
-                _formData.append('photo', _this15.editForm_prop.photo);
+                _formData.append('photo', _this16.editForm_prop.photo);
 
                 _context8.next = 70;
-                return axios.post('/api/props/' + _this15.prop.id, _formData);
+                return axios.post('/api/props/' + _this16.prop.id, _formData);
 
               case 70:
                 _response3 = _context8.sent;
@@ -3938,7 +3975,7 @@ var autokana;
                   break;
                 }
 
-                _this15.errors.error = _response3.data.errors;
+                _this16.errors.error = _response3.data.errors;
                 return _context8.abrupt("return", false);
 
               case 74:
@@ -3947,15 +3984,15 @@ var autokana;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response3.status);
+                _this16.$store.commit('error/setCode', _response3.status);
 
                 return _context8.abrupt("return", false);
 
               case 77:
-                _this15.editPropMode_detail = 100;
+                _this16.editPropMode_detail = 100;
 
-                if (_this15.editPropMode_memo === 0) {
-                  _this15.editPropMode_memo = 100;
+                if (_this16.editPropMode_memo === 0) {
+                  _this16.editPropMode_memo = 100;
                 }
 
               case 79:
@@ -3968,7 +4005,7 @@ var autokana;
     },
     // メモを更新する
     editProp_memo: function editProp_memo() {
-      var _this16 = this;
+      var _this17 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
         var response, _response4, _response5;
@@ -3977,15 +4014,15 @@ var autokana;
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
-                if (!(_this16.editPropMode_memo === 1)) {
+                if (!(_this17.editPropMode_memo === 1)) {
                   _context9.next = 13;
                   break;
                 }
 
                 _context9.next = 3;
                 return axios.post('/api/prop_comments', {
-                  prop_id: _this16.editForm_prop.id,
-                  memo: _this16.editForm_prop.memo
+                  prop_id: _this17.editForm_prop.id,
+                  memo: _this17.editForm_prop.memo
                 });
 
               case 3:
@@ -3996,7 +4033,7 @@ var autokana;
                   break;
                 }
 
-                _this16.errors.error = response.data.errors;
+                _this17.errors.error = response.data.errors;
                 return _context9.abrupt("return", false);
 
               case 7:
@@ -4005,23 +4042,23 @@ var autokana;
                   break;
                 }
 
-                _this16.$store.commit('error/setCode', response.status);
+                _this17.$store.commit('error/setCode', response.status);
 
                 return _context9.abrupt("return", false);
 
               case 10:
-                _this16.editPropMode_memo = 100;
+                _this17.editPropMode_memo = 100;
                 _context9.next = 37;
                 break;
 
               case 13:
-                if (!(_this16.editPropMode_memo === 2)) {
+                if (!(_this17.editPropMode_memo === 2)) {
                   _context9.next = 26;
                   break;
                 }
 
                 _context9.next = 16;
-                return axios["delete"]('/api/prop_comments/' + _this16.prop.prop_comments[0].id);
+                return axios["delete"]('/api/prop_comments/' + _this17.prop.prop_comments[0].id);
 
               case 16:
                 _response4 = _context9.sent;
@@ -4031,7 +4068,7 @@ var autokana;
                   break;
                 }
 
-                _this16.errors.error = _response4.data.errors;
+                _this17.errors.error = _response4.data.errors;
                 return _context9.abrupt("return", false);
 
               case 20:
@@ -4040,24 +4077,24 @@ var autokana;
                   break;
                 }
 
-                _this16.$store.commit('error/setCode', _response4.status);
+                _this17.$store.commit('error/setCode', _response4.status);
 
                 return _context9.abrupt("return", false);
 
               case 23:
-                _this16.editPropMode_memo = 100;
+                _this17.editPropMode_memo = 100;
                 _context9.next = 37;
                 break;
 
               case 26:
-                if (!(_this16.editPropMode_memo === 3)) {
+                if (!(_this17.editPropMode_memo === 3)) {
                   _context9.next = 37;
                   break;
                 }
 
                 _context9.next = 29;
-                return axios.post('/api/prop_comments/' + _this16.prop.prop_comments[0].id, {
-                  memo: _this16.editForm_prop.prop_comments[0].memo
+                return axios.post('/api/prop_comments/' + _this17.prop.prop_comments[0].id, {
+                  memo: _this17.editForm_prop.prop_comments[0].memo
                 });
 
               case 29:
@@ -4068,7 +4105,7 @@ var autokana;
                   break;
                 }
 
-                _this16.errors.error = _response5.data.errors;
+                _this17.errors.error = _response5.data.errors;
                 return _context9.abrupt("return", false);
 
               case 33:
@@ -4077,12 +4114,12 @@ var autokana;
                   break;
                 }
 
-                _this16.$store.commit('error/setCode', _response5.status);
+                _this17.$store.commit('error/setCode', _response5.status);
 
                 return _context9.abrupt("return", false);
 
               case 36:
-                _this16.editPropMode_memo = 100;
+                _this17.editPropMode_memo = 100;
 
               case 37:
               case "end":
@@ -4099,19 +4136,19 @@ var autokana;
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this17 = this;
+      var _this18 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
         return _regeneratorRuntime().wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
-                _this17.showContent_confirmDelete = false;
+                _this18.showContent_confirmDelete = false;
 
-                _this17.$emit('close');
+                _this18.$emit('close');
 
                 _context10.next = 4;
-                return _this17.deletProp();
+                return _this18.deletProp();
 
               case 4:
               case "end":
@@ -4127,7 +4164,7 @@ var autokana;
     },
     // 削除する
     deletProp: function deletProp() {
-      var _this18 = this;
+      var _this19 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
         var response;
@@ -4136,7 +4173,7 @@ var autokana;
             switch (_context11.prev = _context11.next) {
               case 0:
                 _context11.next = 2;
-                return axios["delete"]('/api/props/' + _this18.prop.id);
+                return axios["delete"]('/api/props/' + _this19.prop.id);
 
               case 2:
                 response = _context11.sent;
@@ -4146,7 +4183,7 @@ var autokana;
                   break;
                 }
 
-                _this18.errors.error = response.data.errors;
+                _this19.errors.error = response.data.errors;
                 return _context11.abrupt("return", false);
 
               case 6:
@@ -4155,22 +4192,22 @@ var autokana;
                   break;
                 }
 
-                _this18.$store.commit('error/setCode', response.status);
+                _this19.$store.commit('error/setCode', response.status);
 
                 return _context11.abrupt("return", false);
 
               case 9:
-                _this18.prop = [];
+                _this19.prop = [];
 
-                _this18.resetProp(); // メッセージ登録
+                _this19.resetProp(); // メッセージ登録
 
 
-                _this18.$store.commit('message/setContent', {
+                _this19.$store.commit('message/setContent', {
                   content: '小道具が1つ削除されました！',
                   timeout: 6000
                 });
 
-                _this18.$emit('close');
+                _this19.$emit('close');
 
               case 13:
               case "end":
@@ -14179,7 +14216,11 @@ var render = function render() {
   }, [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.prop.prop_comments.length ? _c("ul", _vm._l(_vm.prop.prop_comments, function (comment) {
     return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
   }), 0) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("シーン:")]), _vm._v(" "), _vm.prop.scenes.length ? _c("ol", _vm._l(_vm.prop.scenes, function (scene) {
-    return _c("li", [_c("span", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), scene !== null && scene.first_page !== null ? _c("span", [_vm._v(" : p." + _vm._s(scene.first_page) + " \n                      "), scene !== null && scene.final_page !== null ? _c("span", [_vm._v(" ~ p." + _vm._s(scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), scene.usage ? _c("span", {
+    return _c("li", [_c("span", {
+      staticClass: "prop-detail--scene-area"
+    }, [_c("div", [_c("span", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), scene !== null && scene.first_page !== null && scene.final_page !== 1000 ? _c("span", [_vm._v(": p." + _vm._s(scene.first_page) + " \n                          "), scene !== null && scene.final_page !== null && scene.final_page !== 1000 ? _c("span", [_vm._v(" ~ p." + _vm._s(scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), scene !== null && scene.first_page === 1 && scene.final_page === 1000 ? _c("span", [_vm._v("\n                          : 全シーン\n                        ")]) : _vm._e()]), _vm._v(" "), _c("div", [scene.decision ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("決定")]) : _vm._e(), _vm._v(" "), scene.usage ? _c("span", {
       staticClass: "usage-show"
     }, [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), scene.usage_guraduation ? _c("span", {
       staticClass: "usage-show"
@@ -14187,9 +14228,9 @@ var render = function render() {
       staticClass: "usage-show"
     }, [_vm._v("㊤")]) : _vm._e(), _vm._v(" "), scene.usage_right ? _c("span", {
       staticClass: "usage-show"
-    }, [_vm._v("㊦")]) : _vm._e(), _vm._v(" "), _c("div", [scene.scene_comments.length ? _c("ul", _vm._l(scene.scene_comments, function (comment) {
+    }, [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), _c("div", [scene.scene_comments.length ? _c("ul", _vm._l(scene.scene_comments, function (comment) {
       return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
-    }), 0) : _vm._e()])]);
+    }), 0) : _vm._e()])])]);
   }), 0) : _vm._e()])], 1)])]), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
@@ -22684,7 +22725,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  margin: 0;\n  font-size: 2em;\n}\n\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\nlabel {\n  display: block;\n  margin-bottom: 0.5rem;\n}\ninput[type=checkbox], input[type=radio] {\n  display: block;\n  margin-bottom: 0.7rem;\n  margin-left: 0.7rem;\n}\n/* form */\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n.button-area--together {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n}\n\n.button-area--showhow {\n  margin-bottom: 0.5em;\n}\n.button-area--download {\n  margin-top: 1em;\n  margin-bottom: 0.5em;\n}\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  margin: 0.1em;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.list-button:hover {\n  cursor: pointer;\n}\n.checkbox-area--together {\n  display: flex;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n/* 写真 */\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n  cursor: pointer;\n}\n.navbar__brand:hover {\n  color: #c0c0c0;\n}\n.countdown_and_hamburger {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  flex-direction: row;\n}\n/* カウントダウン */\n.countdown__box {\n  margin-right: 4.8em;\n  width: 10em;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-end;\n}\n.countdown__message_area {\n  padding-bottom: 0.2em;\n}\n.countdown_number {\n  font-size: 1.8em;\n  font-weight: 500;\n}\n.countdown_number_red {\n  color: red;\n}\n.countdown_day {\n  margin-right: 0.5em;\n}\n.countdown_message {\n  font-size: 1.8em;\n  font-weight: 700;\n  margin-right: 0.5em;\n  background-image: linear-gradient(\n\t\t70deg,\n    #169b62 45%, \n    #FFF 50%,\n    #ff883e 55%\n\t);\n\tbackground-size: 500% 100%;\n\tbackground-clip: text;\n\t-webkit-background-clip: text;\n\tcolor: transparent;\n\t-webkit-animation: shine 2s infinite;\n\t        animation: shine 2s infinite;\n}\n@-webkit-keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n@keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n.countdown__image_area {\n  max-width: 25%;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.19em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  min-width: 9.5em;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n.menu-content ul li a:hover {\n  color: #169b62\n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n\n\n/* 小道具投稿 */\n.form__item--furigana {\n  width: 50%;\n  padding-top: 0.3em;\n  padding-bottom: 0.3em;\n}\n.edit-area .form__item--furigana {\n  width: 80%;\n}\n\n/* 検索ボタン（選択削除） */\n.button-area--together-left {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-start;\n}\n.button--choice {\n  display: flex;\n  align-items: flex-end;\n}\n\n/* 表 */ /* シーンも小道具も同一 */\n.phone {\n  text-align: center;\n}\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.phone div table {\n  display: inline-block;\n  width: auto;\n}\n.phone th {\n  width: 20%;\n}\n.phone td {\n  width: 70%;\n}\n\n.th-non { \n  color: #222;\n  background: white;\n}\ninput.checkbox-delete {\n  /* 優先順位あげてる */\n  margin: 0;\n  margin-left: 0.3rem;\n}\n.td-color {\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.PC .th-memo {\n  width: 10em;\n}\n\n\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #4fac7b;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n  cursor: pointer;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  min-width: 19em;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 100%;\n}\n.detail-box>div {\n  width:50%;\n  height: 100%;\n  padding: 0.5em;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n\n/* Confirm＿Dialog */\n/* 横並びボタン */\n.button--confirm {\n  width: 50%;\n  padding: 0.5em;\n}\n.button--danger {\n  background: #e61919;\n  border-color: #e61919;\n}\n.dialog-message {\n  display: flex;\n  white-space: pre-wrap;\n  justify-content: center;\n}\n\n\n/* Show_Prop 写真リスト */\n.usage-show {\n  margin-right: 0.2em;\n}\n\n/* 小道具検索 */\n.cotent-search {\n  min-width: 30em;\n}\n.button-search--area {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n}\n.button-search--close button {\n  border: none;\n  background: none;\n  font-size: 1.2em;\n  cursor: pointer;\n}\n.button--reset {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n  font-size: 0.8rem;\n}\n.form-search {\n  padding: 0.5em 1em;\n}\n.search-sort-area {\n  margin-bottom: 0.8em;\n}\n.search-span {\n  font-weight: bold;\n}\n.search--select-area--box {\n  margin-bottom: 0.4em;\n}\n.search--input {\n  margin-bottom: 0.5em;\n}\n.search--label {\n  font-size: 0.8em;\n  margin-top: 0.5em;\n  margin-bottom: 0.2em;\n} \n.search--select-area {\n  margin-bottom: 0.4em;\n}\n.serach--select-area-colors {\n  display: flex;\n  justify-content: space-between;\n}\n.serach--select-area-colors div {\n  width: 48%;\n}\n.search--select-area--performance {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-right: 1.5em;\n}\n\n/* Detail_Prop 小道具詳細 */\n.area--detail-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n}\n.button--area--detail-box {\n  padding-right: 0.5em;\n}\n.detail-box--img {\n  display: flex;\n  justify-content: center;\n  max-width: 100%;\n  max-height: 100%;\n}\n.detail-box ul, .detail-box ol {\n  margin: 0.2em;\n}\n.detail-box ul ul {\n  margin: 0;\n}\n.edit-area li {\n  list-style-type: none;\n}\n\n/* 選択編集 */\n.checkbox-area--column {\n  display: flex;\n  flex-direction: column;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "/* this file is loaded by index.html and styles the page */\n\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n/* * {\n  font-family: 'メイリオ' ,Meiryo, 'ヒラギノ角ゴ Pro W3' , 'Hiragino Kaku Gothic Pro' , 'ＭＳ Ｐゴシック' , 'Osaka' ,sans-serif;\n  color: #666666;\n} */\n\n:root {\n  font-size: 0.875em;\n}\n\nbody {\n  color: #222;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  margin: 0;\n}\n\nh1 {\n  margin: 0;\n  font-size: 2em;\n}\n\n/*\nform {\n  background-color: #eee;\n  display: grid;\n  grid-gap: 1em;\n  padding: 1em;\n  max-width: 40ch;\n}\ninput {\n  border: 1px solid silver;\n  display: block;\n  font-size: 16px;\n  margin-bottom: 10px;\n  padding: 5px;\n  width: 100%;\n}\nform button {\n  background-color: #bbbbf2;\n  border: 2px solid currentColor;\n  border-radius: .25em;\n  cursor: pointer;\n  font-size: inherit;\n  line-height: 1.4em;\n  padding: 0.25em 1em;\n  max-width: 20ch;\n}\nform button:hover {\n  background-color: lavender;\n}\n*/\n\n/* footer {\n  margin-top: 3em;\n  padding-top: 1.5em;\n  border-top: 1px solid lightgrey;\n} */\n\n/* 共通 */\nlabel {\n  display: block;\n  margin-bottom: 0.5rem;\n}\ninput[type=checkbox], input[type=radio] {\n  display: block;\n  margin-bottom: 0.7rem;\n  margin-left: 0.7rem;\n}\n/* form */\n.panel {\n  border: 1px solid #dedede;\n  margin-top: 1rem;\n  padding: 1.5rem;\n}\n.button-area--together {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n}\n\n.button-area--showhow {\n  margin-bottom: 0.5em;\n}\n.button-area--download {\n  margin-top: 1em;\n  margin-bottom: 0.5em;\n}\n.button {\n  /* border: 1px solid #dedede; */\n  border-radius: 0.25rem;\n  color: #8a8a8a;\n  cursor: pointer;\n  display: inline-block;\n  font-family: inherit;\n  font-size: 1rem;\n  line-height: 1;\n  outline: none;\n  margin: 0.1em;\n  padding: 0.5rem 0.75rem;\n  text-decoration: none;\n  transition: border-color 300ms ease-in-out, color 300ms ease-in-out;\n}\n.button--inverse {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n}\n.list-button:hover {\n  cursor: pointer;\n}\n.checkbox-area--together {\n  display: flex;\n}\n.form__item {\n  border: 1px solid #dedede;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  margin-bottom: 1rem;\n  padding: 0.5em 0.75em;\n  width: 100%;\n}\n.form__button {\n  text-align: right;\n}\n/* 写真 */\n.form__output {\n  display: block;\n  margin-bottom: 1rem;\n}\nimg {\n  max-width: 100%;\n}\n\n\n/* Navbar */\n.navbar {\n  align-items: center;\n  background: #fff;\n  box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);\n  display: flex;\n  height: 4rem;\n  justify-content: space-between;\n  left: 0;\n  padding: 2%;\n  position: fixed;\n  right: 0;\n  top: 0;\n  z-index: 3;\n}\n.navbar__brand {\n  color: inherit;\n  font-family: Merriweather, serif;\n  font-weight: bold;\n  font-size: 1.2rem;\n  text-decoration: none;\n  cursor: pointer;\n}\n.navbar__brand:hover {\n  color: #c0c0c0;\n}\n.countdown_and_hamburger {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  flex-direction: row;\n}\n/* カウントダウン */\n.countdown__box {\n  margin-right: 4.8em;\n  width: 10em;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-end;\n}\n.countdown__message_area {\n  padding-bottom: 0.2em;\n}\n.countdown_number {\n  font-size: 1.8em;\n  font-weight: 500;\n}\n.countdown_number_red {\n  color: red;\n}\n.countdown_day {\n  margin-right: 0.5em;\n}\n.countdown_message {\n  font-size: 1.8em;\n  font-weight: 700;\n  margin-right: 0.5em;\n  background-image: linear-gradient(\n\t\t70deg,\n    #169b62 45%, \n    #FFF 50%,\n    #ff883e 55%\n\t);\n\tbackground-size: 500% 100%;\n\tbackground-clip: text;\n\t-webkit-background-clip: text;\n\tcolor: transparent;\n\t-webkit-animation: shine 2s infinite;\n\t        animation: shine 2s infinite;\n}\n@-webkit-keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n@keyframes shine {\n\t0% {\n\t\tbackground-position: 100% 50%;\n\t}\n\t100% {\n\t\tbackground-position: 0% 50%;\n\t}\n}\n.countdown__image_area {\n  max-width: 25%;\n}\n/* ハンバーガーメニュー　*/\n.menu-btn {\n  z-index: 90;\n  display: flex;\n  position: fixed;\n  right: 3.125em;  \n  justify-content: center;\n  align-items: center;  \n}\n.menu-btn:hover{\n  cursor: hand; \n  cursor: pointer\n} \n.menu-btn span,\n.menu-btn span:before,\n.menu-btn span:after {\n  display: block;\n  position: absolute;\n  content: '';\n  height: 0.19em;/*線の太さ*/\n  width: 1.5625em;/*長さ*/\n  border-radius: 0.1875em;\n  background-color: #c0c0c0;\n  cursor: pointer;\n}\n.menu-btn span:before {\n  bottom: 0.5em;\n}\n.menu-btn span:after {\n  top: 0.5em;\n}\n#menu-btn-check:checked ~ .menu-btn span {\n  background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/\n}\n#menu-btn-check:checked ~ .menu-btn span::before {\n  bottom: 0;\n  transform: rotate(45deg);\n}\n#menu-btn-check:checked ~ .menu-btn span::after {\n  top: 0;\n  transform: rotate(-45deg);\n}\n#menu-btn-check {\n  display: none;\n}\n\n.menu-content {\n  z-index: 80;\n  position: fixed;\n  top: 0;\n  right: -120%;/*rightの値を変更してメニューを画面外へ*/\n  width: 15%;\n  min-width: 9.5em;\n  height: 100%;\n  background-color: #ddefe3;\n  transition: all 0.5s;/*アニメーション設定*/\n}\n.menu-content ul {\n  padding: 4.375em 0.625em 0;\n}\n.menu-content ul li {\n  border-bottom: solid 0.125em #c0c0c0;\n  list-style: none;\n  padding: 1em 0;\n}\n.menu-content ul li a {\n  display: block;\n  width: 100%;\n  padding: 0.5625em 1em 0.625em 0.5625em;\n  font-size: 1em; \n  font-weight: bold;\n  color: #c0c0c0;\n  text-decoration: none;  \n}\n.menu-content ul li a:hover {\n  color: #169b62\n}\n#menu-btn-check:checked ~ .menu-content {\n  right: 0;/*メニューを画面内へ*/\n}\n\n\n/* Footer */\n.footer {\n  align-items: center;\n  border-top: 1px solid #f1f1f1;\n  display: flex;\n  height: 5rem;\n  justify-content: center;\n}\n.footer-message {\n  color: #8a8a8a;\n  line-height: 1;\n}\n\n\n/* Main */\nmain {\n  margin-bottom: 6rem;\n  margin-top: 7rem;\n}\n\n.container {\n  margin: 0 auto;\n  max-width: 1200px;\n  padding: 0 2%;\n}\n\n/* Message */\n.message {\n  background: #D7F9EE;\n  border: 1px solid #41e2b2;\n  border-radius: 0.25rem;\n  color: #117355;\n  margin-bottom: 1.5rem;\n  padding: 1rem;\n}\n\n/* 設定 */\n.container--small {\n  margin: 0 auto;\n  max-width: 600px;\n}\n.tab {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.tab__item {\n  border-bottom: 2px solid #dedede;\n  color: #8a8a8a;\n  cursor: pointer;\n  margin: 0 1rem 0 0;\n  padding: 1rem;\n}\n.tab__item--active {\n  border-bottom: 2px solid #222;\n  color: #222;\n  font-weight: bold;\n}\n\n\n/* 小道具投稿 */\n.form__item--furigana {\n  width: 50%;\n  padding-top: 0.3em;\n  padding-bottom: 0.3em;\n}\n.edit-area .form__item--furigana {\n  width: 80%;\n}\n\n/* 検索ボタン（選択削除） */\n.button-area--together-left {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-start;\n}\n.button--choice {\n  display: flex;\n  align-items: flex-end;\n}\n\n/* 表 */ /* シーンも小道具も同一 */\n.phone {\n  text-align: center;\n}\ntable {\n  margin: auto;\n  width: 95%;\n  border-collapse: collapse;    \n}\n\ntable th, table td {\n  border: solid 1px black; /*実線 1px 黒*/\n  text-align: center;\n}\n\ntable th {/*table内のthに対して*/\n  position: -webkit-sticky;\n  position: sticky;\n  top: 3.9rem;\n  padding: 0.5em;/*上下左右10pxずつ*/\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.phone div table {\n  display: inline-block;\n  width: auto;\n}\n.phone th {\n  width: 20%;\n}\n.phone td {\n  width: 70%;\n}\n\n.th-non { \n  color: #222;\n  background: white;\n}\ninput.checkbox-delete {\n  /* 優先順位あげてる */\n  margin: 0;\n  margin-left: 0.3rem;\n}\n.td-color {\n  color: #169b62;/*文字色 緑*/\n  background: #ddefe3;/*背景色*/\n}\n.PC .th-memo {\n  width: 10em;\n}\n\n\n\ntable td {/*table内のtdに対して*/\n  padding: 0.3em 0.5em;/*上下3pxで左右10px*/\n}\n/* 写真リスト　*/\n.grid {\n  display: grid;\n  grid-gap: 0 2%;\n  grid-template-columns: repeat(auto-fit, 32%);\n}\n.grid__item {\n  margin-bottom: 2rem;\n}\n.photo {\n  position: relative;\n}\n.photo:nth-child(4n+1) .photo__wrapper {\n  background: #4fac7b;\n}\n.photo__wrapper {\n  overflow: hidden;\n  padding-top: 75%;\n  position: relative;\n  cursor: pointer;\n}\nfigure {\n  margin: 0;\n}\n.photo__image {\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -o-object-fit: cover;\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n}\n\n\n/* オーバーレイ */ /* スタンダード */ /* 小道具登録、設定（一部スタイリング）、使用シーン詳細（一部スタイリング）、小道具詳細（一部スタイリング）、小道具リスト、削除確認（一部スタイリング）、編集確認（一部スタイリング）*/\n.overlay {\n  overflow-y: scroll;\n  z-index: 9999;\n  position:fixed;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  background-color:rgba(0, 0, 0, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.overlay-custom {\n  padding-bottom: 1em;\n  align-items: flex-start;\n}\n  \n.content {\n  z-index: 2;\n  width: 50%;\n  min-width: 19em;\n  background-color: white;\n}\n\n/* オーバーレイ */ /* スタイリング */ /* シーン詳細、小道具詳細、 登場人物編集、持ち主編集 */\n.content-detail {\n  width: 80%;\n  aspect-ratio: 2 / 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n.detail-box {\n  display: flex;\n  height: 100%;\n}\n.detail-box>div {\n  width:50%;\n  height: 100%;\n  padding: 0.5em;\n}\n\n/* オーバーレイ */ /*スタイリング */ /* 区分編集、削除確認、編集確認 */\n.content-confirm-dialog {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n\n/* Confirm＿Dialog */\n/* 横並びボタン */\n.button--confirm {\n  width: 50%;\n  padding: 0.5em;\n}\n.button--danger {\n  background: #e61919;\n  border-color: #e61919;\n}\n.dialog-message {\n  display: flex;\n  white-space: pre-wrap;\n  justify-content: center;\n}\n\n\n/* Show_Prop 写真リスト */\n.usage-show {\n  margin-right: 0.2em;\n}\n\n/* 小道具検索 */\n.cotent-search {\n  min-width: 30em;\n}\n.button-search--area {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n}\n.button-search--close button {\n  border: none;\n  background: none;\n  font-size: 1.2em;\n  cursor: pointer;\n}\n.button--reset {\n  background: #222;\n  border-color: #222;\n  color: #fff;\n  transition: opacity 300ms ease-in-out;\n  font-size: 0.8rem;\n}\n.form-search {\n  padding: 0.5em 1em;\n}\n.search-sort-area {\n  margin-bottom: 0.8em;\n}\n.search-span {\n  font-weight: bold;\n}\n.search--select-area--box {\n  margin-bottom: 0.4em;\n}\n.search--input {\n  margin-bottom: 0.5em;\n}\n.search--label {\n  font-size: 0.8em;\n  margin-top: 0.5em;\n  margin-bottom: 0.2em;\n} \n.search--select-area {\n  margin-bottom: 0.4em;\n}\n.serach--select-area-colors {\n  display: flex;\n  justify-content: space-between;\n}\n.serach--select-area-colors div {\n  width: 48%;\n}\n.search--select-area--performance {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-right: 1.5em;\n}\n\n/* Detail_Prop 小道具詳細 */\n.area--detail-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n}\n.button--area--detail-box {\n  padding-right: 0.5em;\n}\n.detail-box--img {\n  display: flex;\n  justify-content: center;\n  max-width: 100%;\n  max-height: 100%;\n}\n.detail-box ul, .detail-box ol {\n  margin: 0.2em;\n}\n.detail-box ul ul {\n  margin: 0;\n}\n.prop-detail--scene-area{\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n}\n.edit-area li {\n  list-style-type: none;\n}\n\n/* 選択編集 */\n.checkbox-area--column {\n  display: flex;\n  flex-direction: column;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -68,27 +68,40 @@
                 <label>シーン:</label>
                   <ol v-if="prop.scenes.length">
                     <li v-for="scene in prop.scenes">
-                      <!-- 名前 -->
-                      <span>{{ scene.character.name }}</span>
-                      <!-- 何ページ -->
-                      <span v-if="scene !== null && scene.first_page !== null"> : p.{{ scene.first_page }} 
-                        <span v-if="scene !== null && scene.final_page !== null"> ~ p.{{ scene.final_page}}</span>
-                      </span>
+                      <span class="prop-detail--scene-area">
+                        <div>
+                          <!-- 名前 -->
+                          <span>{{ scene.character.name }}</span>
+                          <!-- 何ページ -->
+                          <span v-if="scene !== null && scene.first_page !== null && scene.final_page !== 1000">: p.{{ scene.first_page }} 
+                            <span v-if="scene !== null && scene.final_page !== null && scene.final_page !== 1000"> ~ p.{{ scene.final_page}}</span>
+                          </span>
+                          <span v-if="scene !== null && scene.first_page === 1 && scene.final_page === 1000">
+                            : 全シーン
+                          </span>
+                        </div>
 
-                      <!-- 使用状況 -->
-                      <span v-if="scene.usage" class="usage-show">Ⓟ</span>
-                      <span v-if="scene.usage_guraduation" class="usage-show">Ⓖ</span>
-                      <span v-if="scene.usage_left" class="usage-show">㊤</span>
-                      <span v-if="scene.usage_right" class="usage-show">㊦</span>
-                   
-                      <!-- メモ -->
-                      <div>
-                        <ul v-if="scene.scene_comments.length">
-                          <li v-for="comment in scene.scene_comments">
-                            <div>{{ comment.memo }}</div>
-                          </li>
-                        </ul>
-                      </div>
+                        <div>
+                          <!-- 決定かどうか -->
+                          <span v-if="scene.decision" class="usage-show">決定</span>
+
+                          <!-- 使用状況 -->
+                          <span v-if="scene.usage" class="usage-show">Ⓟ</span>
+                          <span v-if="scene.usage_guraduation" class="usage-show">Ⓖ</span>
+                          <span v-if="scene.usage_left" class="usage-show">㊤</span>
+                          <span v-if="scene.usage_right" class="usage-show">㊦</span>
+                        </div>
+                        
+                        <!-- メモ -->
+                        <div>
+                          <ul v-if="scene.scene_comments.length">
+                            <li v-for="comment in scene.scene_comments">
+                              <div>{{ comment.memo }}</div>
+                            </li>
+                          </ul>
+                        </div>
+
+                      </span>
                     </li>
                   </ol>
               </div> 
@@ -326,6 +339,8 @@ export default {
     return {
       // 表示する小道具のデータ
       prop: [],
+      // ページの並び順
+      page_order: [], 
       // 編集データ
       editForm_prop: {
         id: null,
@@ -387,6 +402,11 @@ export default {
       async handler(postProp) {
         if(this.postProp){
           this.overlay_class = 1;
+
+          this.page_order[0] = 1000;
+          for(let i=1; i < 100; i++ ){
+            this.page_order[i] = i;
+          }
           await this.fetchCharacters(); // 最初にしないと間に合わない
           await this.fetchProp();
           await this.fetchOwners();
@@ -493,6 +513,9 @@ export default {
       this.editForm_prop.usage_right = this.prop.usage_right;
 
       this.editForm_prop.prop_comments = JSON.parse(JSON.stringify(this.prop.prop_comments));
+      const scenes = this.prop.scenes;
+      this.sort_Standard(scenes);
+      console.log(this.prop.scenes);
       this.editForm_prop.scenes = JSON.parse(JSON.stringify(this.prop.scenes));
 
       if(this.prop.usage_guraduation){
@@ -518,6 +541,27 @@ export default {
       // }
       this.editPropMode_detail = "";
       this.editPropMode_memo = "";
+    },
+
+    sort_Standard(array){
+      array.sort((a, b) => {
+        // 最初のページで並び替え
+        if(a.first_page !== b.first_page){
+          return a.first_page - b.first_page
+        }
+        // 最後のページで並び替え
+        if(a.final_page !== b.final_page){
+          return this.page_order.indexOf(a.final_page) - this.page_order.indexOf(b.final_page);
+        }
+        // 登場人物idで並び替え
+        if(a.character_id !== b.character_id){
+          return a.character_id - b.character_id;
+        }
+        return 0;
+      });
+
+      this.prop.scenes = array;
+      console.log(array);
     },
 
     // 持ち主を取得

@@ -640,6 +640,11 @@ figure {
 .detail-box ul ul {
   margin: 0;
 }
+.prop-detail--scene-area{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 .edit-area li {
   list-style-type: none;
 }

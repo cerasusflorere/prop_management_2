@@ -193,6 +193,27 @@ class PropController extends Controller
             $affected = Prop::where('id', $id)
                    ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
 
+            if(!$decision){
+                $affected_scene = Scene::where('prop_id', $id)
+                    ->update(['decision' => 0]);
+            }
+            if(!$usage){
+                $affected_scene = Scene::where('prop_id', $id)
+                    ->update(['usage' => 0]);
+            }
+            if(!$usage_guraduation){
+                $affected_scene = Scene::where('prop_id', $id)
+                    ->update(['usage_guraduation' => 0, 'usage_left' => 0, 'usage_right' => 0]);
+            }else if(!$usage_left && !$usage_right){
+                $affected_scene = Scene::where('prop_id', $id)
+                    ->update(['usage_left' => 0, 'usage_right' => 0]);
+            }else if(!$usage_left){
+                $affected_scene = Scene::where('prop_id', $id)
+                    ->update(['usage_left' => 0]);
+            }else if(!$usage_right){
+                $affected_scene = Scene::where('prop_id', $id)
+                    ->update(['usage_left' => 0]);
+            }
             // レスポンスコードは204(No Content)を返却する
             return response($affected, 204);
 
@@ -230,6 +251,29 @@ class PropController extends Controller
                 $affected = Prop::where('id', $id)
                              ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 
+                if(!$decision){
+                    $affected_scene = Scene::where('prop_id', $id)
+                       ->update(['decision' => 0]);
+                }
+                if(!$usage){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage' => 0]);
+                }
+                
+                if(!$usage_guraduation){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage_guraduation' => 0, 'usage_left' => 0, 'usage_right' => 0]);
+                }else if(!$usage_left && !$usage_right){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage_left' => 0, 'usage_right' => 0]);
+                }else if(!$usage_left){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage_left' => 0]);
+                }else if(!$usage_right){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage_left' => 0]);
+                }
+
                 DB::commit();
             }catch (\Exception $exception) {
                 DB::rollBack();
@@ -267,6 +311,29 @@ class PropController extends Controller
             try {
                 $affected = Prop::where('id', $id)
                              ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => null, 'url' => null, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                
+                if(!$decision){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['decision' => 0]);
+                }
+                if(!$usage){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage' => 0]);
+                }
+            
+                if(!$usage_guraduation){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage_guraduation' => 0, 'usage_left' => 0, 'usage_right' => 0]);
+                }else if(!$usage_left && !$usage_right){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage_left' => 0, 'usage_right' => 0]);
+                }else if(!$usage_left){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage_left' => 0]);
+                }else if(!$usage_right){
+                    $affected_scene = Scene::where('prop_id', $id)
+                    ->update(['usage_left' => 0]);
+                }
                 
                 DB::commit();
 
@@ -318,6 +385,28 @@ class PropController extends Controller
                 $affected = Prop::where('id', $id)
                              ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 
+                if(!$decision){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['decision' => 0]);
+                }
+                if(!$usage){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage' => 0]);
+                }
+                if(!$usage_guraduation){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage_guraduation' => 0, 'usage_left' => 0, 'usage_right' => 0]);
+                }else if(!$usage_left && !$usage_right){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage_left' => 0, 'usage_right' => 0]);
+                }else if(!$usage_left){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage_left' => 0]);
+                }else if(!$usage_right){
+                    $affected_scene = Scene::where('prop_id', $id)
+                        ->update(['usage_left' => 0]);
+                }
+
                 DB::commit();
 
                 if(!$affected){
@@ -572,6 +661,11 @@ class PropController extends Controller
             // これで決定か
             $affected= Prop::whereIn('id', $ids)
                     ->update(['decision' => $yes_no]);
+            
+            if(!$yes_no){
+                $affected_scene = Scene::whereIn('prop_id', $ids)
+                    ->update(['decision' => 0]);
+            }
 
             // レスポンスコードは204(No Content)を返却する
             return response($affected, 204);
@@ -580,12 +674,25 @@ class PropController extends Controller
             $affected= Prop::whereIn('id', $ids)
                     ->update(['usage' => $yes_no]);
 
+            if(!$yes_no){
+                $affected_scene = Scene::whereIn('prop_id', $ids)
+                    ->update(['usage' => 0]);
+            }
+
             // レスポンスコードは204(No Content)を返却する
             return response($affected, 204);
         }else if($request->method == 'usage_guraduation'){
             // 卒業公演で使用するか
-            $affected= Prop::whereIn('id', $ids)
-                    ->update(['usage_guraduation' => $yes_no]);
+            if($yes_no){
+                $affected= Prop::whereIn('id', $ids)
+                    ->update(['usage_guraduation' => 1]);
+            }else{
+                $affected= Prop::whereIn('id', $ids)
+                    ->update(['usage_guraduation' => 0, 'usage_left' => 0, 'usage_right' => 0]);
+
+                $affected_scene = Scene::whereIn('prop_id', $ids)
+                    ->update(['usage_guraduation' => 0, 'usage_left' => 0, 'usage_right' => 0]);
+            }
 
             // レスポンスコードは204(No Content)を返却する
             return response($affected, 204);
@@ -596,6 +703,9 @@ class PropController extends Controller
                     ->update(['usage_guraduation' => 1, 'usage_left' => 1]);
             }else{
                 $affected= Prop::whereIn('id', $ids)
+                    ->update(['usage_left' => 0]);
+                    
+                $affected_scene = Scene::whereIn('prop_id', $ids)
                     ->update(['usage_left' => 0]);
             }            
 
@@ -609,6 +719,9 @@ class PropController extends Controller
             }else{
                 $affected= Prop::whereIn('id', $ids)
                     ->update(['usage_right' => 0]);
+                    
+                $affected_scene = Scene::whereIn('prop_id', $ids)
+                        ->update(['usage_right' => 0]);
             }
 
             // レスポンスコードは204(No Content)を返却する
