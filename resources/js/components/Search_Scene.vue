@@ -434,6 +434,7 @@
             this.search_scene.scene_search.page.final = null;
             this.search_scene.scene_search.select_all_page = false;
             this.selectedAttr = 0;
+            this.selectedCharacters = '';
             this.search_scene.scene_search.section = 0;
             this.search_scene.scene_search.character = 0;
             this.search_scene.scene_search.name.input = null;

@@ -11,7 +11,7 @@
       </div>
 
       <div v-if="props.length" class="button-area--small">
-        <di class="button-area--together-left">
+        <div class="button-area--together-left">
           <!-- 検索 -->
           <div class="button-area--small-small">
             <button type="button" @click="openModal_searchProp(Math.random())" class="button button--inverse button--small"><i class="fas fa-search fa-fw"></i>検索</button>
@@ -35,7 +35,7 @@
             <button type="button" @click="openModal_confirmDelete" class="button button--inverse button--small button--choice"><i class="fas fa-trash-alt fa-fw"></i>選択削除</button>
           </div>
           <confirmDialog_Delete :confirm_dialog_delete_message="postMessage_Delete" v-show="showContent_confirmDelete" @Cancel_Delete="closeModal_confirmDelete_Cancel" @OK_Delete="closeModal_confirmDelete_OK"/>
-        </di>
+        </div>
         
         <!-- ダウンロードボタン -->
         <!-- リスト表示かつPCかつデータがある時 -->
@@ -333,7 +333,7 @@
         postSearch: "",
         custom_sort: null,
         custom_name: null,
-        custom_refine: null,        
+        custom_refine: null,
         // 選択ボタン
         choice_flag: false,
         // 選択
@@ -519,7 +519,7 @@
       // 編集customのモーダル表示 
       openModal_customEdit () {
         this.showContent_customEdit = true;
-        this.postMessage_Edit = '小道具の編集項目について選択してください。';
+        this.postMessage_CustomEdit = '小道具の編集項目について選択してください。';
       },
       // 編集customのモーダル非表示_OKの場合
       async closeModal_customEdit_OK(edit_custom_flag) {
@@ -530,12 +530,15 @@
           const no = edit_custom_flag.indexOf('no');
           const handmade_custom = edit_custom_flag.split('_');
           if(yes !== -1){
+            // yes
             this.yes_no = 1;
             this.edit_custom =  edit_custom_flag.replace('_yes', '');
           }else if(no !== -1){
+            // no
             this.yes_no = 0;
             this.edit_custom = edit_custom_flag.replace('_no', '');
           }else{
+            // handmade
             this.yes_no = 1;
             console.log(handmade_custom[1]);
             this.edit_custom = handmade_custom[1];

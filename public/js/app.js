@@ -2642,7 +2642,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       prop_scene_flag: 1,
       // 1:小道具、2:使用シーン
       // 選択項目(小道具)
-      editCustomProp: null
+      editCustomProp: null,
+      // 選択項目(使用シーン)
+      editCustomScene: null
     };
   },
   watch: {
@@ -2665,10 +2667,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     _this.overlay_class = 1;
                   }
 
-                  if (_this.custom_dialog_edit_message.indexOf('小道具')) {
-                    prop_scene_flag = 1;
+                  if (_this.custom_dialog_edit_message.indexOf('小道具') !== -1) {
+                    _this.prop_scene_flag = 1;
                   } else {
-                    prop_scene_flag = 2;
+                    _this.prop_scene_flag = 2;
                   }
 
                 case 4:
@@ -8562,6 +8564,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.search_scene.scene_search.page["final"] = null;
       this.search_scene.scene_search.select_all_page = false;
       this.selectedAttr = 0;
+      this.selectedCharacters = '';
       this.search_scene.scene_search.section = 0;
       this.search_scene.scene_search.character = 0;
       this.search_scene.scene_search.name.input = null;
@@ -11203,7 +11206,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     // 編集customのモーダル表示 
     openModal_customEdit: function openModal_customEdit() {
       this.showContent_customEdit = true;
-      this.postMessage_Edit = '小道具の編集項目について選択してください。';
+      this.postMessage_CustomEdit = '小道具の編集項目について選択してください。';
     },
     // 編集customのモーダル非表示_OKの場合
     closeModal_customEdit_OK: function closeModal_customEdit_OK(edit_custom_flag) {
@@ -11225,12 +11228,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   handmade_custom = edit_custom_flag.split('_');
 
                   if (yes !== -1) {
+                    // yes
                     _this7.yes_no = 1;
                     _this7.edit_custom = edit_custom_flag.replace('_yes', '');
                   } else if (no !== -1) {
+                    // no
                     _this7.yes_no = 0;
                     _this7.edit_custom = edit_custom_flag.replace('_no', '');
                   } else {
+                    // handmade
                     _this7.yes_no = 1;
                     console.log(handmade_custom[1]);
                     _this7.edit_custom = handmade_custom[1];
@@ -11767,8 +11773,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Detail_Scene_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Detail_Scene.vue */ "./resources/js/components/Detail_Scene.vue");
 /* harmony import */ var _components_Detail_Prop_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Detail_Prop.vue */ "./resources/js/components/Detail_Prop.vue");
 /* harmony import */ var _components_Search_Scene_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Search_Scene.vue */ "./resources/js/components/Search_Scene.vue");
-/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! exceljs */ "./node_modules/exceljs/dist/exceljs.min.js");
-/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(exceljs__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _components_Custom_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/Custom_Dialog_Edit.vue */ "./resources/js/components/Custom_Dialog_Edit.vue");
+/* harmony import */ var _components_Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/Confirm_Dialog_Edit.vue */ "./resources/js/components/Confirm_Dialog_Edit.vue");
+/* harmony import */ var _components_Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
+/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! exceljs */ "./node_modules/exceljs/dist/exceljs.min.js");
+/* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(exceljs__WEBPACK_IMPORTED_MODULE_7__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -11794,12 +11803,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
+
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // このページの上で表示するコンポーネント
   components: {
     detailScene: _components_Detail_Scene_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
     detailProp: _components_Detail_Prop_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
-    searchScene: _components_Search_Scene_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+    searchScene: _components_Search_Scene_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    customDialog_Edit: _components_Custom_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
+    confirmDialog_Edit: _components_Confirm_Dialog_Edit_vue__WEBPACK_IMPORTED_MODULE_5__["default"],
+    confirmDialog_Delete: _components_Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
   },
   data: function data() {
     return {
@@ -11823,7 +11838,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       showContent_search: false,
       postSearch: "",
       // ページの並び順
-      page_order: []
+      page_order: [],
+      // 選択ボタン
+      choice_flag: false,
+      // 選択
+      choice_ids: [],
+      choice_many: 0,
+      // 編集custom
+      showContent_customEdit: false,
+      postMessage_CustomEdit: "",
+      edit_custom: null,
+      yes_no: null,
+      // 編集confirm
+      showContent_confirmEdit: false,
+      postMessage_Edit: "",
+      // 削除confirm
+      showContent_confirmDelete: false,
+      postMessage_Delete: ""
     };
   },
   watch: {
@@ -11895,22 +11926,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this2.page_order[i] = i;
                 }
 
+                _this2.scenes.forEach(function (scene) {
+                  _this2.choice_ids.push(false);
+                }, _this2);
+
                 if (!(_this2.custom_sort || _this2.custom_name || _this2.custom_refine)) {
-                  _context2.next = 15;
+                  _context2.next = 16;
                   break;
                 }
 
-                _context2.next = 13;
+                _context2.next = 14;
                 return _this2.closeModal_searchScene(_this2.custom_sort, _this2.custom_name, _this2.custom_refine);
 
-              case 13:
-                _context2.next = 16;
+              case 14:
+                _context2.next = 17;
                 break;
 
-              case 15:
+              case 16:
                 _this2.sort_Standard(_this2.showScenes);
 
-              case 16:
+              case 17:
               case "end":
                 return _context2.stop();
             }
@@ -12437,22 +12472,330 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee4);
       }))();
     },
+    // 選択ボタン出現
+    showCheckBox: function showCheckBox() {
+      var _this7 = this;
+
+      if (this.choice_flag) {
+        this.choice_flag = false;
+        this.choice_many = 0;
+        this.scenes.forEach(function (scene) {
+          _this7.$set(_this7.choice_ids, scene.id, false);
+        }, this);
+      } else {
+        this.choice_flag = true;
+      }
+    },
+    // 選択（全選択）
+    choiceDeleteAllScenes: function choiceDeleteAllScenes() {
+      var _this8 = this;
+
+      if (!this.choice_many) {
+        this.choice_many = 1;
+        this.showScenes.forEach(function (scene) {
+          // リアクティブにするため
+          _this8.$set(_this8.choice_ids, scene.id, true);
+        }, this);
+      } else {
+        this.choice_many = 0;
+        this.showScenes.forEach(function (scene) {
+          _this8.$set(_this8.choice_ids, scene.id, false);
+        }, this);
+      }
+    },
+    // 編集customのモーダル表示 
+    openModal_customEdit: function openModal_customEdit() {
+      this.showContent_customEdit = true;
+      this.postMessage_CustomEdit = '使用シーンの編集項目について選択してください。';
+    },
+    // 編集customのモーダル非表示_OKの場合
+    closeModal_customEdit_OK: function closeModal_customEdit_OK(edit_custom_flag) {
+      var _this9 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var yes, no;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                if (edit_custom_flag !== null) {
+                  _this9.showContent_customEdit = false;
+
+                  _this9.$emit('close');
+
+                  yes = edit_custom_flag.indexOf('yes');
+                  no = edit_custom_flag.indexOf('no');
+
+                  if (yes !== -1) {
+                    // yes
+                    _this9.yes_no = 1;
+                    _this9.edit_custom = edit_custom_flag.replace('_yes', '');
+                  } else if (no !== -1) {
+                    // no
+                    _this9.yes_no = 0;
+                    _this9.edit_custom = edit_custom_flag.replace('_no', '');
+                  }
+
+                  _this9.openModal_confirmEdit();
+                }
+
+              case 1:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
+      }))();
+    },
+    // 編集customのモーダル非表示_Cancelの場合
+    closeModal_customEdit_Cancel: function closeModal_customEdit_Cancel() {
+      this.showContent_customEdit = false;
+    },
+    // 編集confirmのモーダル表示 
+    openModal_confirmEdit: function openModal_confirmEdit() {
+      var _this10 = this;
+
+      this.showContent_confirmEdit = true;
+      var edit_scenes_name = '';
+      var edit_custom_show;
+      var yes_no_show;
+
+      if (this.scenes.length === this.showScenes.length && this.choice_many) {
+        edit_scenes_name = '全て\n';
+      }
+
+      this.showScenes.forEach(function (scene, index) {
+        if (_this10.choice_ids[scene.id]) {
+          if (scene.first_page === 1 && scene.final_page === 1000) {
+            edit_scenes_name = edit_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': 全シーン' + '\n';
+          } else if (scene.first_page && scene.final_page) {
+            edit_scenes_name = edit_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': p.' + scene.first_page + '~ ' + scene.final_page + '\n';
+          } else if (scene.first_page) {
+            edit_scenes_name = edit_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': p.' + scene.first_page + '\n';
+          } else {
+            edit_scenes_name = edit_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + '\n';
+          }
+        }
+      }, this);
+
+      if (this.edit_custom === 'decision') {
+        edit_custom_show = '決定して';
+      } else if (this.edit_custom === 'usage') {
+        edit_custom_show = '中間発表で使用して';
+      } else if (this.edit_custom === 'usage_guraduation') {
+        edit_custom_show = '卒業公演で使用して';
+      } else if (this.edit_custom === 'usage_left') {
+        edit_custom_show = '上手で使用して';
+      } else if (this.edit_custom === 'usage_right') {
+        edit_custom_show = '下手で使用して';
+      } else {
+        edit_custom_show = 'セットする人を削除す';
+      }
+
+      if (this.yes_no === 1) {
+        yes_no_show = 'る';
+      } else {
+        yes_no_show = 'ない';
+      }
+
+      this.postMessage_Edit = '以下の使用シーンを' + edit_custom_show + yes_no_show + 'と変更します。\n本当に変更しますか？\n' + edit_scenes_name;
+    },
+    // 編集confirmのモーダル非表示_OKの場合
+    closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
+      var _this11 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _this11.showContent_confirmEdit = false;
+
+                _this11.$emit('close');
+
+                _context6.next = 4;
+                return _this11.EditProps();
+
+              case 4:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }))();
+    },
+    // 編集confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmEdit_Cancel: function closeModal_confirmEdit_Cancel() {
+      this.showContent_confirmEdit = false;
+      this.openModal_customEdit();
+    },
+    // 選択編集(実行)
+    EditProps: function EditProps() {
+      var _this12 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+        var scene_ids, prop_ids_dupli, method, yes_no, prop_ids_set, prop_ids, response;
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                scene_ids = [];
+                prop_ids_dupli = [];
+                method = _this12.edit_custom;
+
+                _this12.showScenes.forEach(function (scene) {
+                  if (_this12.choice_ids[scene.id]) {
+                    scene_ids.push(scene.id);
+                  }
+                });
+
+                _this12.showScenes.forEach(function (scene) {
+                  if (_this12.choice_ids[scene.id]) {
+                    prop_ids_dupli.push(scene.prop_id);
+                  }
+                });
+
+                prop_ids_set = new Set(prop_ids_dupli);
+                prop_ids = _toConsumableArray(prop_ids_set);
+
+                if (_this12.yes_no === 1) {
+                  yes_no = 1;
+                } else {
+                  yes_no = null;
+                }
+
+                _context7.next = 10;
+                return axios.post('/api/scenes_many/' + scene_ids, {
+                  method: method,
+                  yes_no: yes_no,
+                  prop_ids: prop_ids
+                });
+
+              case 10:
+                response = _context7.sent;
+                _context7.next = 13;
+                return _this12.fetchScenes();
+
+              case 13:
+                // 選択削除閉じる
+                _this12.showCheckBox();
+
+              case 14:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7);
+      }))();
+    },
+    // 削除confirmのモーダル表示 
+    openModal_confirmDelete: function openModal_confirmDelete(id) {
+      var _this13 = this;
+
+      this.showContent_confirmDelete = true;
+      var delete_scenes_name = '';
+
+      if (this.scenes.length === this.showScenes.length && this.choice_many) {
+        delete_scenes_name = '全て\n';
+      }
+
+      this.showScenes.forEach(function (scene, index) {
+        if (_this13.choice_ids[scene.id]) {
+          if (scene.first_page === 1 && scene.final_page === 1000) {
+            delete_scenes_name = delete_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': 全シーン' + '\n';
+          } else if (scene.first_page && scene.final_page) {
+            delete_scenes_name = delete_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': p.' + scene.first_page + '~ ' + scene.final_page + '\n';
+          } else if (scene.first_page) {
+            delete_scenes_name = delete_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': p.' + scene.first_page + '\n';
+          } else {
+            delete_scenes_name = delete_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + '\n';
+          }
+        }
+      }, this);
+      this.postMessage_Delete = '本当に削除しますか？\n' + delete_scenes_name;
+    },
+    // 削除confirmのモーダル非表示_OKの場合
+    closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
+      var _this14 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                _this14.showContent_confirmDelete = false;
+
+                _this14.$emit('close');
+
+                _context8.next = 4;
+                return _this14.deleteProps();
+
+              case 4:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8);
+      }))();
+    },
+    // 削除confirmのモーダル非表示_Cancelの場合
+    closeModal_confirmDelete_Cancel: function closeModal_confirmDelete_Cancel() {
+      this.showContent_confirmDelete = false;
+    },
+    // 選択削除（実行）
+    deleteScenes: function deleteScenes() {
+      var _this15 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+        var ids, response;
+        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                ids = [];
+
+                _this15.showScenes.forEach(function (scene) {
+                  if (_this15.choice_ids[scene.id]) {
+                    ids.push(scene.id);
+                  }
+                });
+
+                _context9.next = 4;
+                return axios["delete"]('/api/scenes_many/' + ids);
+
+              case 4:
+                response = _context9.sent;
+                _context9.next = 7;
+                return _this15.fetchScenes();
+
+              case 7:
+                // 選択削除閉じる
+                _this15.showCheckBox();
+
+              case 8:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9);
+      }))();
+    },
     // // ダウンロード
     // downloadScenes() {
     //   const response = axios.post('/api/scenes_list', this.showScenes);
     // }
     // ダウンロード
     downloadScenes: function downloadScenes() {
-      var _this7 = this;
+      var _this16 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
         var workbook, worksheet, font, fill, uint8Array, blob, a, today, filename;
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context10.prev = _context10.next) {
               case 0:
                 // ①初期化
-                workbook = new (exceljs__WEBPACK_IMPORTED_MODULE_4___default().Workbook)(); // workbookを作成
+                workbook = new (exceljs__WEBPACK_IMPORTED_MODULE_7___default().Workbook)(); // workbookを作成
 
                 workbook.addWorksheet('Sheet1'); // worksheetを追加
 
@@ -12591,7 +12934,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 worksheet.getCell('I1').font = font;
                 worksheet.getCell('I1').fill = fill;
 
-                _this7.showScenes.forEach(function (scene, index) {
+                _this16.showScenes.forEach(function (scene, index) {
                   var datas = [];
                   datas.push(scene.first_page);
                   datas.push(scene.final_page);
@@ -12641,18 +12984,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }); // ③ファイル生成
 
 
-                _context5.next = 28;
+                _context10.next = 28;
                 return workbook.xlsx.writeBuffer();
 
               case 28:
-                uint8Array = _context5.sent;
+                uint8Array = _context10.sent;
                 // xlsxの場合
                 blob = new Blob([uint8Array], {
                   type: 'application/octet-binary'
                 });
                 a = document.createElement('a');
                 a.href = (window.URL || window.webkitURL).createObjectURL(blob);
-                today = _this7.formatDate(new Date());
+                today = _this16.formatDate(new Date());
                 filename = 'Scenes_list_' + 'all' + '_' + today + '.xlsx';
                 a.download = filename;
                 a.click();
@@ -12660,10 +13003,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 37:
               case "end":
-                return _context5.stop();
+                return _context10.stop();
             }
           }
-        }, _callee5);
+        }, _callee10);
       }))();
     },
     // 日付をyyyy-mm-ddで返す
@@ -13322,6 +13665,319 @@ var render = function render() {
       "for": "prop_usage_right_no"
     }
   }, [_vm._v("使わない")])])]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.prop_scene_flag === 2,
+      expression: "prop_scene_flag === 2"
+    }]
+  }, [_c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "scene_decision"
+    }
+  }, [_vm._v("これで決定か")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomScene,
+      expression: "editCustomScene"
+    }],
+    attrs: {
+      type: "radio",
+      id: "scene_decision_yes",
+      value: "decision_yes"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomScene, "decision_yes")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomScene = "decision_yes";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "scene_decision_yes"
+    }
+  }, [_vm._v("決定してる")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomScene,
+      expression: "editCustomScene"
+    }],
+    attrs: {
+      type: "radio",
+      id: "scene_decision_no",
+      value: "decision_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomScene, "decision_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomScene = "decision_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "scene_decision_no"
+    }
+  }, [_vm._v("決定してない")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "scene_usage"
+    }
+  }, [_vm._v("中間発表")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomScene,
+      expression: "editCustomScene"
+    }],
+    attrs: {
+      type: "radio",
+      id: "scene_usage_yes",
+      value: "usage_yes"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomScene, "usage_yes")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomScene = "usage_yes";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "scene_usage_yes"
+    }
+  }, [_vm._v("使う")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomScene,
+      expression: "editCustomScene"
+    }],
+    attrs: {
+      type: "radio",
+      id: "scene_usage_no",
+      value: "usage_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomScene, "usage_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomScene = "usage_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "scene_usage_no"
+    }
+  }, [_vm._v("使わない")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "scene_usage_guraduation"
+    }
+  }, [_vm._v("卒業公演")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomScene,
+      expression: "editCustomScene"
+    }],
+    attrs: {
+      type: "radio",
+      id: "scene_usage_guraduation_yes",
+      value: "usage_guraduation_yes"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomScene, "usage_guraduation_yes")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomScene = "usage_guraduation_yes";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "scene_usage_guraduation_yes"
+    }
+  }, [_vm._v("使う")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomScene,
+      expression: "editCustomScene"
+    }],
+    attrs: {
+      type: "radio",
+      id: "scene_usage_guraduation_no",
+      value: "usage_guraduation_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomScene, "usage_guraduation_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomScene = "usage_guraduation_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "scene_usage_guraduation_no"
+    }
+  }, [_vm._v("使わない")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "scene_usage_left"
+    }
+  }, [_vm._v("上手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomScene,
+      expression: "editCustomScene"
+    }],
+    attrs: {
+      type: "radio",
+      id: "scene_usage_left_yes",
+      value: "usage_left_yes"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomScene, "usage_left_yes")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomScene = "usage_left_yes";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "scene_usage_left_yes"
+    }
+  }, [_vm._v("使う")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomScene,
+      expression: "editCustomScene"
+    }],
+    attrs: {
+      type: "radio",
+      id: "scene_usage_left_no",
+      value: "usage_left_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomScene, "usage_left_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomScene = "usage_left_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "scene_usage_left_no"
+    }
+  }, [_vm._v("使わない")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "scene_usage_right"
+    }
+  }, [_vm._v("下手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomScene,
+      expression: "editCustomScene"
+    }],
+    attrs: {
+      type: "radio",
+      id: "scene_usage_right_yes",
+      value: "usage_right_yes"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomScene, "usage_right_yes")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomScene = "usage_right_yes";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "scene_usage_right_yes"
+    }
+  }, [_vm._v("使う")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomScene,
+      expression: "editCustomScene"
+    }],
+    attrs: {
+      type: "radio",
+      id: "scene_usage_right_no",
+      value: "usage_right_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomScene, "usage_right_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomScene = "usage_right_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "scene_usage_right_no"
+    }
+  }, [_vm._v("使わない")])]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "scene_setting"
+    }
+  }, [_vm._v("セットする人")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editCustomScene,
+      expression: "editCustomScene"
+    }],
+    attrs: {
+      type: "radio",
+      id: "scene_setting_no",
+      value: "setting_no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editCustomScene, "setting_no")
+    },
+    on: {
+      change: function change($event) {
+        _vm.editCustomScene = "setting_no";
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "scene_setting_no"
+    }
+  }, [_vm._v("未設定にする")])])]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.prop_scene_flag === 1,
+      expression: "prop_scene_flag === 1"
+    }],
     staticClass: "button-area--together"
   }, [_c("button", {
     staticClass: "button button--inverse button--confirm",
@@ -13343,6 +13999,38 @@ var render = function render() {
     on: {
       click: function click($event) {
         return _vm.$emit("OK_CustomEdit", _vm.editCustomProp);
+      }
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-edit fa-fw"
+  }), _vm._v("決定")])]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.prop_scene_flag === 2,
+      expression: "prop_scene_flag === 2"
+    }],
+    staticClass: "button-area--together"
+  }, [_c("button", {
+    staticClass: "button button--inverse button--confirm",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.$emit("Cancel_CustomEdit");
+      }
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-ban fa-fw"
+  }), _vm._v("キャンセル")]), _vm._v(" "), _c("button", {
+    staticClass: "button button--inverse button--confirm button--danger",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.$emit("OK_CustomEdit", _vm.editCustomScene);
       }
     }
   }, [_c("i", {
@@ -18782,7 +19470,7 @@ var render = function render() {
     staticClass: "fas fa-list-ul fa-fw"
   }), _vm._v("リスト")])]), _vm._v(" "), _vm.props.length ? _c("div", {
     staticClass: "button-area--small"
-  }, [_c("di", {
+  }, [_c("div", {
     staticClass: "button-area--together-left"
   }, [_c("div", {
     staticClass: "button-area--small-small"
@@ -18907,7 +19595,7 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "fas fa-download fa-fw"
-  }), _vm._v("ダウンロード")])]) : _vm._e()], 1) : _vm._e()]), _vm._v(" "), _c("div", {
+  }), _vm._v("ダウンロード")])]) : _vm._e()]) : _vm._e()]), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -19214,10 +19902,12 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("div", [_vm.scenes.length ? _c("div", {
+  return _c("div", [_c("div", {
     staticClass: "button-area"
-  }, [_c("div", {
+  }, [_vm.scenes.length ? _c("div", {
     staticClass: "button-area--small"
+  }, [_c("div", {
+    staticClass: "button-area--together-left"
   }, [_c("div", {
     staticClass: "button-area--small-small"
   }, [_c("button", {
@@ -19245,7 +19935,85 @@ var render = function render() {
     on: {
       close: _vm.closeModal_searchScene
     }
-  }), _vm._v(" "), !_vm.sizeScreen && _vm.showScenes.length ? _c("div", {
+  }), _vm._v(" "), _c("div", {
+    staticClass: "button-area--small-small"
+  }, [_c("button", {
+    staticClass: "button button--inverse button--small button--choice",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.showCheckBox
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-check-square fa-fw"
+  }), _vm._v("選択")])]), _vm._v(" "), _vm.choice_flag ? _c("div", {
+    staticClass: "button-area--small-small"
+  }, [_c("button", {
+    staticClass: "button button--inverse button--small button--choice",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.openModal_customEdit
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-edit fa-fw"
+  }), _vm._v("選択編集")])]) : _vm._e(), _vm._v(" "), _c("customDialog_Edit", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_customEdit,
+      expression: "showContent_customEdit"
+    }],
+    attrs: {
+      custom_dialog_edit_message: _vm.postMessage_CustomEdit
+    },
+    on: {
+      Cancel_CustomEdit: _vm.closeModal_customEdit_Cancel,
+      OK_CustomEdit: _vm.closeModal_customEdit_OK
+    }
+  }), _vm._v(" "), _c("confirmDialog_Edit", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_confirmEdit,
+      expression: "showContent_confirmEdit"
+    }],
+    attrs: {
+      confirm_dialog_edit_message: _vm.postMessage_Edit
+    },
+    on: {
+      Cancel_Edit: _vm.closeModal_confirmEdit_Cancel,
+      OK_Edit: _vm.closeModal_confirmEdit_OK
+    }
+  }), _vm._v(" "), _vm.choice_flag ? _c("div", {
+    staticClass: "button-area--small-small"
+  }, [_c("button", {
+    staticClass: "button button--inverse button--small button--choice",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.openModal_confirmDelete
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-trash-alt fa-fw"
+  }), _vm._v("選択削除")])]) : _vm._e(), _vm._v(" "), _c("confirmDialog_Delete", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showContent_confirmDelete,
+      expression: "showContent_confirmDelete"
+    }],
+    attrs: {
+      confirm_dialog_delete_message: _vm.postMessage_Delete
+    },
+    on: {
+      Cancel_Delete: _vm.closeModal_confirmDelete_Cancel,
+      OK_Delete: _vm.closeModal_confirmDelete_OK
+    }
+  })], 1), _vm._v(" "), !_vm.sizeScreen && _vm.showScenes.length ? _c("div", {
     staticClass: "button-area--small-small"
   }, [_c("button", {
     staticClass: "button button--inverse button--small",
@@ -19257,10 +20025,58 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "fas fa-download fa-fw"
-  }), _vm._v("ダウンロード")])]) : _vm._e()], 1)]) : _vm._e(), _vm._v(" "), !_vm.sizeScreen && _vm.showScenes.length ? _c("div", {
+  }), _vm._v("ダウンロード")])]) : _vm._e()]) : _vm._e()]), _vm._v(" "), !_vm.sizeScreen && _vm.showScenes.length ? _c("div", {
     staticClass: "PC"
-  }, [_c("table", [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_vm.showScenes, function (scene, index) {
-    return _c("tr", [_c("td", {
+  }, [_c("table", [_c("thead", [_c("tr", [_vm.choice_flag ? _c("th", {
+    staticClass: "th-non"
+  }, [_c("input", {
+    staticClass: "checkbox-delete",
+    attrs: {
+      type: "checkbox"
+    },
+    on: {
+      click: _vm.choiceDeleteAllScenes
+    }
+  })]) : _vm._e(), _vm._v(" "), _c("th", {
+    staticClass: "th-non"
+  }), _vm._v(" "), _c("th", [_vm._v("ページ数")]), _vm._v(" "), _c("th", [_vm._v("登場人物")]), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("決定か")]), _vm._v(" "), _c("th", [_vm._v("中間発表")]), _vm._v(" "), _c("th", [_vm._v("卒業公演")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", [_vm._v("セットする人")]), _vm._v(" "), _c("th", {
+    staticClass: "th-memo"
+  }, [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]), _vm._v(" "), _c("tbody", _vm._l(_vm.showScenes, function (scene, index) {
+    return _c("tr", [_vm.choice_flag ? _c("td", [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.choice_ids[scene.id],
+        expression: "choice_ids[scene.id]"
+      }],
+      staticClass: "checkbox-delete",
+      attrs: {
+        type: "checkbox"
+      },
+      domProps: {
+        checked: Array.isArray(_vm.choice_ids[scene.id]) ? _vm._i(_vm.choice_ids[scene.id], null) > -1 : _vm.choice_ids[scene.id]
+      },
+      on: {
+        change: function change($event) {
+          var $$a = _vm.choice_ids[scene.id],
+              $$el = $event.target,
+              $$c = $$el.checked ? true : false;
+
+          if (Array.isArray($$a)) {
+            var $$v = null,
+                $$i = _vm._i($$a, $$v);
+
+            if ($$el.checked) {
+              $$i < 0 && _vm.$set(_vm.choice_ids, scene.id, $$a.concat([$$v]));
+            } else {
+              $$i > -1 && _vm.$set(_vm.choice_ids, scene.id, $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+            }
+          } else {
+            _vm.$set(_vm.choice_ids, scene.id, $$c);
+          }
+        }
+      }
+    })]) : _vm._e(), _vm._v(" "), _c("td", {
       staticClass: "list-button td-color",
       attrs: {
         type: "button"
@@ -19296,9 +20112,60 @@ var render = function render() {
   }), 0)]), _vm._v(" "), !_vm.showScenes.length ? _c("div", [_vm._v("\n      使用シーンは登録されていません。\n    ")]) : _vm._e()]) : _c("div", {
     staticClass: "phone"
   }, [_vm.showScenes.length ? _c("div", [_c("table", _vm._l(_vm.showScenes, function (scene, index) {
-    return _c("div", [_c("tr", [_c("th", {
+    return _c("div", [_vm.choice_flag ? _c("tr", {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: index === 0,
+        expression: "index === 0"
+      }]
+    }, [_c("th", {
       staticClass: "th-non"
-    }), _vm._v(" "), _c("td", {
+    }, [_c("input", {
+      staticClass: "checkbox-delete",
+      attrs: {
+        type: "checkbox"
+      },
+      on: {
+        click: _vm.choiceDeleteAllScenes
+      }
+    })]), _vm._v(" "), _c("td")]) : _vm._e(), _vm._v(" "), _c("tr", [_c("th", {
+      staticClass: "th-non"
+    }, [_vm.choice_flag ? _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.choice_ids[scene.id],
+        expression: "choice_ids[scene.id]"
+      }],
+      staticClass: "checkbox-delete",
+      attrs: {
+        type: "checkbox"
+      },
+      domProps: {
+        checked: Array.isArray(_vm.choice_ids[scene.id]) ? _vm._i(_vm.choice_ids[scene.id], null) > -1 : _vm.choice_ids[scene.id]
+      },
+      on: {
+        change: function change($event) {
+          var $$a = _vm.choice_ids[scene.id],
+              $$el = $event.target,
+              $$c = $$el.checked ? true : false;
+
+          if (Array.isArray($$a)) {
+            var $$v = null,
+                $$i = _vm._i($$a, $$v);
+
+            if ($$el.checked) {
+              $$i < 0 && _vm.$set(_vm.choice_ids, scene.id, $$a.concat([$$v]));
+            } else {
+              $$i > -1 && _vm.$set(_vm.choice_ids, scene.id, $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+            }
+          } else {
+            _vm.$set(_vm.choice_ids, scene.id, $$c);
+          }
+        }
+      }
+    }) : _vm._e()]), _vm._v(" "), _c("td", {
       staticClass: "list-button td-color",
       attrs: {
         type: "button"
@@ -19360,16 +20227,7 @@ var render = function render() {
   })], 1);
 };
 
-var staticRenderFns = [function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("thead", [_c("tr", [_c("th", {
-    staticClass: "th-non"
-  }), _vm._v(" "), _c("th", [_vm._v("ページ数")]), _vm._v(" "), _c("th", [_vm._v("登場人物")]), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("決定か")]), _vm._v(" "), _c("th", [_vm._v("中間発表")]), _vm._v(" "), _c("th", [_vm._v("卒業公演")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", [_vm._v("セットする人")]), _vm._v(" "), _c("th", {
-    staticClass: "th-memo"
-  }, [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]);
-}];
+var staticRenderFns = [];
 render._withStripped = true;
 
 

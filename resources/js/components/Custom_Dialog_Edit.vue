@@ -89,12 +89,78 @@
         </div>
       </div>
 
-      <div class="button-area--together">
+      <!-- 使用シーン -->
+      <div v-show="prop_scene_flag === 2">
+        <div class="checkbox-area--together">
+          <!-- これで決定か -->
+          <label for="scene_decision">これで決定か</label>
+
+          <input type="radio" id="scene_decision_yes" value="decision_yes" v-model="editCustomScene">
+          <label for="scene_decision_yes">決定してる</label>
+          <input type="radio" id="scene_decision_no" value="decision_no" v-model="editCustomScene">
+          <label for="scene_decision_no">決定してない</label>
+        </div>
+
+        <div class="checkbox-area--together">
+          <!-- 中間発表で使用するか -->
+          <label for="scene_usage">中間発表</label>
+
+          <input type="radio" id="scene_usage_yes" value="usage_yes" v-model="editCustomScene">
+          <label for="scene_usage_yes">使う</label>
+          <input type="radio" id="scene_usage_no" value="usage_no" v-model="editCustomScene">
+          <label for="scene_usage_no">使わない</label>
+        </div>
+
+        <div class="checkbox-area--together">
+          <!-- 卒業公演で使用するか -->
+          <label for="scene_usage_guraduation">卒業公演</label>
+
+          <input type="radio" id="scene_usage_guraduation_yes" value="usage_guraduation_yes" v-model="editCustomScene">
+          <label for="scene_usage_guraduation_yes">使う</label>
+          <input type="radio" id="scene_usage_guraduation_no" value="usage_guraduation_no" v-model="editCustomScene">
+          <label for="scene_usage_guraduation_no">使わない</label>
+        </div>
+
+        <div class="checkbox-area--together">
+          <!-- 上手で使用するか -->
+          <label for="scene_usage_left">上手</label>
+
+          <input type="radio" id="scene_usage_left_yes" value="usage_left_yes" v-model="editCustomScene">
+          <label for="scene_usage_left_yes">使う</label>
+          <input type="radio" id="scene_usage_left_no" value="usage_left_no" v-model="editCustomScene">
+          <label for="scene_usage_left_no">使わない</label>
+        </div>
+
+        <div class="checkbox-area--together">
+          <!-- 下手で使用するか -->
+          <label for="scene_usage_right">下手</label>
+
+          <input type="radio" id="scene_usage_right_yes" value="usage_right_yes" v-model="editCustomScene">
+          <label for="scene_usage_right_yes">使う</label>
+          <input type="radio" id="scene_usage_right_no" value="usage_right_no" v-model="editCustomScene">
+          <label for="scene_usage_right_no">使わない</label>
+        </div>
+
+        <div class="checkbox-area--together">
+          <!-- セットする人を削除するか -->
+          <label for="scene_setting">セットする人</label>
+
+          <input type="radio" id="scene_setting_no" value="setting_no" v-model="editCustomScene">
+          <label for="scene_setting_no">未設定にする</label>
+        </div>
+      </div>
+
+      <div v-show="prop_scene_flag === 1" class="button-area--together">
         <button type="button" @click="$emit('Cancel_CustomEdit')" class="button button--inverse button--confirm"><i class="fas fa-ban fa-fw"></i>キャンセル</button>
         
         <button type="button" @click="$emit('OK_CustomEdit', editCustomProp)" class="button button--inverse button--confirm button--danger"><i class="fas fa-edit fa-fw"></i>決定</button>
-      </div>  
       </div>
+      <div v-show="prop_scene_flag === 2" class="button-area--together">
+        <button type="button" @click="$emit('Cancel_CustomEdit')" class="button button--inverse button--confirm"><i class="fas fa-ban fa-fw"></i>キャンセル</button>
+
+        <button type="button" @click="$emit('OK_CustomEdit', editCustomScene)" class="button button--inverse button--confirm button--danger"><i class="fas fa-edit fa-fw"></i>決定</button>   
+      </div>  
+    </div>
   </div>
 </template>
   
@@ -115,7 +181,9 @@
         // 小道具か使用シーンか
         prop_scene_flag: 1, // 1:小道具、2:使用シーン
         // 選択項目(小道具)
-        editCustomProp: null
+        editCustomProp: null,
+        // 選択項目(使用シーン)
+        editCustomScene: null
       }
     },
     watch: {
@@ -130,10 +198,10 @@
             this.overlay_class = 1;
           }
 
-          if(this.custom_dialog_edit_message.indexOf('小道具')){
-            prop_scene_flag = 1;
+          if(this.custom_dialog_edit_message.indexOf('小道具') !== -1){
+            this.prop_scene_flag = 1;
           }else{
-            prop_scene_flag = 2;
+            this.prop_scene_flag = 2;
           }
         },
         immediate: true,

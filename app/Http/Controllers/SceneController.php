@@ -366,6 +366,7 @@ class SceneController extends Controller
                          ->update(['decision' => 0]);
                 }
             }else{
+                // decision: 1
                 $affected_prop = Prop::where('id', $request->prop_id)
                          ->update(['decision' => 1]);
             }
@@ -378,6 +379,342 @@ class SceneController extends Controller
 
         // レスポンスコードは204(No Content)を返却する
         return response($affected, 204) ?? abort(404);
+    }
+    
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update_many(Request $request, $id_s)
+    {
+        $ids_string = explode(',', $id_s);
+        $ids = [];
+        foreach ($ids_string as $id) {
+            $ids[] = (int) $id;
+        }
+        $yes_no = !empty($request->yes_no) ? 1 : 0;
+        $prop_ids = $request->prop_ids;
+        
+        if($request->method == 'decision'){
+            // これで決定か
+            $affected= Scene::whereIn('id', $ids)
+                    ->update(['decision' => $yes_no]);
+
+            // Prop
+            if(!$yes_no){
+                // decision: 0
+                $decision_scene_ids = Scene::whereIn('prop_id', $prop_ids)
+                           ->where('decision', 1)->select('prop_id')->get()->toArray(); // こうすると配列に
+                
+                $decision_ids = '';
+                if(count($decision_scene_ids)){
+                    if(is_array($decision_scene_ids[0])){
+                        // 複数の$prop_idsについて検索すると、各$prop_idsの結果が配列になる
+                        $decision_scene_ids_dupli = $decision_scene_ids;
+                        $decision_scene_ids = [];
+                        foreach($decision_scene_ids_dupli as $decision_scene_each_ids){
+                          if(is_array($decision_scene_each_ids)){
+                            // 一つの$prop_idsにつき複数の使用シーンのdecisionが1の場合、配列になる
+                            foreach($decision_scene_each_ids as $id){
+                                $decision_scene_ids[] = $id;
+                            }
+                          }else{
+                            $decision_scene_ids = $decision_scene_each_ids;
+                          }
+                        }
+                    }
+
+                    $decision_ids = array_diff($prop_ids, $decision_scene_ids); // 差分（重複していたら取得しない）
+                }else{
+                    $decision_ids = $prop_ids;
+                }
+                
+                if(count($decision_ids)){
+                    $affected_prop = Prop::whereIn('id', $decision_ids)
+                         ->update(['decision' => 0]);
+                }
+            }else{
+                // decision: 1
+                $affected_prop = Prop::whereIn('id', $prop_ids)
+                         ->update(['decision' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'usage'){
+            // 中間発表で使用するか
+            $affected= Scene::whereIn('id', $ids)
+                    ->update(['usage' => $yes_no]);
+            var_dump($yes_no);
+
+            // Prop
+            if(!$yes_no){
+                // usage: 0
+                $usage_scene_ids = Scene::whereIn('prop_id', $prop_ids)
+                                 ->where('usage', 1)->select('prop_id')->get()->toArray();
+                
+                $usage_ids = '';
+                if(count($usage_scene_ids)){
+                    if(is_array($usage_scene_ids[0])){
+                        // 複数の$prop_idsについて検索すると、各$prop_idsの結果が配列になる
+                        $usage_scene_ids_dupli = $usage_scene_ids;
+                        $usage_scene_ids = [];
+                        foreach($usage_scene_ids_dupli as $usage_scene_each_ids){
+                          if(is_array($usage_scene_each_ids)){
+                            // 一つの$prop_idsにつき複数の使用シーンのusageが1の場合、配列になる
+                            foreach($usage_scene_each_ids as $id){
+                                $usage_scene_ids[] = $id;
+                            }
+                          }else{
+                            $usage_scene_ids = $usage_scene_each_ids;
+                          }
+                        }
+                    }
+
+                    $usage_ids = array_diff($prop_ids, $usage_scene_ids); // 差分（重複していたら取得しない）
+                }else{
+                    $usage_ids = $prop_ids;
+                }
+                
+                if(count($usage_ids)){
+                    $affected_prop = Prop::whereIn('id', $usage_ids)
+                         ->update(['usage' => 0]);
+                }
+            }else{
+                var_dump($yes_no);
+                // usage: 1
+                $affected_prop = Prop::whereIn('id', $prop_ids)
+                         ->update(['usage' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'usage_guraduation'){
+            // 卒業公演で使用するか
+            if(!$yes_no){
+                // usage_guraduation: 0 
+                $affected= Scene::whereIn('id', $ids)
+                    ->update(['usage_guraduation' => 0, 'usage_left' => 0, 'usage_right' => 0]);
+                
+                // Prop
+                $usage_guraduation_scene_ids = Scene::whereIn('prop_id', $prop_ids)
+                        ->where('usage_guraduation', 1)->select('prop_id')->get()->toArray();
+                $usage_left_scene_ids = Scene::whereIn('prop_id', $prop_ids)
+                        ->where('usage_left', 1)->select('prop_id')->get()->toArray();
+                $usage_right_scene_ids = Scene::whereIn('prop_id', $prop_ids)
+                        ->where('usage_right', 1)->select('prop_id')->get()->toArray();
+
+                $usage_guraduation_ids = ''; // usage_guraduation、usage_left、usage_rightすべて0にする
+                $usage_left_ids = ''; // usage_leftだけ0にする
+                $usage_right_ids = ''; // usage_rightだけ0にする
+                if(count($usage_guraduation_scene_ids)){
+                    // 卒業公演、上手、下手全て0
+                    if(is_array($usage_guraduation_scene_ids[0])){
+                        // 複数の$prop_idsについて検索すると、各$prop_idsの結果が配列になる
+                        $usage_guraduation_scene_ids_dupli = $usage_guraduation_scene_ids;
+                        $usage_guraduation_scene_ids = [];
+                        foreach($usage_guraduation_scene_ids_dupli as $usage_guraduation_scene_each_ids){
+                            if(is_array($usage_guraduation_scene_each_ids)){
+                                // 一つの$prop_idsにつき複数の使用シーンのdecisionが1の場合、配列になる
+                                foreach($usage_guraduation_scene_each_ids as $id){
+                                    $usage_guraduation_scene_ids[] = $id;
+                                }
+                            }else{
+                                $usage_guraduation_scene_ids = $usage_guraduation_scene_each_ids;
+                            }
+                        }
+                    }
+        
+                    $usage_guraduation_ids = array_diff($prop_ids, $usage_guraduation_scene_ids); // 差分（重複していたら取得しない）
+                }else{
+                    $usage_guraduation_ids = $prop_ids;
+                }
+
+                if(count($usage_left_scene_ids)){
+                    // 上手0
+                    if(is_array($usage_left_scene_ids[0])){
+                        // 複数の$prop_idsについて検索すると、各$prop_idsの結果が配列になる
+                        $usage_left_scene_ids_dupli = $usage_left_scene_ids;
+                        $usage_left_scene_ids = [];
+                        foreach($usage_left_scene_ids_dupli as $usage_left_scene_each_ids){
+                            if(is_array($usage_left_scene_each_ids)){
+                                // 一つの$prop_idsにつき複数の使用シーンのdecisionが1の場合、配列になる
+                                foreach($usage_left_scene_each_ids as $id){
+                                    $usage_left_scene_ids[] = $id;
+                                }
+                            }else{
+                                $usage_left_scene_ids = $usage_left_scene_each_ids;
+                            }
+                        }
+                    }
+        
+                    $usage_left_ids = array_diff($prop_ids, $usage_left_scene_ids); // 差分（重複していたら取得しない）
+                }else{
+                    $usage_left_ids = $prop_ids;
+                }
+
+                if(count($usage_right_scene_ids)){
+                    // 下手0
+                    if(is_array($usage_right_scene_ids[0])){
+                        // 複数の$prop_idsについて検索すると、各$prop_idsの結果が配列になる
+                        $usage_right_scene_ids_dupli = $usage_right_scene_ids;
+                        $usage_right_scene_ids = [];
+                        foreach($usage_right_scene_ids_dupli as $usage_right_scene_each_ids){
+                            if(is_array($usage_right_scene_each_ids)){
+                                // 一つの$prop_idsにつき複数の使用シーンのdecisionが1の場合、配列になる
+                                foreach($usage_right_scene_each_ids as $id){
+                                    $usage_right_scene_ids[] = $id;
+                                }
+                            }else{
+                                $usage_right_scene_ids = $usage_right_scene_each_ids;
+                            }
+                        }
+                    }
+        
+                    $usage_right_ids = array_diff($prop_ids, $usage_right_scene_ids); // 差分（重複していたら取得しない）
+                }else{
+                    $usage_right_ids = $prop_ids;
+                }
+                      
+                if(count($usage_guraduation_ids)){
+                    // 卒業公演、上手、下手全て0
+                    $affected_prop = Prop::whereIn('id', $usage_guraduation_ids)
+                        ->update(['usage_guraduation' => 0, 'usage_left' => 0, 'usage_right' => 0]);
+                }
+
+                if(count($usage_left_ids)){
+                    // 上手0
+                    $affected_prop = Prop::whereIn('id', $usage_left_ids)
+                        ->update(['usage_left' => 0]);
+                }
+
+                if(count($usage_right_ids)){
+                    // 下手0
+                    $affected_prop = Prop::whereIn('id', $usage_right_ids)
+                        ->update(['usage_right' => 0]);
+                }
+                
+            }else{
+                // usage_guraduation: 0 
+                $affected= Scene::whereIn('id', $ids)
+                    ->update(['usage_guraduation' => 1]);
+                
+                // usage_guraduation: 1
+                $affected_prop = Prop::whereIn('id', $prop_ids)
+                         ->update(['usage_guraduation' => 1]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'usage_left'){
+            // 上手で使用するか    
+            if(!$yes_no){
+                // usage_left: 0
+                $affected= Scene::whereIn('id', $ids)
+                    ->update(['usage_left' => 0]);
+                
+                $usage_left_scene_ids = Scene::whereIn('prop_id', $prop_ids)
+                    ->where('usage_left', 1)->select('prop_id')->get()->toArray(); // こうすると配列に
+                
+                $usage_left_ids = '';
+                if(count($usage_left_scene_ids)){
+                    if(is_array($usage_left_scene_ids[0])){
+                        // 複数の$prop_idsについて検索すると、各$prop_idsの結果が配列になる
+                        $usage_left_scene_ids_dupli = $usage_left_scene_ids;
+                        $usage_left_scene_ids = [];
+                        foreach($usage_left_scene_ids_dupli as $usage_left_scene_each_ids){
+                            if(is_array($usage_left_scene_each_ids)){
+                                // 一つの$prop_idsにつき複数の使用シーンのdecisionが1の場合、配列になる
+                                foreach($usage_left_scene_each_ids as $id){
+                                    $usage_left_scene_ids[] = $id;
+                                }
+                            }else{
+                                $usage_left_scene_ids = $usage_left_scene_each_ids;
+                            }
+                        }
+                    }
+    
+                    $usage_left_ids = array_diff($prop_ids, $usage_left_scene_ids); // 差分（重複していたら取得しない）
+                }else{
+                    $usage_left_ids = $prop_ids;
+                }
+                 
+                if(count($usage_left_ids)){
+                    $affected_prop = Prop::whereIn('id', $usage_left_ids)
+                        ->update(['usage_left' => 0]);
+                }
+            }else{
+                // usage_left: 1
+                $affected= Scene::whereIn('id', $ids)
+                    ->where('usage_right', 0)->update(['usage_guraduation' => 1, 'usage_left' => 1]);
+
+                $affected_prop = Prop::whereIn('id', $prop_ids)
+                    ->update(['usage_guraduation' => 1, 'usage_left' => 1]);         
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'usage_right'){
+            // 下手で使用するか
+            if(!$yes_no){
+                // usage_right: 0
+                $affected= Scene::whereIn('id', $ids)
+                    ->update(['usage_right' => 0]);
+                
+                $usage_right_scene_ids = Scene::whereIn('prop_id', $prop_ids)
+                    ->where('usage_right', 1)->select('prop_id')->get()->toArray(); // こうすると配列に
+                
+                $usage_right_ids = '';
+                if(count($usage_right_scene_ids)){
+                    if(is_array($usage_right_scene_ids[0])){
+                        // 複数の$prop_idsについて検索すると、各$prop_idsの結果が配列になる
+                        $usage_right_scene_ids_dupli = $usage_right_scene_ids;
+                        $usage_right_scene_ids = [];
+                        foreach($usage_right_scene_ids_dupli as $usage_right_scene_each_ids){
+                            if(is_array($usage_right_scene_each_ids)){
+                                // 一つの$prop_idsにつき複数の使用シーンのdecisionが1の場合、配列になる
+                                foreach($usage_right_scene_each_ids as $id){
+                                    $usage_right_scene_ids[] = $id;
+                                }
+                            }else{
+                                $usage_right_scene_ids = $usage_right_scene_each_ids;
+                            }
+                        }
+                    }
+    
+                    $usage_right_ids = array_diff($prop_ids, $usage_right_scene_ids); // 差分（重複していたら取得しない）
+                }else{
+                    $usage_right_ids = $prop_ids;
+                }
+                 
+                if(count($usage_right_ids)){
+                    $affected_prop = Prop::whereIn('id', $usage_right_ids)
+                        ->update(['usage_right' => 0]);
+                }
+            }else{
+                // usage_right: 1
+                $affected= Scene::whereIn('id', $ids)
+                    ->where('usage_left', 0)->update(['usage_guraduation' => 1, 'usage_right' => 1]);
+
+                $affected_prop = Prop::whereIn('id', $prop_ids)
+                    ->update(['usage_guraduation' => 1, 'usage_right' => 1]);         
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }else if($request->method == 'setting'){
+            if(!$yes_no){
+                // setting: 0
+                $affected= Scene::whereIn('id', $ids)
+                                          ->update(['setting_id' => null]);
+            }
+
+            // レスポンスコードは204(No Content)を返却する
+            return response($affected, 204);
+        }
     }
 
     /**

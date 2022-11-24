@@ -1,27 +1,51 @@
 <template>
-  <!-- 表示エリア -->
   <div>
     <!-- ボタンエリア -->
-    <div v-if="scenes.length" class="button-area">
-      <div class="button-area--small">
-        <!-- 検索 -->
-        <div class="button-area--small-small">
-          <button type="button" @click="openModal_searchScene(Math.random())" class="button button--inverse button--small"><i class="fas fa-search fa-fw"></i>検索</button>
-        </div>
-        <searchScene :postSearch="postSearch" v-show="showContent_search" @close="closeModal_searchScene" />
+    <div class="button-area">
+      <!-- 表示切替ボタン -->
 
-        <!-- ダウンロードボタン -->
-        <!-- リスト表示かつPCかつデータがある時 -->
-        <div v-if="!sizeScreen && showScenes.length" class="button-area--small-small">
-          <button type="button" @click="downloadScenes" class="button button--inverse button--small"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
+      <div v-if="scenes.length" class="button-area--small">
+        <div class="button-area--together-left">
+          <!-- 検索 -->
+          <div class="button-area--small-small">
+            <button type="button" @click="openModal_searchScene(Math.random())" class="button button--inverse button--small"><i class="fas fa-search fa-fw"></i>検索</button>
+          </div>
+          <searchScene :postSearch="postSearch" v-show="showContent_search" @close="closeModal_searchScene" />
+
+          <!-- 選択 -->
+          <div class="button-area--small-small">
+            <button type="button" @click="showCheckBox" class="button button--inverse button--small button--choice"><i class="fas fa-check-square fa-fw"></i>選択</button>
+          </div>
+          
+          <!-- 選択編集 -->
+          <div v-if="choice_flag" class="button-area--small-small">
+            <button type="button" @click="openModal_customEdit" class="button button--inverse button--small button--choice"><i class="fas fa-edit fa-fw"></i>選択編集</button>
+          </div>
+          <customDialog_Edit :custom_dialog_edit_message="postMessage_CustomEdit" v-show="showContent_customEdit" @Cancel_CustomEdit="closeModal_customEdit_Cancel" @OK_CustomEdit="closeModal_customEdit_OK"/>
+          <confirmDialog_Edit :confirm_dialog_edit_message="postMessage_Edit" v-show="showContent_confirmEdit" @Cancel_Edit="closeModal_confirmEdit_Cancel" @OK_Edit="closeModal_confirmEdit_OK"/>
+
+          <!-- 選択削除実行 -->
+          <div v-if="choice_flag" class="button-area--small-small">
+            <button type="button" @click="openModal_confirmDelete" class="button button--inverse button--small button--choice"><i class="fas fa-trash-alt fa-fw"></i>選択削除</button>
+          </div>
+          <confirmDialog_Delete :confirm_dialog_delete_message="postMessage_Delete" v-show="showContent_confirmDelete" @Cancel_Delete="closeModal_confirmDelete_Cancel" @OK_Delete="closeModal_confirmDelete_OK"/>
         </div>
-      </div>      
-    </div>
+
+          <!-- ダウンロードボタン -->
+          <!-- リスト表示かつPCかつデータがある時 -->
+          <div v-if="!sizeScreen && showScenes.length" class="button-area--small-small">
+            <button type="button" @click="downloadScenes" class="button button--inverse button--small"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
+          </div>
+        </div>      
+      </div>
 
     <div v-if="!sizeScreen && showScenes.length" class="PC">
       <table>
         <thead>
           <tr>
+            <th v-if="choice_flag" class="th-non">
+                <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllScenes"></input>
+              </th>
             <th class="th-non"></th>
             <th>ページ数</th>
             <th>登場人物</th>
@@ -39,6 +63,9 @@
         </thead>
         <tbody>
           <tr v-for="(scene, index) in showScenes">
+            <td v-if="choice_flag">
+                <input type="checkbox" class="checkbox-delete" v-model="choice_ids[scene.id]"></input>
+              </td>
               <!-- index -->
               <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
               <!-- 何ページから -->
@@ -88,9 +115,17 @@
         <div v-if="showScenes.length">
           <table>
             <div v-for="(scene, index) in showScenes">
+              <tr v-show="index === 0" v-if="choice_flag">
+                <th class="th-non">
+                  <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllScenes"></input>
+                </th>
+                <td></td>
+              </tr>
               <tr>
                 <!-- index -->
-                <th class="th-non"></th>
+                <th class="th-non">
+                  <input type="checkbox" v-if="choice_flag" class="checkbox-delete" v-model="choice_ids[scene.id]"></input>
+                </th>
                 <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
               </tr>
               <tr>
@@ -186,6 +221,9 @@
   import detailScene from '../components/Detail_Scene.vue';
   import detailProp from '../components/Detail_Prop.vue';
   import searchScene from '../components/Search_Scene.vue';
+  import customDialog_Edit from '../components/Custom_Dialog_Edit.vue';
+  import confirmDialog_Edit from '../components/Confirm_Dialog_Edit.vue';
+  import confirmDialog_Delete from '../components/Confirm_Dialog_Delete.vue';
   import ExcelJS from 'exceljs';
 
   export default {
@@ -193,7 +231,10 @@
     components: {
       detailScene,
       detailProp,
-      searchScene
+      searchScene,
+      customDialog_Edit,
+      confirmDialog_Edit,
+      confirmDialog_Delete
     },
     data() {
       return{
@@ -216,7 +257,23 @@
         showContent_search: false,
         postSearch: "",
         // ページの並び順
-        page_order: [],
+        page_order: [], 
+        // 選択ボタン
+        choice_flag: false,
+        // 選択
+        choice_ids: [],
+        choice_many: 0,
+        // 編集custom
+        showContent_customEdit: false,
+        postMessage_CustomEdit: "",
+        edit_custom: null,
+        yes_no: null,
+        // 編集confirm
+        showContent_confirmEdit: false,
+        postMessage_Edit: "",
+        // 削除confirm
+        showContent_confirmDelete: false,
+        postMessage_Delete: ""
       }
     },
     watch: {
@@ -251,6 +308,10 @@
         for(let i=1; i < 100; i++ ){
           this.page_order[i] = i;
         }
+        
+        this.scenes.forEach((scene) => {
+          this.choice_ids.push(false);
+        }, this);
 
         if(this.custom_sort || this.custom_name || this.custom_refine){
           await this.closeModal_searchScene(this.custom_sort, this.custom_name, this.custom_refine);
@@ -721,6 +782,201 @@
       async closeModal_propDetail() {
         this.showContent_prop = false;
         await this.fetchScenes();
+      },
+
+      // 選択ボタン出現
+      showCheckBox() {
+        if(this.choice_flag){
+          this.choice_flag = false;
+          this.choice_many = 0;
+          this.scenes.forEach((scene) => {
+            this.$set(this.choice_ids, scene.id, false);
+          }, this);
+        }else{
+          this.choice_flag = true;
+        }
+      },
+
+      // 選択（全選択）
+      choiceDeleteAllScenes() {
+        if(!this.choice_many){
+          this.choice_many = 1;
+          this.showScenes.forEach((scene) => {
+            // リアクティブにするため
+            this.$set(this.choice_ids, scene.id, true);
+          }, this);
+        }else{
+          this.choice_many = 0;
+          this.showScenes.forEach((scene) => {
+            this.$set(this.choice_ids, scene.id, false);
+          }, this);
+        }
+      },
+
+      // 編集customのモーダル表示 
+      openModal_customEdit () {
+        this.showContent_customEdit = true;
+        this.postMessage_CustomEdit = '使用シーンの編集項目について選択してください。';
+      },
+      // 編集customのモーダル非表示_OKの場合
+      async closeModal_customEdit_OK(edit_custom_flag) {
+        if(edit_custom_flag !== null){
+          this.showContent_customEdit = false;
+          this.$emit('close');
+          const yes = edit_custom_flag.indexOf('yes');
+          const no = edit_custom_flag.indexOf('no');
+          if(yes !== -1){
+            // yes
+            this.yes_no = 1;
+            this.edit_custom =  edit_custom_flag.replace('_yes', '');
+          }else if(no !== -1){
+            // no
+            this.yes_no = 0;
+            this.edit_custom = edit_custom_flag.replace('_no', '');
+          }
+          this.openModal_confirmEdit();
+        }        
+      },
+      // 編集customのモーダル非表示_Cancelの場合
+      closeModal_customEdit_Cancel() {
+        this.showContent_customEdit = false;
+      },
+
+      // 編集confirmのモーダル表示 
+      openModal_confirmEdit () {
+        this.showContent_confirmEdit = true;
+        let edit_scenes_name = '';
+        let edit_custom_show;
+        let yes_no_show;
+        if(this.scenes.length === this.showScenes.length && this.choice_many){
+          edit_scenes_name ='全て\n';
+        }
+        this.showScenes.forEach((scene, index) => {
+          if(this.choice_ids[scene.id]){
+            if(scene.first_page === 1 && scene.final_page === 1000){
+              edit_scenes_name = edit_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': 全シーン' + '\n';
+            }else if(scene.first_page && scene.final_page){
+              edit_scenes_name = edit_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': p.' + scene.first_page + '~ ' + scene.final_page + '\n';
+            }else if(scene.first_page){
+              edit_scenes_name = edit_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': p.' + scene.first_page + '\n';
+            }else{
+              edit_scenes_name = edit_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + '\n';
+            }
+          }
+        }, this);
+
+        if(this.edit_custom === 'decision'){
+          edit_custom_show = '決定して'
+        }else if(this.edit_custom === 'usage'){
+          edit_custom_show = '中間発表で使用して';
+        }else if(this.edit_custom === 'usage_guraduation'){
+          edit_custom_show = '卒業公演で使用して';
+        }else if(this.edit_custom === 'usage_left'){
+          edit_custom_show = '上手で使用して';
+        }else if(this.edit_custom === 'usage_right'){
+          edit_custom_show = '下手で使用して';
+        }else{
+          edit_custom_show = 'セットする人を削除す';
+        }
+        
+        if(this.yes_no === 1){
+          yes_no_show = 'る';
+        }else{
+          yes_no_show = 'ない';
+        }
+
+        this.postMessage_Edit = '以下の使用シーンを' + edit_custom_show + yes_no_show + 'と変更します。\n本当に変更しますか？\n' + edit_scenes_name;
+      },
+      // 編集confirmのモーダル非表示_OKの場合
+      async closeModal_confirmEdit_OK() {
+        this.showContent_confirmEdit = false;
+        this.$emit('close');
+        await this.EditProps();
+      },
+      // 編集confirmのモーダル非表示_Cancelの場合
+      closeModal_confirmEdit_Cancel() {
+        this.showContent_confirmEdit = false;
+        this.openModal_customEdit();
+      },
+
+      // 選択編集(実行)
+      async EditProps() {
+        let scene_ids = [];
+        let prop_ids_dupli = [];
+        let method = this.edit_custom;
+        let yes_no;
+        this.showScenes.forEach((scene) => {
+          if(this.choice_ids[scene.id]){
+            scene_ids.push(scene.id);
+          }
+        });
+        this.showScenes.forEach((scene) => {
+          if(this.choice_ids[scene.id]){
+            prop_ids_dupli.push(scene.prop_id);
+          }
+        });
+        const prop_ids_set = new Set(prop_ids_dupli);
+        const prop_ids = [...prop_ids_set];
+        if(this.yes_no === 1){
+          yes_no = 1;
+        }else{
+          yes_no = null;
+        }
+        const response = await axios.post('/api/scenes_many/' + scene_ids, {
+          method: method,
+          yes_no: yes_no,
+          prop_ids: prop_ids
+        });
+        await this.fetchScenes();
+        // 選択削除閉じる
+        this.showCheckBox();
+      },
+
+      // 削除confirmのモーダル表示 
+      openModal_confirmDelete (id) {
+        this.showContent_confirmDelete = true;
+        let delete_scenes_name = '';
+        if(this.scenes.length === this.showScenes.length && this.choice_many){
+          delete_scenes_name ='全て\n';
+        }
+        this.showScenes.forEach((scene, index) => {
+          if(this.choice_ids[scene.id]){
+            if(scene.first_page === 1 && scene.final_page === 1000){
+              delete_scenes_name = delete_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': 全シーン' + '\n';
+            }else if(scene.first_page && scene.final_page){
+              delete_scenes_name = delete_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': p.' + scene.first_page + '~ ' + scene.final_page + '\n';
+            }else if(scene.first_page){
+              delete_scenes_name = delete_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + ': p.' + scene.first_page + '\n';
+            }else{
+              delete_scenes_name = delete_scenes_name + '・' + scene.character.name + ': ' + scene.prop.name + '\n';
+            }
+          }
+        }, this);
+        this.postMessage_Delete = '本当に削除しますか？\n' + delete_scenes_name;
+      },
+      // 削除confirmのモーダル非表示_OKの場合
+      async closeModal_confirmDelete_OK() {
+        this.showContent_confirmDelete = false;
+        this.$emit('close');
+        await this.deleteProps();
+      },
+      // 削除confirmのモーダル非表示_Cancelの場合
+      closeModal_confirmDelete_Cancel() {
+        this.showContent_confirmDelete = false;
+      },
+
+      // 選択削除（実行）
+      async deleteScenes() {
+        let ids = [];
+        this.showScenes.forEach((scene) => {
+          if(this.choice_ids[scene.id]){
+            ids.push(scene.id);
+          }
+        });
+        const response = await axios.delete('/api/scenes_many/' + ids);
+        await this.fetchScenes();
+        // 選択削除閉じる
+        this.showCheckBox();
       },
 
       // // ダウンロード

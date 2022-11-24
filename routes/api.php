@@ -114,8 +114,14 @@ Route::post('/scenes', 'App\Http\Controllers\SceneController@store')->name('scen
 // 使用シーン更新
 Route::post('/scenes/{id}', 'App\Http\Controllers\SceneController@update')->name('scene.update');
 
+// 小道具複数更新
+Route::post('/scenes_many/{id}', 'App\Http\Controllers\SceneController@update_many')->name('scene.update_many');
+
 // 使用シーン削除
 Route::delete('/scenes/{id}', 'App\Http\Controllers\SceneController@destroy')->name('scene.destroy');
+
+// 小道具複数削除
+Route::delete('/scenes_many/{id}', 'App\Http\Controllers\SceneController@destroy_many')->name('scene.destroy_many');
 
 // 使用シーンメモ投稿
 Route::post('/scene_comments', 'App\Http\Controllers\Scene_CommentController@store')->name('scene_comment.store');
