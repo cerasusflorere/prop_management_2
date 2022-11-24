@@ -29,7 +29,7 @@
 
         <!-- 小道具名 -->
         <label for="prop_select">小道具</label>
-        <select id="prop_select" class="form__item"  v-model="registerForm.prop" required>
+        <select id="prop_select" class="form__item" v-model="prop" required>
           <option disabled value="">小道具一覧</option>
           <option v-for="prop in optionProps" 
             v-bind:value="prop.id">
@@ -52,6 +52,12 @@
           </span>
         </div>
         <input type="text" id="page" class="form__item" v-model="registerForm.pages" :disabled="select_all_page" placeholder="ページ数">
+
+        <!-- 個数 -->
+        <div class="checkbox-area--together">
+          <label for="scene_quantity">個数</label>
+          <input type="number" id="scene_quantity" ref="input_scene_quantity" :disabled="!input_quantity" class="form__item form__item--furigana" v-model="registerForm.quantity" placeholder="個数">
+        </div>
 
         <!-- これで決定か -->
         <div class="checkbox-area--together">
@@ -121,6 +127,8 @@ export default {
       selectedAttr: '',
       selectedCharacters: '',
       optionCharacters: null,
+      // 個数を入力して良いか
+      input_quantity: false,
       // 全ページ使用するか
       select_all_page: false,
       // 中間公演or卒業公演
@@ -132,10 +140,12 @@ export default {
       showContent: false,
       postFlag: "",
       // 登録内容
+      prop: '',
       registerForm: {
         character: '',
         prop: '',
         pages: '',
+        quantity: 1,
         decision: '',
         usage: '',
         usage_guraduation: 0,
@@ -276,6 +286,8 @@ export default {
       this.selectedAttr = '';
       this.registerForm.character = '';
       this.registerForm.prop = '';
+      this.prop = '';
+      this.registerForm.quantity = 1;
       this.registerForm.decision = '';
       this.registerForm.pages = '';
       this.registerForm.usage = '';
@@ -319,8 +331,33 @@ export default {
       });
     },
 
+    // 全角→半角（数字）
+    Zenkaku2hankaku_number(str) {
+      return str.replace(/[０-９]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+
+      let pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+      const chars = str.split('');
+      let sets = '';
+      chars.forEach((char, index) => {
+        char.replace(/[０-９]/g, function(s) {
+          const number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+          if(pattern_number.test(number)){
+            sets = sets + number;
+          }else{
+            sets  = 0;
+          }
+        });
+        if(index === chars.length-1){
+          return sets;
+        }
+      });
+    },
+
     // 登録する
     register () {
+      this.registerForm.prop = this.prop;
       if(this.select_all_page){
         this.registerForm.pages = '1-1000';
       }
@@ -443,6 +480,19 @@ export default {
           }          
         });
       }
+
+      let correct_quantity = '';
+      if(this.registerForm.quantity){
+        let quantitys = [...this.registerForm.quantity];
+        
+        quantitys.forEach((quantity) => {
+          let number = this.Zenkaku2hankaku_number(quantity);
+          correct_quantity = String(correct_quantity) + String(number);
+          correct_quantity = Number(correct_quantity);
+        }, this);
+      }else{
+        correct_quantity = 1;
+      }
       
       let usage_left = 0;
       let usage_right = 0;
@@ -459,6 +509,7 @@ export default {
           prop_id: this.registerForm.prop,
           first_page: page,
           final_page: final_pages[index],
+          quantity: correct_quantity,
           decision: this.registerForm.decision,
           usage: this.registerForm.usage,
           usage_guraduation: this.registerForm.usage_guraduation,
@@ -586,6 +637,26 @@ export default {
           this.season_tag = 1;
         }else if(this.season === "guraduation"){
           this.season_tag = 2;
+        }
+      },
+      immediate: true
+    },
+    prop: {
+      async handler(prop) {
+        if(this.prop){
+          let quantity;
+          this.optionProps.forEach((prop) => {
+            if(prop.id === this.prop){
+              quantity = prop.quantity;
+            }
+          }, this);
+          if(quantity > 1){
+            this.input_quantity = true;
+            const input_scene_quantity = this.$refs.input_scene_quantity;
+            input_scene_quantity.max = quantity;
+          }else{
+            this.input_quantity = false;
+          }
         }
       },
       immediate: true

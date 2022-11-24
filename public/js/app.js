@@ -2759,6 +2759,7 @@ var autokana;
           name: ''
         },
         owner_id: '',
+        quantity: 1,
         location: 0,
         handmade: 0,
         handmade_complete: 1,
@@ -2990,6 +2991,7 @@ var autokana;
                   _this3.editForm_prop.owner.name = '';
                 }
 
+                _this3.editForm_prop.quantity = _this3.prop.quantity;
                 _this3.editForm_prop.location = _this3.prop.location;
                 _this3.editForm_prop.handmade = _this3.prop.handmade; // 0: 作らない、1: 完成、2: 仕掛中、3: 未着手
 
@@ -3039,7 +3041,7 @@ var autokana;
                 _this3.editPropMode_detail = "";
                 _this3.editPropMode_memo = "";
 
-              case 32:
+              case 33:
               case "end":
                 return _context3.stop();
             }
@@ -3316,6 +3318,7 @@ var autokana;
       this.editForm_prop.kana = null;
       this.editForm_prop.owner.name = '';
       this.editForm_prop.owner_id = '';
+      this.editForm_prop.quantity = 1;
       this.editForm_prop.location = 0;
       this.editForm_prop.handmade = 0;
       this.editForm_prop.handmade_complete = 1;
@@ -3604,13 +3607,28 @@ var autokana;
 
       this.editForm_prop.kana = kana;
 
+      if (this.editForm_prop.quantity) {
+        var quantitys = _toConsumableArray(this.editForm_prop.quantity);
+
+        var correct_quantity = '';
+        quantitys.forEach(function (quantity) {
+          var number = _this13.Zenkaku2hankaku_number(quantity);
+
+          correct_quantity = String(correct_quantity) + String(number);
+          correct_quantity = Number(correct_quantity);
+        }, this);
+        this.editForm_prop.quantity = correct_quantity;
+      } else {
+        this.editForm_prop.quantity = 1;
+      }
+
       if (!this.editForm_prop.handmade) {
         this.editForm_prop.handmade = 0;
       } else {
         this.editForm_prop.handmade = this.editForm_prop.handmade_complete;
       }
 
-      if (this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || !this.prop.owner_id && !this.editForm_prop.owner_id || this.prop.location !== this.editForm_prop.location || this.prop.handmade !== this.editForm_prop.handmade || this.prop.decision !== this.editForm_prop.decision || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && (this.prop.public_id && this.editForm_prop.photo === 1 || !this.prop.public_id && !this.editForm_prop.photo)) {
+      if (this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || !this.prop.owner_id && !this.editForm_prop.owner_id || this.prop.quantity !== this.editForm_prop.quantity || this.prop.location !== this.editForm_prop.location || this.prop.handmade !== this.editForm_prop.handmade || this.prop.decision !== this.editForm_prop.decision || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && (this.prop.public_id && this.editForm_prop.photo === 1 || !this.prop.public_id && !this.editForm_prop.photo)) {
         // 怪しい
         // if(!this.prop.owner_id && !this.editForm_prop.owner_id){
         //   console.log('なんで');
@@ -3714,7 +3732,7 @@ var autokana;
         photo = '変更しない';
       }
 
-      this.postMessage_Edit = '以下のように編集します。\n小道具名：' + this.editForm_prop.name + '\nふりがな：' + this.editForm_prop.kana + '\n持ち主：' + this.editForm_prop.owner.name + '\nピッコロに：' + location + '\n' + handmade + '\n決定：' + decision + '\n使用状況：' + usage + usage_guraduation + usage_left + usage_right + '\nメモ：' + memos + '\n写真：' + photo;
+      this.postMessage_Edit = '以下のように編集します。\n小道具名：' + this.editForm_prop.name + '\nふりがな：' + this.editForm_prop.kana + '\n持ち主：' + this.editForm_prop.owner.name + '\n個数：' + this.editForm_prop.quantity + '\nピッコロに：' + location + '\n' + handmade + '\n決定：' + decision + '\n使用状況：' + usage + usage_guraduation + usage_left + usage_right + '\nメモ：' + memos + '\n写真：' + photo;
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
@@ -3785,6 +3803,7 @@ var autokana;
                   name: _this16.editForm_prop.name,
                   kana: _this16.editForm_prop.kana,
                   owner_id: _this16.editForm_prop.owner_id,
+                  quantity: _this16.editForm_prop.quantity,
                   location: _this16.editForm_prop.location,
                   handmade: _this16.editForm_prop.handmade,
                   decision: _this16.editForm_prop.decision,
@@ -3822,12 +3841,12 @@ var autokana;
                   _this16.editPropMode_memo = 100;
                 }
 
-                _context8.next = 53;
+                _context8.next = 54;
                 break;
 
               case 14:
                 if (!(_this16.editPropMode_detail === 2)) {
-                  _context8.next = 41;
+                  _context8.next = 42;
                   break;
                 }
 
@@ -3837,6 +3856,7 @@ var autokana;
                 formData.append('name', _this16.editForm_prop.name);
                 formData.append('kana', _this16.editForm_prop.kana);
                 formData.append('owner_id', _this16.editForm_prop.owner_id);
+                formData.append('quantity', _this16.editForm_prop.quantity);
                 formData.append('location', _this16.editForm_prop.location);
                 formData.append('handmade', _this16.editForm_prop.handmade);
                 formData.append('decision', _this16.editForm_prop.decision);
@@ -3845,23 +3865,23 @@ var autokana;
                 formData.append('usage_left', _this16.editForm_prop.usage_left);
                 formData.append('usage_right', _this16.editForm_prop.usage_right);
                 formData.append('photo', _this16.editForm_prop.photo);
-                _context8.next = 30;
+                _context8.next = 31;
                 return axios.post('/api/props/' + _this16.prop.id, formData);
 
-              case 30:
+              case 31:
                 _response = _context8.sent;
 
                 if (!(_response.status === 422)) {
-                  _context8.next = 34;
+                  _context8.next = 35;
                   break;
                 }
 
                 _this16.errors.error = _response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 34:
+              case 35:
                 if (!(_response.status !== 204)) {
-                  _context8.next = 37;
+                  _context8.next = 38;
                   break;
                 }
 
@@ -3869,28 +3889,29 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 37:
+              case 38:
                 _this16.editPropMode_detail = 100;
 
                 if (_this16.editPropMode_memo === 0) {
                   _this16.editPropMode_memo = 100;
                 }
 
-                _context8.next = 53;
+                _context8.next = 54;
                 break;
 
-              case 41:
+              case 42:
                 if (!(_this16.editPropMode_detail === 3)) {
-                  _context8.next = 53;
+                  _context8.next = 54;
                   break;
                 }
 
-                _context8.next = 44;
+                _context8.next = 45;
                 return axios.post('/api/props/' + _this16.prop.id, {
                   method: 'photo_delete',
                   name: _this16.editForm_prop.name,
                   kana: _this16.editForm_prop.kana,
                   owner_id: _this16.editForm_prop.owner_id,
+                  quantity: _this16.editForm_prop.quantity,
                   location: _this16.editForm_prop.location,
                   handmade: _this16.editForm_prop.handmade,
                   decision: _this16.editForm_prop.decision,
@@ -3901,20 +3922,20 @@ var autokana;
                   usage_right: _this16.editForm_prop.usage_right
                 });
 
-              case 44:
+              case 45:
                 _response2 = _context8.sent;
 
                 if (!(_response2.status === 422)) {
-                  _context8.next = 48;
+                  _context8.next = 49;
                   break;
                 }
 
                 _this16.errors.error = _response2.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 48:
+              case 49:
                 if (!(_response2.status !== 204)) {
-                  _context8.next = 51;
+                  _context8.next = 52;
                   break;
                 }
 
@@ -3922,16 +3943,16 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 51:
+              case 52:
                 _this16.editPropMode_detail = 100;
 
                 if (_this16.editPropMode_memo === 0) {
                   _this16.editPropMode_memo = 100;
                 }
 
-              case 53:
+              case 54:
                 if (!(_this16.editPropMode_detail === 4)) {
-                  _context8.next = 79;
+                  _context8.next = 81;
                   break;
                 }
 
@@ -3945,6 +3966,8 @@ var autokana;
                 _formData.append('kana', _this16.editForm_prop.kana);
 
                 _formData.append('owner_id', _this16.editForm_prop.owner_id);
+
+                _formData.append('quantity', _this16.editForm_prop.quantity);
 
                 _formData.append('location', _this16.editForm_prop.location);
 
@@ -3964,23 +3987,23 @@ var autokana;
 
                 _formData.append('photo', _this16.editForm_prop.photo);
 
-                _context8.next = 70;
+                _context8.next = 72;
                 return axios.post('/api/props/' + _this16.prop.id, _formData);
 
-              case 70:
+              case 72:
                 _response3 = _context8.sent;
 
                 if (!(_response3.status === 422)) {
-                  _context8.next = 74;
+                  _context8.next = 76;
                   break;
                 }
 
                 _this16.errors.error = _response3.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 74:
+              case 76:
                 if (!(_response3.status !== 204)) {
-                  _context8.next = 77;
+                  _context8.next = 79;
                   break;
                 }
 
@@ -3988,14 +4011,14 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 77:
+              case 79:
                 _this16.editPropMode_detail = 100;
 
                 if (_this16.editPropMode_memo === 0) {
                   _this16.editPropMode_memo = 100;
                 }
 
-              case 79:
+              case 81:
               case "end":
                 return _context8.stop();
             }
@@ -4239,6 +4262,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -4269,6 +4304,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       // 表示する小道具のデータ
       scene: [],
       // 編集データ
+      prop: '',
       editForm_scene: {
         id: null,
         character_id: null,
@@ -4291,6 +4327,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         first_page: '',
         final_page: '',
         pages: '',
+        quantity: 1,
         decision: 0,
         usage: 0,
         usage_guraduation: 0,
@@ -4385,55 +4422,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       },
       immediate: true
     },
-    editSceneMode_prop: {
-      handler: function handler(editSceneMode_prop) {
+    prop: {
+      handler: function handler(prop) {
         var _this2 = this;
 
         return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+          var quantity, input_scene_quantity;
           return _regeneratorRuntime().wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
-                  if (!(_this2.editSceneMode_prop === 100)) {
-                    _context2.next = 6;
-                    break;
+                  if (_this2.prop) {
+                    _this2.optionProps.forEach(function (prop) {
+                      if (prop.id === _this2.prop) {
+                        quantity = prop.quantity;
+                      }
+                    }, _this2);
+
+                    if (quantity > 1) {
+                      _this2.input_quantity = true;
+                      input_scene_quantity = _this2.$refs.input_scene_quantity;
+                      input_scene_quantity.max = quantity;
+                    } else {
+                      _this2.input_quantity = false;
+                    }
                   }
 
-                  _context2.next = 3;
-                  return _this2.fetchScene();
-
-                case 3:
-                  // メッセージ登録
-                  _this2.$store.commit('message/setContent', {
-                    content: '使用シーンが変更されました！',
-                    timeout: 6000
-                  });
-
-                  _context2.next = 12;
-                  break;
-
-                case 6:
-                  if (!(_this2.editSceneMode_detail || _this2.editSceneMode_memo)) {
-                    _context2.next = 11;
-                    break;
-                  }
-
-                  _context2.next = 9;
-                  return _this2.openModal_confirmEdit();
-
-                case 9:
-                  _context2.next = 12;
-                  break;
-
-                case 11:
-                  if (_this2.editSceneMode_detail === 0 && _this2.editSceneMode_memo === 0) {
-                    alert('元のデータと同じです！変更してください');
-                    _this2.editSceneMode_detail = "";
-                    _this2.editSceneMode_memo = "";
-                    _this2.editSceneMode_prop = "";
-                  }
-
-                case 12:
+                case 1:
                 case "end":
                   return _context2.stop();
               }
@@ -4443,8 +4458,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       },
       immediate: true
     },
-    editSceneMode_detail: {
-      handler: function handler(editSceneMode_detail) {
+    editSceneMode_prop: {
+      handler: function handler(editSceneMode_prop) {
         var _this3 = this;
 
         return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
@@ -4452,15 +4467,46 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             while (1) {
               switch (_context3.prev = _context3.next) {
                 case 0:
-                  if (!(_this3.editSceneMode_detail === 100 && _this3.editSceneMode_prop === 1)) {
-                    _context3.next = 3;
+                  if (!(_this3.editSceneMode_prop === 100)) {
+                    _context3.next = 6;
                     break;
                   }
 
                   _context3.next = 3;
-                  return _this3.editProp_usage(_this3.editForm_scene.prop_id);
+                  return _this3.fetchScene();
 
                 case 3:
+                  // メッセージ登録
+                  _this3.$store.commit('message/setContent', {
+                    content: '使用シーンが変更されました！',
+                    timeout: 6000
+                  });
+
+                  _context3.next = 12;
+                  break;
+
+                case 6:
+                  if (!(_this3.editSceneMode_detail || _this3.editSceneMode_memo)) {
+                    _context3.next = 11;
+                    break;
+                  }
+
+                  _context3.next = 9;
+                  return _this3.openModal_confirmEdit();
+
+                case 9:
+                  _context3.next = 12;
+                  break;
+
+                case 11:
+                  if (_this3.editSceneMode_detail === 0 && _this3.editSceneMode_memo === 0) {
+                    alert('元のデータと同じです！変更してください');
+                    _this3.editSceneMode_detail = "";
+                    _this3.editSceneMode_memo = "";
+                    _this3.editSceneMode_prop = "";
+                  }
+
+                case 12:
                 case "end":
                   return _context3.stop();
               }
@@ -4469,93 +4515,122 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }))();
       },
       immediate: true
+    },
+    editSceneMode_detail: {
+      handler: function handler(editSceneMode_detail) {
+        var _this4 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+          return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+            while (1) {
+              switch (_context4.prev = _context4.next) {
+                case 0:
+                  if (!(_this4.editSceneMode_detail === 100 && _this4.editSceneMode_prop === 1)) {
+                    _context4.next = 3;
+                    break;
+                  }
+
+                  _context4.next = 3;
+                  return _this4.editProp_usage(_this4.editForm_scene.prop_id);
+
+                case 3:
+                case "end":
+                  return _context4.stop();
+              }
+            }
+          }, _callee4);
+        }))();
+      },
+      immediate: true
     }
   },
   methods: {
     // シーンの詳細を取得
     fetchScene: function fetchScene() {
-      var _this4 = this;
+      var _this5 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                _this4.resetScene();
+                _this5.resetScene();
 
-                _this4.tab_scene = 1;
-                _context4.next = 4;
-                return axios.get('/api/scenes/' + _this4.postScene);
+                _this5.tab_scene = 1;
+                _context5.next = 4;
+                return axios.get('/api/scenes/' + _this5.postScene);
 
               case 4:
-                response = _context4.sent;
+                response = _context5.sent;
 
                 if (!(response.status !== 200)) {
-                  _context4.next = 8;
+                  _context5.next = 8;
                   break;
                 }
 
-                _this4.$store.commit('error/setCode', response.status);
+                _this5.$store.commit('error/setCode', response.status);
 
-                return _context4.abrupt("return", false);
+                return _context5.abrupt("return", false);
 
               case 8:
-                _this4.scene = response.data;
-                _this4.editForm_scene.id = _this4.scene.id;
-                _this4.editForm_scene.character_id = _this4.scene.character_id;
-                _this4.editForm_scene.character.name = _this4.scene.character.name;
-                _this4.editForm_scene.character.section.section = _this4.scene.character.section.section;
+                _this5.scene = response.data;
+                _this5.editForm_scene.id = _this5.scene.id;
+                _this5.editForm_scene.character_id = _this5.scene.character_id;
+                _this5.editForm_scene.character.name = _this5.scene.character.name;
+                _this5.editForm_scene.character.section.section = _this5.scene.character.section.section;
 
-                _this4.selected();
+                _this5.selected();
 
-                _this4.editForm_scene.prop_id = _this4.scene.prop_id;
-                _this4.editForm_scene.prop.name = _this4.scene.prop.name;
-                _this4.editForm_scene.prop.owner_id = _this4.scene.prop.owner_id;
+                _this5.prop = _this5.scene.prop_id;
+                _this5.editForm_scene.prop_id = _this5.scene.prop_id;
+                _this5.editForm_scene.prop.name = _this5.scene.prop.name;
+                _this5.editForm_scene.prop.owner_id = _this5.scene.prop.owner_id;
 
-                if (_this4.scene.prop.owner) {
-                  _this4.editForm_scene.prop.owner.name = _this4.scene.prop.owner.name;
+                if (_this5.scene.prop.owner) {
+                  _this5.editForm_scene.prop.owner.name = _this5.scene.prop.owner.name;
                 } else {
-                  _this4.editForm_scene.prop.owner.name = '';
+                  _this5.editForm_scene.prop.owner.name = '';
                 }
 
-                _this4.editForm_scene.prop.url = _this4.scene.prop.url;
-                _this4.editForm_scene.prop.prop_comments = _this4.scene.prop.prop_comments;
+                _this5.editForm_scene.prop.url = _this5.scene.prop.url;
+                _this5.editForm_scene.prop.prop_comments = _this5.scene.prop.prop_comments;
 
-                if (_this4.scene.final_page === 1000) {
-                  _this4.select_all_page = true;
+                if (_this5.scene.final_page === 1000) {
+                  _this5.select_all_page = true;
                 } else {
-                  _this4.editForm_scene.first_page = _this4.scene.first_page;
-                  _this4.editForm_scene.final_page = _this4.scene.final_page;
+                  _this5.editForm_scene.first_page = _this5.scene.first_page;
+                  _this5.editForm_scene.final_page = _this5.scene.final_page;
                 }
 
-                _this4.editForm_scene.decision = _this4.scene.decision;
-                _this4.editForm_scene.usage = _this4.scene.usage;
-                _this4.editForm_scene.usage_guraduation = _this4.scene.usage_guraduation;
+                _this5.editForm_scene.quantity = _this5.scene.quantity;
+                _this5.editForm_scene.decision = _this5.scene.decision;
+                _this5.editForm_scene.usage = _this5.scene.usage;
+                _this5.editForm_scene.usage_guraduation = _this5.scene.usage_guraduation;
 
-                if (_this4.scene.usage_guraduation) {
-                  _this4.guradutaion_tag = 1;
+                if (_this5.scene.usage_guraduation) {
+                  _this5.guradutaion_tag = 1;
                 } else {
-                  _this4.guradutaion_tag = 0;
+                  _this5.guradutaion_tag = 0;
                 }
 
-                if (_this4.scene.usage_left) {
-                  _this4.editForm_scene.usage_stage = "left";
-                } else if (_this4.scene.usage_right) {
-                  _this4.editForm_scene.usage_stage = "right";
+                if (_this5.scene.usage_left) {
+                  _this5.editForm_scene.usage_stage = "left";
+                } else if (_this5.scene.usage_right) {
+                  _this5.editForm_scene.usage_stage = "right";
                 }
 
-                if (_this4.scene.setting_id) {
-                  _this4.editForm_scene.setting_id = _this4.scene.setting_id;
-                  _this4.editForm_scene.setting.name = _this4.scene.setting.name;
+                if (_this5.scene.setting_id) {
+                  _this5.editForm_scene.setting_id = _this5.scene.setting_id;
+                  _this5.editForm_scene.setting.name = _this5.scene.setting.name;
                 } else {
-                  _this4.editForm_scene.setting_id = '';
-                  _this4.editForm_scene.setting.name = '';
+                  _this5.editForm_scene.setting_id = '';
+                  _this5.editForm_scene.setting.name = '';
                 }
 
-                if (_this4.scene.scene_comments.length) {
-                  _this4.scene.scene_comments.forEach(function (comment, index) {
-                    _this4.editForm_scene.scene_comments[index] = Object.assign({}, _this4.editForm_scene.scene_comments, {
+                if (_this5.scene.scene_comments.length) {
+                  _this5.scene.scene_comments.forEach(function (comment, index) {
+                    _this5.editForm_scene.scene_comments[index] = Object.assign({}, _this5.editForm_scene.scene_comments, {
                       id: comment.id
                     }, {
                       memo: comment.memo
@@ -4565,55 +4640,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   });
                 }
 
-                _this4.editSceneMode_detail = "";
-                _this4.editSceneMode_memo = "";
-                _this4.editSceneMode_prop = "";
+                _this5.editSceneMode_detail = "";
+                _this5.editSceneMode_memo = "";
+                _this5.editSceneMode_prop = "";
 
-              case 31:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4);
-      }))();
-    },
-    // 登場人物を取得
-    fetchCharacters: function fetchCharacters() {
-      var _this5 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        var response, sections;
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                _context5.next = 2;
-                return axios.get('/api/informations/characters');
-
-              case 2:
-                response = _context5.sent;
-
-                if (!(response.status !== 200)) {
-                  _context5.next = 6;
-                  break;
-                }
-
-                _this5.$store.commit('error/setCode', response.status);
-
-                return _context5.abrupt("return", false);
-
-              case 6:
-                _this5.characters = response.data; // 区分と登場人物をオブジェクトに変換する
-
-                sections = new Object();
-
-                _this5.characters.forEach(function (section) {
-                  sections[section.section] = section.characters;
-                });
-
-                _this5.optionCharacters = sections;
-
-              case 10:
+              case 33:
               case "end":
                 return _context5.stop();
             }
@@ -4621,18 +4652,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee5);
       }))();
     },
-    // 小道具一覧を取得
-    fetchProps: function fetchProps() {
+    // 登場人物を取得
+    fetchCharacters: function fetchCharacters() {
       var _this6 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
-        var response;
+        var response, sections;
         return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) {
             switch (_context6.prev = _context6.next) {
               case 0:
                 _context6.next = 2;
-                return axios.get('/api/props');
+                return axios.get('/api/informations/characters');
 
               case 2:
                 response = _context6.sent;
@@ -4647,9 +4678,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context6.abrupt("return", false);
 
               case 6:
-                _this6.optionProps = response.data;
+                _this6.characters = response.data; // 区分と登場人物をオブジェクトに変換する
 
-              case 7:
+                sections = new Object();
+
+                _this6.characters.forEach(function (section) {
+                  sections[section.section] = section.characters;
+                });
+
+                _this6.optionCharacters = sections;
+
+              case 10:
               case "end":
                 return _context6.stop();
             }
@@ -4657,8 +4696,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee6);
       }))();
     },
-    // 持ち主を取得
-    fetchSettings: function fetchSettings() {
+    // 小道具一覧を取得
+    fetchProps: function fetchProps() {
       var _this7 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
@@ -4668,7 +4707,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context7.prev = _context7.next) {
               case 0:
                 _context7.next = 2;
-                return axios.get('/api/informations/owners');
+                return axios.get('/api/props');
 
               case 2:
                 response = _context7.sent;
@@ -4683,7 +4722,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context7.abrupt("return", false);
 
               case 6:
-                _this7.optionSettings = response.data;
+                _this7.optionProps = response.data;
 
               case 7:
               case "end":
@@ -4693,9 +4732,45 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee7);
       }))();
     },
+    // 持ち主を取得
+    fetchSettings: function fetchSettings() {
+      var _this8 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                _context8.next = 2;
+                return axios.get('/api/informations/owners');
+
+              case 2:
+                response = _context8.sent;
+
+                if (!(response.status !== 200)) {
+                  _context8.next = 6;
+                  break;
+                }
+
+                _this8.$store.commit('error/setCode', response.status);
+
+                return _context8.abrupt("return", false);
+
+              case 6:
+                _this8.optionSettings = response.data;
+
+              case 7:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8);
+      }))();
+    },
     // タブ切り替え
     alterTab: function alterTab() {
-      var _this8 = this;
+      var _this9 = this;
 
       if (this.tab_scene === 1) {
         this.tab_scene = 2;
@@ -4705,13 +4780,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
       this.$nextTick(function () {
-        var content_dom = _this8.$refs.content_detail_scene;
+        var content_dom = _this9.$refs.content_detail_scene;
         var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
 
         if (content_rect.top < 0) {
-          _this8.overlay_class = 0;
+          _this9.overlay_class = 0;
         } else {
-          _this8.overlay_class = 1;
+          _this9.overlay_class = 1;
         }
       });
     },
@@ -4744,6 +4819,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.editForm_scene.character_id = null;
       this.editForm_scene.character.name = null;
       this.editForm_scene.character.section.section = null;
+      this.prop = null;
       this.editForm_scene.prop_id = null;
       this.editForm_scene.prop.name = null;
       this.editForm_scene.prop.owner_id = '';
@@ -4753,6 +4829,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.editForm_scene.first_page = '';
       this.editForm_scene.final_page = '';
       this.select_all_page = false;
+      this.editForm_scene.quantity = 1;
       this.editForm_scene.decision = 0;
       this.editForm_scene.pages = '';
       this.editForm_scene.usage = 0;
@@ -4765,8 +4842,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       this.guradutaion_tag = 0;
     },
+    // 全角→半角（数字）
+    Zenkaku2hankaku_number: function Zenkaku2hankaku_number(str) {
+      return str.replace(/[０-９]/g, function (s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+      var pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+
+      var chars = str.split('');
+      var sets = '';
+      chars.forEach(function (_char, index) {
+        _char.replace(/[０-９]/g, function (s) {
+          var number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+
+          if (pattern_number.test(number)) {
+            sets = sets + number;
+          } else {
+            sets = 0;
+          }
+        });
+
+        if (index === chars.length - 1) {
+          return sets;
+        }
+      });
+    },
     // 編集エラー
     confirmScene: function confirmScene() {
+      var _this10 = this;
+
+      this.editForm_scene.prop_id = this.prop;
+
       if (this.select_all_page && this.scene.first_page) {
         this.editForm_scene.first_page = 1;
         this.editForm_scene.final_page = 1000;
@@ -4775,7 +4881,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         this.editForm_scene.pages = '1-1000';
       }
 
-      if (this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.decision !== this.editForm_scene.decision || this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || !this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage || this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage === "right" || !this.scene.usage_left && this.scene.usage_right && this.editForm_scene.usage_stage === "left" || (this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage || this.scene.setting_id !== this.editForm_scene.setting_id || !this.scene.setting_id && !this.editForm_scene.setting_id) && !this.editForm_scene.pages) {
+      var correct_quantity = '';
+
+      if (this.editForm_scene.quantity) {
+        var quantitys = _toConsumableArray(this.editForm_scene.quantity);
+
+        quantitys.forEach(function (quantity) {
+          var number = _this10.Zenkaku2hankaku_number(quantity);
+
+          correct_quantity = String(correct_quantity) + String(number);
+          correct_quantity = Number(correct_quantity);
+        }, this);
+      } else {
+        correct_quantity = 1;
+      }
+
+      this.editForm_scene.quantity = correct_quantity;
+
+      if (this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.quantity !== this.editForm_scene.quantity || this.scene.decision !== this.editForm_scene.decision || this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || !this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage || this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage === "right" || !this.scene.usage_left && this.scene.usage_right && this.editForm_scene.usage_stage === "left" || (this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage || this.scene.setting_id !== this.editForm_scene.setting_id || !this.scene.setting_id && !this.editForm_scene.setting_id) && !this.editForm_scene.pages) {
         // 元々何ページから何ページと指定があった // これはupdateだけでいい
         this.editSceneMode_detail = 1; // 'page_update'
 
@@ -4834,21 +4957,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 編集confirmのモーダル表示 
     openModal_confirmEdit: function openModal_confirmEdit() {
-      var _this9 = this;
+      var _this11 = this;
 
       this.showContent_confirmEdit = true;
       Object.keys(this.optionCharacters).forEach(function (section) {
-        if (section === _this9.editForm_scene.character.section.section) {
-          _this9.optionCharacters[section].forEach(function (name) {
-            if (name.id === _this9.editForm_scene.character_id) {
-              _this9.editForm_scene.character.name = name.name;
+        if (section === _this11.editForm_scene.character.section.section) {
+          _this11.optionCharacters[section].forEach(function (name) {
+            if (name.id === _this11.editForm_scene.character_id) {
+              _this11.editForm_scene.character.name = name.name;
             }
-          }, _this9);
+          }, _this11);
         }
       }, this);
       var prop;
       this.optionProps.forEach(function (props) {
-        if (props.id === _this9.editForm_scene.prop_id) {
+        if (props.id === _this11.editForm_scene.prop_id) {
           prop = props.name;
         }
       }, this);
@@ -4895,54 +5018,54 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       this.optionSettings.forEach(function (stundet) {
-        if (stundet.id === _this9.editForm_scene.setting_id) {
-          _this9.editForm_scene.setting.name = stundet.name;
+        if (stundet.id === _this11.editForm_scene.setting_id) {
+          _this11.editForm_scene.setting.name = stundet.name;
         }
       }, this);
       var memos = [];
       this.editForm_scene.scene_comments.forEach(function (memo, index) {
-        if (memo.memo && index !== _this9.editForm_scene.scene_comments.length - 1) {
+        if (memo.memo && index !== _this11.editForm_scene.scene_comments.length - 1) {
           memos.push(memo.memo + '\n　　　');
         } else if (memo.memo) {
           memos.push(memo.memo);
         }
       }, this);
-      this.postMessage_Edit = '以下のように編集します。\n登場人物：' + this.editForm_scene.character.name + '\n小道具：' + prop + '\n決定：' + decision + '\nページ数：' + pages + '\n使用状況：' + usage + usage_guraduation + usage_right + usage_left + '\nセットする人：' + this.editForm_scene.setting.name + '\nメモ：' + memos;
+      this.postMessage_Edit = '以下のように編集します。\n登場人物：' + this.editForm_scene.character.name + '\n小道具：' + prop + '\n個数：' + this.editForm_scene.quantity + '\n決定：' + decision + '\nページ数：' + pages + '\n使用状況：' + usage + usage_guraduation + usage_right + usage_left + '\nセットする人：' + this.editForm_scene.setting.name + '\nメモ：' + memos;
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
-      var _this10 = this;
+      var _this12 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
-        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context8.prev = _context8.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
-                _this10.showContent_confirmEdit = false;
+                _this12.showContent_confirmEdit = false;
 
-                if (!_this10.editSceneMode_detail) {
-                  _context8.next = 4;
+                if (!_this12.editSceneMode_detail) {
+                  _context9.next = 4;
                   break;
                 }
 
-                _context8.next = 4;
-                return _this10.editScene();
+                _context9.next = 4;
+                return _this12.editScene();
 
               case 4:
-                if (!_this10.editSceneMode_memo) {
-                  _context8.next = 7;
+                if (!_this12.editSceneMode_memo) {
+                  _context9.next = 7;
                   break;
                 }
 
-                _context8.next = 7;
-                return _this10.editScene_memo();
+                _context9.next = 7;
+                return _this12.editScene_memo();
 
               case 7:
               case "end":
-                return _context8.stop();
+                return _context9.stop();
             }
           }
-        }, _callee8);
+        }, _callee9);
       }))();
     },
     // 編集confirmのモーダル非表示_Cancelの場合
@@ -4973,41 +5096,41 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 基本情報を編集する
     editScene: function editScene() {
-      var _this11 = this;
+      var _this13 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
         var usage_left, usage_right, pattern_number, sets_first, chars_first, sets_final, chars_final, response, first_pages, final_pages, pages_before, pages_after, pattern, memo, last_flag;
-        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+        return _regeneratorRuntime().wrap(function _callee11$(_context11) {
           while (1) {
-            switch (_context10.prev = _context10.next) {
+            switch (_context11.prev = _context11.next) {
               case 0:
                 usage_left = '';
                 usage_right = '';
 
-                if (_this11.editForm_scene.usage_stage === "left") {
+                if (_this13.editForm_scene.usage_stage === "left") {
                   usage_left = 1;
-                } else if (_this11.editForm_scene.usage_stage === "right") {
+                } else if (_this13.editForm_scene.usage_stage === "right") {
                   usage_right = 1;
                 }
 
                 pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
 
-                if (!(_this11.editSceneMode_detail === 1)) {
-                  _context10.next = 24;
+                if (!(_this13.editSceneMode_detail === 1)) {
+                  _context11.next = 24;
                   break;
                 }
 
                 // 元々ページ数の指定があった
-                _this11.editSceneMode_detail = "change";
+                _this13.editSceneMode_detail = "change";
                 sets_first = '';
 
-                if (_this11.editForm_scene.first_page === null) {
-                  sets_first = _this11.editForm_scene.first_page;
-                } else if (_this11.editForm_scene.first_page.length > 1) {
-                  chars_first = _this11.editForm_scene.first_page.split('');
-                  chars_first.forEach(function (_char, index) {
+                if (_this13.editForm_scene.first_page === null) {
+                  sets_first = _this13.editForm_scene.first_page;
+                } else if (_this13.editForm_scene.first_page.length > 1) {
+                  chars_first = _this13.editForm_scene.first_page.split('');
+                  chars_first.forEach(function (_char2, index) {
                     // 一文字ずつになっている
-                    var number = _this11.hankaku2Zenkaku(_char);
+                    var number = _this13.hankaku2Zenkaku(_char2);
 
                     if (pattern_number.test(number)) {
                       sets_first = sets_first + number;
@@ -5015,21 +5138,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       sets_first = 0;
                     }
                   });
-                } else if (_this11.editForm_scene.first_page.length === 1 && !pattern_number.test(_this11.editForm_scene.first_page)) {
-                  sets_first = _this11.hankaku2Zenkaku(_this11.editForm_scene.first_page);
-                } else if (pattern_number.test(_this11.editForm_scene.first_page)) {
-                  sets_first = _this11.editForm_scene.first_page;
+                } else if (_this13.editForm_scene.first_page.length === 1 && !pattern_number.test(_this13.editForm_scene.first_page)) {
+                  sets_first = _this13.hankaku2Zenkaku(_this13.editForm_scene.first_page);
+                } else if (pattern_number.test(_this13.editForm_scene.first_page)) {
+                  sets_first = _this13.editForm_scene.first_page;
                 }
 
                 sets_final = '';
 
-                if (_this11.editForm_scene.final_page === null) {
+                if (_this13.editForm_scene.final_page === null) {
                   sets_final = 0;
-                } else if (_this11.editForm_scene.final_page.length > 1) {
-                  chars_final = _this11.editForm_scene.final_page.split('');
-                  chars_final.forEach(function (_char2, index) {
+                } else if (_this13.editForm_scene.final_page.length > 1) {
+                  chars_final = _this13.editForm_scene.final_page.split('');
+                  chars_final.forEach(function (_char3, index) {
                     // 一文字ずつになっている
-                    var number = _this11.hankaku2Zenkaku(_char2);
+                    var number = _this13.hankaku2Zenkaku(_char3);
 
                     if (pattern_number.test(number)) {
                       sets_final = sets_final + number;
@@ -5037,76 +5160,77 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       sets_final = 0;
                     }
                   });
-                } else if (_this11.editForm_scene.final_page.length === 1 && !pattern_number.test(_this11.editForm_scene.final_page)) {
-                  sets_final = _this11.hankaku2Zenkaku(_this11.editForm_scene.final_page);
-                } else if (pattern_number.test(_this11.editForm_scene.final_page)) {
-                  sets_final = _this11.editForm_scene.final_page;
+                } else if (_this13.editForm_scene.final_page.length === 1 && !pattern_number.test(_this13.editForm_scene.final_page)) {
+                  sets_final = _this13.hankaku2Zenkaku(_this13.editForm_scene.final_page);
+                } else if (pattern_number.test(_this13.editForm_scene.final_page)) {
+                  sets_final = _this13.editForm_scene.final_page;
                 }
 
                 if (parseInt(sets_first) > parseInt(sets_final)) {
                   sets_final = 0;
                 }
 
-                _context10.next = 13;
-                return axios.post('/api/scenes/' + _this11.scene.id, {
-                  character_id: _this11.editForm_scene.character_id,
-                  prop_id: _this11.editForm_scene.prop_id,
+                _context11.next = 13;
+                return axios.post('/api/scenes/' + _this13.scene.id, {
+                  character_id: _this13.editForm_scene.character_id,
+                  prop_id: _this13.editForm_scene.prop_id,
                   first_page: parseInt(sets_first),
                   //this.editForm_scene.first_page,
                   final_page: parseInt(sets_final),
                   //this.editForm_scene.final_page,
-                  decision: _this11.editForm_scene.decision,
-                  usage: _this11.editForm_scene.usage,
-                  usage_guraduation: _this11.editForm_scene.usage_guraduation,
+                  quantity: _this13.editForm_scene.quantity,
+                  decision: _this13.editForm_scene.decision,
+                  usage: _this13.editForm_scene.usage,
+                  usage_guraduation: _this13.editForm_scene.usage_guraduation,
                   usage_left: usage_left,
                   usage_right: usage_right,
-                  setting_id: _this11.editForm_scene.setting_id
+                  setting_id: _this13.editForm_scene.setting_id
                 });
 
               case 13:
-                response = _context10.sent;
+                response = _context11.sent;
 
                 if (!(response.status === 422)) {
-                  _context10.next = 17;
+                  _context11.next = 17;
                   break;
                 }
 
-                _this11.errors.error = response.data.errors;
-                return _context10.abrupt("return", false);
+                _this13.errors.error = response.data.errors;
+                return _context11.abrupt("return", false);
 
               case 17:
                 if (!(response.status !== 204)) {
-                  _context10.next = 20;
+                  _context11.next = 20;
                   break;
                 }
 
-                _this11.$store.commit('error/setCode', response.status);
+                _this13.$store.commit('error/setCode', response.status);
 
-                return _context10.abrupt("return", false);
+                return _context11.abrupt("return", false);
 
               case 20:
-                _this11.editSceneMode_detail = 100;
+                _this13.editSceneMode_detail = 100;
 
-                if (_this11.editSceneMode_memo === 0 && _this11.editSceneMode_prop === 0) {
-                  _this11.editSceneMode_memo = 100;
-                  _this11.editSceneMode_prop = 100;
+                if (_this13.editSceneMode_memo === 0 && _this13.editSceneMode_prop === 0) {
+                  _this13.editSceneMode_memo = 100;
+                  _this13.editSceneMode_prop = 100;
                 }
 
-                _context10.next = 25;
+                _context11.next = 25;
                 break;
 
               case 24:
-                if (_this11.editSceneMode_detail === 2) {
+                if (_this13.editSceneMode_detail === 2) {
                   // ページ数を新たに指定
-                  _this11.editSceneMode_detail = "change"; // ページを分割
+                  _this13.editSceneMode_detail = "change"; // ページを分割
 
                   first_pages = [];
                   final_pages = [];
                   first_pages[0] = 0;
                   final_pages[0] = 0;
 
-                  if (_this11.editForm_scene.pages) {
-                    pages_before = _this11.editForm_scene.pages.split(/,|、|，|\s+/);
+                  if (_this13.editForm_scene.pages) {
+                    pages_before = _this13.editForm_scene.pages.split(/,|、|，|\s+/);
                     pages_before.forEach(function (page) {
                       page = page.replaceAll(/\s+/g, '');
                     });
@@ -5115,15 +5239,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     pages_after.forEach(function (page, index) {
                       if (index === 0) {
                         if (pattern.test(page)) {
-                          var pages = _this11.first_finalDivide(page);
+                          var pages = _this13.first_finalDivide(page);
 
                           var _chars_first = pages[0].split('');
 
                           var _sets_first = '';
 
-                          _chars_first.forEach(function (_char3, index) {
+                          _chars_first.forEach(function (_char4, index) {
                             // 一文字ずつになっている
-                            var number = _this11.hankaku2Zenkaku(_char3);
+                            var number = _this13.hankaku2Zenkaku(_char4);
 
                             if (pattern_number.test(number)) {
                               _sets_first = _sets_first + number;
@@ -5136,9 +5260,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                           var _sets_final = '';
 
-                          _chars_final.forEach(function (_char4, index) {
+                          _chars_final.forEach(function (_char5, index) {
                             // 一文字ずつになっている
-                            var number = _this11.hankaku2Zenkaku(_char4);
+                            var number = _this13.hankaku2Zenkaku(_char5);
 
                             if (pattern_number.test(number)) {
                               _sets_final = _sets_final + number;
@@ -5159,9 +5283,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                           var _sets_first2 = '';
 
-                          _chars_first2.forEach(function (_char5, index) {
+                          _chars_first2.forEach(function (_char6, index) {
                             // 一文字ずつになっている
-                            var number = _this11.hankaku2Zenkaku(_char5);
+                            var number = _this13.hankaku2Zenkaku(_char6);
 
                             if (pattern_number.test(number)) {
                               _sets_first2 = _sets_first2 + number;
@@ -5176,15 +5300,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                         }
                       } else {
                         if (pattern.test(page)) {
-                          var _pages = _this11.first_finalDivide(page);
+                          var _pages = _this13.first_finalDivide(page);
 
                           var _chars_first3 = _pages[0].split('');
 
                           var _sets_first3 = '';
 
-                          _chars_first3.forEach(function (_char6, index) {
+                          _chars_first3.forEach(function (_char7, index) {
                             // 一文字ずつになっている
-                            var number = _this11.hankaku2Zenkaku(_char6);
+                            var number = _this13.hankaku2Zenkaku(_char7);
 
                             if (pattern_number.test(number)) {
                               _sets_first3 = _sets_first3 + number;
@@ -5197,9 +5321,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                           var _sets_final2 = '';
 
-                          _chars_final2.forEach(function (_char7, index) {
+                          _chars_final2.forEach(function (_char8, index) {
                             // 一文字ずつになっている
-                            var number = _this11.hankaku2Zenkaku(_char7);
+                            var number = _this13.hankaku2Zenkaku(_char8);
 
                             if (pattern_number.test(number)) {
                               _sets_final2 = _sets_final2 + number;
@@ -5220,9 +5344,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                           var _sets_first4 = '';
 
-                          _chars_first4.forEach(function (_char8, index) {
+                          _chars_first4.forEach(function (_char9, index) {
                             // 一文字ずつになっている
-                            var number = _this11.hankaku2Zenkaku(_char8);
+                            var number = _this13.hankaku2Zenkaku(_char9);
 
                             if (pattern_number.test(number)) {
                               _sets_first4 = _sets_first4 + number;
@@ -5241,27 +5365,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   memo = '';
 
-                  if (_this11.editForm_scene.memo) {
-                    memo = _this11.editForm_scene.memo;
-                  } else if (_this11.editForm_scene.scene_comments.length) {
-                    memo = _this11.editForm_scene.scene_comments[0].memo;
+                  if (_this13.editForm_scene.memo) {
+                    memo = _this13.editForm_scene.memo;
+                  } else if (_this13.editForm_scene.scene_comments.length) {
+                    memo = _this13.editForm_scene.scene_comments[0].memo;
                   }
 
                   last_flag = false;
                   first_pages.forEach( /*#__PURE__*/function () {
-                    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(page, index) {
+                    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(page, index) {
                       var _response, _response2;
 
-                      return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+                      return _regeneratorRuntime().wrap(function _callee10$(_context10) {
                         while (1) {
-                          switch (_context9.prev = _context9.next) {
+                          switch (_context10.prev = _context10.next) {
                             case 0:
                               if (!(index === 0)) {
-                                _context9.next = 13;
+                                _context10.next = 13;
                                 break;
                               }
 
-                              _context9.next = 3;
+                              _context10.next = 3;
                               return axios.post('/api/scenes/' + this.scene.id, {
                                 character_id: this.editForm_scene.character_id,
                                 prop_id: this.editForm_scene.prop_id,
@@ -5275,24 +5399,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                               });
 
                             case 3:
-                              _response = _context9.sent;
+                              _response = _context10.sent;
 
                               if (!(_response.status === 422)) {
-                                _context9.next = 7;
+                                _context10.next = 7;
                                 break;
                               }
 
                               this.errors.error = _response.data.errors;
-                              return _context9.abrupt("return", false);
+                              return _context10.abrupt("return", false);
 
                             case 7:
                               if (!(_response.status !== 204)) {
-                                _context9.next = 10;
+                                _context10.next = 10;
                                 break;
                               }
 
                               this.$store.commit('error/setCode', _response.status);
-                              return _context9.abrupt("return", false);
+                              return _context10.abrupt("return", false);
 
                             case 10:
                               if (index === first_pages.length - 1) {
@@ -5304,11 +5428,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                                 }
                               }
 
-                              _context9.next = 23;
+                              _context10.next = 23;
                               break;
 
                             case 13:
-                              _context9.next = 15;
+                              _context10.next = 15;
                               return axios.post('/api/scenes', {
                                 character_id: this.editForm_scene.character_id,
                                 prop_id: this.editForm_scene.prop_id,
@@ -5323,24 +5447,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                               });
 
                             case 15:
-                              _response2 = _context9.sent;
+                              _response2 = _context10.sent;
 
                               if (!(_response2.status === 422)) {
-                                _context9.next = 19;
+                                _context10.next = 19;
                                 break;
                               }
 
                               this.errors.error = _response2.data.errors;
-                              return _context9.abrupt("return", false);
+                              return _context10.abrupt("return", false);
 
                             case 19:
                               if (!(_response2.status !== 201)) {
-                                _context9.next = 22;
+                                _context10.next = 22;
                                 break;
                               }
 
                               this.$store.commit('error/setCode', _response2.status);
-                              return _context9.abrupt("return", false);
+                              return _context10.abrupt("return", false);
 
                             case 22:
                               if (index === first_pages.length - 1) {
@@ -5354,159 +5478,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                             case 23:
                             case "end":
-                              return _context9.stop();
+                              return _context10.stop();
                           }
                         }
-                      }, _callee9, this);
+                      }, _callee10, this);
                     }));
 
                     return function (_x, _x2) {
                       return _ref.apply(this, arguments);
                     };
-                  }(), _this11);
+                  }(), _this13);
                 }
 
               case 25:
-              case "end":
-                return _context10.stop();
-            }
-          }
-        }, _callee10);
-      }))();
-    },
-    // メモを更新する
-    editScene_memo: function editScene_memo() {
-      var _this12 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
-        var response, _response3, _response4;
-
-        return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-          while (1) {
-            switch (_context11.prev = _context11.next) {
-              case 0:
-                if (!(_this12.editSceneMode_memo === 1)) {
-                  _context11.next = 14;
-                  break;
-                }
-
-                _context11.next = 3;
-                return axios.post('/api/scene_comments', {
-                  scene_id: _this12.editForm_scene.id,
-                  memo: _this12.editForm_scene.memo
-                });
-
-              case 3:
-                response = _context11.sent;
-
-                if (!(response.status === 422)) {
-                  _context11.next = 7;
-                  break;
-                }
-
-                _this12.errors.error = response.data.errors;
-                return _context11.abrupt("return", false);
-
-              case 7:
-                if (!(response.status !== 201)) {
-                  _context11.next = 10;
-                  break;
-                }
-
-                _this12.$store.commit('error/setCode', response.status);
-
-                return _context11.abrupt("return", false);
-
-              case 10:
-                _this12.editSceneMode_memo = 100;
-
-                if (_this12.editSceneMode_prop === 0) {
-                  _this12.editSceneMode_prop = 100;
-                }
-
-                _context11.next = 40;
-                break;
-
-              case 14:
-                if (!(_this12.editSceneMode_memo === 2)) {
-                  _context11.next = 28;
-                  break;
-                }
-
-                _context11.next = 17;
-                return axios["delete"]('/api/scene_comments/' + _this12.scene.scene_comments[0].id);
-
-              case 17:
-                _response3 = _context11.sent;
-
-                if (!(_response3.status === 422)) {
-                  _context11.next = 21;
-                  break;
-                }
-
-                _this12.errors.error = _response3.data.errors;
-                return _context11.abrupt("return", false);
-
-              case 21:
-                if (!(_response3.status !== 204)) {
-                  _context11.next = 24;
-                  break;
-                }
-
-                _this12.$store.commit('error/setCode', _response3.status);
-
-                return _context11.abrupt("return", false);
-
-              case 24:
-                _this12.editSceneMode_memo = 100;
-
-                if (_this12.editSceneMode_prop === 0) {
-                  _this12.editSceneMode_prop = 100;
-                }
-
-                _context11.next = 40;
-                break;
-
-              case 28:
-                if (!(_this12.editSceneMode_memo === 3)) {
-                  _context11.next = 40;
-                  break;
-                }
-
-                _context11.next = 31;
-                return axios.post('/api/scene_comments/' + _this12.scene.scene_comments[0].id, {
-                  memo: _this12.editForm_scene.scene_comments[0].memo
-                });
-
-              case 31:
-                _response4 = _context11.sent;
-
-                if (!(_response4.status === 422)) {
-                  _context11.next = 35;
-                  break;
-                }
-
-                _this12.errors.error = _response4.data.errors;
-                return _context11.abrupt("return", false);
-
-              case 35:
-                if (!(_response4.status !== 204)) {
-                  _context11.next = 38;
-                  break;
-                }
-
-                _this12.$store.commit('error/setCode', _response4.status);
-
-                return _context11.abrupt("return", false);
-
-              case 38:
-                _this12.editSceneMode_memo = 100;
-
-                if (_this12.editSceneMode_prop === 0) {
-                  _this12.editSceneMode_prop = 100;
-                }
-
-              case 40:
               case "end":
                 return _context11.stop();
             }
@@ -5514,33 +5498,139 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee11);
       }))();
     },
-    // 小道具を更新する
-    editProp_usage: function editProp_usage() {
-      var _this13 = this;
+    // メモを更新する
+    editScene_memo: function editScene_memo() {
+      var _this14 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
+        var response, _response3, _response4;
+
         return _regeneratorRuntime().wrap(function _callee12$(_context12) {
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
-                if (!(_this13.scene.usage != _this13.editForm_scene.usage)) {
-                  _context12.next = 3;
+                if (!(_this14.editSceneMode_memo === 1)) {
+                  _context12.next = 14;
                   break;
                 }
 
                 _context12.next = 3;
-                return _this13.editProp_usage_passo();
+                return axios.post('/api/scene_comments', {
+                  scene_id: _this14.editForm_scene.id,
+                  memo: _this14.editForm_scene.memo
+                });
 
               case 3:
-                if (!(_this13.scene.usage_guraduation != _this13.editForm_scene.usage_guraduation || _this13.editForm_scene.usage_guraduation)) {
-                  _context12.next = 6;
+                response = _context12.sent;
+
+                if (!(response.status === 422)) {
+                  _context12.next = 7;
                   break;
                 }
 
-                _context12.next = 6;
-                return _this13.editProp_usage_guraduation();
+                _this14.errors.error = response.data.errors;
+                return _context12.abrupt("return", false);
 
-              case 6:
+              case 7:
+                if (!(response.status !== 201)) {
+                  _context12.next = 10;
+                  break;
+                }
+
+                _this14.$store.commit('error/setCode', response.status);
+
+                return _context12.abrupt("return", false);
+
+              case 10:
+                _this14.editSceneMode_memo = 100;
+
+                if (_this14.editSceneMode_prop === 0) {
+                  _this14.editSceneMode_prop = 100;
+                }
+
+                _context12.next = 40;
+                break;
+
+              case 14:
+                if (!(_this14.editSceneMode_memo === 2)) {
+                  _context12.next = 28;
+                  break;
+                }
+
+                _context12.next = 17;
+                return axios["delete"]('/api/scene_comments/' + _this14.scene.scene_comments[0].id);
+
+              case 17:
+                _response3 = _context12.sent;
+
+                if (!(_response3.status === 422)) {
+                  _context12.next = 21;
+                  break;
+                }
+
+                _this14.errors.error = _response3.data.errors;
+                return _context12.abrupt("return", false);
+
+              case 21:
+                if (!(_response3.status !== 204)) {
+                  _context12.next = 24;
+                  break;
+                }
+
+                _this14.$store.commit('error/setCode', _response3.status);
+
+                return _context12.abrupt("return", false);
+
+              case 24:
+                _this14.editSceneMode_memo = 100;
+
+                if (_this14.editSceneMode_prop === 0) {
+                  _this14.editSceneMode_prop = 100;
+                }
+
+                _context12.next = 40;
+                break;
+
+              case 28:
+                if (!(_this14.editSceneMode_memo === 3)) {
+                  _context12.next = 40;
+                  break;
+                }
+
+                _context12.next = 31;
+                return axios.post('/api/scene_comments/' + _this14.scene.scene_comments[0].id, {
+                  memo: _this14.editForm_scene.scene_comments[0].memo
+                });
+
+              case 31:
+                _response4 = _context12.sent;
+
+                if (!(_response4.status === 422)) {
+                  _context12.next = 35;
+                  break;
+                }
+
+                _this14.errors.error = _response4.data.errors;
+                return _context12.abrupt("return", false);
+
+              case 35:
+                if (!(_response4.status !== 204)) {
+                  _context12.next = 38;
+                  break;
+                }
+
+                _this14.$store.commit('error/setCode', _response4.status);
+
+                return _context12.abrupt("return", false);
+
+              case 38:
+                _this14.editSceneMode_memo = 100;
+
+                if (_this14.editSceneMode_prop === 0) {
+                  _this14.editSceneMode_prop = 100;
+                }
+
+              case 40:
               case "end":
                 return _context12.stop();
             }
@@ -5548,91 +5638,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee12);
       }))();
     },
-    editProp_usage_passo: function editProp_usage_passo() {
-      var _this14 = this;
+    // 小道具を更新する
+    editProp_usage: function editProp_usage() {
+      var _this15 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13() {
-        var response_prop, _response_prop;
-
         return _regeneratorRuntime().wrap(function _callee13$(_context13) {
           while (1) {
             switch (_context13.prev = _context13.next) {
               case 0:
-                if (!_this14.editForm_scene.usage) {
-                  _context13.next = 13;
+                if (!(_this15.scene.usage != _this15.editForm_scene.usage)) {
+                  _context13.next = 3;
                   break;
                 }
 
                 _context13.next = 3;
-                return axios.post('/api/props/' + _this14.editForm_scene.prop_id, {
-                  method: 'usage_change',
-                  usage: 1
-                });
+                return _this15.editProp_usage_passo();
 
               case 3:
-                response_prop = _context13.sent;
-
-                if (!(response_prop.status === 422)) {
-                  _context13.next = 7;
+                if (!(_this15.scene.usage_guraduation != _this15.editForm_scene.usage_guraduation || _this15.editForm_scene.usage_guraduation)) {
+                  _context13.next = 6;
                   break;
                 }
 
-                _this14.errors.error = response_prop.data.errors;
-                return _context13.abrupt("return", false);
+                _context13.next = 6;
+                return _this15.editProp_usage_guraduation();
 
-              case 7:
-                if (!(response_prop.status !== 204)) {
-                  _context13.next = 10;
-                  break;
-                }
-
-                _this14.$store.commit('error/setCode', response_prop.status);
-
-                return _context13.abrupt("return", false);
-
-              case 10:
-                if (_this14.scene.usage_guraduation == _this14.editForm_scene.usage_guraduation && (_this14.scene.usage_left && _this14.editForm_scene.usage_stage === "left" || _this14.scene.usage_right && _this14.editForm_scene.usage_stage === "right" || !_this14.scene.usage_left && !_this14.scene.usage_right && !_this14.editForm_scene.usage_stage)) {
-                  _this14.editSceneMode_prop = 100;
-                }
-
-                _context13.next = 23;
-                break;
-
-              case 13:
-                _context13.next = 15;
-                return axios.post('/api/props_deep/' + _this14.editForm_scene.prop_id, {
-                  method: 'usage_0_change',
-                  id: _this14.scene.id,
-                  usage: 0
-                });
-
-              case 15:
-                _response_prop = _context13.sent;
-
-                if (!(_response_prop.status === 422)) {
-                  _context13.next = 19;
-                  break;
-                }
-
-                _this14.errors.error = _response_prop.data.errors;
-                return _context13.abrupt("return", false);
-
-              case 19:
-                if (!(_response_prop.status !== 204)) {
-                  _context13.next = 22;
-                  break;
-                }
-
-                _this14.$store.commit('error/setCode', _response_prop.status);
-
-                return _context13.abrupt("return", false);
-
-              case 22:
-                if (_this14.scene.usage_guraduation == _this14.editForm_scene.usage_guraduation && (_this14.scene.usage_left && _this14.editForm_scene.usage_stage === "left" || _this14.scene.usage_right && _this14.editForm_scene.usage_stage === "right" || !_this14.scene.usage_left && !_this14.scene.usage_right && !_this14.editForm_scene.usage_stage)) {
-                  _this14.editSceneMode_prop = 100;
-                }
-
-              case 23:
+              case 6:
               case "end":
                 return _context13.stop();
             }
@@ -5640,665 +5672,757 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee13);
       }))();
     },
-    editProp_usage_guraduation: function editProp_usage_guraduation() {
-      var _this15 = this;
+    editProp_usage_passo: function editProp_usage_passo() {
+      var _this16 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14() {
-        var response_prop, _response_prop2, _response_prop3, _response_prop4, _response_prop5, _response_prop6, _response_prop7, _response_prop8, _response_prop9, _response_prop10, _response_prop11, _response_prop12, _response_prop13, _response_prop14, _response_prop15, _response_prop16;
+        var response_prop, _response_prop;
 
         return _regeneratorRuntime().wrap(function _callee14$(_context14) {
           while (1) {
             switch (_context14.prev = _context14.next) {
               case 0:
-                if (!(_this15.scene.usage_guraduation != _this15.editForm_scene.usage_guraduation)) {
-                  _context14.next = 131;
+                if (!_this16.editForm_scene.usage) {
+                  _context14.next = 13;
                   break;
                 }
 
-                if (!(!_this15.scene.usage_guraduation && _this15.editForm_scene.usage_guraduation)) {
-                  _context14.next = 92;
+                _context14.next = 3;
+                return axios.post('/api/props/' + _this16.editForm_scene.prop_id, {
+                  method: 'usage_change',
+                  usage: 1
+                });
+
+              case 3:
+                response_prop = _context14.sent;
+
+                if (!(response_prop.status === 422)) {
+                  _context14.next = 7;
                   break;
                 }
 
-                if (!(_this15.scene.usage_left && _this15.editForm_scene.usage_stage === "right")) {
-                  _context14.next = 15;
+                _this16.errors.error = response_prop.data.errors;
+                return _context14.abrupt("return", false);
+
+              case 7:
+                if (!(response_prop.status !== 204)) {
+                  _context14.next = 10;
                   break;
                 }
 
-                _context14.next = 5;
-                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
+                _this16.$store.commit('error/setCode', response_prop.status);
+
+                return _context14.abrupt("return", false);
+
+              case 10:
+                if (_this16.scene.usage_guraduation == _this16.editForm_scene.usage_guraduation && (_this16.scene.usage_left && _this16.editForm_scene.usage_stage === "left" || _this16.scene.usage_right && _this16.editForm_scene.usage_stage === "right" || !_this16.scene.usage_left && !_this16.scene.usage_right && !_this16.editForm_scene.usage_stage)) {
+                  _this16.editSceneMode_prop = 100;
+                }
+
+                _context14.next = 23;
+                break;
+
+              case 13:
+                _context14.next = 15;
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
+                  method: 'usage_0_change',
+                  id: _this16.scene.id,
+                  usage: 0
+                });
+
+              case 15:
+                _response_prop = _context14.sent;
+
+                if (!(_response_prop.status === 422)) {
+                  _context14.next = 19;
+                  break;
+                }
+
+                _this16.errors.error = _response_prop.data.errors;
+                return _context14.abrupt("return", false);
+
+              case 19:
+                if (!(_response_prop.status !== 204)) {
+                  _context14.next = 22;
+                  break;
+                }
+
+                _this16.$store.commit('error/setCode', _response_prop.status);
+
+                return _context14.abrupt("return", false);
+
+              case 22:
+                if (_this16.scene.usage_guraduation == _this16.editForm_scene.usage_guraduation && (_this16.scene.usage_left && _this16.editForm_scene.usage_stage === "left" || _this16.scene.usage_right && _this16.editForm_scene.usage_stage === "right" || !_this16.scene.usage_left && !_this16.scene.usage_right && !_this16.editForm_scene.usage_stage)) {
+                  _this16.editSceneMode_prop = 100;
+                }
+
+              case 23:
+              case "end":
+                return _context14.stop();
+            }
+          }
+        }, _callee14);
+      }))();
+    },
+    editProp_usage_guraduation: function editProp_usage_guraduation() {
+      var _this17 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15() {
+        var response_prop, _response_prop2, _response_prop3, _response_prop4, _response_prop5, _response_prop6, _response_prop7, _response_prop8, _response_prop9, _response_prop10, _response_prop11, _response_prop12, _response_prop13, _response_prop14, _response_prop15, _response_prop16;
+
+        return _regeneratorRuntime().wrap(function _callee15$(_context15) {
+          while (1) {
+            switch (_context15.prev = _context15.next) {
+              case 0:
+                if (!(_this17.scene.usage_guraduation != _this17.editForm_scene.usage_guraduation)) {
+                  _context15.next = 131;
+                  break;
+                }
+
+                if (!(!_this17.scene.usage_guraduation && _this17.editForm_scene.usage_guraduation)) {
+                  _context15.next = 92;
+                  break;
+                }
+
+                if (!(_this17.scene.usage_left && _this17.editForm_scene.usage_stage === "right")) {
+                  _context15.next = 15;
+                  break;
+                }
+
+                _context15.next = 5;
+                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_guraduation_left_to_right_change',
-                  id: _this15.scene.id,
+                  id: _this17.scene.id,
                   usage_guraduation: 1,
                   usage_left: 0,
                   usage_right: 1
                 });
 
               case 5:
-                response_prop = _context14.sent;
+                response_prop = _context15.sent;
 
                 if (!(response_prop.status === 422)) {
-                  _context14.next = 9;
+                  _context15.next = 9;
                   break;
                 }
 
-                _this15.errors.error = response_prop.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = response_prop.data.errors;
+                return _context15.abrupt("return", false);
 
               case 9:
                 if (!(response_prop.status !== 204)) {
-                  _context14.next = 12;
+                  _context15.next = 12;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', response_prop.status);
+                _this17.$store.commit('error/setCode', response_prop.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 12:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 90;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 90;
                 break;
 
               case 15:
-                if (!(_this15.scene.usage_right && _this15.editForm_scene.usage_stage === "left")) {
-                  _context14.next = 28;
+                if (!(_this17.scene.usage_right && _this17.editForm_scene.usage_stage === "left")) {
+                  _context15.next = 28;
                   break;
                 }
 
-                _context14.next = 18;
-                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 18;
+                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_guraduation_right_to_left_change',
-                  id: _this15.scene.id,
+                  id: _this17.scene.id,
                   usage_guraduation: 1,
                   usage_left: 1,
                   usage_right: 0
                 });
 
               case 18:
-                _response_prop2 = _context14.sent;
+                _response_prop2 = _context15.sent;
 
                 if (!(_response_prop2.status === 422)) {
-                  _context14.next = 22;
+                  _context15.next = 22;
                   break;
                 }
 
-                _this15.errors.error = _response_prop2.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop2.data.errors;
+                return _context15.abrupt("return", false);
 
               case 22:
                 if (!(_response_prop2.status !== 204)) {
-                  _context14.next = 25;
+                  _context15.next = 25;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop2.status);
+                _this17.$store.commit('error/setCode', _response_prop2.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 25:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 90;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 90;
                 break;
 
               case 28:
-                if (!(!_this15.scene.usage_left && !_this15.scene.usage_right && _this15.editForm_scene.usage_stage === "left")) {
-                  _context14.next = 41;
+                if (!(!_this17.scene.usage_left && !_this17.scene.usage_right && _this17.editForm_scene.usage_stage === "left")) {
+                  _context15.next = 41;
                   break;
                 }
 
-                _context14.next = 31;
-                return axios.post('/api/props/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 31;
+                return axios.post('/api/props/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_left_change',
                   usage_guraduation: 1,
                   usage_left: 1
                 });
 
               case 31:
-                _response_prop3 = _context14.sent;
+                _response_prop3 = _context15.sent;
 
                 if (!(_response_prop3.status === 422)) {
-                  _context14.next = 35;
+                  _context15.next = 35;
                   break;
                 }
 
-                _this15.errors.error = _response_prop3.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop3.data.errors;
+                return _context15.abrupt("return", false);
 
               case 35:
                 if (!(_response_prop3.status !== 204)) {
-                  _context14.next = 38;
+                  _context15.next = 38;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop3.status);
+                _this17.$store.commit('error/setCode', _response_prop3.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 38:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 90;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 90;
                 break;
 
               case 41:
-                if (!(!_this15.scene.usage_left && _this15.editForm_scene.usage_stage === "right")) {
-                  _context14.next = 54;
+                if (!(!_this17.scene.usage_left && _this17.editForm_scene.usage_stage === "right")) {
+                  _context15.next = 54;
                   break;
                 }
 
-                _context14.next = 44;
-                return axios.post('/api/props/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 44;
+                return axios.post('/api/props/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_right_change',
-                  decision: _this15.editForm_scene.decision,
+                  decision: _this17.editForm_scene.decision,
                   usage_guraduation: 1,
                   usage_right: 1
                 });
 
               case 44:
-                _response_prop4 = _context14.sent;
+                _response_prop4 = _context15.sent;
 
                 if (!(_response_prop4.status === 422)) {
-                  _context14.next = 48;
+                  _context15.next = 48;
                   break;
                 }
 
-                _this15.errors.error = _response_prop4.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop4.data.errors;
+                return _context15.abrupt("return", false);
 
               case 48:
                 if (!(_response_prop4.status !== 204)) {
-                  _context14.next = 51;
+                  _context15.next = 51;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop4.status);
+                _this17.$store.commit('error/setCode', _response_prop4.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 51:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 90;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 90;
                 break;
 
               case 54:
-                if (!(_this15.scene.usage_left && !_this15.editForm_scene.usage_stage)) {
-                  _context14.next = 67;
+                if (!(_this17.scene.usage_left && !_this17.editForm_scene.usage_stage)) {
+                  _context15.next = 67;
                   break;
                 }
 
-                _context14.next = 57;
-                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 57;
+                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_guraduation_1_left_0_change',
-                  id: _this15.scene.id,
+                  id: _this17.scene.id,
                   usage_guraduation: 1,
                   usage_left: 0
                 });
 
               case 57:
-                _response_prop5 = _context14.sent;
+                _response_prop5 = _context15.sent;
 
                 if (!(_response_prop5.status === 422)) {
-                  _context14.next = 61;
+                  _context15.next = 61;
                   break;
                 }
 
-                _this15.errors.error = _response_prop5.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop5.data.errors;
+                return _context15.abrupt("return", false);
 
               case 61:
                 if (!(_response_prop5.status !== 204)) {
-                  _context14.next = 64;
+                  _context15.next = 64;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop5.status);
+                _this17.$store.commit('error/setCode', _response_prop5.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 64:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 90;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 90;
                 break;
 
               case 67:
-                if (!(_this15.scene.usage_right && !_this15.editForm_scene.usage_stage)) {
-                  _context14.next = 80;
+                if (!(_this17.scene.usage_right && !_this17.editForm_scene.usage_stage)) {
+                  _context15.next = 80;
                   break;
                 }
 
-                _context14.next = 70;
-                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 70;
+                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_guraduation_1_right_0_change',
-                  id: _this15.scene.id,
+                  id: _this17.scene.id,
                   usage_guraduation: 1,
                   usage_right: 0
                 });
 
               case 70:
-                _response_prop6 = _context14.sent;
+                _response_prop6 = _context15.sent;
 
                 if (!(_response_prop6.status === 422)) {
-                  _context14.next = 74;
+                  _context15.next = 74;
                   break;
                 }
 
-                _this15.errors.error = _response_prop6.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop6.data.errors;
+                return _context15.abrupt("return", false);
 
               case 74:
                 if (!(_response_prop6.status !== 204)) {
-                  _context14.next = 77;
+                  _context15.next = 77;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop6.status);
+                _this17.$store.commit('error/setCode', _response_prop6.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 77:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 90;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 90;
                 break;
 
               case 80:
-                _context14.next = 82;
-                return axios.post('/api/props/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 82;
+                return axios.post('/api/props/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_guraduation_change',
                   usage_guraduation: 1
                 });
 
               case 82:
-                _response_prop7 = _context14.sent;
+                _response_prop7 = _context15.sent;
 
                 if (!(_response_prop7.status === 422)) {
-                  _context14.next = 86;
+                  _context15.next = 86;
                   break;
                 }
 
-                _this15.errors.error = _response_prop7.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop7.data.errors;
+                return _context15.abrupt("return", false);
 
               case 86:
                 if (!(_response_prop7.status !== 204)) {
-                  _context14.next = 89;
+                  _context15.next = 89;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop7.status);
+                _this17.$store.commit('error/setCode', _response_prop7.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 89:
-                _this15.editSceneMode_prop = 100;
+                _this17.editSceneMode_prop = 100;
 
               case 90:
-                _context14.next = 129;
+                _context15.next = 129;
                 break;
 
               case 92:
-                if (!(_this15.scene.usage_left && !_this15.editForm_scene.usage_stage)) {
-                  _context14.next = 105;
+                if (!(_this17.scene.usage_left && !_this17.editForm_scene.usage_stage)) {
+                  _context15.next = 105;
                   break;
                 }
 
-                _context14.next = 95;
-                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 95;
+                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_left_0_change',
-                  id: _this15.scene.id,
+                  id: _this17.scene.id,
                   usage_guraduation: 0,
                   usage_left: 0
                 });
 
               case 95:
-                _response_prop8 = _context14.sent;
+                _response_prop8 = _context15.sent;
 
                 if (!(_response_prop8.status === 422)) {
-                  _context14.next = 99;
+                  _context15.next = 99;
                   break;
                 }
 
-                _this15.errors.error = _response_prop8.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop8.data.errors;
+                return _context15.abrupt("return", false);
 
               case 99:
                 if (!(_response_prop8.status !== 204)) {
-                  _context14.next = 102;
+                  _context15.next = 102;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop8.status);
+                _this17.$store.commit('error/setCode', _response_prop8.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 102:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 129;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 129;
                 break;
 
               case 105:
-                if (!(_this15.scene.usage_right && !_this15.editForm_scene.usage_stage)) {
-                  _context14.next = 118;
+                if (!(_this17.scene.usage_right && !_this17.editForm_scene.usage_stage)) {
+                  _context15.next = 118;
                   break;
                 }
 
-                _context14.next = 108;
-                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 108;
+                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_right_0_change',
-                  id: _this15.scene.id,
+                  id: _this17.scene.id,
                   usage_guraduation: 0,
                   usage_right: 0
                 });
 
               case 108:
-                _response_prop9 = _context14.sent;
+                _response_prop9 = _context15.sent;
 
                 if (!(_response_prop9.status === 422)) {
-                  _context14.next = 112;
+                  _context15.next = 112;
                   break;
                 }
 
-                _this15.errors.error = _response_prop9.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop9.data.errors;
+                return _context15.abrupt("return", false);
 
               case 112:
                 if (!(_response_prop9.status !== 204)) {
-                  _context14.next = 115;
+                  _context15.next = 115;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop9.status);
+                _this17.$store.commit('error/setCode', _response_prop9.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 115:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 129;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 129;
                 break;
 
               case 118:
-                if (!(_this15.scene.usage_guraduation && !_this15.editForm_scene.usage_guraduation)) {
-                  _context14.next = 129;
+                if (!(_this17.scene.usage_guraduation && !_this17.editForm_scene.usage_guraduation)) {
+                  _context15.next = 129;
                   break;
                 }
 
-                _context14.next = 121;
-                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 121;
+                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_change',
-                  id: _this15.scene.id,
+                  id: _this17.scene.id,
                   usage_guraduation: 0
                 });
 
               case 121:
-                _response_prop10 = _context14.sent;
+                _response_prop10 = _context15.sent;
 
                 if (!(_response_prop10.status === 422)) {
-                  _context14.next = 125;
+                  _context15.next = 125;
                   break;
                 }
 
-                _this15.errors.error = _response_prop10.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop10.data.errors;
+                return _context15.abrupt("return", false);
 
               case 125:
                 if (!(_response_prop10.status !== 204)) {
-                  _context14.next = 128;
+                  _context15.next = 128;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop10.status);
+                _this17.$store.commit('error/setCode', _response_prop10.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 128:
-                _this15.editSceneMode_prop = 100;
+                _this17.editSceneMode_prop = 100;
 
               case 129:
-                _context14.next = 208;
+                _context15.next = 208;
                 break;
 
               case 131:
-                if (!_this15.editForm_scene.usage_guraduation) {
-                  _context14.next = 208;
+                if (!_this17.editForm_scene.usage_guraduation) {
+                  _context15.next = 208;
                   break;
                 }
 
-                if (!(_this15.scene.usage_left && _this15.editForm_scene.usage_stage === "right")) {
-                  _context14.next = 145;
+                if (!(_this17.scene.usage_left && _this17.editForm_scene.usage_stage === "right")) {
+                  _context15.next = 145;
                   break;
                 }
 
-                _context14.next = 135;
-                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 135;
+                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_left_to_right_change',
-                  id: _this15.scene.id,
+                  id: _this17.scene.id,
                   usage_left: 0,
                   usage_right: 1
                 });
 
               case 135:
-                _response_prop11 = _context14.sent;
+                _response_prop11 = _context15.sent;
 
                 if (!(_response_prop11.status === 422)) {
-                  _context14.next = 139;
+                  _context15.next = 139;
                   break;
                 }
 
-                _this15.errors.error = _response_prop11.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop11.data.errors;
+                return _context15.abrupt("return", false);
 
               case 139:
                 if (!(_response_prop11.status !== 204)) {
-                  _context14.next = 142;
+                  _context15.next = 142;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop11.status);
+                _this17.$store.commit('error/setCode', _response_prop11.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 142:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 208;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 208;
                 break;
 
               case 145:
-                if (!(_this15.scene.usage_right && _this15.editForm_scene.usage_stage === "left")) {
-                  _context14.next = 158;
+                if (!(_this17.scene.usage_right && _this17.editForm_scene.usage_stage === "left")) {
+                  _context15.next = 158;
                   break;
                 }
 
-                _context14.next = 148;
-                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 148;
+                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_right_to_left_change',
-                  id: _this15.scene.id,
+                  id: _this17.scene.id,
                   usage_left: 1,
                   usage_right: 0
                 });
 
               case 148:
-                _response_prop12 = _context14.sent;
+                _response_prop12 = _context15.sent;
 
                 if (!(_response_prop12.status === 422)) {
-                  _context14.next = 152;
+                  _context15.next = 152;
                   break;
                 }
 
-                _this15.errors.error = _response_prop12.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop12.data.errors;
+                return _context15.abrupt("return", false);
 
               case 152:
                 if (!(_response_prop12.status !== 204)) {
-                  _context14.next = 155;
+                  _context15.next = 155;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop12.status);
+                _this17.$store.commit('error/setCode', _response_prop12.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 155:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 208;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 208;
                 break;
 
               case 158:
-                if (!(!_this15.scene.usage_left && _this15.editForm_scene.usage_stage === "left")) {
-                  _context14.next = 171;
+                if (!(!_this17.scene.usage_left && _this17.editForm_scene.usage_stage === "left")) {
+                  _context15.next = 171;
                   break;
                 }
 
-                _context14.next = 161;
-                return axios.post('/api/props/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 161;
+                return axios.post('/api/props/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_left_change',
                   usage_left: 1
                 });
 
               case 161:
-                _response_prop13 = _context14.sent;
+                _response_prop13 = _context15.sent;
 
                 if (!(_response_prop13.status === 422)) {
-                  _context14.next = 165;
+                  _context15.next = 165;
                   break;
                 }
 
-                _this15.errors.error = _response_prop13.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop13.data.errors;
+                return _context15.abrupt("return", false);
 
               case 165:
                 if (!(_response_prop13.status !== 204)) {
-                  _context14.next = 168;
+                  _context15.next = 168;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop13.status);
+                _this17.$store.commit('error/setCode', _response_prop13.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 168:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 208;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 208;
                 break;
 
               case 171:
-                if (!(!_this15.scene.usage_right && _this15.editForm_scene.usage_stage === "right")) {
-                  _context14.next = 184;
+                if (!(!_this17.scene.usage_right && _this17.editForm_scene.usage_stage === "right")) {
+                  _context15.next = 184;
                   break;
                 }
 
-                _context14.next = 174;
-                return axios.post('/api/props/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 174;
+                return axios.post('/api/props/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_right_change',
                   usage_right: 1
                 });
 
               case 174:
-                _response_prop14 = _context14.sent;
+                _response_prop14 = _context15.sent;
 
                 if (!(_response_prop14.status === 422)) {
-                  _context14.next = 178;
+                  _context15.next = 178;
                   break;
                 }
 
-                _this15.errors.error = _response_prop14.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop14.data.errors;
+                return _context15.abrupt("return", false);
 
               case 178:
                 if (!(_response_prop14.status !== 204)) {
-                  _context14.next = 181;
+                  _context15.next = 181;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop14.status);
+                _this17.$store.commit('error/setCode', _response_prop14.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 181:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 208;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 208;
                 break;
 
               case 184:
-                if (!(_this15.scene.usage_left && !_this15.editForm_scene.usage_stage)) {
-                  _context14.next = 197;
+                if (!(_this17.scene.usage_left && !_this17.editForm_scene.usage_stage)) {
+                  _context15.next = 197;
                   break;
                 }
 
-                _context14.next = 187;
-                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 187;
+                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_left_0_change',
-                  id: _this15.scene.id,
+                  id: _this17.scene.id,
                   usage_left: 0
                 });
 
               case 187:
-                _response_prop15 = _context14.sent;
+                _response_prop15 = _context15.sent;
 
                 if (!(_response_prop15.status === 422)) {
-                  _context14.next = 191;
+                  _context15.next = 191;
                   break;
                 }
 
-                _this15.errors.error = _response_prop15.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop15.data.errors;
+                return _context15.abrupt("return", false);
 
               case 191:
                 if (!(_response_prop15.status !== 204)) {
-                  _context14.next = 194;
+                  _context15.next = 194;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop15.status);
+                _this17.$store.commit('error/setCode', _response_prop15.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 194:
-                _this15.editSceneMode_prop = 100;
-                _context14.next = 208;
+                _this17.editSceneMode_prop = 100;
+                _context15.next = 208;
                 break;
 
               case 197:
-                if (!(_this15.scene.usage_right && !_this15.editForm_scene.usage_stage)) {
-                  _context14.next = 208;
+                if (!(_this17.scene.usage_right && !_this17.editForm_scene.usage_stage)) {
+                  _context15.next = 208;
                   break;
                 }
 
-                _context14.next = 200;
-                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
+                _context15.next = 200;
+                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
                   method: 'usage_right_0_change',
-                  id: _this15.scene.id,
+                  id: _this17.scene.id,
                   usage_right: 0
                 });
 
               case 200:
-                _response_prop16 = _context14.sent;
+                _response_prop16 = _context15.sent;
 
                 if (!(_response_prop16.status === 422)) {
-                  _context14.next = 204;
+                  _context15.next = 204;
                   break;
                 }
 
-                _this15.errors.error = _response_prop16.data.errors;
-                return _context14.abrupt("return", false);
+                _this17.errors.error = _response_prop16.data.errors;
+                return _context15.abrupt("return", false);
 
               case 204:
                 if (!(_response_prop16.status !== 204)) {
-                  _context14.next = 207;
+                  _context15.next = 207;
                   break;
                 }
 
-                _this15.$store.commit('error/setCode', _response_prop16.status);
+                _this17.$store.commit('error/setCode', _response_prop16.status);
 
-                return _context14.abrupt("return", false);
+                return _context15.abrupt("return", false);
 
               case 207:
-                _this15.editSceneMode_prop = 100;
+                _this17.editSceneMode_prop = 100;
 
               case 208:
               case "end":
-                return _context14.stop();
+                return _context15.stop();
             }
           }
-        }, _callee14);
+        }, _callee15);
       }))();
     },
     // 削除confirmのモーダル表示 
@@ -6308,26 +6432,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this16 = this;
+      var _this18 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15() {
-        return _regeneratorRuntime().wrap(function _callee15$(_context15) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16() {
+        return _regeneratorRuntime().wrap(function _callee16$(_context16) {
           while (1) {
-            switch (_context15.prev = _context15.next) {
+            switch (_context16.prev = _context16.next) {
               case 0:
-                _this16.showContent_confirmDelete = false;
+                _this18.showContent_confirmDelete = false;
 
-                _this16.$emit('close');
+                _this18.$emit('close');
 
-                _context15.next = 4;
-                return _this16.deletScene();
+                _context16.next = 4;
+                return _this18.deletScene();
 
               case 4:
               case "end":
-                return _context15.stop();
+                return _context16.stop();
             }
           }
-        }, _callee15);
+        }, _callee16);
       }))();
     },
     // 削除confirmのモーダル非表示_Cancelの場合
@@ -6336,57 +6460,57 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除する
     deletScene: function deletScene() {
-      var _this17 = this;
+      var _this19 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee16$(_context16) {
+        return _regeneratorRuntime().wrap(function _callee17$(_context17) {
           while (1) {
-            switch (_context16.prev = _context16.next) {
+            switch (_context17.prev = _context17.next) {
               case 0:
-                _context16.next = 2;
-                return axios["delete"]('/api/scenes/' + _this17.scene.id);
+                _context17.next = 2;
+                return axios["delete"]('/api/scenes/' + _this19.scene.id);
 
               case 2:
-                response = _context16.sent;
+                response = _context17.sent;
 
                 if (!(response.status === 422)) {
-                  _context16.next = 6;
+                  _context17.next = 6;
                   break;
                 }
 
-                _this17.errors.error = response.data.errors;
-                return _context16.abrupt("return", false);
+                _this19.errors.error = response.data.errors;
+                return _context17.abrupt("return", false);
 
               case 6:
                 if (!(response.status !== 204)) {
-                  _context16.next = 9;
+                  _context17.next = 9;
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', response.status);
+                _this19.$store.commit('error/setCode', response.status);
 
-                return _context16.abrupt("return", false);
+                return _context17.abrupt("return", false);
 
               case 9:
-                _this17.scene = [];
+                _this19.scene = [];
 
-                _this17.resetScene(); // メッセージ登録
+                _this19.resetScene(); // メッセージ登録
 
 
-                _this17.$store.commit('message/setContent', {
+                _this19.$store.commit('message/setContent', {
                   content: '使用シーンが1つ削除されました！',
                   timeout: 6000
                 });
 
-                _this17.$emit('close');
+                _this19.$emit('close');
 
               case 13:
               case "end":
-                return _context16.stop();
+                return _context17.stop();
             }
           }
-        }, _callee16);
+        }, _callee17);
       }))();
     }
   }
@@ -8710,6 +8834,7 @@ var autokana;
         prop: '',
         kana: '',
         owner: '',
+        quantity: 1,
         location: false,
         handmade: false,
         handmade_complete: 1,
@@ -9042,6 +9167,7 @@ var autokana;
       this.registerForm.prop = '';
       this.registerForm.kana = '';
       this.registerForm.owner = '';
+      this.registerForm.quantity = 1;
       this.registerForm.location = false;
       this.registerForm.handmade = false;
       this.registerForm.handmade_complete = 1;
@@ -9230,7 +9356,7 @@ var autokana;
       var _this7 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        var regex_str, regex_number, regex_alf, kana, kanas, pattern_number, pattern_alf, names, name_last, name_last_point_diff, i, name_candidate, _i, _name_candidate, formData, response;
+        var regex_str, regex_number, regex_alf, kana, kanas, pattern_number, pattern_alf, names, name_last, name_last_point_diff, i, name_candidate, _i, _name_candidate, formData, quantitys, correct_quantity, response;
 
         return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
@@ -9386,6 +9512,21 @@ var autokana;
                 formData.append('name', _this7.registerForm.prop);
                 formData.append('kana', kana);
                 formData.append('owner_id', _this7.registerForm.owner);
+
+                if (_this7.registerForm.quantity) {
+                  quantitys = _toConsumableArray(_this7.registerForm.quantity);
+                  correct_quantity = '';
+                  quantitys.forEach(function (quantity) {
+                    var number = _this7.Zenkaku2hankaku_number(quantity);
+
+                    correct_quantity = String(correct_quantity) + String(number);
+                    correct_quantity = Number(correct_quantity);
+                  }, _this7);
+                  formData.append('quantity', correct_quantity);
+                } else {
+                  formData.append('quantity', 1);
+                }
+
                 formData.append('memo', _this7.registerForm.comment);
 
                 if (_this7.registerForm.location) {
@@ -9427,14 +9568,14 @@ var autokana;
                 }
 
                 formData.append('photo', _this7.registerForm.photo);
-                _context5.next = 63;
+                _context5.next = 64;
                 return axios.post('/api/props', formData);
 
-              case 63:
+              case 64:
                 response = _context5.sent;
 
                 if (!(response.status === 422)) {
-                  _context5.next = 68;
+                  _context5.next = 69;
                   break;
                 }
 
@@ -9447,9 +9588,9 @@ var autokana;
 
                 return _context5.abrupt("return", false);
 
-              case 68:
+              case 69:
                 if (!(response.status !== 201)) {
-                  _context5.next = 72;
+                  _context5.next = 73;
                   break;
                 }
 
@@ -9463,7 +9604,7 @@ var autokana;
 
                 return _context5.abrupt("return", false);
 
-              case 72:
+              case 73:
                 // 諸々データ削除
                 _this7.reset(); // メッセージ登録
 
@@ -9473,7 +9614,7 @@ var autokana;
                   timeout: 6000
                 });
 
-              case 74:
+              case 75:
               case "end":
                 return _context5.stop();
             }
@@ -9590,6 +9731,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Register_Prop_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Register_Prop.vue */ "./resources/js/pages/Register_Prop.vue");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -9612,6 +9765,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       selectedAttr: '',
       selectedCharacters: '',
       optionCharacters: null,
+      // 個数を入力して良いか
+      input_quantity: false,
       // 全ページ使用するか
       select_all_page: false,
       // 中間公演or卒業公演
@@ -9623,10 +9778,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       showContent: false,
       postFlag: "",
       // 登録内容
+      prop: '',
       registerForm: {
         character: '',
         prop: '',
         pages: '',
+        quantity: 1,
         decision: '',
         usage: '',
         usage_guraduation: 0,
@@ -9913,6 +10070,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.selectedAttr = '';
       this.registerForm.character = '';
       this.registerForm.prop = '';
+      this.prop = '';
+      this.registerForm.quantity = 1;
       this.registerForm.decision = '';
       this.registerForm.pages = '';
       this.registerForm.usage = '';
@@ -9955,9 +10114,36 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       });
     },
+    // 全角→半角（数字）
+    Zenkaku2hankaku_number: function Zenkaku2hankaku_number(str) {
+      return str.replace(/[０-９]/g, function (s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+      var pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+
+      var chars = str.split('');
+      var sets = '';
+      chars.forEach(function (_char2, index) {
+        _char2.replace(/[０-９]/g, function (s) {
+          var number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+
+          if (pattern_number.test(number)) {
+            sets = sets + number;
+          } else {
+            sets = 0;
+          }
+        });
+
+        if (index === chars.length - 1) {
+          return sets;
+        }
+      });
+    },
     // 登録する
     register: function register() {
       var _this5 = this;
+
+      this.registerForm.prop = this.prop;
 
       if (this.select_all_page) {
         this.registerForm.pages = '1-1000';
@@ -9985,9 +10171,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               var chars_first = pages[0].split('');
               var sets_first = '';
-              chars_first.forEach(function (_char2, index) {
+              chars_first.forEach(function (_char3, index) {
                 // 一文字ずつになっている
-                var number = _this5.hankaku2Zenkaku(_char2);
+                var number = _this5.hankaku2Zenkaku(_char3);
 
                 if (pattern_number.test(number)) {
                   sets_first = sets_first + number;
@@ -9997,9 +10183,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               });
               var chars_final = pages[1].split('');
               var sets_final = '';
-              chars_final.forEach(function (_char3, index) {
+              chars_final.forEach(function (_char4, index) {
                 // 一文字ずつになっている
-                var number = _this5.hankaku2Zenkaku(_char3);
+                var number = _this5.hankaku2Zenkaku(_char4);
 
                 if (pattern_number.test(number)) {
                   sets_final = sets_final + number;
@@ -10019,9 +10205,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               var _sets_first = '';
 
-              _chars_first.forEach(function (_char4, index) {
+              _chars_first.forEach(function (_char5, index) {
                 // 一文字ずつになっている
-                var number = _this5.hankaku2Zenkaku(_char4);
+                var number = _this5.hankaku2Zenkaku(_char5);
 
                 if (pattern_number.test(number)) {
                   _sets_first = _sets_first + number;
@@ -10041,9 +10227,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               var _sets_first2 = '';
 
-              _chars_first2.forEach(function (_char5, index) {
+              _chars_first2.forEach(function (_char6, index) {
                 // 一文字ずつになっている
-                var number = _this5.hankaku2Zenkaku(_char5);
+                var number = _this5.hankaku2Zenkaku(_char6);
 
                 if (pattern_number.test(number)) {
                   _sets_first2 = _sets_first2 + number;
@@ -10056,9 +10242,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               var _sets_final = '';
 
-              _chars_final.forEach(function (_char6, index) {
+              _chars_final.forEach(function (_char7, index) {
                 // 一文字ずつになっている
-                var number = _this5.hankaku2Zenkaku(_char6);
+                var number = _this5.hankaku2Zenkaku(_char7);
 
                 if (pattern_number.test(number)) {
                   _sets_final = _sets_final + number;
@@ -10078,9 +10264,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               var _sets_first3 = '';
 
-              _chars_first3.forEach(function (_char7, index) {
+              _chars_first3.forEach(function (_char8, index) {
                 // 一文字ずつになっている
-                var number = _this5.hankaku2Zenkaku(_char7);
+                var number = _this5.hankaku2Zenkaku(_char8);
 
                 if (pattern_number.test(number)) {
                   _sets_first3 = _sets_first3 + number;
@@ -10094,6 +10280,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             }
           }
         });
+      }
+
+      var correct_quantity = '';
+
+      if (this.registerForm.quantity) {
+        var quantitys = _toConsumableArray(this.registerForm.quantity);
+
+        quantitys.forEach(function (quantity) {
+          var number = _this5.Zenkaku2hankaku_number(quantity);
+
+          correct_quantity = String(correct_quantity) + String(number);
+          correct_quantity = Number(correct_quantity);
+        }, this);
+      } else {
+        correct_quantity = 1;
       }
 
       var usage_left = 0;
@@ -10120,6 +10321,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     prop_id: this.registerForm.prop,
                     first_page: page,
                     final_page: final_pages[index],
+                    quantity: correct_quantity,
                     decision: this.registerForm.decision,
                     usage: this.registerForm.usage,
                     usage_guraduation: this.registerForm.usage_guraduation,
@@ -10366,6 +10568,42 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               }
             }
           }, _callee8);
+        }))();
+      },
+      immediate: true
+    },
+    prop: {
+      handler: function handler(prop) {
+        var _this8 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+          var quantity, input_scene_quantity;
+          return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+            while (1) {
+              switch (_context9.prev = _context9.next) {
+                case 0:
+                  if (_this8.prop) {
+                    _this8.optionProps.forEach(function (prop) {
+                      if (prop.id === _this8.prop) {
+                        quantity = prop.quantity;
+                      }
+                    }, _this8);
+
+                    if (quantity > 1) {
+                      _this8.input_quantity = true;
+                      input_scene_quantity = _this8.$refs.input_scene_quantity;
+                      input_scene_quantity.max = quantity;
+                    } else {
+                      _this8.input_quantity = false;
+                    }
+                  }
+
+                case 1:
+                case "end":
+                  return _context9.stop();
+              }
+            }
+          }, _callee9);
         }))();
       },
       immediate: true
@@ -14191,7 +14429,7 @@ var render = function render() {
       Cancel_Delete: _vm.closeModal_confirmDelete_Cancel,
       OK_Delete: _vm.closeModal_confirmDelete_OK
     }
-  }), _vm._v(" "), _c("div", [_c("h1", [_vm._v(_vm._s(_vm.prop.name))])]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("ピッコロに持ってきたか: "), _vm.prop.location ? _c("span", {
+  }), _vm._v(" "), _c("div", [_c("h1", [_vm._v(_vm._s(_vm.prop.name))])]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("個数: "), _vm.prop.quantity > 1 ? _c("span", [_vm._v(_vm._s(_vm.prop.quantity))]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("ピッコロに持ってきたか: "), _vm.prop.location ? _c("span", {
     staticClass: "usage-show"
   }, [_c("i", {
     staticClass: "fas fa-check fa-fw"
@@ -14400,6 +14638,35 @@ var render = function render() {
       }
     }, [_vm._v("\n                  " + _vm._s(owner.name) + "\n                ")]);
   })], 2)]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_quantity_edit"
+    }
+  }, [_vm._v("個数")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.quantity,
+      expression: "editForm_prop.quantity"
+    }],
+    staticClass: "form__item form__item--furigana",
+    attrs: {
+      type: "number",
+      id: "prop_quantity_edit",
+      placeholder: "個数"
+    },
+    domProps: {
+      value: _vm.editForm_prop.quantity
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+
+        _vm.$set(_vm.editForm_prop, "quantity", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
     staticClass: "checkbox-area--together"
   }, [_c("label", {
     staticClass: "form__check__label",
@@ -14971,7 +15238,7 @@ var render = function render() {
       Cancel_Delete: _vm.closeModal_confirmDelete_Cancel,
       OK_Delete: _vm.closeModal_confirmDelete_OK
     }
-  }), _vm._v(" "), _c("div", [_c("h1", [_vm._v(_vm._s(_vm.scene.character.name))])]), _vm._v(" "), _c("div", [_vm._v("小道具：" + _vm._s(_vm.scene.prop.name))]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.scene.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.scene.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _vm.scene !== null && _vm.scene.first_page !== null && !_vm.select_all_page ? _c("span", [_vm._v("p." + _vm._s(_vm.scene.first_page) + " \n              "), _vm.scene !== null && _vm.scene.final_page !== null ? _c("span", [_vm._v(" ~ p." + _vm._s(_vm.scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _vm.scene !== null && _vm.scene.first_page !== null && _vm.select_all_page ? _c("span", [_vm._v("\n              全シーン\n            ")]) : _vm._e(), _vm._v(" "), _c("div", [_vm._v("これで決定か: "), _vm.scene.decision ? _c("span", {
+  }), _vm._v(" "), _c("div", [_c("h1", [_vm._v(_vm._s(_vm.scene.character.name))])]), _vm._v(" "), _c("div", [_vm._v("小道具：" + _vm._s(_vm.scene.prop.name))]), _vm._v(" "), _c("div", [_vm._v("所有者: "), _vm.scene.prop.owner ? _c("span", [_vm._v(_vm._s(_vm.scene.prop.owner.name))]) : _vm._e()]), _vm._v(" "), _vm.scene !== null && _vm.scene.first_page !== null && !_vm.select_all_page ? _c("span", [_vm._v("p." + _vm._s(_vm.scene.first_page) + " \n              "), _vm.scene !== null && _vm.scene.final_page !== null ? _c("span", [_vm._v(" ~ p." + _vm._s(_vm.scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _vm.scene !== null && _vm.scene.first_page !== null && _vm.select_all_page ? _c("span", [_vm._v("\n              全シーン\n            ")]) : _vm._e(), _vm._v(" "), _c("div", [_vm._v("個数: "), _vm.scene.quantity > 1 ? _c("span", [_vm._v(_vm._s(_vm.scene.quantity))]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("これで決定か: "), _vm.scene.decision ? _c("span", {
     staticClass: "usage-show"
   }, [_c("i", {
     staticClass: "fas fa-check fa-fw"
@@ -15088,8 +15355,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.editForm_scene.prop_id,
-      expression: "editForm_scene.prop_id"
+      value: _vm.prop,
+      expression: "prop"
     }],
     staticClass: "form__item",
     attrs: {
@@ -15104,8 +15371,7 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-
-        _vm.$set(_vm.editForm_scene, "prop_id", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+        _vm.prop = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
       }
     }
   }, [_c("option", {
@@ -15260,6 +15526,36 @@ var render = function render() {
         if ($event.target.composing) return;
 
         _vm.$set(_vm.editForm_scene, "pages", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "scene_quantity_edit"
+    }
+  }, [_vm._v("個数")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_scene.quantity,
+      expression: "editForm_scene.quantity"
+    }],
+    ref: "input_scene_quantity",
+    staticClass: "form__check__input",
+    attrs: {
+      type: "number",
+      id: "scene_quantity_edit"
+    },
+    domProps: {
+      value: _vm.editForm_scene.quantity
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+
+        _vm.$set(_vm.editForm_scene, "quantity", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -18141,7 +18437,34 @@ var render = function render() {
         value: owner.id
       }
     }, [_vm._v("\n            " + _vm._s(owner.name) + "\n          ")]);
-  })], 2), _vm._v(" "), _c("div", {
+  })], 2), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "quantity"
+    }
+  }, [_vm._v("個数")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.quantity,
+      expression: "registerForm.quantity"
+    }],
+    staticClass: "form__item form__item--furigana",
+    attrs: {
+      type: "number",
+      id: "quantity",
+      placeholder: "個数"
+    },
+    domProps: {
+      value: _vm.registerForm.quantity
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+
+        _vm.$set(_vm.registerForm, "quantity", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("div", {
     staticClass: "checkbox-area--together"
   }, [_c("label", {
     attrs: {
@@ -18724,8 +19047,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.registerForm.prop,
-      expression: "registerForm.prop"
+      value: _vm.prop,
+      expression: "prop"
     }],
     staticClass: "form__item",
     attrs: {
@@ -18740,8 +19063,7 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-
-        _vm.$set(_vm.registerForm, "prop", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+        _vm.prop = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
       }
     }
   }, [_c("option", {
@@ -18853,6 +19175,37 @@ var render = function render() {
       }
     }
   }), _vm._v(" "), _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "scene_quantity"
+    }
+  }, [_vm._v("個数")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.quantity,
+      expression: "registerForm.quantity"
+    }],
+    ref: "input_scene_quantity",
+    staticClass: "form__item form__item--furigana",
+    attrs: {
+      type: "number",
+      id: "scene_quantity",
+      disabled: !_vm.input_quantity,
+      placeholder: "個数"
+    },
+    domProps: {
+      value: _vm.registerForm.quantity
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+
+        _vm.$set(_vm.registerForm, "quantity", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
     staticClass: "checkbox-area--together"
   }, [_c("label", {
     attrs: {
@@ -19657,7 +20010,7 @@ var render = function render() {
     }
   })]) : _vm._e(), _vm._v(" "), _c("th", {
     staticClass: "th-non"
-  }), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("ピッコロ")]), _vm._v(" "), _c("th", [_vm._v("作るか")]), _vm._v(" "), _c("th", [_vm._v("決定")]), _vm._v(" "), _c("th", [_vm._v("中間")]), _vm._v(" "), _c("th", [_vm._v("卒業")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", {
+  }), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("個数")]), _vm._v(" "), _c("th", [_vm._v("ピッコロ")]), _vm._v(" "), _c("th", [_vm._v("作るか")]), _vm._v(" "), _c("th", [_vm._v("決定")]), _vm._v(" "), _c("th", [_vm._v("中間")]), _vm._v(" "), _c("th", [_vm._v("卒業")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", {
     staticClass: "th-memo"
   }, [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]), _vm._v(" "), _c("tbody", _vm._l(_vm.showProps, function (prop, index) {
     return _c("tr", [_vm.choice_flag ? _c("td", [_c("input", {
@@ -19706,7 +20059,7 @@ var render = function render() {
           return _vm.openModal_propDetail(prop.id);
         }
       }
-    }, [_vm._v(_vm._s(prop.name))]), _vm._v(" "), prop.owner ? _c("td", [_vm._v(_vm._s(prop.owner.name))]) : _c("td"), _vm._v(" "), prop.location ? _c("td", [_c("i", {
+    }, [_vm._v(_vm._s(prop.name))]), _vm._v(" "), prop.owner ? _c("td", [_vm._v(_vm._s(prop.owner.name))]) : _c("td"), _vm._v(" "), prop.quantity > 1 ? _c("td", [_vm._v(_vm._s(prop.quantity))]) : _c("td"), _vm._v(" "), prop.location ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td"), _vm._v(" "), prop.handmade === 1 ? _c("td", [_vm._v("完")]) : prop.handmade === 2 ? _c("td", [_vm._v("仕")]) : prop.handmade === 3 ? _c("td", [_vm._v("未")]) : _c("td"), _vm._v(" "), prop.decision ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
@@ -19789,7 +20142,7 @@ var render = function render() {
           return _vm.openModal_propDetail(prop.id);
         }
       }
-    }, [_vm._v(_vm._s(prop.name))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("持ち主")]), _vm._v(" "), prop.owner ? _c("td", [_vm._v(_vm._s(prop.owner.name))]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("ピッコロにあるか")]), _vm._v(" "), prop.location ? _c("td", [_c("i", {
+    }, [_vm._v(_vm._s(prop.name))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("持ち主")]), _vm._v(" "), prop.owner ? _c("td", [_vm._v(_vm._s(prop.owner.name))]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("個数")]), _vm._v(" "), prop.quantity > 1 ? _c("td", [_vm._v(_vm._s(prop.quantity))]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("ピッコロにあるか")]), _vm._v(" "), prop.location ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("作るか")]), _vm._v(" "), prop.handmade === 1 ? _c("td", [_vm._v("完")]) : prop.handmade === 2 ? _c("td", [_vm._v("仕")]) : prop.handmade === 3 ? _c("td", [_vm._v("未")]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("決定か")]), _vm._v(" "), prop.decision ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
@@ -19874,7 +20227,7 @@ var render = function render() {
         src: prop.url,
         alt: prop.name
       }
-    })]), _vm._v(" "), _c("div", [_c("div", [_vm._v("\n              " + _vm._s(prop.name) + "\n            ")]), _vm._v(" "), prop.owner ? _c("div", [_vm._v("\n              " + _vm._s(prop.owner.name) + "\n            ")]) : _vm._e(), _vm._v(" "), _c("div", [_c("span", {
+    })]), _vm._v(" "), _c("div", [_c("div", [_vm._v("\n              " + _vm._s(prop.name) + "\n            ")]), _vm._v(" "), prop.owner ? _c("div", [_vm._v("\n              " + _vm._s(prop.owner.name) + "\n            ")]) : _vm._e(), _vm._v(" "), prop.quantity > 1 ? _c("div", [_c("span", [_vm._v("個数: ")]), _vm._v("\n              " + _vm._s(prop.quantity) + "\n            ")]) : _vm._e(), _vm._v(" "), _c("div", [_c("span", {
       staticClass: "usage-show"
     }, [_vm._v("ピッコロにあるか:")]), _vm._v(" "), prop.location ? _c("span", {
       staticClass: "usage-show"
@@ -20080,7 +20433,7 @@ var render = function render() {
     }
   })]) : _vm._e(), _vm._v(" "), _c("th", {
     staticClass: "th-non"
-  }), _vm._v(" "), _c("th", [_vm._v("ページ数")]), _vm._v(" "), _c("th", [_vm._v("登場人物")]), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("決定か")]), _vm._v(" "), _c("th", [_vm._v("中間発表")]), _vm._v(" "), _c("th", [_vm._v("卒業公演")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", [_vm._v("セットする人")]), _vm._v(" "), _c("th", {
+  }), _vm._v(" "), _c("th", [_vm._v("ページ数")]), _vm._v(" "), _c("th", [_vm._v("登場人物")]), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("個数")]), _vm._v(" "), _c("th", [_vm._v("決定か")]), _vm._v(" "), _c("th", [_vm._v("中間発表")]), _vm._v(" "), _c("th", [_vm._v("卒業公演")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", [_vm._v("セットする人")]), _vm._v(" "), _c("th", {
     staticClass: "th-memo"
   }, [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]), _vm._v(" "), _c("tbody", _vm._l(_vm.showScenes, function (scene, index) {
     return _c("tr", [_vm.choice_flag ? _c("td", [_c("input", {
@@ -20137,7 +20490,7 @@ var render = function render() {
           return _vm.openModal_propDetail(scene.prop.id);
         }
       }
-    }, [_vm._v(_vm._s(scene.prop.name))]), _vm._v(" "), scene.decision ? _c("td", [_c("i", {
+    }, [_vm._v(_vm._s(scene.prop.name))]), _vm._v(" "), scene.quantity > 1 ? _c("td", [_vm._v(_vm._s(scene.quantity))]) : _c("td"), _vm._v(" "), scene.decision ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td"), _vm._v(" "), scene.usage ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
@@ -20226,7 +20579,7 @@ var render = function render() {
           return _vm.openModal_propDetail(scene.prop.id);
         }
       }
-    }, [_vm._v(_vm._s(scene.prop.name))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("決定か")]), _vm._v(" "), scene.decision ? _c("td", [_c("i", {
+    }, [_vm._v(_vm._s(scene.prop.name))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("個数")]), _vm._v(" "), scene.quantity > 1 ? _c("td", [_vm._v(_vm._s(scene.quantity))]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("決定か")]), _vm._v(" "), scene.decision ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("中間")]), _vm._v(" "), scene.usage ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"

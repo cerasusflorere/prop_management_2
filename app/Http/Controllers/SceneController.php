@@ -34,6 +34,7 @@ class SceneController extends Controller
 
         $first_page = !empty($request->first_page) ? $request->first_page : null; // nullで送ると文字列になる
         $final_page = !empty($request->final_page) ? $request->final_page : null;
+        $quantity = !empty($request->quantity) ? $request->quantity : 1;
         $decision = !empty($request->decision) ? 1 : 0;
         $usage = !empty($request->usage) ? 1 : 0;
         $usage_guraduation  = !empty($request->usage_guraduation) ? 1 : 0;
@@ -77,7 +78,7 @@ class SceneController extends Controller
                     if(!$confirm['usage'] && !$confirm['usage_guraduation']){
                         // 全て0だったので、全部更新
                         $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'setting_id' => $setting_id]);
                         if($request->memo){
                             $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                         }
@@ -86,21 +87,21 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 上手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_left' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 下手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_right' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
                         }else{
                             // 更新する必要がなかった
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision]);
+                                ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
@@ -110,21 +111,21 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 中間公演が0→1、上手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 中間公演が0→1、下手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
                         }else{
                             // 中間公演が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
@@ -134,21 +135,21 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 卒業公演が0→1、上手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 卒業公演が0→1、下手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
                         }else{
                             // 卒業公演が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage_guraduation' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
@@ -156,7 +157,7 @@ class SceneController extends Controller
                     }else{
                         // 更新する必要がなかった
                         $scene = Scene::where('id', $exist_update_first_page->id)
-                            ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'setting_id' => $setting_id]);
+                            ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'setting_id' => $setting_id]);
                         if($request->memo){
                             $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                         }
@@ -164,7 +165,7 @@ class SceneController extends Controller
                 }else{
                     // 使用しないなら更新しない
                     $scene = Scene::where('id', $exist_update_first_page->id)
-                        ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'setting_id' => $setting_id]);
+                        ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'setting_id' => $setting_id]);
                     if($request->memo){
                         $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                     }
@@ -201,7 +202,7 @@ class SceneController extends Controller
                     if(!$confirm['usage'] && !$confirm['usage_guraduation']){
                         // 全て0だったので、全部更新
                         $scene = Scene::where('id', $id)
-                                     ->update(['final_page' => $final_page, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'setting_id' => $setting_id]);
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'setting_id' => $setting_id]);
                         if($request->memo){
                             $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                         }
@@ -210,14 +211,14 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 上手が0→1
                             $scene = Scene::where('id', $id)
-                                     ->update(['final_page' => $final_page, 'decision' => $decision, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_left' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 下手が0→1
                             $scene = Scene::where('id', $eid)
-                                     ->update(['final_page' => $final_page, 'decision' => $decision, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_right' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                             }
@@ -227,14 +228,14 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 中間公演が0→1、上手が0→1
                             $scene = Scene::where('id', $id)
-                                     ->update(['final_page' => $final_page, 'decision' => $decision, 'usage' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 中間公演が0→1、下手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                             }
@@ -244,14 +245,14 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 卒業公演が0→1、上手が0→1
                             $scene = Scene::where('id', $id)
-                                     ->update(['final_page' => $final_page, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 卒業公演が0→1、下手が0→1
                             $scene = Scene::where('id', $id)
-                                     ->update(['final_page' => $final_page, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $eid, 'memo' => $request->memo]);
                             }
@@ -260,7 +261,7 @@ class SceneController extends Controller
                 }else{
                     // 使用しないなら更新しない
                     $scene = Scene::where('id', $id)
-                        ->update(['final_page' => $final_page, 'decision' => $decision, 'setting_id' => $setting_id]);
+                        ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'setting_id' => $setting_id]);
                     if($request->memo){
                         $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                     }
@@ -287,7 +288,7 @@ class SceneController extends Controller
 
             }else if(!($exist)){
                 // 新規投稿
-                $scene = Scene::create(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'setting_id' => $setting_id]);
+                $scene = Scene::create(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'setting_id' => $setting_id]);
                 if($request->memo){
                     $scene_comment = Scenes_Comment::create(['scene_id' => $scene->id, 'memo' => $request->memo]);
                 }
@@ -345,6 +346,7 @@ class SceneController extends Controller
 
         $first_page = !empty($request->first_page) ? $request->first_page : null; // nullで送ると文字列になる
         $final_page = !empty($request->final_page) ? $request->final_page : null;
+        $quantity = !empty($request->quantity) ? $request->quantity : 1;
         $decision = !empty($request->decision) ? 1 : 0;
         $usage = !empty($request->usage) ? 1 : 0;
         $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
@@ -354,7 +356,7 @@ class SceneController extends Controller
 
         try {
             $affected = Scene::where('id', $id)
-                   ->update(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'setting_id' => $setting_id]);
+                   ->update(['character_id' => $request->character_id, 'prop_id' => $request->prop_id, 'first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'setting_id' => $setting_id]);
                        
             // 決定か
             if(!$decision){

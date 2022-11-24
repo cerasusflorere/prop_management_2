@@ -39,6 +39,10 @@
           </option>
         </select>
 
+        <!-- 数 -->
+        <label for="quantity">個数</label>
+        <input type="number" class="form__item form__item--furigana" id="quantity" v-model="registerForm.quantity" placeholder="個数">
+
         <!-- ピッコロにあるか -->
         <div class="checkbox-area--together">
           <label for="prop_location">ピッコロに持ってきた</label>
@@ -169,6 +173,7 @@ export default {
         prop: '',
         kana: '',
         owner: '',
+        quantity: 1,
         location: false,
         handmade: false,
         handmade_complete: 1,
@@ -373,6 +378,7 @@ export default {
       this.registerForm.prop = '';
       this.registerForm.kana = '';
       this.registerForm.owner = '';
+      this.registerForm.quantity = 1;
       this.registerForm.location = false;
       this.registerForm.handmade = false;
       this.registerForm.handmade_complete = 1;
@@ -570,6 +576,19 @@ export default {
       formData.append('name', this.registerForm.prop);
       formData.append('kana', kana);
       formData.append('owner_id', this.registerForm.owner);
+      if(this.registerForm.quantity){
+        let quantitys = [...this.registerForm.quantity];
+        let correct_quantity = '';
+        quantitys.forEach((quantity) => {
+          let number = this.Zenkaku2hankaku_number(quantity);
+          correct_quantity = String(correct_quantity) + String(number);
+          correct_quantity = Number(correct_quantity);
+        }, this);
+        formData.append('quantity', correct_quantity);
+      }else{
+        formData.append('quantity', 1);
+      }
+      
       formData.append('memo', this.registerForm.comment);
       if(this.registerForm.location){
         formData.append('location', 1);

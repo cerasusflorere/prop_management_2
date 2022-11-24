@@ -58,6 +58,7 @@
               <th class="th-non"></th>
               <th>小道具名</th>
               <th>持ち主</th>
+              <th>個数</th>
               <th>ピッコロ</th>
               <th>作るか</th>
               <th>決定</th>
@@ -80,6 +81,9 @@
               <td type="button" class="list-button" @click="openModal_propDetail(prop.id)">{{ prop.name }}</td>
               <!-- 持ち主 -->
               <td v-if="prop.owner">{{ prop.owner.name }}</td>
+              <td v-else></td>
+              <!-- 個数 -->
+              <td v-if="prop.quantity > 1">{{ prop.quantity }}</td>
               <td v-else></td>
               <!-- ピッコロに持ってきたか -->
               <td v-if="prop.location"><i class="fas fa-check fa-fw"></i></td>
@@ -147,6 +151,12 @@
                 <!-- 持ち主 -->
                 <th>持ち主</th>
                 <td v-if="prop.owner">{{ prop.owner.name }}</td>
+                <td v-else></td>
+              </tr>
+              <tr>
+                <!-- 個数 -->
+                <th>個数</th>
+                <td v-if="prop.quantity > 1">{{ prop.quantity }}</td>
                 <td v-else></td>
               </tr>
               <tr>
@@ -244,6 +254,11 @@
               <!-- 持ち主 -->
               <div v-if="prop.owner">
                 {{ prop.owner.name }}
+              </div>
+              <!-- 個数 -->
+              <div v-if="prop.quantity > 1">
+                <span>個数: </span>
+                {{ prop.quantity }}
               </div>
               <!-- ピッコロに持ってきたか -->
               <div>

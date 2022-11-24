@@ -25,7 +25,7 @@ class PropController extends Controller
      */
     public function index()
     {
-        $props = Prop::select('id', 'name', 'kana')->orderBy('kana')->get();
+        $props = Prop::select('id', 'name', 'kana', 'quantity')->orderBy('kana')->get();
 
         return $props;
     }
@@ -61,6 +61,7 @@ class PropController extends Controller
             $url = null;
         }
         $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
+        $quantity = !empty($request->quantity) ? $request->quantity : 0;
         $location = !empty($request->location) ? 1 : 0;
         $handmade = 0;
         if($request->handmade == 1){
@@ -79,7 +80,7 @@ class PropController extends Controller
         DB::beginTransaction();
 
         try {
-            $prop = Prop::create(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+            $prop = Prop::create(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
             if($request->memo){
                 $prop_comment = Props_Comment::create(['prop_id' => $prop->id, 'memo' => $request->memo]);
             }            
@@ -175,6 +176,7 @@ class PropController extends Controller
         }else if($request->method == 'photo_non_update'){
             // 写真更新しない
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
+            $quantity = !empty($request->quantity) ? $request->quantity : 1;
             $location = !empty($request->location) ? 1 : 0;
             $handmade = 0;
             if($request->handmade == 1){
@@ -191,7 +193,7 @@ class PropController extends Controller
             $usage_right = !empty($request->usage_right) ? 1 : 0;
 
             $affected = Prop::where('id', $id)
-                   ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                   ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
 
             if(!$decision){
                 $affected_scene = Scene::where('prop_id', $id)
@@ -230,6 +232,7 @@ class PropController extends Controller
             }
 
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
+            $quantity = !empty($request->quantity) ? $request->quantity : 1;
             $location = !empty($request->location) ? 1 : 0;
             $handmade = 0;
             if($request->handmade == 1){
@@ -249,7 +252,7 @@ class PropController extends Controller
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 
                 if(!$decision){
                     $affected_scene = Scene::where('prop_id', $id)
@@ -291,6 +294,7 @@ class PropController extends Controller
         }else if($request->method == 'photo_delete'){
             // 写真削除
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
+            $quantity = !empty($request->quantity) ? $request->quantity : 1;
             $location = !empty($request->location) ? 1 : 0;
             $handmade = 0;
             if($request->handmade == 1){
@@ -310,7 +314,7 @@ class PropController extends Controller
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => null, 'url' => null, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => null, 'url' => null, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 
                 if(!$decision){
                     $affected_scene = Scene::where('prop_id', $id)
@@ -364,6 +368,7 @@ class PropController extends Controller
                 $url = null;
             }
             $owner_id = !empty($request->owner_id)? $request->owner_id : null; // nullで送ると文字列になる
+            $quantity = !empty($request->quantity) ? $request->quantity : 1;
             $location = !empty($request->location) ? 1 : 0;
             $handmade = 0;
             if($request->handmade == 1){
@@ -383,7 +388,7 @@ class PropController extends Controller
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
                 
                 if(!$decision){
                     $affected_scene = Scene::where('prop_id', $id)

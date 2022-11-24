@@ -1,6 +1,6 @@
 <template>
   <div v-bind:class="[overlay_class === 1 ? 'overlay' : 'overlay overlay-custom']" @click.self="$emit('close')">
-    <div class="content content-detail panel"  ref="content_detail_scene">
+    <div class="content content-detail panel" ref="content_detail_scene">
       <div class="area--detail-box">
         <!--- 閲覧/編集 -->
         <div class="form__button button--area--detail-box">
@@ -43,6 +43,9 @@
               <span v-if="scene !== null && scene.first_page !== null && select_all_page">
                 全シーン
               </span>
+
+              <!-- 個数 -->
+              <div>個数: <span v-if="scene.quantity > 1">{{ scene.quantity }}</span></div>
 
               <!-- 決定かどうか -->
               <div>これで決定か: <span v-if="scene.decision" class="usage-show"><i class="fas fa-check fa-fw"></i></span></div>
@@ -122,7 +125,7 @@
               <div>
                 <!-- 小道具名 -->
                 <label for="scene_prop_select_edit">小道具</label>
-                <select id="scene_prop_select_edit" class="form__item"  v-model="editForm_scene.prop_id" required>
+                <select id="scene_prop_select_edit" class="form__item"  v-model="prop" required>
                   <option disabled value="">小道具一覧</option>
                   <option v-for="prop in optionProps" 
                           v-bind:value="prop.id">
@@ -151,6 +154,12 @@
               </div>
               <div v-else>
                 <input type="text"  id="page" class="form__item" v-model="editForm_scene.pages" :disabled="select_all_page" placeholder="ページ数"></input>
+              </div>
+
+              <!-- 個数 -->
+              <div  class="checkbox-area--together">
+                <label for="scene_quantity_edit" class="form__check__label">個数</label>
+                <input type="number" id="scene_quantity_edit" class="form__check__input" v-model="editForm_scene.quantity" ref="input_scene_quantity">
               </div>
 
               <!-- これで決定か -->
@@ -241,6 +250,7 @@
         // 表示する小道具のデータ
         scene: [],
         // 編集データ
+        prop: '',
         editForm_scene: {
           id: null,
           character_id: null,
@@ -263,6 +273,7 @@
           first_page: '',
           final_page: '',
           pages: '',
+          quantity: 1,
           decision: 0,
           usage: 0,
           usage_guraduation: 0,
@@ -326,6 +337,26 @@
         },
         immediate: true,
       },
+      prop: {
+        async handler(prop) {
+          if(this.prop){
+            let quantity;
+            this.optionProps.forEach((prop) => {
+              if(prop.id === this.prop){
+                quantity = prop.quantity;
+              }
+            }, this);
+            if(quantity > 1){
+              this.input_quantity = true;
+              const input_scene_quantity = this.$refs.input_scene_quantity;
+              input_scene_quantity.max = quantity;
+            }else{
+              this.input_quantity = false;
+            }
+          }
+        },
+        immediate: true
+      },
       editSceneMode_prop: {
         async handler(editSceneMode_prop){
           if(this.editSceneMode_prop === 100){
@@ -374,6 +405,7 @@
         this.editForm_scene.character.name = this.scene.character.name;
         this.editForm_scene.character.section.section = this.scene.character.section.section;
         this.selected();
+        this.prop = this.scene.prop_id;
         this.editForm_scene.prop_id = this.scene.prop_id;
         this.editForm_scene.prop.name = this.scene.prop.name;
         this.editForm_scene.prop.owner_id = this.scene.prop.owner_id;
@@ -392,6 +424,8 @@
           this.editForm_scene.first_page = this.scene.first_page;
           this.editForm_scene.final_page = this.scene.final_page;
         }
+
+        this.editForm_scene.quantity = this.scene.quantity;
 
         this.editForm_scene.decision = this.scene.decision;
 
@@ -521,6 +555,7 @@
         this.editForm_scene.character_id = null;
         this.editForm_scene.character.name = null;
         this.editForm_scene.character.section.section = null;
+        this.prop = null;
         this.editForm_scene.prop_id = null;
         this.editForm_scene.prop.name = null;
         this.editForm_scene.prop.owner_id = '';
@@ -530,6 +565,7 @@
         this.editForm_scene.first_page = '';
         this.editForm_scene.final_page = '';
         this.select_all_page = false;
+        this.editForm_scene.quantity = 1;
         this.editForm_scene.decision = 0;
         this.editForm_scene.pages = '';
         this.editForm_scene.usage = 0;
@@ -543,8 +579,34 @@
         this.guradutaion_tag = 0;
       },
   
+      // 全角→半角（数字）
+      Zenkaku2hankaku_number(str) {
+        return str.replace(/[０-９]/g, function(s) {
+          return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+        });
+
+        let pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
+        const chars = str.split('');
+        let sets = '';
+        chars.forEach((char, index) => {
+          char.replace(/[０-９]/g, function(s) {
+            const number = String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+            if(pattern_number.test(number)){
+              sets = sets + number;
+            }else{
+              sets  = 0;
+            }
+          });
+          if(index === chars.length-1){
+            return sets;
+          }
+        });
+      },
+
       // 編集エラー
       confirmScene () {
+        this.editForm_scene.prop_id = this.prop;
+
         if(this.select_all_page && this.scene.first_page){
           this.editForm_scene.first_page = 1;
           this.editForm_scene.final_page = 1000;
@@ -553,7 +615,21 @@
           this.editForm_scene.pages = '1-1000';
         }
 
-        if(this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.decision !== this.editForm_scene.decision || this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || ((!this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage) || ((this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage === "right") || ((!this.scene.usage_left && this.scene.usage_right) && this.editForm_scene.usage_stage === "left") || ((this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage) || ((this.scene.setting_id !== this.editForm_scene.setting_id) || (!this.scene.setting_id && !this.editForm_scene.setting_id)) ) && !this.editForm_scene.pages){
+        let correct_quantity = '';
+        if(this.editForm_scene.quantity){
+          let quantitys = [...this.editForm_scene.quantity];
+          
+          quantitys.forEach((quantity) => {
+            let number = this.Zenkaku2hankaku_number(quantity);
+            correct_quantity = String(correct_quantity) + String(number);
+            correct_quantity = Number(correct_quantity);
+          }, this);
+        }else{
+          correct_quantity = 1;
+        }
+        this.editForm_scene.quantity = correct_quantity;
+
+        if(this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.quantity !== this.editForm_scene.quantity ||this.scene.decision !== this.editForm_scene.decision || this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || ((!this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage) || ((this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage === "right") || ((!this.scene.usage_left && this.scene.usage_right) && this.editForm_scene.usage_stage === "left") || ((this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage) || ((this.scene.setting_id !== this.editForm_scene.setting_id) || (!this.scene.setting_id && !this.editForm_scene.setting_id)) ) && !this.editForm_scene.pages){
           // 元々何ページから何ページと指定があった // これはupdateだけでいい
           this.editSceneMode_detail = 1; // 'page_update'
 
@@ -658,9 +734,7 @@
         }
         if(this.editForm_scene.usage_stage === 'right'){
           usage_right = '㊦';
-        }
-
-        
+        }        
 
         this.optionSettings.forEach((stundet) => {
           if(stundet.id === this.editForm_scene.setting_id){
@@ -676,7 +750,7 @@
             memos.push(memo.memo);
           }
         }, this);
-        this.postMessage_Edit = '以下のように編集します。\n登場人物：'+this.editForm_scene.character.name + '\n小道具：'+prop + '\n決定：'+decision + '\nページ数：'+pages+ '\n使用状況：'+usage+usage_guraduation+usage_right+usage_left + '\nセットする人：'+this.editForm_scene.setting.name + '\nメモ：'+memos;
+        this.postMessage_Edit = '以下のように編集します。\n登場人物：'+this.editForm_scene.character.name + '\n小道具：'+prop + '\n個数：'+this.editForm_scene.quantity + '\n決定：'+decision + '\nページ数：'+pages+ '\n使用状況：'+usage+usage_guraduation+usage_right+usage_left + '\nセットする人：'+this.editForm_scene.setting.name + '\nメモ：'+memos;
       },
       // 編集confirmのモーダル非表示_OKの場合
       async closeModal_confirmEdit_OK() {
@@ -782,6 +856,7 @@
             prop_id: this.editForm_scene.prop_id,
             first_page: parseInt(sets_first), //this.editForm_scene.first_page,
             final_page: parseInt(sets_final), //this.editForm_scene.final_page,
+            quantity: this.editForm_scene.quantity,
             decision: this.editForm_scene.decision,
             usage: this.editForm_scene.usage,
             usage_guraduation: this.editForm_scene.usage_guraduation,

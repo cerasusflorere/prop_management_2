@@ -50,6 +50,7 @@
             <th>ページ数</th>
             <th>登場人物</th>
             <th>小道具名</th>
+            <th>個数</th>
             <th>決定か</th>
             <th>中間発表</th>
             <th>卒業公演</th>
@@ -76,6 +77,9 @@
               <td>{{ scene.character.name }}</td>
               <!-- 小道具名 -->
               <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
+              <!-- 個数 -->
+              <td v-if="scene.quantity > 1">{{ scene.quantity }}</td>
+              <td v-else></td>
               <!-- これで決定か -->
               <td v-if="scene.decision"><i class="fas fa-check fa-fw"></i></td>
               <td v-else></td> 
@@ -146,6 +150,12 @@
                 <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
               </tr>
               <tr>
+                <!-- 個数 -->
+                <th>個数</th>
+                <td v-if="scene.quantity > 1">{{ scene.quantity }}</td>
+                <td v-else></td>
+              </tr>
+              <tr>
                 <!-- これで決定か -->
                 <th>決定か</th>
                 <td v-if="scene.decision"><i class="fas fa-check fa-fw"></i></td>
@@ -208,8 +218,6 @@
         </div>
       </div>
 
-    
-   
     <detailScene :postScene="postScene" v-show="showContent" @close="closeModal_sceneDetail" />
     <detailProp :postProp="postProp" v-show="showContent_prop" @close="closeModal_propDetail" /> 
   </div>

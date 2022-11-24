@@ -33,6 +33,8 @@
               
               <div>所有者: <span v-if="prop.owner">{{ prop.owner.name }}</span></div>
 
+              <div>個数: <span v-if="prop.quantity > 1">{{ prop.quantity }}</span></div>
+
               <div>ピッコロに持ってきたか: <span v-if="prop.location" class="usage-show"><i class="fas fa-check fa-fw"></i></span></div>
 
               <div>
@@ -151,6 +153,12 @@
                     {{ owner.name }}
                   </option>
                 </select>
+              </div>
+
+              <!-- 個数 -->
+              <div class="checkbox-area--together">
+                <label for="prop_quantity_edit">個数</label>
+                <input type="number" id="prop_quantity_edit" class="form__item form__item--furigana" v-model="editForm_prop.quantity" placeholder="個数">
               </div>
 
               <!-- ピッコロに持ってきたか -->
@@ -350,6 +358,7 @@ export default {
           name: ''
         },
         owner_id: '',
+        quantity: 1,
         location: 0,
         handmade: 0,
         handmade_complete: 1,
@@ -491,6 +500,8 @@ export default {
         this.editForm_prop.owner_id = '';
         this.editForm_prop.owner.name = '';
       }
+
+      this.editForm_prop.quantity = this.prop.quantity;
 
       this.editForm_prop.location = this.prop.location;
 
@@ -732,6 +743,7 @@ export default {
       this.editForm_prop.kana = null;
       this.editForm_prop.owner.name = '';
       this.editForm_prop.owner_id = '';
+      this.editForm_prop.quantity = 1;
       this.editForm_prop.location = 0;
       this.editForm_prop.handmade = 0;
       this.editForm_prop.handmade_complete = 1;
@@ -931,6 +943,19 @@ export default {
         }
       }
       this.editForm_prop.kana = kana;
+
+      if(this.editForm_prop.quantity){
+        let quantitys = [...this.editForm_prop.quantity];
+        let correct_quantity = '';
+        quantitys.forEach((quantity) => {
+          let number = this.Zenkaku2hankaku_number(quantity);
+          correct_quantity = String(correct_quantity) + String(number);
+          correct_quantity = Number(correct_quantity);
+        }, this);
+        this.editForm_prop.quantity = correct_quantity;
+      }else{
+        this.editForm_prop.quantity = 1;
+      }
       
       if(!this.editForm_prop.handmade){
         this.editForm_prop.handmade = 0;
@@ -938,7 +963,7 @@ export default {
         this.editForm_prop.handmade = this.editForm_prop.handmade_complete;
       }
 
-      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || ((this.prop.owner_id !== this.editForm_prop.owner_id) || (!this.prop.owner_id && !this.editForm_prop.owner_id)) || this.prop.location !== this.editForm_prop.location || this.prop.handmade !== this.editForm_prop.handmade || this.prop.decision !== this.editForm_prop.decision  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
+      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || ((this.prop.owner_id !== this.editForm_prop.owner_id) || (!this.prop.owner_id && !this.editForm_prop.owner_id)) || this.prop.quantity !== this.editForm_prop.quantity || this.prop.location !== this.editForm_prop.location || this.prop.handmade !== this.editForm_prop.handmade || this.prop.decision !== this.editForm_prop.decision  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
         // 怪しい
         // if(!this.prop.owner_id && !this.editForm_prop.owner_id){
         //   console.log('なんで');
@@ -1040,7 +1065,7 @@ export default {
         photo = '変更しない';
       }
 
-      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name + '\nふりがな：'+this.editForm_prop.kana + '\n持ち主：'+this.editForm_prop.owner.name + '\nピッコロに：'+location + '\n'+handmade + '\n決定：'+decision + '\n使用状況：'+usage+usage_guraduation+usage_left+usage_right + '\nメモ：'+memos + '\n写真：'+photo;
+      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name + '\nふりがな：'+this.editForm_prop.kana + '\n持ち主：'+this.editForm_prop.owner.name + '\n個数：'+this.editForm_prop.quantity +'\nピッコロに：'+location + '\n'+handmade + '\n決定：'+decision + '\n使用状況：'+usage+usage_guraduation+usage_left+usage_right + '\nメモ：'+memos + '\n写真：'+photo;
     },
     // 編集confirmのモーダル非表示_OKの場合
     async closeModal_confirmEdit_OK() {
@@ -1072,6 +1097,7 @@ export default {
           name: this.editForm_prop.name,
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
+          quantity: this.editForm_prop.quantity,
           location: this.editForm_prop.location,
           handmade: this.editForm_prop.handmade,
           decision: this.editForm_prop.decision,
@@ -1103,6 +1129,7 @@ export default {
         formData.append('name', this.editForm_prop.name);
         formData.append('kana', this.editForm_prop.kana);
         formData.append('owner_id', this.editForm_prop.owner_id);
+        formData.append('quantity', this.editForm_prop.quantity);
         formData.append('location', this.editForm_prop.location);
         formData.append('handmade', this.editForm_prop.handmade);
         formData.append('decision', this.editForm_prop.decision);
@@ -1135,6 +1162,7 @@ export default {
           name: this.editForm_prop.name,
           kana: this.editForm_prop.kana,
           owner_id: this.editForm_prop.owner_id,
+          quantity: this.editForm_prop.quantity,
           location: this.editForm_prop.location,
           handmade: this.editForm_prop.handmade,
           decision: this.editForm_prop.decision,
@@ -1167,6 +1195,7 @@ export default {
         formData.append('name', this.editForm_prop.name);
         formData.append('kana', this.editForm_prop.kana);
         formData.append('owner_id', this.editForm_prop.owner_id);
+        formData.append('quantity', this.editForm_prop.quantity);
         formData.append('location', this.editForm_prop.location);
         formData.append('handmade', this.editForm_prop.handmade);
         formData.append('decision', this.editForm_prop.decision);

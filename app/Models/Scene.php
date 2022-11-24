@@ -11,14 +11,14 @@ class Scene extends Model
     /** 取得時にJSONに含める属性 */
     protected $visible = [
         'id', 'character_id', 'prop_id', 
-        'first_page', 'final_page', 'decision', 'usage', 'usage_guraduation', 'usage_left', 'usage_right', 'setting_id', 'created_at', 'updated_at',
+        'first_page', 'final_page', 'decision', 'usage', 'usage_guraduation', 'usage_left', 'usage_right', 'setting_id', 'quantity', 'created_at', 'updated_at',
         'character', 'prop', 'setting', 'scene_comments'
     ];
 
     /** 登録時にJSONに含める属性 */
     protected $fillable = [
         'character_id', 'prop_id', 
-        'first_page', 'final_page', 'decision', 'usage', 'usage_guraduation', 'usage_left', 'usage_right', 'setting_id'
+        'first_page', 'final_page', 'decision', 'usage', 'usage_guraduation', 'usage_left', 'usage_right', 'setting_id', 'quantity'
     ];
 
     public function getCreatedAtAttribute()
