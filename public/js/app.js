@@ -4314,6 +4314,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       // 表示する小道具のデータ
       scene: [],
+      // 個数を入力して良いか
+      input_quantity: false,
       // 編集データ
       prop: '',
       editForm_scene: {
@@ -4443,7 +4445,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
-                  if (_this2.prop) {
+                  if (_this2.prop && _this2.editForm_scene.quantity) {
+                    quantity = 1;
+
                     _this2.optionProps.forEach(function (prop) {
                       if (prop.id === _this2.prop) {
                         quantity = prop.quantity;
@@ -4453,7 +4457,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     if (quantity > 1) {
                       _this2.input_quantity = true;
                       input_scene_quantity = _this2.$refs.input_scene_quantity;
+                      console.log(input_scene_quantity);
                       input_scene_quantity.max = quantity;
+                      console.log(input_scene_quantity.max);
                     } else {
                       _this2.input_quantity = false;
                     }
@@ -4656,6 +4662,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this5.editSceneMode_prop = ""; // 調整
 
                 _this5.$nextTick(function () {
+                  // 位置調整
                   var content_dom = _this5.$refs.content_detail_scene;
                   var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
 
@@ -4663,6 +4670,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     _this5.overlay_class = 0;
                   } else {
                     _this5.overlay_class = 1;
+                  } // 個数最大値
+
+
+                  var quantity = 1;
+
+                  _this5.optionProps.forEach(function (prop) {
+                    if (prop.id === _this5.prop) {
+                      quantity = prop.quantity;
+                    }
+                  }, _this5);
+
+                  if (quantity > 1) {
+                    _this5.input_quantity = true;
+                    var input_scene_quantity = _this5.$refs.input_scene_quantity;
+                    console.log(input_scene_quantity);
+                    input_scene_quantity.max = quantity;
+                    console.log(input_scene_quantity.max);
+                  } else {
+                    _this5.input_quantity = false;
                   }
                 });
 
@@ -4906,6 +4932,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var correct_quantity = '';
 
       if (this.editForm_scene.quantity) {
+        console.log(this.editForm_scene.quantity);
+
         var quantitys = _toConsumableArray(this.editForm_scene.quantity);
 
         quantitys.forEach(function (quantity) {
@@ -10605,6 +10633,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               switch (_context9.prev = _context9.next) {
                 case 0:
                   if (_this8.prop) {
+                    quantity = 1;
+
                     _this8.optionProps.forEach(function (prop) {
                       if (prop.id === _this8.prop) {
                         quantity = prop.quantity;
@@ -10615,6 +10645,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       _this8.input_quantity = true;
                       input_scene_quantity = _this8.$refs.input_scene_quantity;
                       input_scene_quantity.max = quantity;
+                      console.log(input_scene_quantity.max);
                     } else {
                       _this8.input_quantity = false;
                     }
@@ -15572,6 +15603,7 @@ var render = function render() {
     attrs: {
       type: "number",
       id: "scene_quantity_edit",
+      disabled: !_vm.input_quantity,
       min: "1"
     },
     domProps: {
@@ -20460,7 +20492,7 @@ var render = function render() {
     }
   })]) : _vm._e(), _vm._v(" "), _c("th", {
     staticClass: "th-non"
-  }), _vm._v(" "), _c("th", [_vm._v("ページ数")]), _vm._v(" "), _c("th", [_vm._v("登場人物")]), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("個数")]), _vm._v(" "), _c("th", [_vm._v("決定か")]), _vm._v(" "), _c("th", [_vm._v("中間発表")]), _vm._v(" "), _c("th", [_vm._v("卒業公演")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", [_vm._v("セットする人")]), _vm._v(" "), _c("th", {
+  }), _vm._v(" "), _c("th", [_vm._v("ページ数")]), _vm._v(" "), _c("th", [_vm._v("登場人物")]), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("個数")]), _vm._v(" "), _c("th", [_vm._v("決定か")]), _vm._v(" "), _c("th", [_vm._v("中間発表")]), _vm._v(" "), _c("th", [_vm._v("卒業公演")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", [_vm._v("セット")]), _vm._v(" "), _c("th", {
     staticClass: "th-memo"
   }, [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]), _vm._v(" "), _c("tbody", _vm._l(_vm.showScenes, function (scene, index) {
     return _c("tr", [_vm.choice_flag ? _c("td", [_c("input", {
@@ -20616,7 +20648,7 @@ var render = function render() {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("下手")]), _vm._v(" "), scene.usage_right ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
-    })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("セットする人")]), _vm._v(" "), scene.setting ? _c("td", [_vm._v(_vm._s(scene.setting.name))]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("メモ")]), _vm._v(" "), scene.scene_comments.length ? _c("td", _vm._l(scene.scene_comments, function (memo) {
+    })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("セット")]), _vm._v(" "), scene.setting ? _c("td", [_vm._v(_vm._s(scene.setting.name))]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("メモ")]), _vm._v(" "), scene.scene_comments.length ? _c("td", _vm._l(scene.scene_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.created_at))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("更新日時")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.updated_at))])])]);
   }), 0)]) : _c("div", [_vm._v("\n        使用シーンは登録されていません。 \n      ")])]), _vm._v(" "), _c("detailScene", {

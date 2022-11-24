@@ -159,7 +159,7 @@
               <!-- 個数 -->
               <div  class="checkbox-area--together">
                 <label for="scene_quantity_edit" class="form__check__label">個数</label>
-                <input type="number" id="scene_quantity_edit" min="1" class="form__check__input" v-model="editForm_scene.quantity" ref="input_scene_quantity">
+                <input type="number" id="scene_quantity_edit" ref="input_scene_quantity" :disabled="!input_quantity" min="1" class="form__check__input" v-model="editForm_scene.quantity">
               </div>
 
               <!-- これで決定か -->
@@ -249,6 +249,8 @@
       return {
         // 表示する小道具のデータ
         scene: [],
+        // 個数を入力して良いか
+        input_quantity: false,
         // 編集データ
         prop: '',
         editForm_scene: {
@@ -339,8 +341,8 @@
       },
       prop: {
         async handler(prop) {
-          if(this.prop){
-            let quantity;
+          if(this.prop && this.editForm_scene.quantity){
+            let quantity = 1;
             this.optionProps.forEach((prop) => {
               if(prop.id === this.prop){
                 quantity = prop.quantity;
@@ -349,7 +351,9 @@
             if(quantity > 1){
               this.input_quantity = true;
               const input_scene_quantity = this.$refs.input_scene_quantity;
+              console.log(input_scene_quantity);
               input_scene_quantity.max = quantity;
+            console.log(input_scene_quantity.max);
             }else{
               this.input_quantity = false;
             }
@@ -461,12 +465,30 @@
 
         // 調整
         this.$nextTick(() => {
+          // 位置調整
           const content_dom = this.$refs.content_detail_scene;
           const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
           if(content_rect.top < 0){
             this.overlay_class = 0;
           }else{
             this.overlay_class = 1;
+          }
+
+          // 個数最大値
+          let quantity = 1;
+          this.optionProps.forEach((prop) => {
+            if(prop.id === this.prop){
+              quantity = prop.quantity;
+            }
+          }, this);
+          if(quantity > 1){
+            this.input_quantity = true;
+            const input_scene_quantity = this.$refs.input_scene_quantity;
+            console.log(input_scene_quantity);
+            input_scene_quantity.max = quantity;
+           console.log(input_scene_quantity.max);
+          }else{
+            this.input_quantity = false;
           }
         });
       },
@@ -628,6 +650,7 @@
 
         let correct_quantity = '';
         if(this.editForm_scene.quantity){
+          console.log(this.editForm_scene.quantity);
           let quantitys = [...this.editForm_scene.quantity];
           
           quantitys.forEach((quantity) => {

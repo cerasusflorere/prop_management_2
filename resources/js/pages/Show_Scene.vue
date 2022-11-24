@@ -56,7 +56,7 @@
             <th>卒業公演</th>
             <th>上手</th>
             <th>下手</th>
-            <th>セットする人</th>        
+            <th>セット</th>        
             <th class="th-memo">メモ</th>
             <th>登録日時</th>
             <th>更新日時</th>
@@ -187,7 +187,7 @@
               </tr>
               <tr>
                 <!-- 誰がセットするか-->
-                <th>セットする人</th>
+                <th>セット</th>
                 <td v-if="scene.setting">{{ scene.setting.name }}</td>
                 <td v-else></td>
               </tr>
