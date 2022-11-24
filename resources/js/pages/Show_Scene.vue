@@ -958,7 +958,7 @@
       async closeModal_confirmDelete_OK() {
         this.showContent_confirmDelete = false;
         this.$emit('close');
-        await this.deleteProps();
+        await this.deleteScenes();
       },
       // 削除confirmのモーダル非表示_Cancelの場合
       closeModal_confirmDelete_Cancel() {

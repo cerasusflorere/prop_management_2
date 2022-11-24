@@ -740,4 +740,30 @@ class SceneController extends Controller
         // レスポンスコードは204(No Content)を返却する
         return response($scene, 204) ?? abort(404);
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy_many($id_s)
+    {
+        $ids = explode(',', $id_s);
+        DB::beginTransaction();
+
+        try {
+            $scene = Scene::whereIn('id', $ids)
+                        ->delete(); 
+                
+
+            DB::commit();
+        }catch (\Exception $exception) {
+            DB::rollBack();
+            
+            throw $exception;
+        }
+
+        return response($scene, 204) ?? abort(404);
+    }
 }

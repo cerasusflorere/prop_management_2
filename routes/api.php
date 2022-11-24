@@ -120,7 +120,7 @@ Route::post('/scenes_many/{id}', 'App\Http\Controllers\SceneController@update_ma
 // 使用シーン削除
 Route::delete('/scenes/{id}', 'App\Http\Controllers\SceneController@destroy')->name('scene.destroy');
 
-// 小道具複数削除
+// 使用シーン複数削除
 Route::delete('/scenes_many/{id}', 'App\Http\Controllers\SceneController@destroy_many')->name('scene.destroy_many');
 
 // 使用シーンメモ投稿

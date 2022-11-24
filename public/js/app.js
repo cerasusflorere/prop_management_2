@@ -12728,7 +12728,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this14.$emit('close');
 
                 _context8.next = 4;
-                return _this14.deleteProps();
+                return _this14.deleteScenes();
 
               case 4:
               case "end":
