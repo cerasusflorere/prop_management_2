@@ -59,6 +59,7 @@ class InformationController extends Controller
     public function store_section(Request $request)
     {
         $section = Section::create(['section' => $request->section]);
+        $order = Section::where('id', $section->id)->update(['order' => $section->id]);
 
         return response($section, 201);
     }
@@ -71,7 +72,8 @@ class InformationController extends Controller
      */
     public function store_character(Request $request)
     {
-        $character = Character::create(['section_id' => (int)$request->section_id, 'name' => $request->name]);
+        $character = Character::create(['order' => 0, 'section_id' => (int)$request->section_id, 'name' => $request->name]);
+        $order = Character::where('id', $character->id)->update(['order' => $character->id]);
 
         return response($character, 201);
     }
@@ -85,6 +87,7 @@ class InformationController extends Controller
     public function store_owner(Request $request)
     {
         $owner = Owner::create(['name' => $request->name]);
+        $order = Owner::where('id', $owner->id)->update(['order' => $owner->id]);
 
         return response($owner, 201);
     }

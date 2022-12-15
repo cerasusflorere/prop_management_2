@@ -481,17 +481,8 @@ export default {
         });
       }
 
-      let correct_quantity = '';
-      if(this.registerForm.quantity){
-        let quantitys = [...this.registerForm.quantity];
-        
-        quantitys.forEach((quantity) => {
-          let number = this.Zenkaku2hankaku_number(quantity);
-          correct_quantity = String(correct_quantity) + String(number);
-          correct_quantity = Number(correct_quantity);
-        }, this);
-      }else{
-        correct_quantity = 1;
+      if(!this.registerForm.quantity){
+        this.registerForm.quantity = 1;
       }
       
       let usage_left = 0;
@@ -509,7 +500,7 @@ export default {
           prop_id: this.registerForm.prop,
           first_page: page,
           final_page: final_pages[index],
-          quantity: correct_quantity,
+          quantity: this.registerForm.quantity,
           decision: this.registerForm.decision,
           usage: this.registerForm.usage,
           usage_guraduation: this.registerForm.usage_guraduation,

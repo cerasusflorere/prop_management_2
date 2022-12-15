@@ -17,7 +17,7 @@ class SceneController extends Controller
      */
     public function index()
     {
-        $scenes = Scene::with(['character', 'prop', 'setting', 'scene_comments'])->orderBy('first_page')->orderBy('created_at')->get();     
+        $scenes = Scene::with(['character', 'prop', 'prop.prop_comments','setting', 'scene_comments'])->orderBy('first_page')->orderBy('created_at')->get();     
 
         return $scenes;
     }
@@ -101,7 +101,7 @@ class SceneController extends Controller
                         }else{
                             // 更新する必要がなかった
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision]);
+                                ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
@@ -305,7 +305,7 @@ class SceneController extends Controller
                 }else{
                     $affected_prop = Prop::where('id', $request->prop_id)
                             ->update(['decision' => 1]);
-                }                
+                }        
 
                 DB::commit();
                 // リソースの新規作成なので

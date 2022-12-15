@@ -289,6 +289,7 @@
         },
         // 取得するデータ
         optionProps: [],
+        optionSettings: [],
         // 連動プルダウン
         selectedCharacters: [],
         optionCharacters: [],
@@ -484,9 +485,7 @@
           if(quantity > 1){
             this.input_quantity = true;
             const input_scene_quantity = this.$refs.input_scene_quantity;
-            console.log(input_scene_quantity);
             input_scene_quantity.max = quantity;
-           console.log(input_scene_quantity.max);
           }else{
             this.input_quantity = false;
           }
@@ -648,22 +647,11 @@
           this.editForm_scene.pages = '1-1000';
         }
 
-        let correct_quantity = '';
-        if(this.editForm_scene.quantity){
-          console.log(this.editForm_scene.quantity);
-          let quantitys = [...this.editForm_scene.quantity];
-          
-          quantitys.forEach((quantity) => {
-            let number = this.Zenkaku2hankaku_number(quantity);
-            correct_quantity = String(correct_quantity) + String(number);
-            correct_quantity = Number(correct_quantity);
-          }, this);
-        }else{
-          correct_quantity = 1;
+        if(!this.editForm_scene.quantity){
+          this.editForm_scene.quantity = 1;
         }
-        this.editForm_scene.quantity = correct_quantity;
 
-        if(this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.quantity !== this.editForm_scene.quantity ||this.scene.decision !== this.editForm_scene.decision || this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || ((!this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage) || ((this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage === "right") || ((!this.scene.usage_left && this.scene.usage_right) && this.editForm_scene.usage_stage === "left") || ((this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage) || ((this.scene.setting_id !== this.editForm_scene.setting_id) || (!this.scene.setting_id && !this.editForm_scene.setting_id)) ) && !this.editForm_scene.pages){
+        if(this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.quantity !== this.editForm_scene.quantity || this.scene.decision !== this.editForm_scene.decision || this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || ((!this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage) || ((this.scene.usage_left && !this.scene.usage_right) && this.editForm_scene.usage_stage === "right") || ((!this.scene.usage_left && this.scene.usage_right) && this.editForm_scene.usage_stage === "left") || ((this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage) || ((this.scene.setting_id !== this.editForm_scene.setting_id) || (!this.scene.setting_id && !this.editForm_scene.setting_id)) ) && !this.editForm_scene.pages){
           // 元々何ページから何ページと指定があった // これはupdateだけでいい
           this.editSceneMode_detail = 1; // 'page_update'
 
@@ -740,7 +728,7 @@
         if(this.editForm_scene.first_page && !this.editForm_scene.pages && !this.select_all_page) {
           pages = 'p.'+this.editForm_scene.first_page;
           if(this.editForm_scene.final_page){
-            pages = pages + '~' + this.editForm_scene.final_page; + ' '
+            pages = pages + '~' + this.editForm_scene.final_page; + ' ';
           }
         }else if(this.editForm_scene.pages && !this.editForm_scene.first_page && !this.select_all_page){
           pages = 'p.' + this.editForm_scene.pages;
@@ -768,7 +756,7 @@
         }
         if(this.editForm_scene.usage_stage === 'right'){
           usage_right = '㊦';
-        }        
+        }
 
         this.optionSettings.forEach((stundet) => {
           if(stundet.id === this.editForm_scene.setting_id){
@@ -784,7 +772,9 @@
             memos.push(memo.memo);
           }
         }, this);
-        this.postMessage_Edit = '以下のように編集します。\n登場人物：'+this.editForm_scene.character.name + '\n小道具：'+prop + '\n個数：'+this.editForm_scene.quantity + '\n決定：'+decision + '\nページ数：'+pages+ '\n使用状況：'+usage+usage_guraduation+usage_right+usage_left + '\nセットする人：'+this.editForm_scene.setting.name + '\nメモ：'+memos;
+      memos.push(this.editForm_scene.memo);
+
+        this.postMessage_Edit = '以下のように編集します。\n登場人物：'+this.editForm_scene.character.name + '\n小道具：'+prop + '\nページ数：'+pages + '\n個数：'+this.editForm_scene.quantity + '\n決定：'+decision + '\n使用状況：'+usage+usage_guraduation+usage_right+usage_left + '\nセットする人：'+this.editForm_scene.setting.name + '\nメモ：'+memos;
       },
       // 編集confirmのモーダル非表示_OKの場合
       async closeModal_confirmEdit_OK() {

@@ -12,6 +12,11 @@
           </div>
           <searchScene :postSearch="postSearch" v-show="showContent_search" @close="closeModal_searchScene" />
 
+          <!-- 並び替えリセット -->
+          <div class="button-area--small-small">
+            <button type="button" @click="sort_Standard('reset')" class="button button--inverse button--small"><i class="fas fa-undo-alt fa-fw"></i>リセット</button>
+          </div>
+
           <!-- 選択 -->
           <div class="button-area--small-small">
             <button type="button" @click="showCheckBox" class="button button--inverse button--small button--choice"><i class="fas fa-check-square fa-fw"></i>選択</button>
@@ -44,8 +49,8 @@
         <thead>
           <tr>
             <th v-if="choice_flag" class="th-non">
-                <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllScenes"></input>
-              </th>
+              <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllScenes"></input>
+            </th>
             <th class="th-non"></th>
             <th>ページ数</th>
             <th>登場人物</th>
@@ -65,48 +70,48 @@
         <tbody>
           <tr v-for="(scene, index) in showScenes">
             <td v-if="choice_flag">
-                <input type="checkbox" class="checkbox-delete" v-model="choice_ids[scene.id]"></input>
-              </td>
-              <!-- index -->
-              <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
-              <!-- 何ページから -->
-              <td v-if="scene.first_page && scene.final_page != 1000">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
-              <td v-if="scene.first_page == 1 && scene.final_page == 1000">全シーン</td>
-              <td v-if="!scene.first_page"></td>
-              <!-- 登場人物 -->
-              <td>{{ scene.character.name }}</td>
-              <!-- 小道具名 -->
-              <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
-              <!-- 個数 -->
-              <td v-if="scene.quantity > 1">{{ scene.quantity }}</td>
-              <td v-else></td>
-              <!-- これで決定か -->
-              <td v-if="scene.decision"><i class="fas fa-check fa-fw"></i></td>
-              <td v-else></td> 
-              <!-- 中間発表 -->
-              <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
-              <td v-else></td> 
-              <!-- 卒業公演 -->
-              <td v-if="scene.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
-              <td v-else></td>
-              <!-- 上手 -->
-              <td v-if="scene.usage_left"><i class="fas fa-check fa-fw"></i></td>
-              <td v-else></td>
-              <!-- 下手 -->
-              <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
-              <td v-else></td>
-              <!-- セットする人 -->
-              <td v-if="scene.setting">{{ scene.setting.name }}</td>
-              <td v-else></td>
-              <!-- メモ -->
-              <td v-if="scene.scene_comments.length">
-                <div v-for="memo in scene.scene_comments"> {{ memo.memo }}</div>
-              </td>
-              <td v-else></td>
-              <!-- 登録日時 -->
-              <td>{{ scene.created_at }}</td>
-              <!-- 更新日時 -->
-              <td>{{ scene.updated_at }}</td>
+              <input type="checkbox" class="checkbox-delete" v-model="choice_ids[scene.id]"></input>
+            </td>
+            <!-- index -->
+            <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
+            <!-- 何ページから -->
+            <td v-if="scene.first_page && scene.final_page != 1000">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
+            <td v-if="scene.first_page == 1 && scene.final_page == 1000">全シーン</td>
+            <td v-if="!scene.first_page"></td>
+            <!-- 登場人物 -->
+            <td>{{ scene.character.name }}</td>
+            <!-- 小道具名 -->
+            <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
+            <!-- 個数 -->
+            <td v-if="scene.quantity > 1">{{ scene.quantity }}</td>
+            <td v-else></td>
+            <!-- これで決定か -->
+            <td v-if="scene.decision"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td> 
+            <!-- 中間発表 -->
+            <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td> 
+            <!-- 卒業公演 -->
+            <td v-if="scene.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
+            <!-- 上手 -->
+            <td v-if="scene.usage_left"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
+            <!-- 下手 -->
+            <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
+            <!-- セットする人 -->
+            <td v-if="scene.setting">{{ scene.setting.name }}</td>
+            <td v-else></td>
+            <!-- メモ -->
+            <td v-if="scene.scene_comments.length">
+              <div v-for="memo in scene.scene_comments"> {{ memo.memo }}</div>
+            </td>
+            <td v-else></td>
+            <!-- 登録日時 -->
+            <td>{{ scene.created_at }}</td>
+            <!-- 更新日時 -->
+            <td>{{ scene.updated_at }}</td>
           </tr>
         </tbody>
       </table>
@@ -116,107 +121,107 @@
     </div>
 
     <div v-else class="phone">
-        <div v-if="showScenes.length">
-          <table>
-            <div v-for="(scene, index) in showScenes">
-              <tr v-show="index === 0" v-if="choice_flag">
-                <th class="th-non">
-                  <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllScenes"></input>
-                </th>
-                <td></td>
-              </tr>
-              <tr>
-                <!-- index -->
-                <th class="th-non">
-                  <input type="checkbox" v-if="choice_flag" class="checkbox-delete" v-model="choice_ids[scene.id]"></input>
-                </th>
-                <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
-              </tr>
-              <tr>
-                <!-- ページ数 -->
-                <th>ページ数</th>
-                <td v-if="scene.first_page && scene.final_page != 1000">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
-                <td v-if="scene.first_page == 1 && scene.final_page == 1000">全シーン</td>
-                <td v-if="!scene.first_page"></td>
-              </tr>
-              <tr>
-                <!-- 登場人物 -->
-                <th>登場人物</th>
-                <td>{{ scene.character.name }}</td>
-              </tr>
-              <tr>
-                <!-- 小道具 -->
-                <th>小道具</th>
-                <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
-              </tr>
-              <tr>
-                <!-- 個数 -->
-                <th>個数</th>
-                <td v-if="scene.quantity > 1">{{ scene.quantity }}</td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- これで決定か -->
-                <th>決定か</th>
-                <td v-if="scene.decision"><i class="fas fa-check fa-fw"></i></td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 中間発表 -->
-                <th>中間</th>
-                <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 卒業公演 -->
-                <th>卒業</th>
-                <td v-if="scene.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 上手 -->
-                <th>上手</th>
-                <td v-if="scene.usage_left"><i class="fas fa-check fa-fw"></i></td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 下手 -->
-                <th>下手</th>
-                <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 誰がセットするか-->
-                <th>セット</th>
-                <td v-if="scene.setting">{{ scene.setting.name }}</td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- メモ -->
-                <th>メモ</th>
-                <td v-if="scene.scene_comments.length">
-                  <div v-for="memo in scene.scene_comments"> {{ memo.memo }}</div>
-                </td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 登録日時 -->
-                <th>登録日時</th>
-                <td>{{ scene.created_at }}</td>
-              </tr>
-              <tr>
-                <!-- 更新日時 -->
-                <th>更新日時</th>
-                <td>{{ scene.updated_at }}</td>
-              </tr>
-            </div>
-          </table>
-        </div>
-
-        <div v-else>
-          使用シーンは登録されていません。 
-        </div>
+      <div v-if="showScenes.length">
+        <table>
+          <div v-for="(scene, index) in showScenes">
+            <tr v-show="index === 0" v-if="choice_flag">
+              <th class="th-non">
+                <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllScenes"></input>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <!-- index -->
+              <th class="th-non">
+                <input type="checkbox" v-if="choice_flag" class="checkbox-delete" v-model="choice_ids[scene.id]"></input>
+              </th>
+              <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
+            </tr>
+            <tr>
+              <!-- ページ数 -->
+              <th>ページ数</th>
+              <td v-if="scene.first_page && scene.final_page != 1000">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
+              <td v-if="scene.first_page == 1 && scene.final_page == 1000">全シーン</td>
+              <td v-if="!scene.first_page"></td>
+            </tr>
+            <tr>
+              <!-- 登場人物 -->
+              <th>登場人物</th>
+              <td>{{ scene.character.name }}</td>
+            </tr>
+            <tr>
+              <!-- 小道具 -->
+              <th>小道具</th>
+              <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
+            </tr>
+            <tr>
+              <!-- 個数 -->
+              <th>個数</th>
+              <td v-if="scene.quantity > 1">{{ scene.quantity }}</td>
+              <td v-else></td>
+            </tr>
+            <tr>
+              <!-- これで決定か -->
+              <th>決定か</th>
+              <td v-if="scene.decision"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+            </tr>
+            <tr>
+              <!-- 中間発表 -->
+              <th>中間</th>
+              <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+            </tr>
+            <tr>
+              <!-- 卒業公演 -->
+              <th>卒業</th>
+              <td v-if="scene.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+            </tr>
+            <tr>
+              <!-- 上手 -->
+              <th>上手</th>
+              <td v-if="scene.usage_left"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+            </tr>
+            <tr>
+              <!-- 下手 -->
+              <th>下手</th>
+              <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+            </tr>
+            <tr>
+              <!-- 誰がセットするか-->
+              <th>セット</th>
+              <td v-if="scene.setting">{{ scene.setting.name }}</td>
+              <td v-else></td>
+            </tr>
+            <tr>
+              <!-- メモ -->
+              <th>メモ</th>
+              <td v-if="scene.scene_comments.length">
+                <div v-for="memo in scene.scene_comments"> {{ memo.memo }}</div>
+              </td>
+              <td v-else></td>
+            </tr>
+            <tr>
+              <!-- 登録日時 -->
+              <th>登録日時</th>
+              <td>{{ scene.created_at }}</td>
+            </tr>
+            <tr>
+              <!-- 更新日時 -->
+              <th>更新日時</th>
+              <td>{{ scene.updated_at }}</td>
+            </tr>
+          </div>
+        </table>
       </div>
+
+      <div v-else>
+        使用シーンは登録されていません。 
+      </div>
+    </div>
 
     <detailScene :postScene="postScene" v-show="showContent" @close="closeModal_sceneDetail" />
     <detailProp :postProp="postProp" v-show="showContent_prop" @close="closeModal_propDetail" /> 
@@ -258,12 +263,15 @@
         // 小道具詳細
         showContent_prop: false,
         postProp: "",
-        custom_sort: null,
-        custom_name: null,
-        custom_refine: null,
         // シーン検索カスタム
         showContent_search: false,
         postSearch: "",
+        custom_sort: null,
+        custom_name: {
+          input: null,
+          scope: null
+        },
+        custom_refine: null,
         // ページの並び順
         page_order: [], 
         // 選択ボタン
@@ -321,14 +329,19 @@
           this.choice_ids.push(false);
         }, this);
 
-        if(this.custom_sort || this.custom_name || this.custom_refine){
+        if(this.custom_sort || this.custom_name.input !== null || this.custom_refine){
           await this.closeModal_searchScene(this.custom_sort, this.custom_name, this.custom_refine);
         }else{
           this.sort_Standard(this.showScenes);
-        }        
+        }
       },
 
       sort_Standard(array){
+        if(array === 'reset'){
+          this.showScenes = JSON.parse(JSON.stringify(this.scenes));
+          array = this.showScenes;
+        }
+
         const regex_str = /[^ぁ-んー]/g; // ひらがな以外
         const regex_number = /[^0-9]/g; // 数字以外
         const regex_alf = /[^A-Z]/g; // アルファベット
@@ -427,40 +440,92 @@
         this.postSearch = number;
       },
       // 検索カスタムのモーダル非表示
-      closeModal_searchScene(sort, name, refine) {
+      closeModal_searchScene(sort, name_input, refine) {
         this.showContent_search = false;
         if(sort !== null && refine !== null){
-
           this.custom_sort = sort;
-          this.custom_name = name;
+          if(name_input.input && !Array.isArray(name_input.input)){
+            this.custom_name.input = name_input.input.split(/,|、|，|\s+/);
+            this.custom_name.input = this.custom_name.input.filter(Boolean);
+            this.custom_name.scope = name_input.scope;
+          }else if(!name_input.input){
+            this.custom_name.input = null;
+            this.custom_name.scope = null;
+          }
           this.custom_refine = refine;
+          
           let array_original = this.scenes.filter((a) => eval(refine));
           let array = [];
 
-          if(this.h(name.input)){
-            if(name.scope === "memo_together"){
-              // メモを含めて検索
-              array = array_original.filter((a) => {
-                if(a.prop.name.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
-                  return a;
-                }else if(a.prop.kana.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
-                  return a;
-                }else if(a.prop.prop_comments[0]){
-                  if(a.prop.prop_comments[0].memo.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1){
-                    return a;
-                  }                  
-                }
+          if(Array.isArray(this.custom_name.input)){
+            // 入力値があった
+            let new_array = [];
+            if(this.custom_name.scope === "memo_all_together"){
+              // 小道具メモ・使用シーンメモを含めて検索
+              array_original.filter((a) => {
+                this.custom_name.input.forEach((name) => {
+                  if(a.prop.name.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }else if(a.prop.kana.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }else if(a.prop.prop_comments.length){
+                    if(a.prop.prop_comments[0].memo.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1){
+                      new_array.push(a);
+                    }                  
+                  }else if(a.scene_comments.length){
+                    if(a.scene_comments[0].memo.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1){
+                      new_array.push(a);
+                    }                  
+                  }
+                }, this);
+              });
+            }else if(this.custom_name.scope === "memo_prop_together"){
+              // 小道具メモを含めて検索
+              array_original.filter((a) => {
+                this.custom_name.input.forEach((name) => {
+                  if(a.prop.name.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }else if(a.prop.kana.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }else if(a.prop.prop_comments.length){
+                    if(a.prop.prop_comments[0].memo.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1){
+                      new_array.push(a);
+                    }                  
+                  }
+                }, this);
+              });
+            }else if(this.custom_name.scope === "memo_scene_together"){
+              // 使用シーンメモを含めて検索
+              array_original.filter((a) => {
+                this.custom_name.input.forEach((name) => {
+                  if(a.prop.name.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }else if(a.prop.kana.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }else if(a.scene_comments.length){
+                    if(a.scene_comments[0].memo.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1){
+                      new_array.push(a);
+                    }                  
+                  }
+                }, this);
               });
             }else{
               // 小道具名のみで検索
-              array = array_original.filter((a) => {
-                if(a.prop.name.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
-                  return a;
-                }else if(a.prop.kana.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
-                  return a;
-                }
-              });
+              array_original.forEach((a) => {
+                this.custom_name.input.forEach((name) => {
+                  if(a.prop.name.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }else if(a.prop.kana.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }
+                }, this);                
+              }, this);
             }
+
+            // 重複削除
+            const set = new Set(new_array);
+            const newArr = [...set];
+            array = Array.from(new Set(newArr));
           }else{
             // 入力検索しない
             array = array_original;
@@ -634,8 +699,6 @@
 
               // kanaで並び替え
               if(a.prop.kana !== b.prop.kana){
-                console.log(a.prop.kana);
-                console.log(b.prop.kana);
                 const a_str = a.prop.kana.replace(regex_str, "");
                 const b_str = b.prop.kana.replace(regex_str, "");
                 let a_number = a.prop.kana.replace(regex_number, "");
@@ -1007,10 +1070,13 @@
           { header: '何ページまで', key: 'final_page', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '登場人物', key: 'character', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '小道具', key: 'prop', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '個数', key: 'quantity', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '決定か', key: 'decision', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '中間発表', key: 'usage', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '卒業公演', key: 'usage_guraduation', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '上手', key: 'usage_left', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '下手', key: 'usage_right', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: 'セットする人', key: 'prop', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: 'メモ', key: 'memo', width: 24, style: { alignment: {vertical: "middle", horizontal: "center" }}},
         ];
 
@@ -1037,15 +1103,38 @@
         worksheet.getCell('H1').fill = fill;
         worksheet.getCell('I1').font = font;
         worksheet.getCell('I1').fill = fill;
+        worksheet.getCell('J1').font = font;
+        worksheet.getCell('J1').fill = fill;
+        worksheet.getCell('K1').font = font;
+        worksheet.getCell('K1').fill = fill;
+        worksheet.getCell('L1').font = font;
+        worksheet.getCell('L1').fill = fill;
 
         this.showScenes.forEach((scene, index) => {
           let datas = [];
-          datas.push(scene.first_page);
-          datas.push(scene.final_page);
+          if(scene.first_page === 1 && scene.final_page === 1000){
+            datas.push('全ページ');
+            datas.push(null);
+          }else{
+            datas.push(scene.first_page);
+            datas.push(scene.final_page);
+          }          
 
           datas.push(scene.character.name);
 
           datas.push(scene.prop.name);
+
+          if(scene.quantity > 1){
+            datas.push(scene.quantity);
+          }else{
+            datas.push(null);
+          }
+
+          if(scene.decision){
+            datas.push('〇');
+          }else{
+            datas.push(null);
+          }
 
           if(scene.usage){
             datas.push('〇');
@@ -1067,6 +1156,12 @@
 
           if(scene.usage_right){
             datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(scene.setting){
+            datas.push(scene.setting.name)
           }else{
             datas.push(null);
           }

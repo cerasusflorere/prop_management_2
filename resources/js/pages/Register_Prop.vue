@@ -576,15 +576,9 @@ export default {
       formData.append('name', this.registerForm.prop);
       formData.append('kana', kana);
       formData.append('owner_id', this.registerForm.owner);
+      
       if(this.registerForm.quantity){
-        let quantitys = [...this.registerForm.quantity];
-        let correct_quantity = '';
-        quantitys.forEach((quantity) => {
-          let number = this.Zenkaku2hankaku_number(quantity);
-          correct_quantity = String(correct_quantity) + String(number);
-          correct_quantity = Number(correct_quantity);
-        }, this);
-        formData.append('quantity', correct_quantity);
+        formData.append('quantity', this.registerForm.quantity);
       }else{
         formData.append('quantity', 1);
       }

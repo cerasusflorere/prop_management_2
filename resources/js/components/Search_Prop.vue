@@ -291,7 +291,7 @@
               if(this.search_prop.prop_search.handmade_unfinished) {
                 handmade = handmade + '|| a.handmade === ' + 3;
               }
-            }else{
+            }else if(this.search_prop.prop_search.handmade_unfinished){
               handmade ='(a.handmade ===' +  3;
             }
           }else if(!this.search_prop.prop_search.handmade && this.search_prop.prop_search.handmade_no){
@@ -336,9 +336,9 @@
           this.search_prop.prop_search.location_no = false;
           this.search_prop.prop_search.handmade = false;
           this.search_prop.prop_search.handmade_no = false;
-          this.search_prop.prop_search.handmade_complete = false;
-          this.search_prop.prop_search.handmade_progress = false;
-          this.search_prop.prop_search.handmade_unfinished = false;
+          this.search_prop.prop_search.handmade_complete = true;
+          this.search_prop.prop_search.handmade_progress = true;
+          this.search_prop.prop_search.handmade_unfinished = true;
           this.search_prop.prop_search.decision = false;
           this.search_prop.prop_search.decision_no = false;
           this.search_prop.prop_search.usage = false;

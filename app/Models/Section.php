@@ -9,12 +9,12 @@ class Section extends Model
 {
     /** JSONに含める属性 */
     protected $visible = [
-        'id', 'section', 'characters',
+        'id', 'section', 'characters'
     ];
 
     /** 登録時にJSONに含める属性 */
     protected $fillable = [
-        'section', 
+        'order', 'section'
     ];
 
     /**

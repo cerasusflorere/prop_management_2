@@ -86,14 +86,20 @@
 
               <!-- 入力検索(小道具) -->
               <div class="search--select-area--box">
-                <label for="search_scene_name" class="search--label">小道具名</label>
+                <label for="search_scene_name" class="search--label">入力検索</label>
                 <input type="text" class="form__item search--input" id="search_scene_name" v-model="search_scene.scene_search.name.input"></input>
                 <span class="checkbox-area--together">
                   <input type="radio" id="search_scene_name_only" v-model="search_scene.scene_search.name.scope" value="name_only">
                   <label for="search_scene_name_only">小道具名のみ</label>       
 
-                  <input type="radio" id="search_scene_memo_toghether" v-model="search_scene.scene_search.name.scope" value="memo_together">
-                  <label for="search_scene_memo_toghether">メモ含む</label>
+                  <input type="radio" id="search_scene_memo_all_toghether" v-model="search_scene.scene_search.name.scope" value="memo_all_together">
+                  <label for="search_scene_memo_all_toghether">小道具メモ・使用シーンメモ含む</label>
+
+                  <input type="radio" id="search_scene_memo_prop_toghether" v-model="search_scene.scene_search.name.scope" value="memo_prop_together">
+                  <label for="search_scene_memo_prop_toghether">小道具メモ含む</label>
+
+                  <input type="radio" id="search_scene_memo_scene_toghether" v-model="search_scene.scene_search.name.scope" value="memo_scene_together">
+                  <label for="search_scene_memo_scene_toghether">使用シーンメモ含む</label>
                 </span>
               </div>
 
@@ -304,7 +310,6 @@
           async searchScene() {
             let page = 'a.first_page != ' + 0;
             let character_id = 'a.character_id !=' + 0;
-            let prop_id = 'a.prop_id != ' + 0;
             let name_input = '!=' + 100;
             let name_scope = '!=' + 100;
             let decision = '!=' + 100;
@@ -313,60 +318,6 @@
             let usage_left = '!=' + 100;
             let usage_right = '!=' + 100;
             let setting_id = '!=' + 0;
-  
-            // 小道具 id検索
-            if(this.search_scene.scene_search.name.input){
-              await this.fetchProps();            
-  
-              let prop_ids = [];
-  
-              let array_original = JSON.parse(JSON.stringify(this.props));
-              let array = [];
-  
-              if(this.h(this.search_scene.scene_search.name.input)){
-                if(this.search_scene.scene_search.name.scope === "memo_together"){
-                  // メモを含めて検索
-                  array = array_original.filter((a) => {
-                    if(a.name.toLocaleLowerCase().indexOf(this.h(this.search_scene.scene_search.name.input).toLocaleLowerCase()) !== -1) {
-                      return a;
-                    }else if(a.kana.toLocaleLowerCase().indexOf(this.h(this.search_scene.scene_search.name.input).toLocaleLowerCase()) !== -1) {
-                      return a;
-                    }else if(a.prop_comments[0]){
-                      if(a.prop_comments[0].memo.toLocaleLowerCase().indexOf(this.h(this.search_scene.scene_search.name.input).toLocaleLowerCase()) !== -1){
-                        return a;
-                      }                  
-                    }
-                  });
-                }else{
-                  // 小道具名のみで検索
-                  array = array_original.filter((a) => {
-                    if(a.name.toLocaleLowerCase().indexOf(this.h(this.search_scene.scene_search.name.input).toLocaleLowerCase()) !== -1) {
-                      return a;
-                    }else if(a.kana.toLocaleLowerCase().indexOf(this.h(this.search_scene.scene_search.name.input).toLocaleLowerCase()) !== -1) {
-                      return a;
-                    }
-                  });
-                }
-              }else{
-                array = array_original;
-              }
-  
-              prop_ids = array.map(a => a.id);
-
-              if(prop_ids.length){
-                prop_id = '('
-                prop_ids.forEach((prop, index) => {
-                  prop_id = prop_id + 'a.prop_id === ' + prop;
-                  if(index !== prop_ids.length-1){
-                      prop_id = prop_id + '||';
-                  }else{
-                      prop_id = prop_id + ')';
-                  }
-                });
-              }else{
-                prop_id = 'a.prop_id === 0';
-              }
-            }     
   
             if(this.search_scene.scene_search.page.first && !this.search_scene.scene_search.select_all_page){
               page = 'a.first_page >= ' + this.search_scene.scene_search.page.first;
@@ -422,7 +373,7 @@
               setting_id = '===' + this.search_scene.scene_search.setting;
             }
     
-            const refine = prop_id + '&&'+page + '&&'+character_id  + '&& a.decision'+decision + '&& a.usage'+usage + '&& a.usage_guraduation'+usage_guraduation + '&& a.usage_left'+usage_left + '&& a.usage_right'+usage_right + '&& a.setting_id'+setting_id;
+            const refine = page + '&&'+character_id + '&& a.decision'+decision + '&& a.usage'+usage + '&& a.usage_guraduation'+usage_guraduation + '&& a.usage_left'+usage_left + '&& a.usage_right'+usage_right + '&& a.setting_id'+setting_id;
     
             this.$emit('close', this.search_scene.scene_sort, this.search_scene.scene_search.name, refine);
           },

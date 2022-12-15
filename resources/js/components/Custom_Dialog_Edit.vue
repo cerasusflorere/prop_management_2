@@ -24,7 +24,7 @@
           <label for="prop_handmade">作るかどうか</label>
           <div class="checkbox-area--column">
             <div class="checkbox-area--together">
-              <input type="radio" id="prop_handmade_comolete" value="handmade_comolete" v-model="editCustomProp">
+              <input type="radio" id="prop_handmade_comolete" value="handmade_complete" v-model="editCustomProp">
               <label for="prop_handmade_comolete">完成</label>
               <input type="radio" id="prop_handmade_progress" value="handmade_progress" v-model="editCustomProp">
               <label for="prop_handmade_progress">仕掛中</label>

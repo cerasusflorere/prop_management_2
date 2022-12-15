@@ -526,7 +526,6 @@ export default {
       this.editForm_prop.prop_comments = JSON.parse(JSON.stringify(this.prop.prop_comments));
       const scenes = this.prop.scenes;
       this.sort_Standard(scenes);
-      console.log(this.prop.scenes);
       this.editForm_prop.scenes = JSON.parse(JSON.stringify(this.prop.scenes));
 
       if(this.prop.usage_guraduation){
@@ -583,7 +582,6 @@ export default {
       });
 
       this.prop.scenes = array;
-      console.log(array);
     },
 
     // 持ち主を取得
@@ -873,7 +871,6 @@ export default {
       );
     },
 
-
     // 編集エラー
     confirmProp () {
       const regex_str = /[^ぁ-んー]/g; // ひらがな以外
@@ -955,16 +952,7 @@ export default {
       }
       this.editForm_prop.kana = kana;
 
-      if(this.editForm_prop.quantity){
-        let quantitys = [...this.editForm_prop.quantity];
-        let correct_quantity = '';
-        quantitys.forEach((quantity) => {
-          let number = this.Zenkaku2hankaku_number(quantity);
-          correct_quantity = String(correct_quantity) + String(number);
-          correct_quantity = Number(correct_quantity);
-        }, this);
-        this.editForm_prop.quantity = correct_quantity;
-      }else{
+      if(!this.editForm_prop.quantity){
         this.editForm_prop.quantity = 1;
       }
       
@@ -1069,6 +1057,7 @@ export default {
           memos.push(memo.memo);
         }
       }, this);
+      memos.push(this.editForm_prop.memo);
 
       // 写真は出ない
       let photo = '変更する';

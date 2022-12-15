@@ -9,12 +9,13 @@ class Character extends Model
 {
     /** JSONに含める属性 */
     protected $visible = [
-         'section','id', 'name', 'scenes',
+         'section', 'id', 'name', 
+         'scenes'
     ];
 
     /** 登録時にJSONに含める属性 */
     protected $fillable = [
-        'section_id', 'name',
+        'order', 'section_id', 'name',
     ];
 
     /**

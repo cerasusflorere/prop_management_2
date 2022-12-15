@@ -18,6 +18,11 @@
           </div>
           <searchProp :postSearch="postSearch" v-show="showContent_search" @close="closeModal_searchProp" />
 
+          <!-- 並び替えリセット -->
+          <div class="button-area--small-small">
+            <button type="button" @click="sort_Standard('reset')" class="button button--inverse button--small"><i class="fas fa-undo-alt fa-fw"></i>リセット</button>
+          </div>
+
           <!-- 選択 -->
           <div class="button-area--small-small">
             <button type="button" @click="showCheckBox" class="button button--inverse button--small button--choice"><i class="fas fa-check-square fa-fw"></i>選択</button>
@@ -44,7 +49,6 @@
         </div>
       </div> 
     </div>
-
 
     <!-- 表示エリア -->
     <div v-show="tabProp === 1">
@@ -269,7 +273,7 @@
               <!-- 作るかどうか -->
               <div>
                 <span class="usage-show">作るかどうか:</span>
-                <span v-if="prop.handmade === 1" class="usage-show">済</span>
+                <span v-if="prop.handmade === 1" class="usage-show">完</span>
                 <span v-else-if="prop.handmade === 2" class="usage-show">仕</span>
                 <span v-else-if="prop.handmade === 3" class="usage-show">未</span>
               </div>
@@ -347,7 +351,10 @@
         showContent_search: false,
         postSearch: "",
         custom_sort: null,
-        custom_name: null,
+        custom_name: {
+          input: null,
+          scope: null
+        },
         custom_refine: null,
         // 選択ボタン
         choice_flag: false,
@@ -399,9 +406,78 @@
           this.choice_ids.push(false);
         }, this);
 
-        if(this.custom_sort || this.custom_name || this.custom_refine){
+        if(this.custom_sort || this.custom_name.input !== null || this.custom_refine){
           await this.closeModal_searchProp(this.custom_sort, this.custom_name, this.custom_refine);
+        }else{
+          this.sort_Standard(this.showProps);
         }
+      },
+
+      sort_Standard(array){
+        if(array === 'reset'){
+          this.showProps = JSON.parse(JSON.stringify(this.props));
+          array = this.showProps;
+        }
+
+        const regex_str = /[^ぁ-んー]/g; // ひらがな以外
+        const regex_number = /[^0-9]/g; // 数字以外
+        const regex_alf = /[^A-Z]/g; // アルファベット
+        array.sort((a, b) => {
+          
+          // kanaで並び替え
+          if(a.kana !== b.kana){
+            const a_str = a.kana.replace(regex_str, "");
+            const b_str = b.kana.replace(regex_str, "");
+            let a_number = a.kana.replace(regex_number, "");
+            let b_number = b.kana.replace(regex_number, "");
+            const a_alf = a.kana.replace(regex_alf, "");
+            const b_alf = b.kana.replace(regex_alf, "");
+
+            if(a_str !== b_str){
+              let sort_str = a_str;
+              if([...b_str].length < [...a_str].length){
+                sort_str = b_str;
+              } 
+              for(let i=0; i < [...sort_str].length; i++){
+                if(a_str.codePointAt(i) !== b_str.codePointAt(i)){
+                  if(a_str.codePointAt(i) > b_str.codePointAt(i)){
+                    return 1;
+                  }else if(a_str.codePointAt(i) < b_str.codePointAt(i)){
+                    return -1;
+                  }
+                }          
+              }
+            }
+
+            if(a_number !== b_number){
+              if(!a_number){
+                a_number = 0;
+              }
+              if(!b_number){
+                b_number = 0;
+              }
+
+              if(parseInt(a_number) > parseInt(b_number)){
+                return 1;
+              }else if(parseInt(a_number) < parseInt(b_number)){
+                return -1;
+              }
+            }
+
+            if(a_alf !== b_alf){
+              if(a_alf.codePointAt(0) > b_alf.codePointAt(0)){
+                return 1;
+              }else if(a_alf.codePointAt(0) < b_alf.codePointAt(0)){
+                return -1;
+              }else{
+                return 0;
+              }
+            }
+          }
+          return 0;
+        });
+
+        this.showScenes = array;
       },
 
       // エスケープ処理
@@ -430,39 +506,58 @@
         this.postSearch = number;
       },
       // 検索カスタムのモーダル非表示
-      async closeModal_searchProp(sort, name, refine) {
+      async closeModal_searchProp(sort, name_input, refine) {
         this.showContent_search = false;
         if(sort !== null && refine !== null){
           this.custom_sort = sort;
-          this.custom_name = name;
+          if(name_input.input && !Array.isArray(name_input.input)){
+            this.custom_name.input = name_input.input.split(/,|、|，|\s+/);
+            this.custom_name.input = this.custom_name.input.filter(Boolean);
+            this.custom_name.scope = name_input.scope;
+          }else if(!name_input.input){
+            this.custom_name.input = null;
+            this.custom_name.scope = null;
+          }
           this.custom_refine = refine;
+
           let array_original = this.props.filter((a) => eval(refine));
           let array = [];
 
-          if(this.h(name.input)){
-            if(name.scope === "memo_together"){
+          if(Array.isArray(this.custom_name.input)){
+            // 入力値があった
+            let new_array = [];
+            if(this.custom_name.scope === "memo_together"){
               // メモを含めて検索
-              array = array_original.filter((a) => {
-                if(a.name.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
-                  return a;
-                }else if(a.kana.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
-                  return a;
-                }else if(a.prop_comments[0]){
-                  if(a.prop_comments[0].memo.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1){
-                    return a;
-                  }                  
-                }
+              array_original.filter((a) => {
+                this.custom_name.input.forEach((name) => {
+                  if(a.name.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }else if(a.kana.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }else if(a.prop_comments[0]){
+                    if(a.prop_comments[0].memo.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1){
+                      new_array.push(a);
+                    }                  
+                  }
+                }, this);
               });
             }else{
               // 小道具名のみで検索
-              array = array_original.filter((a) => {
-                if(a.name.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
-                  return a;
-                }else if(a.kana.toLocaleLowerCase().indexOf(this.h(name.input).toLocaleLowerCase()) !== -1) {
-                  return a;
-                }
+              array_original.filter((a) => {
+                this.custom_name.input.forEach((name) => {
+                  if(a.name.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }else if(a.kana.toLocaleLowerCase().indexOf(this.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }
+                }, this);
               });
             }
+            
+            // 重複削除
+            const set = new Set(new_array);
+            const newArr = [...set];
+            array = Array.from(new Set(newArr));
           }else{
             // 入力検索しない
             array = array_original;
@@ -475,7 +570,7 @@
           }else if(sort === "updated_at"){
             array.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
           }else{
-            array.sort((a, b) => a.kana - b.kana);
+            this.sort_Standard(array);
           }
 
           this.showProps = array;
@@ -555,7 +650,6 @@
           }else{
             // handmade
             this.yes_no = 1;
-            console.log(handmade_custom[1]);
             this.edit_custom = handmade_custom[1];
           }
           this.openModal_confirmEdit();
@@ -593,10 +687,8 @@
           edit_custom_show = '上手で使用して';
         }else if(this.edit_custom === 'usage_right'){
           edit_custom_show = '下手で使用して';
-        }else if(this.edit_custom === 'handmade'){
-          edit_custom_show = '作';
         }else{
-          edit_custom_show = '作ら';
+          edit_custom_show = '作';
         }
         
         if(this.yes_no === 1){
@@ -609,7 +701,11 @@
             yes_no_show = yes_no_show + ': 未着手';
           }
         }else{
-          yes_no_show = 'ない';
+          if(this.edit_custom === 'handmade'){
+            yes_no_show = 'らない';
+          }else{
+            yes_no_show = 'ない';
+          }
         }
 
         this.postMessage_Edit = '以下の小道具を' + edit_custom_show + yes_no_show + 'と変更します。\n本当に変更しますか？\n' + edit_props_name;
@@ -716,6 +812,7 @@
         worksheet.columns = [
           { header: '小道具名', key: 'name', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '持ち主', key: 'owner', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: '個数', key: 'quantity', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: 'ピッコロ', key: 'location', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '作るか', key: 'handmade', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '決定', key: 'decision', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
@@ -752,6 +849,8 @@
         worksheet.getCell('I1').fill = fill;
         worksheet.getCell('J1').font = font;
         worksheet.getCell('J1').fill = fill;
+        worksheet.getCell('K1').font = font;
+        worksheet.getCell('K1').fill = fill;
 
         this.showProps.forEach((prop, index) => {
           let datas = [];
@@ -763,6 +862,12 @@
             datas.push(null);
           }
 
+          if(prop.quantity > 1){
+            datas.push(prop.quantity);
+          }else{
+            datas.push(null);
+          }
+
           if(prop.location){
             datas.push('〇');
           }else{
@@ -770,8 +875,10 @@
           }
 
           if(prop.handmade === 1){
-            datas.push('済');
+            datas.push('完');
           }else if(prop.handmade === 2){
+            datas.push('仕');
+          }else if(prop.handmade === 3){
             datas.push('未');
           }else{
             datas.push(null);

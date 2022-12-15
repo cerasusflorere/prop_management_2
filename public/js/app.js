@@ -3013,7 +3013,6 @@ var autokana;
 
                 _this3.sort_Standard(scenes);
 
-                console.log(_this3.prop.scenes);
                 _this3.editForm_prop.scenes = JSON.parse(JSON.stringify(_this3.prop.scenes));
 
                 if (_this3.prop.usage_guraduation) {
@@ -3052,7 +3051,7 @@ var autokana;
                   }
                 });
 
-              case 34:
+              case 33:
               case "end":
                 return _context3.stop();
             }
@@ -3082,7 +3081,6 @@ var autokana;
         return 0;
       });
       this.prop.scenes = array;
-      console.log(array);
     },
     // 持ち主を取得
     fetchOwners: function fetchOwners() {
@@ -3618,18 +3616,7 @@ var autokana;
 
       this.editForm_prop.kana = kana;
 
-      if (this.editForm_prop.quantity) {
-        var quantitys = _toConsumableArray(this.editForm_prop.quantity);
-
-        var correct_quantity = '';
-        quantitys.forEach(function (quantity) {
-          var number = _this13.Zenkaku2hankaku_number(quantity);
-
-          correct_quantity = String(correct_quantity) + String(number);
-          correct_quantity = Number(correct_quantity);
-        }, this);
-        this.editForm_prop.quantity = correct_quantity;
-      } else {
+      if (!this.editForm_prop.quantity) {
         this.editForm_prop.quantity = 1;
       }
 
@@ -3735,7 +3722,8 @@ var autokana;
         } else if (memo.memo) {
           memos.push(memo.memo);
         }
-      }, this); // 写真は出ない
+      }, this);
+      memos.push(this.editForm_prop.memo); // 写真は出ない
 
       var photo = '変更する';
 
@@ -4273,18 +4261,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Confirm_Dialog_Delete_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Confirm_Dialog_Delete.vue */ "./resources/js/components/Confirm_Dialog_Delete.vue");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -4354,6 +4330,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       },
       // 取得するデータ
       optionProps: [],
+      optionSettings: [],
       // 連動プルダウン
       selectedCharacters: [],
       optionCharacters: [],
@@ -4684,9 +4661,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   if (quantity > 1) {
                     _this5.input_quantity = true;
                     var input_scene_quantity = _this5.$refs.input_scene_quantity;
-                    console.log(input_scene_quantity);
                     input_scene_quantity.max = quantity;
-                    console.log(input_scene_quantity.max);
                   } else {
                     _this5.input_quantity = false;
                   }
@@ -4917,8 +4892,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 編集エラー
     confirmScene: function confirmScene() {
-      var _this10 = this;
-
       this.editForm_scene.prop_id = this.prop;
 
       if (this.select_all_page && this.scene.first_page) {
@@ -4929,24 +4902,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         this.editForm_scene.pages = '1-1000';
       }
 
-      var correct_quantity = '';
-
-      if (this.editForm_scene.quantity) {
-        console.log(this.editForm_scene.quantity);
-
-        var quantitys = _toConsumableArray(this.editForm_scene.quantity);
-
-        quantitys.forEach(function (quantity) {
-          var number = _this10.Zenkaku2hankaku_number(quantity);
-
-          correct_quantity = String(correct_quantity) + String(number);
-          correct_quantity = Number(correct_quantity);
-        }, this);
-      } else {
-        correct_quantity = 1;
+      if (!this.editForm_scene.quantity) {
+        this.editForm_scene.quantity = 1;
       }
-
-      this.editForm_scene.quantity = correct_quantity;
 
       if (this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.quantity !== this.editForm_scene.quantity || this.scene.decision !== this.editForm_scene.decision || this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || !this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage || this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage === "right" || !this.scene.usage_left && this.scene.usage_right && this.editForm_scene.usage_stage === "left" || (this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage || this.scene.setting_id !== this.editForm_scene.setting_id || !this.scene.setting_id && !this.editForm_scene.setting_id) && !this.editForm_scene.pages) {
         // 元々何ページから何ページと指定があった // これはupdateだけでいい
@@ -5007,21 +4965,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 編集confirmのモーダル表示 
     openModal_confirmEdit: function openModal_confirmEdit() {
-      var _this11 = this;
+      var _this10 = this;
 
       this.showContent_confirmEdit = true;
       Object.keys(this.optionCharacters).forEach(function (section) {
-        if (section === _this11.editForm_scene.character.section.section) {
-          _this11.optionCharacters[section].forEach(function (name) {
-            if (name.id === _this11.editForm_scene.character_id) {
-              _this11.editForm_scene.character.name = name.name;
+        if (section === _this10.editForm_scene.character.section.section) {
+          _this10.optionCharacters[section].forEach(function (name) {
+            if (name.id === _this10.editForm_scene.character_id) {
+              _this10.editForm_scene.character.name = name.name;
             }
-          }, _this11);
+          }, _this10);
         }
       }, this);
       var prop;
       this.optionProps.forEach(function (props) {
-        if (props.id === _this11.editForm_scene.prop_id) {
+        if (props.id === _this10.editForm_scene.prop_id) {
           prop = props.name;
         }
       }, this);
@@ -5068,47 +5026,48 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       this.optionSettings.forEach(function (stundet) {
-        if (stundet.id === _this11.editForm_scene.setting_id) {
-          _this11.editForm_scene.setting.name = stundet.name;
+        if (stundet.id === _this10.editForm_scene.setting_id) {
+          _this10.editForm_scene.setting.name = stundet.name;
         }
       }, this);
       var memos = [];
       this.editForm_scene.scene_comments.forEach(function (memo, index) {
-        if (memo.memo && index !== _this11.editForm_scene.scene_comments.length - 1) {
+        if (memo.memo && index !== _this10.editForm_scene.scene_comments.length - 1) {
           memos.push(memo.memo + '\n　　　');
         } else if (memo.memo) {
           memos.push(memo.memo);
         }
       }, this);
-      this.postMessage_Edit = '以下のように編集します。\n登場人物：' + this.editForm_scene.character.name + '\n小道具：' + prop + '\n個数：' + this.editForm_scene.quantity + '\n決定：' + decision + '\nページ数：' + pages + '\n使用状況：' + usage + usage_guraduation + usage_right + usage_left + '\nセットする人：' + this.editForm_scene.setting.name + '\nメモ：' + memos;
+      memos.push(this.editForm_scene.memo);
+      this.postMessage_Edit = '以下のように編集します。\n登場人物：' + this.editForm_scene.character.name + '\n小道具：' + prop + '\nページ数：' + pages + '\n個数：' + this.editForm_scene.quantity + '\n決定：' + decision + '\n使用状況：' + usage + usage_guraduation + usage_right + usage_left + '\nセットする人：' + this.editForm_scene.setting.name + '\nメモ：' + memos;
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
-      var _this12 = this;
+      var _this11 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
         return _regeneratorRuntime().wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
-                _this12.showContent_confirmEdit = false;
+                _this11.showContent_confirmEdit = false;
 
-                if (!_this12.editSceneMode_detail) {
+                if (!_this11.editSceneMode_detail) {
                   _context9.next = 4;
                   break;
                 }
 
                 _context9.next = 4;
-                return _this12.editScene();
+                return _this11.editScene();
 
               case 4:
-                if (!_this12.editSceneMode_memo) {
+                if (!_this11.editSceneMode_memo) {
                   _context9.next = 7;
                   break;
                 }
 
                 _context9.next = 7;
-                return _this12.editScene_memo();
+                return _this11.editScene_memo();
 
               case 7:
               case "end":
@@ -5146,7 +5105,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 基本情報を編集する
     editScene: function editScene() {
-      var _this13 = this;
+      var _this12 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
         var usage_left, usage_right, pattern_number, sets_first, chars_first, sets_final, chars_final, response, first_pages, final_pages, pages_before, pages_after, pattern, memo, last_flag;
@@ -5157,30 +5116,30 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 usage_left = '';
                 usage_right = '';
 
-                if (_this13.editForm_scene.usage_stage === "left") {
+                if (_this12.editForm_scene.usage_stage === "left") {
                   usage_left = 1;
-                } else if (_this13.editForm_scene.usage_stage === "right") {
+                } else if (_this12.editForm_scene.usage_stage === "right") {
                   usage_right = 1;
                 }
 
                 pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
 
-                if (!(_this13.editSceneMode_detail === 1)) {
+                if (!(_this12.editSceneMode_detail === 1)) {
                   _context11.next = 24;
                   break;
                 }
 
                 // 元々ページ数の指定があった
-                _this13.editSceneMode_detail = "change";
+                _this12.editSceneMode_detail = "change";
                 sets_first = '';
 
-                if (_this13.editForm_scene.first_page === null) {
-                  sets_first = _this13.editForm_scene.first_page;
-                } else if (_this13.editForm_scene.first_page.length > 1) {
-                  chars_first = _this13.editForm_scene.first_page.split('');
+                if (_this12.editForm_scene.first_page === null) {
+                  sets_first = _this12.editForm_scene.first_page;
+                } else if (_this12.editForm_scene.first_page.length > 1) {
+                  chars_first = _this12.editForm_scene.first_page.split('');
                   chars_first.forEach(function (_char2, index) {
                     // 一文字ずつになっている
-                    var number = _this13.hankaku2Zenkaku(_char2);
+                    var number = _this12.hankaku2Zenkaku(_char2);
 
                     if (pattern_number.test(number)) {
                       sets_first = sets_first + number;
@@ -5188,21 +5147,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       sets_first = 0;
                     }
                   });
-                } else if (_this13.editForm_scene.first_page.length === 1 && !pattern_number.test(_this13.editForm_scene.first_page)) {
-                  sets_first = _this13.hankaku2Zenkaku(_this13.editForm_scene.first_page);
-                } else if (pattern_number.test(_this13.editForm_scene.first_page)) {
-                  sets_first = _this13.editForm_scene.first_page;
+                } else if (_this12.editForm_scene.first_page.length === 1 && !pattern_number.test(_this12.editForm_scene.first_page)) {
+                  sets_first = _this12.hankaku2Zenkaku(_this12.editForm_scene.first_page);
+                } else if (pattern_number.test(_this12.editForm_scene.first_page)) {
+                  sets_first = _this12.editForm_scene.first_page;
                 }
 
                 sets_final = '';
 
-                if (_this13.editForm_scene.final_page === null) {
+                if (_this12.editForm_scene.final_page === null) {
                   sets_final = 0;
-                } else if (_this13.editForm_scene.final_page.length > 1) {
-                  chars_final = _this13.editForm_scene.final_page.split('');
+                } else if (_this12.editForm_scene.final_page.length > 1) {
+                  chars_final = _this12.editForm_scene.final_page.split('');
                   chars_final.forEach(function (_char3, index) {
                     // 一文字ずつになっている
-                    var number = _this13.hankaku2Zenkaku(_char3);
+                    var number = _this12.hankaku2Zenkaku(_char3);
 
                     if (pattern_number.test(number)) {
                       sets_final = sets_final + number;
@@ -5210,10 +5169,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       sets_final = 0;
                     }
                   });
-                } else if (_this13.editForm_scene.final_page.length === 1 && !pattern_number.test(_this13.editForm_scene.final_page)) {
-                  sets_final = _this13.hankaku2Zenkaku(_this13.editForm_scene.final_page);
-                } else if (pattern_number.test(_this13.editForm_scene.final_page)) {
-                  sets_final = _this13.editForm_scene.final_page;
+                } else if (_this12.editForm_scene.final_page.length === 1 && !pattern_number.test(_this12.editForm_scene.final_page)) {
+                  sets_final = _this12.hankaku2Zenkaku(_this12.editForm_scene.final_page);
+                } else if (pattern_number.test(_this12.editForm_scene.final_page)) {
+                  sets_final = _this12.editForm_scene.final_page;
                 }
 
                 if (parseInt(sets_first) > parseInt(sets_final)) {
@@ -5221,20 +5180,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }
 
                 _context11.next = 13;
-                return axios.post('/api/scenes/' + _this13.scene.id, {
-                  character_id: _this13.editForm_scene.character_id,
-                  prop_id: _this13.editForm_scene.prop_id,
+                return axios.post('/api/scenes/' + _this12.scene.id, {
+                  character_id: _this12.editForm_scene.character_id,
+                  prop_id: _this12.editForm_scene.prop_id,
                   first_page: parseInt(sets_first),
                   //this.editForm_scene.first_page,
                   final_page: parseInt(sets_final),
                   //this.editForm_scene.final_page,
-                  quantity: _this13.editForm_scene.quantity,
-                  decision: _this13.editForm_scene.decision,
-                  usage: _this13.editForm_scene.usage,
-                  usage_guraduation: _this13.editForm_scene.usage_guraduation,
+                  quantity: _this12.editForm_scene.quantity,
+                  decision: _this12.editForm_scene.decision,
+                  usage: _this12.editForm_scene.usage,
+                  usage_guraduation: _this12.editForm_scene.usage_guraduation,
                   usage_left: usage_left,
                   usage_right: usage_right,
-                  setting_id: _this13.editForm_scene.setting_id
+                  setting_id: _this12.editForm_scene.setting_id
                 });
 
               case 13:
@@ -5245,7 +5204,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this13.errors.error = response.data.errors;
+                _this12.errors.error = response.data.errors;
                 return _context11.abrupt("return", false);
 
               case 17:
@@ -5254,33 +5213,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this13.$store.commit('error/setCode', response.status);
+                _this12.$store.commit('error/setCode', response.status);
 
                 return _context11.abrupt("return", false);
 
               case 20:
-                _this13.editSceneMode_detail = 100;
+                _this12.editSceneMode_detail = 100;
 
-                if (_this13.editSceneMode_memo === 0 && _this13.editSceneMode_prop === 0) {
-                  _this13.editSceneMode_memo = 100;
-                  _this13.editSceneMode_prop = 100;
+                if (_this12.editSceneMode_memo === 0 && _this12.editSceneMode_prop === 0) {
+                  _this12.editSceneMode_memo = 100;
+                  _this12.editSceneMode_prop = 100;
                 }
 
                 _context11.next = 25;
                 break;
 
               case 24:
-                if (_this13.editSceneMode_detail === 2) {
+                if (_this12.editSceneMode_detail === 2) {
                   // ページ数を新たに指定
-                  _this13.editSceneMode_detail = "change"; // ページを分割
+                  _this12.editSceneMode_detail = "change"; // ページを分割
 
                   first_pages = [];
                   final_pages = [];
                   first_pages[0] = 0;
                   final_pages[0] = 0;
 
-                  if (_this13.editForm_scene.pages) {
-                    pages_before = _this13.editForm_scene.pages.split(/,|、|，|\s+/);
+                  if (_this12.editForm_scene.pages) {
+                    pages_before = _this12.editForm_scene.pages.split(/,|、|，|\s+/);
                     pages_before.forEach(function (page) {
                       page = page.replaceAll(/\s+/g, '');
                     });
@@ -5289,7 +5248,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     pages_after.forEach(function (page, index) {
                       if (index === 0) {
                         if (pattern.test(page)) {
-                          var pages = _this13.first_finalDivide(page);
+                          var pages = _this12.first_finalDivide(page);
 
                           var _chars_first = pages[0].split('');
 
@@ -5297,7 +5256,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                           _chars_first.forEach(function (_char4, index) {
                             // 一文字ずつになっている
-                            var number = _this13.hankaku2Zenkaku(_char4);
+                            var number = _this12.hankaku2Zenkaku(_char4);
 
                             if (pattern_number.test(number)) {
                               _sets_first = _sets_first + number;
@@ -5312,7 +5271,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                           _chars_final.forEach(function (_char5, index) {
                             // 一文字ずつになっている
-                            var number = _this13.hankaku2Zenkaku(_char5);
+                            var number = _this12.hankaku2Zenkaku(_char5);
 
                             if (pattern_number.test(number)) {
                               _sets_final = _sets_final + number;
@@ -5335,7 +5294,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                           _chars_first2.forEach(function (_char6, index) {
                             // 一文字ずつになっている
-                            var number = _this13.hankaku2Zenkaku(_char6);
+                            var number = _this12.hankaku2Zenkaku(_char6);
 
                             if (pattern_number.test(number)) {
                               _sets_first2 = _sets_first2 + number;
@@ -5350,7 +5309,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                         }
                       } else {
                         if (pattern.test(page)) {
-                          var _pages = _this13.first_finalDivide(page);
+                          var _pages = _this12.first_finalDivide(page);
 
                           var _chars_first3 = _pages[0].split('');
 
@@ -5358,7 +5317,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                           _chars_first3.forEach(function (_char7, index) {
                             // 一文字ずつになっている
-                            var number = _this13.hankaku2Zenkaku(_char7);
+                            var number = _this12.hankaku2Zenkaku(_char7);
 
                             if (pattern_number.test(number)) {
                               _sets_first3 = _sets_first3 + number;
@@ -5373,7 +5332,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                           _chars_final2.forEach(function (_char8, index) {
                             // 一文字ずつになっている
-                            var number = _this13.hankaku2Zenkaku(_char8);
+                            var number = _this12.hankaku2Zenkaku(_char8);
 
                             if (pattern_number.test(number)) {
                               _sets_final2 = _sets_final2 + number;
@@ -5396,7 +5355,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                           _chars_first4.forEach(function (_char9, index) {
                             // 一文字ずつになっている
-                            var number = _this13.hankaku2Zenkaku(_char9);
+                            var number = _this12.hankaku2Zenkaku(_char9);
 
                             if (pattern_number.test(number)) {
                               _sets_first4 = _sets_first4 + number;
@@ -5415,10 +5374,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   memo = '';
 
-                  if (_this13.editForm_scene.memo) {
-                    memo = _this13.editForm_scene.memo;
-                  } else if (_this13.editForm_scene.scene_comments.length) {
-                    memo = _this13.editForm_scene.scene_comments[0].memo;
+                  if (_this12.editForm_scene.memo) {
+                    memo = _this12.editForm_scene.memo;
+                  } else if (_this12.editForm_scene.scene_comments.length) {
+                    memo = _this12.editForm_scene.scene_comments[0].memo;
                   }
 
                   last_flag = false;
@@ -5537,7 +5496,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     return function (_x, _x2) {
                       return _ref.apply(this, arguments);
                     };
-                  }(), _this13);
+                  }(), _this12);
                 }
 
               case 25:
@@ -5550,7 +5509,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // メモを更新する
     editScene_memo: function editScene_memo() {
-      var _this14 = this;
+      var _this13 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
         var response, _response3, _response4;
@@ -5559,15 +5518,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
-                if (!(_this14.editSceneMode_memo === 1)) {
+                if (!(_this13.editSceneMode_memo === 1)) {
                   _context12.next = 14;
                   break;
                 }
 
                 _context12.next = 3;
                 return axios.post('/api/scene_comments', {
-                  scene_id: _this14.editForm_scene.id,
-                  memo: _this14.editForm_scene.memo
+                  scene_id: _this13.editForm_scene.id,
+                  memo: _this13.editForm_scene.memo
                 });
 
               case 3:
@@ -5578,7 +5537,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this14.errors.error = response.data.errors;
+                _this13.errors.error = response.data.errors;
                 return _context12.abrupt("return", false);
 
               case 7:
@@ -5587,28 +5546,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this14.$store.commit('error/setCode', response.status);
+                _this13.$store.commit('error/setCode', response.status);
 
                 return _context12.abrupt("return", false);
 
               case 10:
-                _this14.editSceneMode_memo = 100;
+                _this13.editSceneMode_memo = 100;
 
-                if (_this14.editSceneMode_prop === 0) {
-                  _this14.editSceneMode_prop = 100;
+                if (_this13.editSceneMode_prop === 0) {
+                  _this13.editSceneMode_prop = 100;
                 }
 
                 _context12.next = 40;
                 break;
 
               case 14:
-                if (!(_this14.editSceneMode_memo === 2)) {
+                if (!(_this13.editSceneMode_memo === 2)) {
                   _context12.next = 28;
                   break;
                 }
 
                 _context12.next = 17;
-                return axios["delete"]('/api/scene_comments/' + _this14.scene.scene_comments[0].id);
+                return axios["delete"]('/api/scene_comments/' + _this13.scene.scene_comments[0].id);
 
               case 17:
                 _response3 = _context12.sent;
@@ -5618,7 +5577,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this14.errors.error = _response3.data.errors;
+                _this13.errors.error = _response3.data.errors;
                 return _context12.abrupt("return", false);
 
               case 21:
@@ -5627,29 +5586,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this14.$store.commit('error/setCode', _response3.status);
+                _this13.$store.commit('error/setCode', _response3.status);
 
                 return _context12.abrupt("return", false);
 
               case 24:
-                _this14.editSceneMode_memo = 100;
+                _this13.editSceneMode_memo = 100;
 
-                if (_this14.editSceneMode_prop === 0) {
-                  _this14.editSceneMode_prop = 100;
+                if (_this13.editSceneMode_prop === 0) {
+                  _this13.editSceneMode_prop = 100;
                 }
 
                 _context12.next = 40;
                 break;
 
               case 28:
-                if (!(_this14.editSceneMode_memo === 3)) {
+                if (!(_this13.editSceneMode_memo === 3)) {
                   _context12.next = 40;
                   break;
                 }
 
                 _context12.next = 31;
-                return axios.post('/api/scene_comments/' + _this14.scene.scene_comments[0].id, {
-                  memo: _this14.editForm_scene.scene_comments[0].memo
+                return axios.post('/api/scene_comments/' + _this13.scene.scene_comments[0].id, {
+                  memo: _this13.editForm_scene.scene_comments[0].memo
                 });
 
               case 31:
@@ -5660,7 +5619,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this14.errors.error = _response4.data.errors;
+                _this13.errors.error = _response4.data.errors;
                 return _context12.abrupt("return", false);
 
               case 35:
@@ -5669,15 +5628,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this14.$store.commit('error/setCode', _response4.status);
+                _this13.$store.commit('error/setCode', _response4.status);
 
                 return _context12.abrupt("return", false);
 
               case 38:
-                _this14.editSceneMode_memo = 100;
+                _this13.editSceneMode_memo = 100;
 
-                if (_this14.editSceneMode_prop === 0) {
-                  _this14.editSceneMode_prop = 100;
+                if (_this13.editSceneMode_prop === 0) {
+                  _this13.editSceneMode_prop = 100;
                 }
 
               case 40:
@@ -5690,29 +5649,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 小道具を更新する
     editProp_usage: function editProp_usage() {
-      var _this15 = this;
+      var _this14 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13() {
         return _regeneratorRuntime().wrap(function _callee13$(_context13) {
           while (1) {
             switch (_context13.prev = _context13.next) {
               case 0:
-                if (!(_this15.scene.usage != _this15.editForm_scene.usage)) {
+                if (!(_this14.scene.usage != _this14.editForm_scene.usage)) {
                   _context13.next = 3;
                   break;
                 }
 
                 _context13.next = 3;
-                return _this15.editProp_usage_passo();
+                return _this14.editProp_usage_passo();
 
               case 3:
-                if (!(_this15.scene.usage_guraduation != _this15.editForm_scene.usage_guraduation || _this15.editForm_scene.usage_guraduation)) {
+                if (!(_this14.scene.usage_guraduation != _this14.editForm_scene.usage_guraduation || _this14.editForm_scene.usage_guraduation)) {
                   _context13.next = 6;
                   break;
                 }
 
                 _context13.next = 6;
-                return _this15.editProp_usage_guraduation();
+                return _this14.editProp_usage_guraduation();
 
               case 6:
               case "end":
@@ -5723,7 +5682,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     editProp_usage_passo: function editProp_usage_passo() {
-      var _this16 = this;
+      var _this15 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14() {
         var response_prop, _response_prop;
@@ -5732,13 +5691,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context14.prev = _context14.next) {
               case 0:
-                if (!_this16.editForm_scene.usage) {
+                if (!_this15.editForm_scene.usage) {
                   _context14.next = 13;
                   break;
                 }
 
                 _context14.next = 3;
-                return axios.post('/api/props/' + _this16.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this15.editForm_scene.prop_id, {
                   method: 'usage_change',
                   usage: 1
                 });
@@ -5751,7 +5710,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this16.errors.error = response_prop.data.errors;
+                _this15.errors.error = response_prop.data.errors;
                 return _context14.abrupt("return", false);
 
               case 7:
@@ -5760,13 +5719,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this16.$store.commit('error/setCode', response_prop.status);
+                _this15.$store.commit('error/setCode', response_prop.status);
 
                 return _context14.abrupt("return", false);
 
               case 10:
-                if (_this16.scene.usage_guraduation == _this16.editForm_scene.usage_guraduation && (_this16.scene.usage_left && _this16.editForm_scene.usage_stage === "left" || _this16.scene.usage_right && _this16.editForm_scene.usage_stage === "right" || !_this16.scene.usage_left && !_this16.scene.usage_right && !_this16.editForm_scene.usage_stage)) {
-                  _this16.editSceneMode_prop = 100;
+                if (_this15.scene.usage_guraduation == _this15.editForm_scene.usage_guraduation && (_this15.scene.usage_left && _this15.editForm_scene.usage_stage === "left" || _this15.scene.usage_right && _this15.editForm_scene.usage_stage === "right" || !_this15.scene.usage_left && !_this15.scene.usage_right && !_this15.editForm_scene.usage_stage)) {
+                  _this15.editSceneMode_prop = 100;
                 }
 
                 _context14.next = 23;
@@ -5774,9 +5733,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 13:
                 _context14.next = 15;
-                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this15.editForm_scene.prop_id, {
                   method: 'usage_0_change',
-                  id: _this16.scene.id,
+                  id: _this15.scene.id,
                   usage: 0
                 });
 
@@ -5788,7 +5747,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this16.errors.error = _response_prop.data.errors;
+                _this15.errors.error = _response_prop.data.errors;
                 return _context14.abrupt("return", false);
 
               case 19:
@@ -5797,13 +5756,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this16.$store.commit('error/setCode', _response_prop.status);
+                _this15.$store.commit('error/setCode', _response_prop.status);
 
                 return _context14.abrupt("return", false);
 
               case 22:
-                if (_this16.scene.usage_guraduation == _this16.editForm_scene.usage_guraduation && (_this16.scene.usage_left && _this16.editForm_scene.usage_stage === "left" || _this16.scene.usage_right && _this16.editForm_scene.usage_stage === "right" || !_this16.scene.usage_left && !_this16.scene.usage_right && !_this16.editForm_scene.usage_stage)) {
-                  _this16.editSceneMode_prop = 100;
+                if (_this15.scene.usage_guraduation == _this15.editForm_scene.usage_guraduation && (_this15.scene.usage_left && _this15.editForm_scene.usage_stage === "left" || _this15.scene.usage_right && _this15.editForm_scene.usage_stage === "right" || !_this15.scene.usage_left && !_this15.scene.usage_right && !_this15.editForm_scene.usage_stage)) {
+                  _this15.editSceneMode_prop = 100;
                 }
 
               case 23:
@@ -5815,7 +5774,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     editProp_usage_guraduation: function editProp_usage_guraduation() {
-      var _this17 = this;
+      var _this16 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15() {
         var response_prop, _response_prop2, _response_prop3, _response_prop4, _response_prop5, _response_prop6, _response_prop7, _response_prop8, _response_prop9, _response_prop10, _response_prop11, _response_prop12, _response_prop13, _response_prop14, _response_prop15, _response_prop16;
@@ -5824,25 +5783,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context15.prev = _context15.next) {
               case 0:
-                if (!(_this17.scene.usage_guraduation != _this17.editForm_scene.usage_guraduation)) {
+                if (!(_this16.scene.usage_guraduation != _this16.editForm_scene.usage_guraduation)) {
                   _context15.next = 131;
                   break;
                 }
 
-                if (!(!_this17.scene.usage_guraduation && _this17.editForm_scene.usage_guraduation)) {
+                if (!(!_this16.scene.usage_guraduation && _this16.editForm_scene.usage_guraduation)) {
                   _context15.next = 92;
                   break;
                 }
 
-                if (!(_this17.scene.usage_left && _this17.editForm_scene.usage_stage === "right")) {
+                if (!(_this16.scene.usage_left && _this16.editForm_scene.usage_stage === "right")) {
                   _context15.next = 15;
                   break;
                 }
 
                 _context15.next = 5;
-                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_guraduation_left_to_right_change',
-                  id: _this17.scene.id,
+                  id: _this16.scene.id,
                   usage_guraduation: 1,
                   usage_left: 0,
                   usage_right: 1
@@ -5856,7 +5815,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = response_prop.data.errors;
+                _this16.errors.error = response_prop.data.errors;
                 return _context15.abrupt("return", false);
 
               case 9:
@@ -5865,25 +5824,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', response_prop.status);
+                _this16.$store.commit('error/setCode', response_prop.status);
 
                 return _context15.abrupt("return", false);
 
               case 12:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 90;
                 break;
 
               case 15:
-                if (!(_this17.scene.usage_right && _this17.editForm_scene.usage_stage === "left")) {
+                if (!(_this16.scene.usage_right && _this16.editForm_scene.usage_stage === "left")) {
                   _context15.next = 28;
                   break;
                 }
 
                 _context15.next = 18;
-                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_guraduation_right_to_left_change',
-                  id: _this17.scene.id,
+                  id: _this16.scene.id,
                   usage_guraduation: 1,
                   usage_left: 1,
                   usage_right: 0
@@ -5897,7 +5856,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop2.data.errors;
+                _this16.errors.error = _response_prop2.data.errors;
                 return _context15.abrupt("return", false);
 
               case 22:
@@ -5906,23 +5865,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop2.status);
+                _this16.$store.commit('error/setCode', _response_prop2.status);
 
                 return _context15.abrupt("return", false);
 
               case 25:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 90;
                 break;
 
               case 28:
-                if (!(!_this17.scene.usage_left && !_this17.scene.usage_right && _this17.editForm_scene.usage_stage === "left")) {
+                if (!(!_this16.scene.usage_left && !_this16.scene.usage_right && _this16.editForm_scene.usage_stage === "left")) {
                   _context15.next = 41;
                   break;
                 }
 
                 _context15.next = 31;
-                return axios.post('/api/props/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_left_change',
                   usage_guraduation: 1,
                   usage_left: 1
@@ -5936,7 +5895,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop3.data.errors;
+                _this16.errors.error = _response_prop3.data.errors;
                 return _context15.abrupt("return", false);
 
               case 35:
@@ -5945,25 +5904,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop3.status);
+                _this16.$store.commit('error/setCode', _response_prop3.status);
 
                 return _context15.abrupt("return", false);
 
               case 38:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 90;
                 break;
 
               case 41:
-                if (!(!_this17.scene.usage_left && _this17.editForm_scene.usage_stage === "right")) {
+                if (!(!_this16.scene.usage_left && _this16.editForm_scene.usage_stage === "right")) {
                   _context15.next = 54;
                   break;
                 }
 
                 _context15.next = 44;
-                return axios.post('/api/props/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_right_change',
-                  decision: _this17.editForm_scene.decision,
+                  decision: _this16.editForm_scene.decision,
                   usage_guraduation: 1,
                   usage_right: 1
                 });
@@ -5976,7 +5935,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop4.data.errors;
+                _this16.errors.error = _response_prop4.data.errors;
                 return _context15.abrupt("return", false);
 
               case 48:
@@ -5985,25 +5944,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop4.status);
+                _this16.$store.commit('error/setCode', _response_prop4.status);
 
                 return _context15.abrupt("return", false);
 
               case 51:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 90;
                 break;
 
               case 54:
-                if (!(_this17.scene.usage_left && !_this17.editForm_scene.usage_stage)) {
+                if (!(_this16.scene.usage_left && !_this16.editForm_scene.usage_stage)) {
                   _context15.next = 67;
                   break;
                 }
 
                 _context15.next = 57;
-                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_guraduation_1_left_0_change',
-                  id: _this17.scene.id,
+                  id: _this16.scene.id,
                   usage_guraduation: 1,
                   usage_left: 0
                 });
@@ -6016,7 +5975,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop5.data.errors;
+                _this16.errors.error = _response_prop5.data.errors;
                 return _context15.abrupt("return", false);
 
               case 61:
@@ -6025,25 +5984,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop5.status);
+                _this16.$store.commit('error/setCode', _response_prop5.status);
 
                 return _context15.abrupt("return", false);
 
               case 64:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 90;
                 break;
 
               case 67:
-                if (!(_this17.scene.usage_right && !_this17.editForm_scene.usage_stage)) {
+                if (!(_this16.scene.usage_right && !_this16.editForm_scene.usage_stage)) {
                   _context15.next = 80;
                   break;
                 }
 
                 _context15.next = 70;
-                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_guraduation_1_right_0_change',
-                  id: _this17.scene.id,
+                  id: _this16.scene.id,
                   usage_guraduation: 1,
                   usage_right: 0
                 });
@@ -6056,7 +6015,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop6.data.errors;
+                _this16.errors.error = _response_prop6.data.errors;
                 return _context15.abrupt("return", false);
 
               case 74:
@@ -6065,18 +6024,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop6.status);
+                _this16.$store.commit('error/setCode', _response_prop6.status);
 
                 return _context15.abrupt("return", false);
 
               case 77:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 90;
                 break;
 
               case 80:
                 _context15.next = 82;
-                return axios.post('/api/props/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_guraduation_change',
                   usage_guraduation: 1
                 });
@@ -6089,7 +6048,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop7.data.errors;
+                _this16.errors.error = _response_prop7.data.errors;
                 return _context15.abrupt("return", false);
 
               case 86:
@@ -6098,27 +6057,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop7.status);
+                _this16.$store.commit('error/setCode', _response_prop7.status);
 
                 return _context15.abrupt("return", false);
 
               case 89:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
 
               case 90:
                 _context15.next = 129;
                 break;
 
               case 92:
-                if (!(_this17.scene.usage_left && !_this17.editForm_scene.usage_stage)) {
+                if (!(_this16.scene.usage_left && !_this16.editForm_scene.usage_stage)) {
                   _context15.next = 105;
                   break;
                 }
 
                 _context15.next = 95;
-                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_left_0_change',
-                  id: _this17.scene.id,
+                  id: _this16.scene.id,
                   usage_guraduation: 0,
                   usage_left: 0
                 });
@@ -6131,7 +6090,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop8.data.errors;
+                _this16.errors.error = _response_prop8.data.errors;
                 return _context15.abrupt("return", false);
 
               case 99:
@@ -6140,25 +6099,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop8.status);
+                _this16.$store.commit('error/setCode', _response_prop8.status);
 
                 return _context15.abrupt("return", false);
 
               case 102:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 129;
                 break;
 
               case 105:
-                if (!(_this17.scene.usage_right && !_this17.editForm_scene.usage_stage)) {
+                if (!(_this16.scene.usage_right && !_this16.editForm_scene.usage_stage)) {
                   _context15.next = 118;
                   break;
                 }
 
                 _context15.next = 108;
-                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_right_0_change',
-                  id: _this17.scene.id,
+                  id: _this16.scene.id,
                   usage_guraduation: 0,
                   usage_right: 0
                 });
@@ -6171,7 +6130,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop9.data.errors;
+                _this16.errors.error = _response_prop9.data.errors;
                 return _context15.abrupt("return", false);
 
               case 112:
@@ -6180,25 +6139,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop9.status);
+                _this16.$store.commit('error/setCode', _response_prop9.status);
 
                 return _context15.abrupt("return", false);
 
               case 115:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 129;
                 break;
 
               case 118:
-                if (!(_this17.scene.usage_guraduation && !_this17.editForm_scene.usage_guraduation)) {
+                if (!(_this16.scene.usage_guraduation && !_this16.editForm_scene.usage_guraduation)) {
                   _context15.next = 129;
                   break;
                 }
 
                 _context15.next = 121;
-                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_guraduation_0_change',
-                  id: _this17.scene.id,
+                  id: _this16.scene.id,
                   usage_guraduation: 0
                 });
 
@@ -6210,7 +6169,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop10.data.errors;
+                _this16.errors.error = _response_prop10.data.errors;
                 return _context15.abrupt("return", false);
 
               case 125:
@@ -6219,32 +6178,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop10.status);
+                _this16.$store.commit('error/setCode', _response_prop10.status);
 
                 return _context15.abrupt("return", false);
 
               case 128:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
 
               case 129:
                 _context15.next = 208;
                 break;
 
               case 131:
-                if (!_this17.editForm_scene.usage_guraduation) {
+                if (!_this16.editForm_scene.usage_guraduation) {
                   _context15.next = 208;
                   break;
                 }
 
-                if (!(_this17.scene.usage_left && _this17.editForm_scene.usage_stage === "right")) {
+                if (!(_this16.scene.usage_left && _this16.editForm_scene.usage_stage === "right")) {
                   _context15.next = 145;
                   break;
                 }
 
                 _context15.next = 135;
-                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_left_to_right_change',
-                  id: _this17.scene.id,
+                  id: _this16.scene.id,
                   usage_left: 0,
                   usage_right: 1
                 });
@@ -6257,7 +6216,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop11.data.errors;
+                _this16.errors.error = _response_prop11.data.errors;
                 return _context15.abrupt("return", false);
 
               case 139:
@@ -6266,25 +6225,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop11.status);
+                _this16.$store.commit('error/setCode', _response_prop11.status);
 
                 return _context15.abrupt("return", false);
 
               case 142:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 208;
                 break;
 
               case 145:
-                if (!(_this17.scene.usage_right && _this17.editForm_scene.usage_stage === "left")) {
+                if (!(_this16.scene.usage_right && _this16.editForm_scene.usage_stage === "left")) {
                   _context15.next = 158;
                   break;
                 }
 
                 _context15.next = 148;
-                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_right_to_left_change',
-                  id: _this17.scene.id,
+                  id: _this16.scene.id,
                   usage_left: 1,
                   usage_right: 0
                 });
@@ -6297,7 +6256,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop12.data.errors;
+                _this16.errors.error = _response_prop12.data.errors;
                 return _context15.abrupt("return", false);
 
               case 152:
@@ -6306,23 +6265,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop12.status);
+                _this16.$store.commit('error/setCode', _response_prop12.status);
 
                 return _context15.abrupt("return", false);
 
               case 155:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 208;
                 break;
 
               case 158:
-                if (!(!_this17.scene.usage_left && _this17.editForm_scene.usage_stage === "left")) {
+                if (!(!_this16.scene.usage_left && _this16.editForm_scene.usage_stage === "left")) {
                   _context15.next = 171;
                   break;
                 }
 
                 _context15.next = 161;
-                return axios.post('/api/props/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_left_change',
                   usage_left: 1
                 });
@@ -6335,7 +6294,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop13.data.errors;
+                _this16.errors.error = _response_prop13.data.errors;
                 return _context15.abrupt("return", false);
 
               case 165:
@@ -6344,23 +6303,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop13.status);
+                _this16.$store.commit('error/setCode', _response_prop13.status);
 
                 return _context15.abrupt("return", false);
 
               case 168:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 208;
                 break;
 
               case 171:
-                if (!(!_this17.scene.usage_right && _this17.editForm_scene.usage_stage === "right")) {
+                if (!(!_this16.scene.usage_right && _this16.editForm_scene.usage_stage === "right")) {
                   _context15.next = 184;
                   break;
                 }
 
                 _context15.next = 174;
-                return axios.post('/api/props/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_right_change',
                   usage_right: 1
                 });
@@ -6373,7 +6332,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop14.data.errors;
+                _this16.errors.error = _response_prop14.data.errors;
                 return _context15.abrupt("return", false);
 
               case 178:
@@ -6382,25 +6341,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop14.status);
+                _this16.$store.commit('error/setCode', _response_prop14.status);
 
                 return _context15.abrupt("return", false);
 
               case 181:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 208;
                 break;
 
               case 184:
-                if (!(_this17.scene.usage_left && !_this17.editForm_scene.usage_stage)) {
+                if (!(_this16.scene.usage_left && !_this16.editForm_scene.usage_stage)) {
                   _context15.next = 197;
                   break;
                 }
 
                 _context15.next = 187;
-                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_left_0_change',
-                  id: _this17.scene.id,
+                  id: _this16.scene.id,
                   usage_left: 0
                 });
 
@@ -6412,7 +6371,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop15.data.errors;
+                _this16.errors.error = _response_prop15.data.errors;
                 return _context15.abrupt("return", false);
 
               case 191:
@@ -6421,25 +6380,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop15.status);
+                _this16.$store.commit('error/setCode', _response_prop15.status);
 
                 return _context15.abrupt("return", false);
 
               case 194:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
                 _context15.next = 208;
                 break;
 
               case 197:
-                if (!(_this17.scene.usage_right && !_this17.editForm_scene.usage_stage)) {
+                if (!(_this16.scene.usage_right && !_this16.editForm_scene.usage_stage)) {
                   _context15.next = 208;
                   break;
                 }
 
                 _context15.next = 200;
-                return axios.post('/api/props_deep/' + _this17.editForm_scene.prop_id, {
+                return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_right_0_change',
-                  id: _this17.scene.id,
+                  id: _this16.scene.id,
                   usage_right: 0
                 });
 
@@ -6451,7 +6410,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.errors.error = _response_prop16.data.errors;
+                _this16.errors.error = _response_prop16.data.errors;
                 return _context15.abrupt("return", false);
 
               case 204:
@@ -6460,12 +6419,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this17.$store.commit('error/setCode', _response_prop16.status);
+                _this16.$store.commit('error/setCode', _response_prop16.status);
 
                 return _context15.abrupt("return", false);
 
               case 207:
-                _this17.editSceneMode_prop = 100;
+                _this16.editSceneMode_prop = 100;
 
               case 208:
               case "end":
@@ -6482,19 +6441,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除confirmのモーダル非表示_OKの場合
     closeModal_confirmDelete_OK: function closeModal_confirmDelete_OK() {
-      var _this18 = this;
+      var _this17 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16() {
         return _regeneratorRuntime().wrap(function _callee16$(_context16) {
           while (1) {
             switch (_context16.prev = _context16.next) {
               case 0:
-                _this18.showContent_confirmDelete = false;
+                _this17.showContent_confirmDelete = false;
 
-                _this18.$emit('close');
+                _this17.$emit('close');
 
                 _context16.next = 4;
-                return _this18.deletScene();
+                return _this17.deletScene();
 
               case 4:
               case "end":
@@ -6510,7 +6469,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // 削除する
     deletScene: function deletScene() {
-      var _this19 = this;
+      var _this18 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17() {
         var response;
@@ -6519,7 +6478,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context17.prev = _context17.next) {
               case 0:
                 _context17.next = 2;
-                return axios["delete"]('/api/scenes/' + _this19.scene.id);
+                return axios["delete"]('/api/scenes/' + _this18.scene.id);
 
               case 2:
                 response = _context17.sent;
@@ -6529,7 +6488,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this19.errors.error = response.data.errors;
+                _this18.errors.error = response.data.errors;
                 return _context17.abrupt("return", false);
 
               case 6:
@@ -6538,22 +6497,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   break;
                 }
 
-                _this19.$store.commit('error/setCode', response.status);
+                _this18.$store.commit('error/setCode', response.status);
 
                 return _context17.abrupt("return", false);
 
               case 9:
-                _this19.scene = [];
+                _this18.scene = [];
 
-                _this19.resetScene(); // メッセージ登録
+                _this18.resetScene(); // メッセージ登録
 
 
-                _this19.$store.commit('message/setContent', {
+                _this18.$store.commit('message/setContent', {
                   content: '使用シーンが1つ削除されました！',
                   timeout: 6000
                 });
 
-                _this19.$emit('close');
+                _this18.$emit('close');
 
               case 13:
               case "end":
@@ -8300,7 +8259,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           if (this.search_prop.prop_search.handmade_unfinished) {
             handmade = handmade + '|| a.handmade === ' + 3;
           }
-        } else {
+        } else if (this.search_prop.prop_search.handmade_unfinished) {
           handmade = '(a.handmade ===' + 3;
         }
       } else if (!this.search_prop.prop_search.handmade && this.search_prop.prop_search.handmade_no) {
@@ -8344,9 +8303,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.search_prop.prop_search.location_no = false;
       this.search_prop.prop_search.handmade = false;
       this.search_prop.prop_search.handmade_no = false;
-      this.search_prop.prop_search.handmade_complete = false;
-      this.search_prop.prop_search.handmade_progress = false;
-      this.search_prop.prop_search.handmade_unfinished = false;
+      this.search_prop.prop_search.handmade_complete = true;
+      this.search_prop.prop_search.handmade_progress = true;
+      this.search_prop.prop_search.handmade_unfinished = true;
       this.search_prop.prop_search.decision = false;
       this.search_prop.prop_search.decision_no = false;
       this.search_prop.prop_search.usage = false;
@@ -8620,14 +8579,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        var page, character_id, prop_id, name_input, name_scope, decision, usage, usage_guraduation, usage_left, usage_right, setting_id, prop_ids, array_original, array, character_ids, refine;
+        var page, character_id, name_input, name_scope, decision, usage, usage_guraduation, usage_left, usage_right, setting_id, character_ids, refine;
         return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
                 page = 'a.first_page != ' + 0;
                 character_id = 'a.character_id !=' + 0;
-                prop_id = 'a.prop_id != ' + 0;
                 name_input = '!=' + 100;
                 name_scope = '!=' + 100;
                 decision = '!=' + 100;
@@ -8635,69 +8593,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 usage_guraduation = '!=' + 100;
                 usage_left = '!=' + 100;
                 usage_right = '!=' + 100;
-                setting_id = '!=' + 0; // 小道具 id検索
+                setting_id = '!=' + 0;
 
-                if (!_this5.search_scene.scene_search.name.input) {
-                  _context5.next = 20;
-                  break;
-                }
-
-                _context5.next = 14;
-                return _this5.fetchProps();
-
-              case 14:
-                prop_ids = [];
-                array_original = JSON.parse(JSON.stringify(_this5.props));
-                array = [];
-
-                if (_this5.h(_this5.search_scene.scene_search.name.input)) {
-                  if (_this5.search_scene.scene_search.name.scope === "memo_together") {
-                    // メモを含めて検索
-                    array = array_original.filter(function (a) {
-                      if (a.name.toLocaleLowerCase().indexOf(_this5.h(_this5.search_scene.scene_search.name.input).toLocaleLowerCase()) !== -1) {
-                        return a;
-                      } else if (a.kana.toLocaleLowerCase().indexOf(_this5.h(_this5.search_scene.scene_search.name.input).toLocaleLowerCase()) !== -1) {
-                        return a;
-                      } else if (a.prop_comments[0]) {
-                        if (a.prop_comments[0].memo.toLocaleLowerCase().indexOf(_this5.h(_this5.search_scene.scene_search.name.input).toLocaleLowerCase()) !== -1) {
-                          return a;
-                        }
-                      }
-                    });
-                  } else {
-                    // 小道具名のみで検索
-                    array = array_original.filter(function (a) {
-                      if (a.name.toLocaleLowerCase().indexOf(_this5.h(_this5.search_scene.scene_search.name.input).toLocaleLowerCase()) !== -1) {
-                        return a;
-                      } else if (a.kana.toLocaleLowerCase().indexOf(_this5.h(_this5.search_scene.scene_search.name.input).toLocaleLowerCase()) !== -1) {
-                        return a;
-                      }
-                    });
-                  }
-                } else {
-                  array = array_original;
-                }
-
-                prop_ids = array.map(function (a) {
-                  return a.id;
-                });
-
-                if (prop_ids.length) {
-                  prop_id = '(';
-                  prop_ids.forEach(function (prop, index) {
-                    prop_id = prop_id + 'a.prop_id === ' + prop;
-
-                    if (index !== prop_ids.length - 1) {
-                      prop_id = prop_id + '||';
-                    } else {
-                      prop_id = prop_id + ')';
-                    }
-                  });
-                } else {
-                  prop_id = 'a.prop_id === 0';
-                }
-
-              case 20:
                 if (_this5.search_scene.scene_search.page.first && !_this5.search_scene.scene_search.select_all_page) {
                   page = 'a.first_page >= ' + _this5.search_scene.scene_search.page.first;
 
@@ -8756,11 +8653,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   setting_id = '===' + _this5.search_scene.scene_search.setting;
                 }
 
-                refine = prop_id + '&&' + page + '&&' + character_id + '&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right + '&& a.setting_id' + setting_id;
+                refine = page + '&&' + character_id + '&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right + '&& a.setting_id' + setting_id;
 
                 _this5.$emit('close', _this5.search_scene.scene_sort, _this5.search_scene.scene_search.name, refine);
 
-              case 31:
+              case 21:
               case "end":
                 return _context5.stop();
             }
@@ -9406,7 +9303,7 @@ var autokana;
       var _this7 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-        var regex_str, regex_number, regex_alf, kana, kanas, pattern_number, pattern_alf, names, name_last, name_last_point_diff, i, name_candidate, _i, _name_candidate, formData, quantitys, correct_quantity, response;
+        var regex_str, regex_number, regex_alf, kana, kanas, pattern_number, pattern_alf, names, name_last, name_last_point_diff, i, name_candidate, _i, _name_candidate, formData, response;
 
         return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
@@ -9564,15 +9461,7 @@ var autokana;
                 formData.append('owner_id', _this7.registerForm.owner);
 
                 if (_this7.registerForm.quantity) {
-                  quantitys = _toConsumableArray(_this7.registerForm.quantity);
-                  correct_quantity = '';
-                  quantitys.forEach(function (quantity) {
-                    var number = _this7.Zenkaku2hankaku_number(quantity);
-
-                    correct_quantity = String(correct_quantity) + String(number);
-                    correct_quantity = Number(correct_quantity);
-                  }, _this7);
-                  formData.append('quantity', correct_quantity);
+                  formData.append('quantity', _this7.registerForm.quantity);
                 } else {
                   formData.append('quantity', 1);
                 }
@@ -9780,18 +9669,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
 /* harmony import */ var _Register_Prop_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Register_Prop.vue */ "./resources/js/pages/Register_Prop.vue");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 
@@ -10332,19 +10209,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         });
       }
 
-      var correct_quantity = '';
-
-      if (this.registerForm.quantity) {
-        var quantitys = _toConsumableArray(this.registerForm.quantity);
-
-        quantitys.forEach(function (quantity) {
-          var number = _this5.Zenkaku2hankaku_number(quantity);
-
-          correct_quantity = String(correct_quantity) + String(number);
-          correct_quantity = Number(correct_quantity);
-        }, this);
-      } else {
-        correct_quantity = 1;
+      if (!this.registerForm.quantity) {
+        this.registerForm.quantity = 1;
       }
 
       var usage_left = 0;
@@ -10371,7 +10237,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     prop_id: this.registerForm.prop,
                     first_page: page,
                     final_page: final_pages[index],
-                    quantity: correct_quantity,
+                    quantity: this.registerForm.quantity,
                     decision: this.registerForm.decision,
                     usage: this.registerForm.usage,
                     usage_guraduation: this.registerForm.usage_guraduation,
@@ -11221,6 +11087,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var exceljs__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(exceljs__WEBPACK_IMPORTED_MODULE_6__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -11261,7 +11139,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       showContent_search: false,
       postSearch: "",
       custom_sort: null,
-      custom_name: null,
+      custom_name: {
+        input: null,
+        scope: null
+      },
       custom_refine: null,
       // 選択ボタン
       choice_flag: false,
@@ -11349,8 +11230,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this2.choice_ids.push(false);
                 }, _this2);
 
-                if (!(_this2.custom_sort || _this2.custom_name || _this2.custom_refine)) {
-                  _context2.next = 12;
+                if (!(_this2.custom_sort || _this2.custom_name.input !== null || _this2.custom_refine)) {
+                  _context2.next = 14;
                   break;
                 }
 
@@ -11358,12 +11239,90 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _this2.closeModal_searchProp(_this2.custom_sort, _this2.custom_name, _this2.custom_refine);
 
               case 12:
+                _context2.next = 15;
+                break;
+
+              case 14:
+                _this2.sort_Standard(_this2.showProps);
+
+              case 15:
               case "end":
                 return _context2.stop();
             }
           }
         }, _callee2);
       }))();
+    },
+    sort_Standard: function sort_Standard(array) {
+      if (array === 'reset') {
+        this.showProps = JSON.parse(JSON.stringify(this.props));
+        array = this.showProps;
+      }
+
+      var regex_str = /[^ぁ-んー]/g; // ひらがな以外
+
+      var regex_number = /[^0-9]/g; // 数字以外
+
+      var regex_alf = /[^A-Z]/g; // アルファベット
+
+      array.sort(function (a, b) {
+        // kanaで並び替え
+        if (a.kana !== b.kana) {
+          var a_str = a.kana.replace(regex_str, "");
+          var b_str = b.kana.replace(regex_str, "");
+          var a_number = a.kana.replace(regex_number, "");
+          var b_number = b.kana.replace(regex_number, "");
+          var a_alf = a.kana.replace(regex_alf, "");
+          var b_alf = b.kana.replace(regex_alf, "");
+
+          if (a_str !== b_str) {
+            var sort_str = a_str;
+
+            if (_toConsumableArray(b_str).length < _toConsumableArray(a_str).length) {
+              sort_str = b_str;
+            }
+
+            for (var i = 0; i < _toConsumableArray(sort_str).length; i++) {
+              if (a_str.codePointAt(i) !== b_str.codePointAt(i)) {
+                if (a_str.codePointAt(i) > b_str.codePointAt(i)) {
+                  return 1;
+                } else if (a_str.codePointAt(i) < b_str.codePointAt(i)) {
+                  return -1;
+                }
+              }
+            }
+          }
+
+          if (a_number !== b_number) {
+            if (!a_number) {
+              a_number = 0;
+            }
+
+            if (!b_number) {
+              b_number = 0;
+            }
+
+            if (parseInt(a_number) > parseInt(b_number)) {
+              return 1;
+            } else if (parseInt(a_number) < parseInt(b_number)) {
+              return -1;
+            }
+          }
+
+          if (a_alf !== b_alf) {
+            if (a_alf.codePointAt(0) > b_alf.codePointAt(0)) {
+              return 1;
+            } else if (a_alf.codePointAt(0) < b_alf.codePointAt(0)) {
+              return -1;
+            } else {
+              return 0;
+            }
+          }
+        }
+
+        return 0;
+      });
+      this.showScenes = array;
     },
     // エスケープ処理
     h: function h(unsafeText) {
@@ -11388,11 +11347,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.postSearch = number;
     },
     // 検索カスタムのモーダル非表示
-    closeModal_searchProp: function closeModal_searchProp(sort, name, refine) {
+    closeModal_searchProp: function closeModal_searchProp(sort, name_input, refine) {
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-        var array_original, array;
+        var array_original, array, new_array, set, newArr;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -11401,37 +11360,58 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 if (sort !== null && refine !== null) {
                   _this3.custom_sort = sort;
-                  _this3.custom_name = name;
+
+                  if (name_input.input && !Array.isArray(name_input.input)) {
+                    _this3.custom_name.input = name_input.input.split(/,|、|，|\s+/);
+                    _this3.custom_name.input = _this3.custom_name.input.filter(Boolean);
+                    _this3.custom_name.scope = name_input.scope;
+                  } else if (!name_input.input) {
+                    _this3.custom_name.input = null;
+                    _this3.custom_name.scope = null;
+                  }
+
                   _this3.custom_refine = refine;
                   array_original = _this3.props.filter(function (a) {
                     return eval(refine);
                   });
                   array = [];
 
-                  if (_this3.h(name.input)) {
-                    if (name.scope === "memo_together") {
+                  if (Array.isArray(_this3.custom_name.input)) {
+                    // 入力値があった
+                    new_array = [];
+
+                    if (_this3.custom_name.scope === "memo_together") {
                       // メモを含めて検索
-                      array = array_original.filter(function (a) {
-                        if (a.name.toLocaleLowerCase().indexOf(_this3.h(name.input).toLocaleLowerCase()) !== -1) {
-                          return a;
-                        } else if (a.kana.toLocaleLowerCase().indexOf(_this3.h(name.input).toLocaleLowerCase()) !== -1) {
-                          return a;
-                        } else if (a.prop_comments[0]) {
-                          if (a.prop_comments[0].memo.toLocaleLowerCase().indexOf(_this3.h(name.input).toLocaleLowerCase()) !== -1) {
-                            return a;
+                      array_original.filter(function (a) {
+                        _this3.custom_name.input.forEach(function (name) {
+                          if (a.name.toLocaleLowerCase().indexOf(_this3.h(name).toLocaleLowerCase()) !== -1) {
+                            new_array.push(a);
+                          } else if (a.kana.toLocaleLowerCase().indexOf(_this3.h(name).toLocaleLowerCase()) !== -1) {
+                            new_array.push(a);
+                          } else if (a.prop_comments[0]) {
+                            if (a.prop_comments[0].memo.toLocaleLowerCase().indexOf(_this3.h(name).toLocaleLowerCase()) !== -1) {
+                              new_array.push(a);
+                            }
                           }
-                        }
+                        }, _this3);
                       });
                     } else {
                       // 小道具名のみで検索
-                      array = array_original.filter(function (a) {
-                        if (a.name.toLocaleLowerCase().indexOf(_this3.h(name.input).toLocaleLowerCase()) !== -1) {
-                          return a;
-                        } else if (a.kana.toLocaleLowerCase().indexOf(_this3.h(name.input).toLocaleLowerCase()) !== -1) {
-                          return a;
-                        }
+                      array_original.filter(function (a) {
+                        _this3.custom_name.input.forEach(function (name) {
+                          if (a.name.toLocaleLowerCase().indexOf(_this3.h(name).toLocaleLowerCase()) !== -1) {
+                            new_array.push(a);
+                          } else if (a.kana.toLocaleLowerCase().indexOf(_this3.h(name).toLocaleLowerCase()) !== -1) {
+                            new_array.push(a);
+                          }
+                        }, _this3);
                       });
-                    }
+                    } // 重複削除
+
+
+                    set = new Set(new_array);
+                    newArr = _toConsumableArray(set);
+                    array = Array.from(new Set(newArr));
                   } else {
                     // 入力検索しない
                     array = array_original;
@@ -11450,9 +11430,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       return new Date(a.updated_at) - new Date(b.updated_at);
                     });
                   } else {
-                    array.sort(function (a, b) {
-                      return a.kana - b.kana;
-                    });
+                    _this3.sort_Standard(array);
                   }
 
                   _this3.showProps = array;
@@ -11566,7 +11544,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   } else {
                     // handmade
                     _this7.yes_no = 1;
-                    console.log(handmade_custom[1]);
                     _this7.edit_custom = handmade_custom[1];
                   }
 
@@ -11616,10 +11593,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         edit_custom_show = '上手で使用して';
       } else if (this.edit_custom === 'usage_right') {
         edit_custom_show = '下手で使用して';
-      } else if (this.edit_custom === 'handmade') {
-        edit_custom_show = '作';
       } else {
-        edit_custom_show = '作ら';
+        edit_custom_show = '作';
       }
 
       if (this.yes_no === 1) {
@@ -11633,7 +11608,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           yes_no_show = yes_no_show + ': 未着手';
         }
       } else {
-        yes_no_show = 'ない';
+        if (this.edit_custom === 'handmade') {
+          yes_no_show = 'らない';
+        } else {
+          yes_no_show = 'ない';
+        }
       }
 
       this.postMessage_Edit = '以下の小道具を' + edit_custom_show + yes_no_show + 'と変更します。\n本当に変更しますか？\n' + edit_props_name;
@@ -11854,6 +11833,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }
                   }
                 }, {
+                  header: '個数',
+                  key: 'quantity',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
                   header: 'ピッコロ',
                   key: 'location',
                   width: 12,
@@ -11975,6 +11964,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 worksheet.getCell('I1').fill = fill;
                 worksheet.getCell('J1').font = font;
                 worksheet.getCell('J1').fill = fill;
+                worksheet.getCell('K1').font = font;
+                worksheet.getCell('K1').fill = fill;
 
                 _this14.showProps.forEach(function (prop, index) {
                   var datas = [];
@@ -11986,6 +11977,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     datas.push(null);
                   }
 
+                  if (prop.quantity > 1) {
+                    datas.push(prop.quantity);
+                  } else {
+                    datas.push(null);
+                  }
+
                   if (prop.location) {
                     datas.push('〇');
                   } else {
@@ -11993,8 +11990,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
 
                   if (prop.handmade === 1) {
-                    datas.push('済');
+                    datas.push('完');
                   } else if (prop.handmade === 2) {
+                    datas.push('仕');
+                  } else if (prop.handmade === 3) {
                     datas.push('未');
                   } else {
                     datas.push(null);
@@ -12049,10 +12048,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }); // ③ファイル生成
 
 
-                _context10.next = 30;
+                _context10.next = 32;
                 return workbook.xlsx.writeBuffer();
 
-              case 30:
+              case 32:
                 uint8Array = _context10.sent;
                 // xlsxの場合
                 blob = new Blob([uint8Array], {
@@ -12066,7 +12065,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 a.click();
                 a.remove();
 
-              case 39:
+              case 41:
               case "end":
                 return _context10.stop();
             }
@@ -12159,12 +12158,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       // 小道具詳細
       showContent_prop: false,
       postProp: "",
-      custom_sort: null,
-      custom_name: null,
-      custom_refine: null,
       // シーン検索カスタム
       showContent_search: false,
       postSearch: "",
+      custom_sort: null,
+      custom_name: {
+        input: null,
+        scope: null
+      },
+      custom_refine: null,
       // ページの並び順
       page_order: [],
       // 選択ボタン
@@ -12258,7 +12260,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this2.choice_ids.push(false);
                 }, _this2);
 
-                if (!(_this2.custom_sort || _this2.custom_name || _this2.custom_refine)) {
+                if (!(_this2.custom_sort || _this2.custom_name.input !== null || _this2.custom_refine)) {
                   _context2.next = 16;
                   break;
                 }
@@ -12283,6 +12285,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     sort_Standard: function sort_Standard(array) {
       var _this3 = this;
+
+      if (array === 'reset') {
+        this.showScenes = JSON.parse(JSON.stringify(this.scenes));
+        array = this.showScenes;
+      }
 
       var regex_str = /[^ぁ-んー]/g; // ひらがな以外
 
@@ -12387,44 +12394,101 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.postSearch = number;
     },
     // 検索カスタムのモーダル非表示
-    closeModal_searchScene: function closeModal_searchScene(sort, name, refine) {
+    closeModal_searchScene: function closeModal_searchScene(sort, name_input, refine) {
       var _this4 = this;
 
       this.showContent_search = false;
 
       if (sort !== null && refine !== null) {
         this.custom_sort = sort;
-        this.custom_name = name;
+
+        if (name_input.input && !Array.isArray(name_input.input)) {
+          this.custom_name.input = name_input.input.split(/,|、|，|\s+/);
+          this.custom_name.input = this.custom_name.input.filter(Boolean);
+          this.custom_name.scope = name_input.scope;
+        } else if (!name_input.input) {
+          this.custom_name.input = null;
+          this.custom_name.scope = null;
+        }
+
         this.custom_refine = refine;
         var array_original = this.scenes.filter(function (a) {
           return eval(refine);
         });
         var array = [];
 
-        if (this.h(name.input)) {
-          if (name.scope === "memo_together") {
-            // メモを含めて検索
-            array = array_original.filter(function (a) {
-              if (a.prop.name.toLocaleLowerCase().indexOf(_this4.h(name.input).toLocaleLowerCase()) !== -1) {
-                return a;
-              } else if (a.prop.kana.toLocaleLowerCase().indexOf(_this4.h(name.input).toLocaleLowerCase()) !== -1) {
-                return a;
-              } else if (a.prop.prop_comments[0]) {
-                if (a.prop.prop_comments[0].memo.toLocaleLowerCase().indexOf(_this4.h(name.input).toLocaleLowerCase()) !== -1) {
-                  return a;
+        if (Array.isArray(this.custom_name.input)) {
+          // 入力値があった
+          var new_array = [];
+
+          if (this.custom_name.scope === "memo_all_together") {
+            // 小道具メモ・使用シーンメモを含めて検索
+            array_original.filter(function (a) {
+              _this4.custom_name.input.forEach(function (name) {
+                if (a.prop.name.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                  new_array.push(a);
+                } else if (a.prop.kana.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                  new_array.push(a);
+                } else if (a.prop.prop_comments.length) {
+                  if (a.prop.prop_comments[0].memo.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }
+                } else if (a.scene_comments.length) {
+                  if (a.scene_comments[0].memo.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }
                 }
-              }
+              }, _this4);
+            });
+          } else if (this.custom_name.scope === "memo_prop_together") {
+            // 小道具メモを含めて検索
+            array_original.filter(function (a) {
+              _this4.custom_name.input.forEach(function (name) {
+                if (a.prop.name.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                  new_array.push(a);
+                } else if (a.prop.kana.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                  new_array.push(a);
+                } else if (a.prop.prop_comments.length) {
+                  if (a.prop.prop_comments[0].memo.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }
+                }
+              }, _this4);
+            });
+          } else if (this.custom_name.scope === "memo_scene_together") {
+            // 使用シーンメモを含めて検索
+            array_original.filter(function (a) {
+              _this4.custom_name.input.forEach(function (name) {
+                if (a.prop.name.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                  new_array.push(a);
+                } else if (a.prop.kana.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                  new_array.push(a);
+                } else if (a.scene_comments.length) {
+                  if (a.scene_comments[0].memo.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                    new_array.push(a);
+                  }
+                }
+              }, _this4);
             });
           } else {
             // 小道具名のみで検索
-            array = array_original.filter(function (a) {
-              if (a.prop.name.toLocaleLowerCase().indexOf(_this4.h(name.input).toLocaleLowerCase()) !== -1) {
-                return a;
-              } else if (a.prop.kana.toLocaleLowerCase().indexOf(_this4.h(name.input).toLocaleLowerCase()) !== -1) {
-                return a;
-              }
-            });
-          }
+            array_original.forEach(function (a) {
+              _this4.custom_name.input.forEach(function (name) {
+                if (a.prop.name.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                  new_array.push(a);
+                } else if (a.prop.kana.toLocaleLowerCase().indexOf(_this4.h(name).toLocaleLowerCase()) !== -1) {
+                  new_array.push(a);
+                }
+              }, _this4);
+            }, this);
+          } // 重複削除
+
+
+          var set = new Set(new_array);
+
+          var newArr = _toConsumableArray(set);
+
+          array = Array.from(new Set(newArr));
         } else {
           // 入力検索しない
           array = array_original;
@@ -12608,8 +12672,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
             if (a.prop.kana !== b.prop.kana) {
-              console.log(a.prop.kana);
-              console.log(b.prop.kana);
               var a_str = a.prop.kana.replace(regex_str, "");
               var b_str = b.prop.kana.replace(regex_str, "");
               var a_number = a.prop.kana.replace(regex_number, "");
@@ -13174,6 +13236,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }
                   }
                 }, {
+                  header: '個数',
+                  key: 'quantity',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: '決定か',
+                  key: 'decision',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
                   header: '中間発表',
                   key: 'usage',
                   width: 12,
@@ -13206,6 +13288,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }, {
                   header: '下手',
                   key: 'usage_right',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
+                  header: 'セットする人',
+                  key: 'prop',
                   width: 12,
                   style: {
                     alignment: {
@@ -13263,13 +13355,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 worksheet.getCell('H1').fill = fill;
                 worksheet.getCell('I1').font = font;
                 worksheet.getCell('I1').fill = fill;
+                worksheet.getCell('J1').font = font;
+                worksheet.getCell('J1').fill = fill;
+                worksheet.getCell('K1').font = font;
+                worksheet.getCell('K1').fill = fill;
+                worksheet.getCell('L1').font = font;
+                worksheet.getCell('L1').fill = fill;
 
                 _this16.showScenes.forEach(function (scene, index) {
                   var datas = [];
-                  datas.push(scene.first_page);
-                  datas.push(scene.final_page);
+
+                  if (scene.first_page === 1 && scene.final_page === 1000) {
+                    datas.push('全ページ');
+                    datas.push(null);
+                  } else {
+                    datas.push(scene.first_page);
+                    datas.push(scene.final_page);
+                  }
+
                   datas.push(scene.character.name);
                   datas.push(scene.prop.name);
+
+                  if (scene.quantity > 1) {
+                    datas.push(scene.quantity);
+                  } else {
+                    datas.push(null);
+                  }
+
+                  if (scene.decision) {
+                    datas.push('〇');
+                  } else {
+                    datas.push(null);
+                  }
 
                   if (scene.usage) {
                     datas.push('〇');
@@ -13295,6 +13412,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     datas.push(null);
                   }
 
+                  if (scene.setting) {
+                    datas.push(scene.setting.name);
+                  } else {
+                    datas.push(null);
+                  }
+
                   if (scene.scene_comments.length) {
                     scene.scene_comments.forEach(function (comment, index_comment) {
                       if (index_comment) {
@@ -13314,10 +13437,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }); // ③ファイル生成
 
 
-                _context10.next = 28;
+                _context10.next = 34;
                 return workbook.xlsx.writeBuffer();
 
-              case 28:
+              case 34:
                 uint8Array = _context10.sent;
                 // xlsxの場合
                 blob = new Blob([uint8Array], {
@@ -13331,7 +13454,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 a.click();
                 a.remove();
 
-              case 37:
+              case 43:
               case "end":
                 return _context10.stop();
             }
@@ -13636,14 +13759,14 @@ var render = function render() {
     attrs: {
       type: "radio",
       id: "prop_handmade_comolete",
-      value: "handmade_comolete"
+      value: "handmade_complete"
     },
     domProps: {
-      checked: _vm._q(_vm.editCustomProp, "handmade_comolete")
+      checked: _vm._q(_vm.editCustomProp, "handmade_complete")
     },
     on: {
       change: function change($event) {
-        _vm.editCustomProp = "handmade_comolete";
+        _vm.editCustomProp = "handmade_complete";
       }
     }
   }), _vm._v(" "), _c("label", {
@@ -17883,7 +18006,7 @@ var render = function render() {
     attrs: {
       "for": "search_scene_name"
     }
-  }, [_vm._v("小道具名")]), _vm._v(" "), _c("input", {
+  }, [_vm._v("入力検索")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -17940,22 +18063,70 @@ var render = function render() {
     }],
     attrs: {
       type: "radio",
-      id: "search_scene_memo_toghether",
-      value: "memo_together"
+      id: "search_scene_memo_all_toghether",
+      value: "memo_all_together"
     },
     domProps: {
-      checked: _vm._q(_vm.search_scene.scene_search.name.scope, "memo_together")
+      checked: _vm._q(_vm.search_scene.scene_search.name.scope, "memo_all_together")
     },
     on: {
       change: function change($event) {
-        return _vm.$set(_vm.search_scene.scene_search.name, "scope", "memo_together");
+        return _vm.$set(_vm.search_scene.scene_search.name, "scope", "memo_all_together");
       }
     }
   }), _vm._v(" "), _c("label", {
     attrs: {
-      "for": "search_scene_memo_toghether"
+      "for": "search_scene_memo_all_toghether"
     }
-  }, [_vm._v("メモ含む")])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("小道具メモ・使用シーンメモ含む")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_scene.scene_search.name.scope,
+      expression: "search_scene.scene_search.name.scope"
+    }],
+    attrs: {
+      type: "radio",
+      id: "search_scene_memo_prop_toghether",
+      value: "memo_prop_together"
+    },
+    domProps: {
+      checked: _vm._q(_vm.search_scene.scene_search.name.scope, "memo_prop_together")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.search_scene.scene_search.name, "scope", "memo_prop_together");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "search_scene_memo_prop_toghether"
+    }
+  }, [_vm._v("小道具メモ含む")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_scene.scene_search.name.scope,
+      expression: "search_scene.scene_search.name.scope"
+    }],
+    attrs: {
+      type: "radio",
+      id: "search_scene_memo_scene_toghether",
+      value: "memo_scene_together"
+    },
+    domProps: {
+      checked: _vm._q(_vm.search_scene.scene_search.name.scope, "memo_scene_together")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.search_scene.scene_search.name, "scope", "memo_scene_together");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "search_scene_memo_scene_toghether"
+    }
+  }, [_vm._v("使用シーンメモ含む")])])]), _vm._v(" "), _c("div", {
     staticClass: "search-search--select-area checkbox-area--together"
   }, [_c("label", [_vm._v("決定")]), _vm._v(" "), _c("span", {
     staticClass: "checkbox-area--together"
@@ -19955,6 +20126,20 @@ var render = function render() {
   }), _vm._v(" "), _c("div", {
     staticClass: "button-area--small-small"
   }, [_c("button", {
+    staticClass: "button button--inverse button--small",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.sort_Standard("reset");
+      }
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-undo-alt fa-fw"
+  }), _vm._v("リセット")])]), _vm._v(" "), _c("div", {
+    staticClass: "button-area--small-small"
+  }, [_c("button", {
     staticClass: "button button--inverse button--small button--choice",
     attrs: {
       type: "button"
@@ -20296,7 +20481,7 @@ var render = function render() {
       staticClass: "usage-show"
     }, [_vm._v("作るかどうか:")]), _vm._v(" "), prop.handmade === 1 ? _c("span", {
       staticClass: "usage-show"
-    }, [_vm._v("済")]) : prop.handmade === 2 ? _c("span", {
+    }, [_vm._v("完")]) : prop.handmade === 2 ? _c("span", {
       staticClass: "usage-show"
     }, [_vm._v("仕")]) : prop.handmade === 3 ? _c("span", {
       staticClass: "usage-show"
@@ -20389,6 +20574,20 @@ var render = function render() {
       close: _vm.closeModal_searchScene
     }
   }), _vm._v(" "), _c("div", {
+    staticClass: "button-area--small-small"
+  }, [_c("button", {
+    staticClass: "button button--inverse button--small",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.sort_Standard("reset");
+      }
+    }
+  }, [_c("i", {
+    staticClass: "fas fa-undo-alt fa-fw"
+  }), _vm._v("リセット")])]), _vm._v(" "), _c("div", {
     staticClass: "button-area--small-small"
   }, [_c("button", {
     staticClass: "button button--inverse button--small button--choice",
@@ -20651,7 +20850,7 @@ var render = function render() {
     })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("セット")]), _vm._v(" "), scene.setting ? _c("td", [_vm._v(_vm._s(scene.setting.name))]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("メモ")]), _vm._v(" "), scene.scene_comments.length ? _c("td", _vm._l(scene.scene_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.created_at))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("更新日時")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.updated_at))])])]);
-  }), 0)]) : _c("div", [_vm._v("\n        使用シーンは登録されていません。 \n      ")])]), _vm._v(" "), _c("detailScene", {
+  }), 0)]) : _c("div", [_vm._v("\n      使用シーンは登録されていません。 \n    ")])]), _vm._v(" "), _c("detailScene", {
     directives: [{
       name: "show",
       rawName: "v-show",
