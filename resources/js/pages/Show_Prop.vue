@@ -417,13 +417,16 @@
         if(array === 'reset'){
           this.showProps = JSON.parse(JSON.stringify(this.props));
           array = this.showProps;
+          this.custom_sort = null;
+          this.custom_name.input = null;
+          this.custom_name.scope = null;
+          this.custom_refine = null;
         }
 
         const regex_str = /[^ぁ-んー]/g; // ひらがな以外
         const regex_number = /[^0-9]/g; // 数字以外
         const regex_alf = /[^A-Z]/g; // アルファベット
         array.sort((a, b) => {
-          
           // kanaで並び替え
           if(a.kana !== b.kana){
             const a_str = a.kana.replace(regex_str, "");
@@ -477,7 +480,7 @@
           return 0;
         });
 
-        this.showScenes = array;
+        this.showProps = array;
       },
 
       // エスケープ処理

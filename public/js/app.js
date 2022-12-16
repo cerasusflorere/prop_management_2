@@ -2987,7 +2987,8 @@ var autokana;
                   _this3.editForm_prop.owner_id = _this3.prop.owner_id;
                   _this3.editForm_prop.owner.name = _this3.prop.owner.name;
                 } else {
-                  _this3.editForm_prop.owner_id = '';
+                  _this3.prop.owner_id = 0;
+                  _this3.editForm_prop.owner_id = 0;
                   _this3.editForm_prop.owner.name = '';
                 }
 
@@ -3616,6 +3617,10 @@ var autokana;
 
       this.editForm_prop.kana = kana;
 
+      if (this.editForm_prop.owner_id === "0") {
+        this.editForm_prop.owner_id = 0;
+      }
+
       if (!this.editForm_prop.quantity) {
         this.editForm_prop.quantity = 1;
       }
@@ -3670,11 +3675,17 @@ var autokana;
       var _this14 = this;
 
       this.showContent_confirmEdit = true;
-      this.optionOwners.forEach(function (owner) {
-        if (owner.id === _this14.editForm_prop.owner_id) {
-          _this14.editForm_prop.owner.name = owner.name;
-        }
-      }, this);
+
+      if (this.editForm_prop.owner_id !== 0) {
+        this.optionOwners.forEach(function (owner) {
+          if (owner.id === _this14.editForm_prop.owner_id) {
+            _this14.editForm_prop.owner.name = owner.name;
+          }
+        }, this);
+      } else {
+        this.editForm_prop.owner.name = '';
+      }
+
       var location = '持ってきてない';
       var handmade = '作らない';
       var decision = 'してない';
@@ -3791,12 +3802,17 @@ var autokana;
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
+                // 準備
+                if (_this16.editForm_prop.owner_id === 0) {
+                  _this16.editForm_prop.owner_id = '';
+                }
+
                 if (!(_this16.editPropMode_detail === 1)) {
-                  _context8.next = 14;
+                  _context8.next = 15;
                   break;
                 }
 
-                _context8.next = 3;
+                _context8.next = 4;
                 return axios.post('/api/props/' + _this16.prop.id, {
                   method: 'photo_non_update',
                   name: _this16.editForm_prop.name,
@@ -3812,20 +3828,20 @@ var autokana;
                   usage_right: _this16.editForm_prop.usage_right
                 });
 
-              case 3:
+              case 4:
                 response = _context8.sent;
 
                 if (!(response.status === 422)) {
-                  _context8.next = 7;
+                  _context8.next = 8;
                   break;
                 }
 
                 _this16.errors.error = response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 7:
+              case 8:
                 if (!(response.status !== 204)) {
-                  _context8.next = 10;
+                  _context8.next = 11;
                   break;
                 }
 
@@ -3833,19 +3849,19 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 10:
+              case 11:
                 _this16.editPropMode_detail = 100;
 
                 if (_this16.editPropMode_memo === 0) {
                   _this16.editPropMode_memo = 100;
                 }
 
-                _context8.next = 54;
+                _context8.next = 55;
                 break;
 
-              case 14:
+              case 15:
                 if (!(_this16.editPropMode_detail === 2)) {
-                  _context8.next = 42;
+                  _context8.next = 43;
                   break;
                 }
 
@@ -3864,23 +3880,23 @@ var autokana;
                 formData.append('usage_left', _this16.editForm_prop.usage_left);
                 formData.append('usage_right', _this16.editForm_prop.usage_right);
                 formData.append('photo', _this16.editForm_prop.photo);
-                _context8.next = 31;
+                _context8.next = 32;
                 return axios.post('/api/props/' + _this16.prop.id, formData);
 
-              case 31:
+              case 32:
                 _response = _context8.sent;
 
                 if (!(_response.status === 422)) {
-                  _context8.next = 35;
+                  _context8.next = 36;
                   break;
                 }
 
                 _this16.errors.error = _response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 35:
+              case 36:
                 if (!(_response.status !== 204)) {
-                  _context8.next = 38;
+                  _context8.next = 39;
                   break;
                 }
 
@@ -3888,23 +3904,23 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 38:
+              case 39:
                 _this16.editPropMode_detail = 100;
 
                 if (_this16.editPropMode_memo === 0) {
                   _this16.editPropMode_memo = 100;
                 }
 
-                _context8.next = 54;
+                _context8.next = 55;
                 break;
 
-              case 42:
+              case 43:
                 if (!(_this16.editPropMode_detail === 3)) {
-                  _context8.next = 54;
+                  _context8.next = 55;
                   break;
                 }
 
-                _context8.next = 45;
+                _context8.next = 46;
                 return axios.post('/api/props/' + _this16.prop.id, {
                   method: 'photo_delete',
                   name: _this16.editForm_prop.name,
@@ -3921,20 +3937,20 @@ var autokana;
                   usage_right: _this16.editForm_prop.usage_right
                 });
 
-              case 45:
+              case 46:
                 _response2 = _context8.sent;
 
                 if (!(_response2.status === 422)) {
-                  _context8.next = 49;
+                  _context8.next = 50;
                   break;
                 }
 
                 _this16.errors.error = _response2.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 49:
+              case 50:
                 if (!(_response2.status !== 204)) {
-                  _context8.next = 52;
+                  _context8.next = 53;
                   break;
                 }
 
@@ -3942,16 +3958,16 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 52:
+              case 53:
                 _this16.editPropMode_detail = 100;
 
                 if (_this16.editPropMode_memo === 0) {
                   _this16.editPropMode_memo = 100;
                 }
 
-              case 54:
+              case 55:
                 if (!(_this16.editPropMode_detail === 4)) {
-                  _context8.next = 81;
+                  _context8.next = 82;
                   break;
                 }
 
@@ -3986,23 +4002,23 @@ var autokana;
 
                 _formData.append('photo', _this16.editForm_prop.photo);
 
-                _context8.next = 72;
+                _context8.next = 73;
                 return axios.post('/api/props/' + _this16.prop.id, _formData);
 
-              case 72:
+              case 73:
                 _response3 = _context8.sent;
 
                 if (!(_response3.status === 422)) {
-                  _context8.next = 76;
+                  _context8.next = 77;
                   break;
                 }
 
                 _this16.errors.error = _response3.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 76:
+              case 77:
                 if (!(_response3.status !== 204)) {
-                  _context8.next = 79;
+                  _context8.next = 80;
                   break;
                 }
 
@@ -4010,14 +4026,14 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 79:
+              case 80:
                 _this16.editPropMode_detail = 100;
 
                 if (_this16.editPropMode_memo === 0) {
                   _this16.editPropMode_memo = 100;
                 }
 
-              case 81:
+              case 82:
               case "end":
                 return _context8.stop();
             }
@@ -4618,7 +4634,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this5.editForm_scene.setting_id = _this5.scene.setting_id;
                   _this5.editForm_scene.setting.name = _this5.scene.setting.name;
                 } else {
-                  _this5.editForm_scene.setting_id = '';
+                  _this5.scene.setting_id = 0;
+                  _this5.editForm_scene.setting_id = 0;
                   _this5.editForm_scene.setting.name = '';
                 }
 
@@ -4906,6 +4923,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         this.editForm_scene.quantity = 1;
       }
 
+      if (this.editForm_scene.setting_id === "0") {
+        this.editForm_scene.setting_id = 0;
+      }
+
       if (this.scene.id === this.editForm_scene.id && (this.scene.character_id !== this.editForm_scene.character_id || this.scene.prop_id !== this.editForm_scene.prop_id || this.scene.first_page !== this.editForm_scene.first_page || this.scene.final_page !== this.editForm_scene.final_page || this.scene.quantity !== this.editForm_scene.quantity || this.scene.decision !== this.editForm_scene.decision || this.scene.usage != this.editForm_scene.usage || this.scene.usage_guraduation != this.editForm_scene.usage_guraduation || !this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage || this.scene.usage_left && !this.scene.usage_right && this.editForm_scene.usage_stage === "right" || !this.scene.usage_left && this.scene.usage_right && this.editForm_scene.usage_stage === "left" || (this.scene.usage_left || this.scene.usage_right) && !this.editForm_scene.usage_stage || this.scene.setting_id !== this.editForm_scene.setting_id || !this.scene.setting_id && !this.editForm_scene.setting_id) && !this.editForm_scene.pages) {
         // 元々何ページから何ページと指定があった // これはupdateだけでいい
         this.editSceneMode_detail = 1; // 'page_update'
@@ -5025,11 +5046,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         usage_right = '㊦';
       }
 
-      this.optionSettings.forEach(function (stundet) {
-        if (stundet.id === _this10.editForm_scene.setting_id) {
-          _this10.editForm_scene.setting.name = stundet.name;
-        }
-      }, this);
+      if (this.editForm_scene.setting_id !== 0) {
+        this.optionSettings.forEach(function (stundet) {
+          if (stundet.id === _this10.editForm_scene.setting_id) {
+            _this10.editForm_scene.setting.name = stundet.name;
+          }
+        }, this);
+      } else {
+        this.editForm_scene.setting.name = '';
+      }
+
       var memos = [];
       this.editForm_scene.scene_comments.forEach(function (memo, index) {
         if (memo.memo && index !== _this10.editForm_scene.scene_comments.length - 1) {
@@ -5370,6 +5396,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                         }
                       }
                     });
+                  }
+
+                  if (_this12.editForm_scene.setting_id === 0) {
+                    _this12.editForm_scene.setting_id = '';
                   }
 
                   memo = '';
@@ -8888,7 +8918,7 @@ var autokana;
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-        var today, month, day, year, passo_day, _year, guraduation_day;
+        var today, month, day, year, guraduation_day, _year, passo_day;
 
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
@@ -8898,26 +8928,39 @@ var autokana;
                 month = today.getMonth() + 1;
                 day = today.getDate();
 
-                if (!(3 < month && month < 11)) {
-                  _context3.next = 7;
-                  break;
-                }
-
-                _this3.season_prop = "passo";
-                _context3.next = 25;
-                break;
-
-              case 7:
-                if (!(month === 11)) {
-                  _context3.next = 15;
+                if (!(month === 3)) {
+                  _context3.next = 11;
                   break;
                 }
 
                 year = today.getFullYear();
-                _context3.next = 11;
+                _context3.next = 7;
                 return _this3.getDateFromWeek(year, month, 1, 0);
 
+              case 7:
+                guraduation_day = _context3.sent;
+
+                // 11月第1日曜日
+                if (guraduation_day <= day) {
+                  _this3.season_prop = "guraduation";
+                } else {
+                  _this3.season_prop = "passo";
+                }
+
+                _context3.next = 20;
+                break;
+
               case 11:
+                if (!(month === 11)) {
+                  _context3.next = 19;
+                  break;
+                }
+
+                _year = today.getFullYear();
+                _context3.next = 15;
+                return _this3.getDateFromWeek(_year, month, 1, 0);
+
+              case 15:
                 passo_day = _context3.sent;
 
                 // 11月第1日曜日
@@ -8927,40 +8970,17 @@ var autokana;
                   _this3.season_prop = "guraduation";
                 }
 
-                _context3.next = 25;
-                break;
-
-              case 15:
-                if (!(month > 11 && month < 3)) {
-                  _context3.next = 19;
-                  break;
-                }
-
-                _this3.season_prop = "guraduation";
-                _context3.next = 25;
+                _context3.next = 20;
                 break;
 
               case 19:
-                if (!(month === 3)) {
-                  _context3.next = 25;
-                  break;
-                }
-
-                _year = today.getFullYear();
-                _context3.next = 23;
-                return _this3.getDateFromWeek(_year, month, 1, 0);
-
-              case 23:
-                guraduation_day = _context3.sent;
-
-                // 11月第1日曜日
-                if (guraduation_day >= day) {
-                  _this3.season_prop = "guraduation";
-                } else {
+                if (3 < month && month < 11) {
                   _this3.season_prop = "passo";
+                } else {
+                  _this3.season_prop = "guraduation";
                 }
 
-              case 25:
+              case 20:
               case "end":
                 return _context3.stop();
             }
@@ -9458,7 +9478,12 @@ var autokana;
                 formData = new FormData();
                 formData.append('name', _this7.registerForm.prop);
                 formData.append('kana', kana);
-                formData.append('owner_id', _this7.registerForm.owner);
+
+                if (_this7.registerForm.owner !== 0) {
+                  formData.append('owner_id', _this7.registerForm.owner);
+                } else {
+                  formData.append('owner_id', '');
+                }
 
                 if (_this7.registerForm.quantity) {
                   formData.append('quantity', _this7.registerForm.quantity);
@@ -9697,8 +9722,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       // 全ページ使用するか
       select_all_page: false,
       // 中間公演or卒業公演
-      season: null,
-      season_tag: null,
+      season_scene: null,
+      season_tag_scene: null,
       // 卒業公演
       guraduation_tag: 0,
       // 小道具登録
@@ -9846,7 +9871,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-        var today, month, day, year, passo_day, _year, guraduation_day;
+        var today, month, day, year, guraduation_day, _year, passo_day;
 
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
@@ -9856,69 +9881,59 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 month = today.getMonth() + 1;
                 day = today.getDate();
 
-                if (!(3 < month && month < 11)) {
-                  _context4.next = 7;
-                  break;
-                }
-
-                _this4.season = "passo";
-                _context4.next = 25;
-                break;
-
-              case 7:
-                if (!(month === 11)) {
-                  _context4.next = 15;
+                if (!(month === 3)) {
+                  _context4.next = 11;
                   break;
                 }
 
                 year = today.getFullYear();
-                _context4.next = 11;
+                _context4.next = 7;
                 return _this4.getDateFromWeek(year, month, 1, 0);
 
-              case 11:
-                passo_day = _context4.sent;
+              case 7:
+                guraduation_day = _context4.sent;
 
                 // 11月第1日曜日
-                if (passo_day >= day) {
-                  _this4.season = "passo";
+                if (guraduation_day <= day) {
+                  _this4.season_scene = "guraduation";
                 } else {
-                  _this4.season = "guraduation";
+                  _this4.season_scene = "passo";
                 }
 
-                _context4.next = 25;
+                _context4.next = 20;
                 break;
 
-              case 15:
-                if (!(month > 11 && month < 3)) {
+              case 11:
+                if (!(month === 11)) {
                   _context4.next = 19;
                   break;
                 }
 
-                _this4.season = "guraduation";
-                _context4.next = 25;
+                _year = today.getFullYear();
+                _context4.next = 15;
+                return _this4.getDateFromWeek(_year, month, 1, 0);
+
+              case 15:
+                passo_day = _context4.sent;
+
+                // 11月第1日曜日
+                if (passo_day >= day) {
+                  _this4.season_scene = "passo";
+                } else {
+                  _this4.season_scene = "guraduation";
+                }
+
+                _context4.next = 20;
                 break;
 
               case 19:
-                if (!(month === 3)) {
-                  _context4.next = 25;
-                  break;
-                }
-
-                _year = today.getFullYear();
-                _context4.next = 23;
-                return _this4.getDateFromWeek(_year, month, 1, 0);
-
-              case 23:
-                guraduation_day = _context4.sent;
-
-                // 11月第1日曜日
-                if (guraduation_day >= day) {
-                  _this4.season = "guraduation";
+                if (3 < month && month < 11) {
+                  _this4.season_scene = "passo";
                 } else {
-                  _this4.season = "passo";
+                  _this4.season_scene = "guraduation";
                 }
 
-              case 25:
+              case 20:
               case "end":
                 return _context4.stop();
             }
@@ -10007,7 +10022,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.registerForm.setting = '';
       this.registerForm.comment = '';
       this.select_all_page = false;
-      this.season_tag = null;
+      this.season_tag_scene = null;
       this.guraduation_tag = 0;
       this.choicePerformance();
     },
@@ -10223,6 +10238,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       var last_flag = false;
+
+      if (this.registerForm.setting !== 0) {
+        this.registerForm.setting == '';
+      }
+
       first_pages.forEach( /*#__PURE__*/function () {
         var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(page, index) {
           var response, prop, usage, usage_guraduation, response_prop, _response_prop, _response_prop2, _response_prop3;
@@ -10463,8 +10483,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       },
       immediate: true
     },
-    season: {
-      handler: function handler(season) {
+    season_scene: {
+      handler: function handler(season_scene) {
         var _this7 = this;
 
         return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
@@ -10472,10 +10492,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             while (1) {
               switch (_context8.prev = _context8.next) {
                 case 0:
-                  if (_this7.season === "passo") {
-                    _this7.season_tag = 1;
-                  } else if (_this7.season === "guraduation") {
-                    _this7.season_tag = 2;
+                  if (_this7.season_scene === "passo") {
+                    _this7.season_tag_scene = 1;
+                  } else if (_this7.season_scene === "guraduation") {
+                    _this7.season_tag_scene = 2;
                   }
 
                 case 1:
@@ -11257,6 +11277,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       if (array === 'reset') {
         this.showProps = JSON.parse(JSON.stringify(this.props));
         array = this.showProps;
+        this.custom_sort = null;
+        this.custom_name.input = null;
+        this.custom_name.scope = null;
+        this.custom_refine = null;
       }
 
       var regex_str = /[^ぁ-んー]/g; // ひらがな以外
@@ -11322,7 +11346,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
         return 0;
       });
-      this.showScenes = array;
+      this.showProps = array;
     },
     // エスケープ処理
     h: function h(unsafeText) {
@@ -12289,6 +12313,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       if (array === 'reset') {
         this.showScenes = JSON.parse(JSON.stringify(this.scenes));
         array = this.showScenes;
+        this.custom_sort = null;
+        this.custom_name.input = null;
+        this.custom_name.scope = null;
+        this.custom_refine = null;
       }
 
       var regex_str = /[^ぁ-んー]/g; // ひらがな以外
@@ -14806,8 +14834,7 @@ var render = function render() {
     }
   }, [_c("option", {
     attrs: {
-      disabled: "",
-      value: ""
+      value: "0"
     }
   }, [_vm._v("持ち主一覧")]), _vm._v(" "), _vm._l(_vm.optionOwners, function (owner) {
     return _c("option", {
@@ -15948,8 +15975,7 @@ var render = function render() {
     }
   }, [_c("option", {
     attrs: {
-      disabled: "",
-      value: ""
+      value: "0"
     }
   }, [_vm._v("学生一覧")]), _vm._v(" "), _vm._l(_vm.optionSettings, function (student) {
     return _c("option", {
@@ -18078,7 +18104,7 @@ var render = function render() {
     attrs: {
       "for": "search_scene_memo_all_toghether"
     }
-  }, [_vm._v("小道具メモ・使用シーンメモ含む")]), _vm._v(" "), _c("input", {
+  }, [_vm._v("小道具・使用シーンメモ含む")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -18657,8 +18683,7 @@ var render = function render() {
     }
   }, [_c("option", {
     attrs: {
-      disabled: "",
-      value: ""
+      value: "0"
     }
   }, [_vm._v("持ち主一覧")]), _vm._v(" "), _vm._l(_vm.optionOwners, function (owner) {
     return _c("option", {
@@ -19152,8 +19177,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.season,
-      expression: "season"
+      value: _vm.season_scene,
+      expression: "season_scene"
     }],
     attrs: {
       type: "radio",
@@ -19161,11 +19186,11 @@ var render = function render() {
       value: "passo"
     },
     domProps: {
-      checked: _vm._q(_vm.season, "passo")
+      checked: _vm._q(_vm.season_scene, "passo")
     },
     on: {
       change: function change($event) {
-        _vm.season = "passo";
+        _vm.season_scene = "passo";
       }
     }
   }), _vm._v(" "), _c("label", {
@@ -19176,8 +19201,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.season,
-      expression: "season"
+      value: _vm.season_scene,
+      expression: "season_scene"
     }],
     attrs: {
       type: "radio",
@@ -19185,11 +19210,11 @@ var render = function render() {
       value: "guraduation"
     },
     domProps: {
-      checked: _vm._q(_vm.season, "guraduation")
+      checked: _vm._q(_vm.season_scene, "guraduation")
     },
     on: {
       change: function change($event) {
-        _vm.season = "guraduation";
+        _vm.season_scene = "guraduation";
       }
     }
   }), _vm._v(" "), _c("label", {
@@ -19479,8 +19504,8 @@ var render = function render() {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: _vm.season_tag === 1,
-      expression: "season_tag === 1"
+      value: _vm.season_tag_scene === 1,
+      expression: "season_tag_scene === 1"
     }],
     staticClass: "checkbox-area--together"
   }, [_c("label", {
@@ -19525,8 +19550,8 @@ var render = function render() {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: _vm.season_tag === 2,
-      expression: "season_tag === 2"
+      value: _vm.season_tag_scene === 2,
+      expression: "season_tag_scene === 2"
     }]
   }, [_c("div", {
     staticClass: "checkbox-area--together"
@@ -19647,8 +19672,7 @@ var render = function render() {
     }
   }, [_c("option", {
     attrs: {
-      disabled: "",
-      value: ""
+      value: "0"
     }
   }, [_vm._v("学生一覧")]), _vm._v(" "), _vm._l(_vm.optionSettings, function (student) {
     return _c("option", {

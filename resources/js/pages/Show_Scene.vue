@@ -340,6 +340,10 @@
         if(array === 'reset'){
           this.showScenes = JSON.parse(JSON.stringify(this.scenes));
           array = this.showScenes;
+          this.custom_sort = null;
+          this.custom_name.input = null;
+          this.custom_name.scope = null;
+          this.custom_refine = null;
         }
 
         const regex_str = /[^ぁ-んー]/g; // ひらがな以外

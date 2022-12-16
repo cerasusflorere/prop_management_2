@@ -93,7 +93,7 @@
                   <label for="search_scene_name_only">小道具名のみ</label>       
 
                   <input type="radio" id="search_scene_memo_all_toghether" v-model="search_scene.scene_search.name.scope" value="memo_all_together">
-                  <label for="search_scene_memo_all_toghether">小道具メモ・使用シーンメモ含む</label>
+                  <label for="search_scene_memo_all_toghether">小道具・使用シーンメモ含む</label>
 
                   <input type="radio" id="search_scene_memo_prop_toghether" v-model="search_scene.scene_search.name.scope" value="memo_prop_together">
                   <label for="search_scene_memo_prop_toghether">小道具メモ含む</label>

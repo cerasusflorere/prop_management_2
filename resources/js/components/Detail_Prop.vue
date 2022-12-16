@@ -148,7 +148,7 @@
               <div>
                 <label for="prop_owner_edit">所有者:</label> 
                 <select id="prop_owner_edit" class="form__item" v-model="editForm_prop.owner_id">
-                  <option disabled value="">持ち主一覧</option>
+                  <option value=0>持ち主一覧</option>
                   <option v-for="owner in optionOwners" v-bind:value="owner.id">
                     {{ owner.name }}
                   </option>
@@ -497,7 +497,8 @@ export default {
         this.editForm_prop.owner_id = this.prop.owner_id;
         this.editForm_prop.owner.name = this.prop.owner.name;
       }else{
-        this.editForm_prop.owner_id = '';
+        this.prop.owner_id = 0;
+        this.editForm_prop.owner_id = 0;
         this.editForm_prop.owner.name = '';
       }
 
@@ -952,6 +953,10 @@ export default {
       }
       this.editForm_prop.kana = kana;
 
+      if(this.editForm_prop.owner_id === "0"){
+        this.editForm_prop.owner_id = 0;
+      }
+
       if(!this.editForm_prop.quantity){
         this.editForm_prop.quantity = 1;
       }
@@ -1006,11 +1011,15 @@ export default {
     openModal_confirmEdit () {
       this.showContent_confirmEdit = true;
 
-      this.optionOwners.forEach((owner) => {
-        if(owner.id === this.editForm_prop.owner_id){
-          this.editForm_prop.owner.name = owner.name;
-        }
-      }, this);
+      if(this.editForm_prop.owner_id !== 0){
+          this.optionOwners.forEach((owner) => {
+          if(owner.id === this.editForm_prop.owner_id){
+            this.editForm_prop.owner.name = owner.name;
+          }
+        }, this);
+      }else{
+        this.editForm_prop.owner.name = '';
+      }      
 
       let location = '持ってきてない';
       let handmade = '作らない';
@@ -1090,6 +1099,11 @@ export default {
 
     // 基本情報を編集する
     async editProp () {
+      // 準備
+      if(this.editForm_prop.owner_id === 0){
+        this.editForm_prop.owner_id = '';
+      }
+
       if(this.editPropMode_detail === 1){
         // 写真は変更しない
         const response = await axios.post('/api/props/'+ this.prop.id, {

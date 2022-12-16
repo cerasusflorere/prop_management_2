@@ -33,7 +33,7 @@
         <!-- 所有者 -->
         <label for="owner">持ち主</label>
         <select id="owner" class="form__item"  v-model="registerForm.owner">
-          <option disabled value="">持ち主一覧</option>
+          <option value=0>持ち主一覧</option>
           <option v-for="owner in optionOwners" v-bind:value="owner.id">
             {{ owner.name }}
           </option>
@@ -231,8 +231,14 @@ export default {
       let today = new Date();
       const month = today.getMonth()+1;
       const day = today.getDate();
-      if(3 < month && month < 11){
-        this.season_prop = "passo";
+      if(month === 3){
+        const year = today.getFullYear();
+        const guraduation_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
+        if(guraduation_day <= day){          
+          this.season_prop = "guraduation";
+        }else{
+          this.season_prop = "passo";
+        }
       }else if(month === 11){
         const year = today.getFullYear();
         const passo_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
@@ -241,16 +247,10 @@ export default {
         }else{
           this.season_prop = "guraduation";
         }
-      }else if(month > 11 && month < 3){
+      }else if(3 < month && month < 11){
+        this.season_prop = "passo";
+      }else{
         this.season_prop = "guraduation";
-      }else if(month === 3){
-        const year = today.getFullYear();
-        const guraduation_day = await this.getDateFromWeek(year, month, 1, 0); // 11月第1日曜日
-        if(guraduation_day >= day){          
-          this.season_prop = "guraduation";
-        }else{
-          this.season_prop = "passo";
-        }
       }
     },
 
@@ -566,7 +566,7 @@ export default {
         }
       });
       if(name_last){
-        if(kana.slice( eval('-'+String(name_last).length))!== String(name_last) ){
+        if(kana.slice( eval('-'+String(name_last).length)) !== String(name_last) ){
           // 最後のマークが名前と一致しない場合追加する
           kana = kana + String(name_last);
         }
@@ -575,7 +575,11 @@ export default {
       const formData = new FormData();
       formData.append('name', this.registerForm.prop);
       formData.append('kana', kana);
-      formData.append('owner_id', this.registerForm.owner);
+      if(this.registerForm.owner !== 0){
+        formData.append('owner_id', this.registerForm.owner);
+      }else{
+        formData.append('owner_id', '');
+      }      
       
       if(this.registerForm.quantity){
         formData.append('quantity', this.registerForm.quantity);
