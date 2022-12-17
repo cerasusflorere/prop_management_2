@@ -494,8 +494,8 @@ export default {
       }
       let last_flag = false;
 
-      if(this.registerForm.setting !== 0){
-        this.registerForm.setting == '';
+      if(this.registerForm.setting === 0){
+        this.registerForm.setting = '';
       }
 
       first_pages.forEach(async function(page, index) {
