@@ -3,12 +3,6 @@
     <!-- ボタンエリア -->
     <div class="button-area">
       <!-- 表示切替ボタン -->
-      <div v-show="tabScene === 1" class="button-area--showhow">
-        <button type="button" @click="switchDisplay_scene" class="button button--inverse"><i class="fas fa-th fa-fw"></i>写真ブロック</button>
-      </div>
-      <div v-show="tabScene === 2" class="button-area--showhow">
-        <button type="button" @click="switchDisplay_scene" class="button button--inverse"><i class="fas fa-list-ul fa-fw"></i>リスト</button>
-      </div>
 
       <div v-if="scenes.length" class="button-area--small">
         <div class="button-area--together-left">
@@ -42,268 +36,192 @@
           <confirmDialog_Delete :confirm_dialog_delete_message="postMessage_Delete" v-show="showContent_confirmDelete" @Cancel_Delete="closeModal_confirmDelete_Cancel" @OK_Delete="closeModal_confirmDelete_OK"/>
         </div>
 
-        <!-- ダウンロードボタン -->
-        <!-- リスト表示かつPCかつデータがある時 -->
-        <div v-if="!sizeScreen && showScenes.length" class="button-area--small-small">
-          <button type="button" @click="downloadScenes" class="button button--inverse button--small"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
-        </div>
-      </div>      
+          <!-- ダウンロードボタン -->
+          <!-- リスト表示かつPCかつデータがある時 -->
+          <div v-if="!sizeScreen && showScenes.length" class="button-area--small-small">
+            <button type="button" @click="downloadScenes" class="button button--inverse button--small"><i class="fas fa-download fa-fw"></i>ダウンロード</button>
+          </div>
+        </div>      
+      </div>
+
+    <div v-if="!sizeScreen && showScenes.length" class="PC">
+      <table>
+        <thead>
+          <tr>
+            <th v-if="choice_flag" class="th-non">
+              <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllScenes"></input>
+            </th>
+            <th class="th-non"></th>
+            <th>ページ数</th>
+            <th>登場人物</th>
+            <th>小道具名</th>
+            <th>個数</th>
+            <th>決定か</th>
+            <th>中間発表</th>
+            <th>卒業公演</th>
+            <th>上手</th>
+            <th>下手</th>
+            <th>セット</th>        
+            <th class="th-memo">メモ</th>
+            <th>登録日時</th>
+            <th>更新日時</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(scene, index) in showScenes">
+            <td v-if="choice_flag">
+              <input type="checkbox" class="checkbox-delete" v-model="choice_ids[scene.id]"></input>
+            </td>
+            <!-- index -->
+            <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
+            <!-- 何ページから -->
+            <td v-if="scene.first_page && scene.final_page != 1000">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
+            <td v-if="scene.first_page == 1 && scene.final_page == 1000">全シーン</td>
+            <td v-if="!scene.first_page"></td>
+            <!-- 登場人物 -->
+            <td>{{ scene.character.name }}</td>
+            <!-- 小道具名 -->
+            <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
+            <!-- 個数 -->
+            <td v-if="scene.quantity > 1">{{ scene.quantity }}</td>
+            <td v-else></td>
+            <!-- これで決定か -->
+            <td v-if="scene.decision"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td> 
+            <!-- 中間発表 -->
+            <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td> 
+            <!-- 卒業公演 -->
+            <td v-if="scene.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
+            <!-- 上手 -->
+            <td v-if="scene.usage_left"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
+            <!-- 下手 -->
+            <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
+            <td v-else></td>
+            <!-- セットする人 -->
+            <td v-if="scene.setting">{{ scene.setting.name }}</td>
+            <td v-else></td>
+            <!-- メモ -->
+            <td v-if="scene.scene_comments.length">
+              <div v-for="memo in scene.scene_comments"> {{ memo.memo }}</div>
+            </td>
+            <td v-else></td>
+            <!-- 登録日時 -->
+            <td>{{ scene.created_at }}</td>
+            <!-- 更新日時 -->
+            <td>{{ scene.updated_at }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div v-if="!showScenes.length">
+        使用シーンは登録されていません。
+      </div>
     </div>
 
-    <!-- 表示エリア -->
-    <div v-show="tabScene === 1">
-      <div v-if="!sizeScreen" class="PC">
-        <table v-if="showScenes.length">
-          <thead>
-            <tr>
-              <th v-if="choice_flag" class="th-non">
+    <div v-else class="phone">
+      <div v-if="showScenes.length">
+        <table>
+          <div v-for="(scene, index) in showScenes">
+            <tr v-show="index === 0" v-if="choice_flag">
+              <th class="th-non">
                 <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllScenes"></input>
               </th>
-              <th class="th-non"></th>
-              <th>ページ数</th>
-              <th>登場人物</th>
-              <th>小道具名</th>
-              <th>個数</th>
-              <th>決定か</th>
-              <th>中間発表</th>
-              <th>卒業公演</th>
-              <th>上手</th>
-              <th>下手</th>
-              <th>セット</th>        
-              <th class="th-memo">メモ</th>
-              <th>登録日時</th>
-              <th>更新日時</th>
+              <td></td>
             </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(scene, index) in showScenes">
-              <td v-if="choice_flag">
-                <input type="checkbox" class="checkbox-delete" v-model="choice_ids[scene.id]"></input>
-              </td>
+            <tr>
               <!-- index -->
+              <th class="th-non">
+                <input type="checkbox" v-if="choice_flag" class="checkbox-delete" v-model="choice_ids[scene.id]"></input>
+              </th>
               <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
-              <!-- 何ページから -->
+            </tr>
+            <tr>
+              <!-- ページ数 -->
+              <th>ページ数</th>
               <td v-if="scene.first_page && scene.final_page != 1000">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
               <td v-if="scene.first_page == 1 && scene.final_page == 1000">全シーン</td>
               <td v-if="!scene.first_page"></td>
+            </tr>
+            <tr>
               <!-- 登場人物 -->
+              <th>登場人物</th>
               <td>{{ scene.character.name }}</td>
-              <!-- 小道具名 -->
+            </tr>
+            <tr>
+              <!-- 小道具 -->
+              <th>小道具</th>
               <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
+            </tr>
+            <tr>
               <!-- 個数 -->
+              <th>個数</th>
               <td v-if="scene.quantity > 1">{{ scene.quantity }}</td>
               <td v-else></td>
+            </tr>
+            <tr>
               <!-- これで決定か -->
+              <th>決定か</th>
               <td v-if="scene.decision"><i class="fas fa-check fa-fw"></i></td>
-              <td v-else></td> 
+              <td v-else></td>
+            </tr>
+            <tr>
               <!-- 中間発表 -->
+              <th>中間</th>
               <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
-              <td v-else></td> 
+              <td v-else></td>
+            </tr>
+            <tr>
               <!-- 卒業公演 -->
+              <th>卒業</th>
               <td v-if="scene.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
               <td v-else></td>
+            </tr>
+            <tr>
               <!-- 上手 -->
+              <th>上手</th>
               <td v-if="scene.usage_left"><i class="fas fa-check fa-fw"></i></td>
               <td v-else></td>
+            </tr>
+            <tr>
               <!-- 下手 -->
+              <th>下手</th>
               <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
               <td v-else></td>
-              <!-- セットする人 -->
+            </tr>
+            <tr>
+              <!-- 誰がセットするか-->
+              <th>セット</th>
               <td v-if="scene.setting">{{ scene.setting.name }}</td>
               <td v-else></td>
+            </tr>
+            <tr>
               <!-- メモ -->
+              <th>メモ</th>
               <td v-if="scene.scene_comments.length">
                 <div v-for="memo in scene.scene_comments"> {{ memo.memo }}</div>
               </td>
               <td v-else></td>
+            </tr>
+            <tr>
               <!-- 登録日時 -->
+              <th>登録日時</th>
               <td>{{ scene.created_at }}</td>
+            </tr>
+            <tr>
               <!-- 更新日時 -->
+              <th>更新日時</th>
               <td>{{ scene.updated_at }}</td>
             </tr>
-          </tbody>
-        </table>
-        <div v-if="!showScenes.length">
-          使用シーンは登録されていません。
-        </div>
-      </div>
-
-      <div v-else class="phone">
-        <div v-if="showScenes.length">
-          <table>
-            <div v-for="(scene, index) in showScenes">
-              <tr v-show="index === 0" v-if="choice_flag">
-                <th class="th-non">
-                  <input type="checkbox" class="checkbox-delete" @click="choiceDeleteAllScenes"></input>
-                </th>
-                <td></td>
-              </tr>
-              <tr>
-                <!-- index -->
-                <th class="th-non">
-                  <input type="checkbox" v-if="choice_flag" class="checkbox-delete" v-model="choice_ids[scene.id]"></input>
-                </th>
-                <td type="button" class="list-button td-color" @click="openModal_sceneDetail(scene.id)">{{ index + 1 }}</td>
-              </tr>
-              <tr>
-                <!-- ページ数 -->
-                <th>ページ数</th>
-                <td v-if="scene.first_page && scene.final_page != 1000">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></td>
-                <td v-if="scene.first_page == 1 && scene.final_page == 1000">全シーン</td>
-                <td v-if="!scene.first_page"></td>
-              </tr>
-              <tr>
-                <!-- 登場人物 -->
-                <th>登場人物</th>
-                <td>{{ scene.character.name }}</td>
-              </tr>
-              <tr>
-                <!-- 小道具 -->
-                <th>小道具</th>
-                <td type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</td>
-              </tr>
-              <tr>
-                <!-- 個数 -->
-                <th>個数</th>
-                <td v-if="scene.quantity > 1">{{ scene.quantity }}</td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- これで決定か -->
-                <th>決定か</th>
-                <td v-if="scene.decision"><i class="fas fa-check fa-fw"></i></td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 中間発表 -->
-                <th>中間</th>
-                <td v-if="scene.usage"><i class="fas fa-check fa-fw"></i></td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 卒業公演 -->
-                <th>卒業</th>
-                <td v-if="scene.usage_guraduation"><i class="fas fa-check fa-fw"></i></td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 上手 -->
-                <th>上手</th>
-                <td v-if="scene.usage_left"><i class="fas fa-check fa-fw"></i></td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 下手 -->
-                <th>下手</th>
-                <td v-if="scene.usage_right"><i class="fas fa-check fa-fw"></i></td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 誰がセットするか-->
-                <th>セット</th>
-                <td v-if="scene.setting">{{ scene.setting.name }}</td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- メモ -->
-                <th>メモ</th>
-                <td v-if="scene.scene_comments.length">
-                  <div v-for="memo in scene.scene_comments"> {{ memo.memo }}</div>
-                </td>
-                <td v-else></td>
-              </tr>
-              <tr>
-                <!-- 登録日時 -->
-                <th>登録日時</th>
-                <td>{{ scene.created_at }}</td>
-              </tr>
-              <tr>
-                <!-- 更新日時 -->
-                <th>更新日時</th>
-                <td>{{ scene.updated_at }}</td>
-              </tr>
-            </div>
-          </table>
-        </div>
-
-        <div v-else>
-          使用シーンは登録されていません。 
-        </div>
-      </div>
-    </div>
-    
-    <div v-show="tabScene === 2">
-      <div v-if="showScenes.length && choice_flag">
-        <input type="checkbox" @click="choiceDeleteAllScenes"></input>
-      </div>
-      <div class="grid" v-if="showScenes.length">
-        <div class="grid__item" v-for="scene in showScenes">
-          <div class="photo">
-            <input type="checkbox" v-if="choice_flag" v-model="choice_ids[scene.id]"></input>
-            <figure class="photo__wrapper" type="button" @click="openModal_sceneDetail(scene.id)">
-              <img
-                class="photo__image"
-                :src="scene.prop.url"
-                :alt="scene.prop.name"
-              >
-            </figure>
-            <div>
-              <!-- ページ数 -->
-              <div>
-                <span v-if="scene.first_page && scene.final_page != 1000">p.{{ scene.first_page }}<span v-if="scene.final_page"> ~ p.{{ scene.final_page }}</span></span>
-                <span v-if="scene.first_page == 1 && scene.final_page == 1000">全シーン</span>
-                <span v-if="!scene.first_page"></span>
-              </div>
-              <!-- 登場人物 -->
-              <div>
-                {{ scene.character.name }}
-              </div>
-              <!-- 小道具名 -->
-              <div>
-                <span type="button" class="list-button" @click="openModal_propDetail(scene.prop.id)">{{ scene.prop.name }}</span>
-              </div>
-              <!-- 個数 -->
-              <div>
-                <span>個数: </span>
-                <span v-if="scene.quantity > 1">{{ scene.quantity }}</span>
-              </div>
-              <!-- 決定かどうか -->
-              <div>
-                <span>決定かどうか: </span>
-                <span v-if="scene.decision" class="usage-show"><i class="fas fa-check fa-fw"></i></span>
-              </div>
-              <div>
-                <!-- 中間発表 -->
-                <span v-if="scene.usage" class="usage-show">Ⓟ</span>
-                <!-- 卒業公演 -->
-                <span v-if="scene.usage_guraduation" class="usage-show">Ⓖ</span>
-                <!-- 上手 -->
-                <span v-if="scene.usage_left" class="usage-show">㊤</span>
-                <!-- 下手 -->
-                <span v-if="scene.right" class="usage-show">㊦</span>
-              </div>
-              <!-- 誰がセットするか-->
-              <div>
-                <span>セット: </span>
-                <span v-if="scene.setting">{{ scene.setting.name }}</span>
-              </div>
-              
-              <!-- メモ -->
-              <div v-if="scene.scene_comments.length">
-                <span>メモ: </span>
-                <div v-for="memo in scene.scene_comments">
-                  {{ memo.memo }}
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
+        </table>
       </div>
 
       <div v-else>
-        該当の小道具は登録されていません。
+        使用シーンは登録されていません。 
       </div>
-    </div> 
+    </div>
 
     <detailScene :postScene="postScene" v-show="showContent" @close="closeModal_sceneDetail" />
     <detailProp :postProp="postProp" v-show="showContent_prop" @close="closeModal_propDetail" /> 
@@ -335,8 +253,6 @@
       return{
         // 画面サイズ取得
         sizeScreen: 1, // 0:パソコン, 1:　スマホ
-        // タブ切り替え
-        tabScene: 1,
         // 取得するデータ
         scenes: [],
         // 表示するデータ
@@ -919,15 +835,6 @@
             this.sort_Standard(array);
           }          
         }      
-      },
-      
-      // 表示切替
-      switchDisplay_scene() {
-        if(this.tabScene === 1){
-          this.tabScene = 2;
-        }else{
-          this.tabScene = 1;
-        }
       },
 
       // 使用シーン詳細のモーダル表示 

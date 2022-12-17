@@ -10239,8 +10239,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       var last_flag = false;
 
-      if (this.registerForm.setting === 0) {
-        this.registerForm.setting = '';
+      if (this.registerForm.setting !== 0) {
+        this.registerForm.setting == '';
       }
 
       first_pages.forEach( /*#__PURE__*/function () {
@@ -12172,8 +12172,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       // 画面サイズ取得
       sizeScreen: 1,
       // 0:パソコン, 1:　スマホ
-      // タブ切り替え
-      tabScene: 1,
       // 取得するデータ
       scenes: [],
       // 表示するデータ
@@ -12838,14 +12836,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         } else {
           this.sort_Standard(array);
         }
-      }
-    },
-    // 表示切替
-    switchDisplay_scene: function switchDisplay_scene() {
-      if (this.tabScene === 1) {
-        this.tabScene = 2;
-      } else {
-        this.tabScene = 1;
       }
     },
     // 使用シーン詳細のモーダル表示 
@@ -20576,43 +20566,7 @@ var render = function render() {
 
   return _c("div", [_c("div", {
     staticClass: "button-area"
-  }, [_c("div", {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: _vm.tabScene === 1,
-      expression: "tabScene === 1"
-    }],
-    staticClass: "button-area--showhow"
-  }, [_c("button", {
-    staticClass: "button button--inverse",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: _vm.switchDisplay_scene
-    }
-  }, [_c("i", {
-    staticClass: "fas fa-th fa-fw"
-  }), _vm._v("写真ブロック")])]), _vm._v(" "), _c("div", {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: _vm.tabScene === 2,
-      expression: "tabScene === 2"
-    }],
-    staticClass: "button-area--showhow"
-  }, [_c("button", {
-    staticClass: "button button--inverse",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: _vm.switchDisplay_scene
-    }
-  }, [_c("i", {
-    staticClass: "fas fa-list-ul fa-fw"
-  }), _vm._v("リスト")])]), _vm._v(" "), _vm.scenes.length ? _c("div", {
+  }, [_vm.scenes.length ? _c("div", {
     staticClass: "button-area--small"
   }, [_c("div", {
     staticClass: "button-area--together-left"
@@ -20747,16 +20701,9 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "fas fa-download fa-fw"
-  }), _vm._v("ダウンロード")])]) : _vm._e()]) : _vm._e()]), _vm._v(" "), _c("div", {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: _vm.tabScene === 1,
-      expression: "tabScene === 1"
-    }]
-  }, [!_vm.sizeScreen ? _c("div", {
+  }), _vm._v("ダウンロード")])]) : _vm._e()]) : _vm._e()]), _vm._v(" "), !_vm.sizeScreen && _vm.showScenes.length ? _c("div", {
     staticClass: "PC"
-  }, [_vm.showScenes.length ? _c("table", [_c("thead", [_c("tr", [_vm.choice_flag ? _c("th", {
+  }, [_c("table", [_c("thead", [_c("tr", [_vm.choice_flag ? _c("th", {
     staticClass: "th-non"
   }, [_c("input", {
     staticClass: "checkbox-delete",
@@ -20838,7 +20785,7 @@ var render = function render() {
     })]) : _c("td"), _vm._v(" "), scene.setting ? _c("td", [_vm._v(_vm._s(scene.setting.name))]) : _c("td"), _vm._v(" "), scene.scene_comments.length ? _c("td", _vm._l(scene.scene_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.created_at))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.updated_at))])]);
-  }), 0)]) : _vm._e(), _vm._v(" "), !_vm.showScenes.length ? _c("div", [_vm._v("\n        使用シーンは登録されていません。\n      ")]) : _vm._e()]) : _c("div", {
+  }), 0)]), _vm._v(" "), !_vm.showScenes.length ? _c("div", [_vm._v("\n      使用シーンは登録されていません。\n    ")]) : _vm._e()]) : _c("div", {
     staticClass: "phone"
   }, [_vm.showScenes.length ? _c("div", [_c("table", _vm._l(_vm.showScenes, function (scene, index) {
     return _c("div", [_vm.choice_flag ? _c("tr", {
@@ -20927,102 +20874,7 @@ var render = function render() {
     })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("セット")]), _vm._v(" "), scene.setting ? _c("td", [_vm._v(_vm._s(scene.setting.name))]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("メモ")]), _vm._v(" "), scene.scene_comments.length ? _c("td", _vm._l(scene.scene_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.created_at))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("更新日時")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(scene.updated_at))])])]);
-  }), 0)]) : _c("div", [_vm._v("\n        使用シーンは登録されていません。 \n      ")])])]), _vm._v(" "), _c("div", {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: _vm.tabScene === 2,
-      expression: "tabScene === 2"
-    }]
-  }, [_vm.showScenes.length && _vm.choice_flag ? _c("div", [_c("input", {
-    attrs: {
-      type: "checkbox"
-    },
-    on: {
-      click: _vm.choiceDeleteAllScenes
-    }
-  })]) : _vm._e(), _vm._v(" "), _vm.showScenes.length ? _c("div", {
-    staticClass: "grid"
-  }, _vm._l(_vm.showScenes, function (scene) {
-    return _c("div", {
-      staticClass: "grid__item"
-    }, [_c("div", {
-      staticClass: "photo"
-    }, [_vm.choice_flag ? _c("input", {
-      directives: [{
-        name: "model",
-        rawName: "v-model",
-        value: _vm.choice_ids[scene.id],
-        expression: "choice_ids[scene.id]"
-      }],
-      attrs: {
-        type: "checkbox"
-      },
-      domProps: {
-        checked: Array.isArray(_vm.choice_ids[scene.id]) ? _vm._i(_vm.choice_ids[scene.id], null) > -1 : _vm.choice_ids[scene.id]
-      },
-      on: {
-        change: function change($event) {
-          var $$a = _vm.choice_ids[scene.id],
-              $$el = $event.target,
-              $$c = $$el.checked ? true : false;
-
-          if (Array.isArray($$a)) {
-            var $$v = null,
-                $$i = _vm._i($$a, $$v);
-
-            if ($$el.checked) {
-              $$i < 0 && _vm.$set(_vm.choice_ids, scene.id, $$a.concat([$$v]));
-            } else {
-              $$i > -1 && _vm.$set(_vm.choice_ids, scene.id, $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
-            }
-          } else {
-            _vm.$set(_vm.choice_ids, scene.id, $$c);
-          }
-        }
-      }
-    }) : _vm._e(), _vm._v(" "), _c("figure", {
-      staticClass: "photo__wrapper",
-      attrs: {
-        type: "button"
-      },
-      on: {
-        click: function click($event) {
-          return _vm.openModal_sceneDetail(scene.id);
-        }
-      }
-    }, [_c("img", {
-      staticClass: "photo__image",
-      attrs: {
-        src: scene.prop.url,
-        alt: scene.prop.name
-      }
-    })]), _vm._v(" "), _c("div", [_c("div", [scene.first_page && scene.final_page != 1000 ? _c("span", [_vm._v("p." + _vm._s(scene.first_page)), scene.final_page ? _c("span", [_vm._v(" ~ p." + _vm._s(scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), scene.first_page == 1 && scene.final_page == 1000 ? _c("span", [_vm._v("全シーン")]) : _vm._e(), _vm._v(" "), !scene.first_page ? _c("span") : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("\n              " + _vm._s(scene.character.name) + "\n            ")]), _vm._v(" "), _c("div", [_c("span", {
-      staticClass: "list-button",
-      attrs: {
-        type: "button"
-      },
-      on: {
-        click: function click($event) {
-          return _vm.openModal_propDetail(scene.prop.id);
-        }
-      }
-    }, [_vm._v(_vm._s(scene.prop.name))])]), _vm._v(" "), _c("div", [_c("span", [_vm._v("個数: ")]), _vm._v(" "), scene.quantity > 1 ? _c("span", [_vm._v(_vm._s(scene.quantity))]) : _vm._e()]), _vm._v(" "), _c("div", [_c("span", [_vm._v("決定かどうか: ")]), _vm._v(" "), scene.decision ? _c("span", {
-      staticClass: "usage-show"
-    }, [_c("i", {
-      staticClass: "fas fa-check fa-fw"
-    })]) : _vm._e()]), _vm._v(" "), _c("div", [scene.usage ? _c("span", {
-      staticClass: "usage-show"
-    }, [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), scene.usage_guraduation ? _c("span", {
-      staticClass: "usage-show"
-    }, [_vm._v("Ⓖ")]) : _vm._e(), _vm._v(" "), scene.usage_left ? _c("span", {
-      staticClass: "usage-show"
-    }, [_vm._v("㊤")]) : _vm._e(), _vm._v(" "), scene.right ? _c("span", {
-      staticClass: "usage-show"
-    }, [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), _c("div", [_c("span", [_vm._v("セット: ")]), _vm._v(" "), scene.setting ? _c("span", [_vm._v(_vm._s(scene.setting.name))]) : _vm._e()]), _vm._v(" "), scene.scene_comments.length ? _c("div", [_c("span", [_vm._v("メモ: ")]), _vm._v(" "), _vm._l(scene.scene_comments, function (memo) {
-      return _c("div", [_vm._v("\n                " + _vm._s(memo.memo) + "\n              ")]);
-    })], 2) : _vm._e()])])]);
-  }), 0) : _c("div", [_vm._v("\n      該当の小道具は登録されていません。\n    ")])]), _vm._v(" "), _c("detailScene", {
+  }), 0)]) : _c("div", [_vm._v("\n      使用シーンは登録されていません。 \n    ")])]), _vm._v(" "), _c("detailScene", {
     directives: [{
       name: "show",
       rawName: "v-show",
