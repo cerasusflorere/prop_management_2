@@ -3283,7 +3283,9 @@ var autokana;
         var content_dom = _this10.$refs.content_detail_prop;
         var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
 
-        if (content_rect.top < 0) {
+        console.log(_this10.overlay_class);
+
+        if (_this10.overlay_class === 0 || content_rect.top < 0) {
           _this10.overlay_class = 0;
         } else {
           _this10.overlay_class = 1;
@@ -21007,7 +21009,7 @@ var render = function render() {
           return _vm.openModal_propDetail(scene.prop.id);
         }
       }
-    }, [_vm._v(_vm._s(scene.prop.name))])]), _vm._v(" "), _c("div", [_c("span", [_vm._v("個数: ")]), _vm._v(" "), scene.quantity > 1 ? _c("span", [_vm._v(_vm._s(scene.quantity))]) : _vm._e()]), _vm._v(" "), _c("div", [_c("span", [_vm._v("決定かどうか: ")]), _vm._v(" "), scene.decision ? _c("span", {
+    }, [_vm._v(_vm._s(scene.prop.name))])]), _vm._v(" "), _c("div", [_c("span", [_vm._v("個数: ")]), _vm._v(" "), scene.quantity > 1 ? _c("span", [_vm._v(_vm._s(scene.quantity))]) : _vm._e()]), _vm._v(" "), _c("div", [_c("span", [_vm._v("決定か: ")]), _vm._v(" "), scene.decision ? _c("span", {
       staticClass: "usage-show"
     }, [_c("i", {
       staticClass: "fas fa-check fa-fw"

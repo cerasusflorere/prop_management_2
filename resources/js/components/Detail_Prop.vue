@@ -710,7 +710,7 @@ export default {
       this.$nextTick(() => {
         const content_dom = this.$refs.content_detail_prop;
         const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-        if(content_rect.top < 0){
+        if(this.overlay_class === 0 || content_rect.top < 0){
           this.overlay_class = 0;
         }else{
           this.overlay_class = 1;

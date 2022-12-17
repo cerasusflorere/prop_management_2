@@ -269,7 +269,7 @@
               </div>
               <!-- 決定かどうか -->
               <div>
-                <span>決定かどうか: </span>
+                <span>決定か: </span>
                 <span v-if="scene.decision" class="usage-show"><i class="fas fa-check fa-fw"></i></span>
               </div>
               <div>
