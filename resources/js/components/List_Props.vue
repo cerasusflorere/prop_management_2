@@ -51,6 +51,7 @@ export default {
       async handler (postFlag) {
         if(this.postFlag){
           const props = await this.fetchProps();
+          this.sort_Standard();
 
           this.sort_Standard();
 
@@ -80,13 +81,20 @@ export default {
       this.props_list = response.data;
     },
 
+<<<<<<< HEAD
     
 
+=======
+>>>>>>> 688a9679f82795300931f23b78c80026c04e7a75
     sort_Standard(){
       const regex_str = /[^ぁ-んー]/g; // ひらがな以外
       const regex_number = /[^0-9]/g; // 数字以外
       const regex_alf = /[^A-Z]/g; // アルファベット
+<<<<<<< HEAD
       this.props_list.sort((a, b) => {
+=======
+      prop.sort((a, b) => {
+>>>>>>> 688a9679f82795300931f23b78c80026c04e7a75
         // kanaで並び替え
         if(a.kana !== b.kana){
           const a_str = a.kana.replace(regex_str, "");
