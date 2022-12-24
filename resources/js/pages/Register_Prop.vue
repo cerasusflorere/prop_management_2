@@ -548,22 +548,29 @@ export default {
 
       kanas.forEach(a => {
         // 一文字ずつになっている
-        const number = this.Zenkaku2hankaku_number(a);
-        if(pattern_number.test(number)){
-          // 数字だった
-          kana = kana + number;
+        if(this.first_uni <= a.charCodeAt(0) && a.charCodeAt(0) <= this.final_uni){
+          // 囲み文字の処理
+          const name_last_point_diff = a.charCodeAt(0)-this.first_uni + 1;
+          kana = kana + name_last_point_diff;
         }else{
-          // 数字じゃなかった=文字だった
-          const alf = this.Zenkaku2hankaku_alf(number);
-          if(pattern_alf.test(alf.toUpperCase())){
-            // アルファベットだった
-            kana = kana + alf.toUpperCase();
+          // 囲み文字じゃなかった
+          const number = this.Zenkaku2hankaku_number(a);
+          if(pattern_number.test(number)){
+            // 数字だった
+            kana = kana + number;
           }else{
-            // アルファベットじゃなかった=ひらがなかカタカナだった
-            const str = this.hunkaku2Zenkaku_str(alf);
-            kana = kana + this.kata2Hira(str);
+            // 数字じゃなかった=文字だった
+            const alf = this.Zenkaku2hankaku_alf(number);
+            if(pattern_alf.test(alf.toUpperCase())){
+              // アルファベットだった
+              kana = kana + alf.toUpperCase();
+            }else{
+              // アルファベットじゃなかった=ひらがなかカタカナだった
+              const str = this.hunkaku2Zenkaku_str(alf);
+              kana = kana + this.kata2Hira(str);
+            }
           }
-        }
+        }        
       });
       if(name_last){
         if(kana.slice( eval('-'+String(name_last).length)) !== String(name_last) ){

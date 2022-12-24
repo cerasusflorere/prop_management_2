@@ -352,9 +352,7 @@
             if(quantity > 1){
               this.input_quantity = true;
               const input_scene_quantity = this.$refs.input_scene_quantity;
-              console.log(input_scene_quantity);
               input_scene_quantity.max = quantity;
-            console.log(input_scene_quantity.max);
             }else{
               this.input_quantity = false;
             }
