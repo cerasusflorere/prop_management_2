@@ -76,11 +76,17 @@ class PropController extends Controller
         $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
         $usage_left = !empty($request->usage_left) ? 1 : 0;
         $usage_right = !empty($request->usage_right) ? 1 : 0;
+        $preset = 0;
+        if($request->preset == 1){
+            $preset = 1;
+        }else if($request->preset == 2){
+            $preset = 2;
+        }
 
         DB::beginTransaction();
 
         try {
-            $prop = Prop::create(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+            $prop = Prop::create(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'preset' => $preset]);
             if($request->memo){
                 $prop_comment = Props_Comment::create(['prop_id' => $prop->id, 'memo' => $request->memo]);
             }            
@@ -98,7 +104,7 @@ class PropController extends Controller
 
         // リソースの新規作成なので
         // レスポンスコードは201(CREATED)を返却する
-        return response($prop, 201);
+        return response($prop, 201) ?? abort(404);
     }
 
     /**
@@ -125,6 +131,36 @@ class PropController extends Controller
     public function update(Request $request, $id)
     {
         $folder = 'prop_management_local';
+        $first_preset = 0;
+        $preset_scene = 0;
+        if($request->preset){
+            $presets = Scene::where('prop_id', $id)
+                      ->where('first_page', '>=', 1)
+                      ->select('first_page', 'usage_left', 'usage_right')
+                      ->get()->toArray();
+
+            if(count($presets)){
+                // 使用ページ有り
+                // ソートしたい要素の値を配列に入れる
+                foreach ($presets as $preset => $colum) {
+                    $ArrPage[] = $colum['first_page'];
+                }            
+                // ソートする
+                array_multisort($ArrPage, SORT_ASC, SORT_NUMERIC, $presets);
+
+                if($presets[0]['usage_left']){
+                    $first_preset = 1;
+                }else if($presets[0]['usage_right']){
+                    $first_preset = 2;
+                }else{
+                    $first_preset = 0;
+                }
+            }else{
+                // 使用シーンなしまたはページ数の登録なし
+                $preset_scene = 1;
+            }
+        }
+
         if($request->method == 'usage_change'){
             // 小道具投稿時にしようとした場合
             $usage = Prop::where('id', $id)
@@ -135,7 +171,7 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_left_change'){
             // 小道具投稿時にしようとした場合
@@ -147,7 +183,7 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_right_change'){
             // 小道具投稿時にしようとした場合
@@ -159,7 +195,7 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_guraduation_change'){
             // 小道具投稿時にしようとした場合
@@ -171,7 +207,7 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'photo_non_update'){
             // 写真更新しない
@@ -191,9 +227,24 @@ class PropController extends Controller
             $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
             $usage_left = !empty($request->usage_left) ? 1 : 0;
             $usage_right = !empty($request->usage_right) ? 1 : 0;
-
+            $no_change_preset = 0;
+            if($first_preset === 0){
+                if($request->preset == 1){
+                   $preset = 1;
+                }else if($request->preset == 2){
+                   $preset = 2;
+                }else{
+                   $preset = 0;
+                }
+            }else{
+                if($first_preset != $request->preset){
+                    $no_change_preset = 1;
+                }
+                $preset = $first_preset;
+            }
+            
             $affected = Prop::where('id', $id)
-                   ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                   ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'preset' => $preset]);
 
             if(!$decision){
                 $affected_scene = Scene::where('prop_id', $id)
@@ -214,10 +265,23 @@ class PropController extends Controller
                     ->update(['usage_left' => 0]);
             }else if(!$usage_right){
                 $affected_scene = Scene::where('prop_id', $id)
-                    ->update(['usage_left' => 0]);
+                    ->update(['usage_right' => 0]);
             }
-            // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            if($no_change_preset){
+                // プリセットの位置が指示通りでない
+                // レスポンスコードは206(Partial Content)を返却する
+                return response($affected, 206) ?? abort(404);
+            }else if($preset_scene){
+                // プリセットの位置が指示通り
+                // ただし使用シーンなしまたはページ数なし
+                // レスポンスコードは205(Reset Content)を返却する
+                return response($affected, 205) ?? abort(404);
+            }else{
+                // プリセットの位置が指示通り
+                // レスポンスコードは204(No Content)を返却する
+                return response($affected, 204) ?? abort(404);
+            }
+            
 
         }else if($request->method == 'photo_store'){
             // 写真新規投稿
@@ -247,12 +311,27 @@ class PropController extends Controller
             $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
             $usage_left = !empty($request->usage_left) ? 1 : 0;
             $usage_right = !empty($request->usage_right) ? 1 : 0;
+            $no_change_preset = 0;
+            if($first_preset === 0){
+                if($request->preset == 1){
+                   $preset = 1;
+                }else if($request->preset == 2){
+                   $preset = 2;
+                }else{
+                   $preset = 0;
+                }
+            }else{
+                if($first_preset != $request->preset){
+                    $no_change_preset = 1;
+                }
+                $preset = $first_preset;
+            }
 
             DB::beginTransaction();
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'preset' => $preset]);
                 
                 if(!$decision){
                     $affected_scene = Scene::where('prop_id', $id)
@@ -274,7 +353,7 @@ class PropController extends Controller
                         ->update(['usage_left' => 0]);
                 }else if(!$usage_right){
                     $affected_scene = Scene::where('prop_id', $id)
-                        ->update(['usage_left' => 0]);
+                        ->update(['usage_right' => 0]);
                 }
 
                 DB::commit();
@@ -288,8 +367,20 @@ class PropController extends Controller
                 throw $exception;
             }
 
-            // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            if($no_change_preset){
+                // プリセットの位置が指示通りでない
+                // レスポンスコードは206(Partial Content)を返却する
+                return response($affected, 206) ?? abort(404);
+            }else if($preset_scene){
+                // プリセットの位置が指示通り
+                // ただし使用シーンなしまたはページ数なし
+                // レスポンスコードは205(Reset Content)を返却する
+                return response($affected, 205) ?? abort(404);
+            }else{
+                // プリセットの位置が指示通り
+                // レスポンスコードは204(No Content)を返却する
+                return response($affected, 204) ?? abort(404);
+            }
 
         }else if($request->method == 'photo_delete'){
             // 写真削除
@@ -309,12 +400,27 @@ class PropController extends Controller
             $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
             $usage_left = !empty($request->usage_left) ? 1 : 0;
             $usage_right = !empty($request->usage_right) ? 1 : 0;
-
+            $no_change_preset = 0;
+            if($first_preset === 0){
+                if($request->preset == 1){
+                   $preset = 1;
+                }else if($request->preset == 2){
+                   $preset = 2;
+                }else{
+                   $preset = 0;
+                }
+            }else{
+                if($first_preset != $request->preset){
+                    $no_change_preset = 1;
+                }
+                $preset = $first_preset;
+            }
+            
             DB::beginTransaction();
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => null, 'url' => null, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => null, 'url' => null, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'preset' => $preset]);
                 
                 if(!$decision){
                     $affected_scene = Scene::where('prop_id', $id)
@@ -336,7 +442,7 @@ class PropController extends Controller
                         ->update(['usage_left' => 0]);
                 }else if(!$usage_right){
                     $affected_scene = Scene::where('prop_id', $id)
-                    ->update(['usage_left' => 0]);
+                    ->update(['usage_right' => 0]);
                 }
                 
                 DB::commit();
@@ -354,8 +460,22 @@ class PropController extends Controller
                 throw $exception;
             }
 
-            // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            
+            if($no_change_preset){
+                // プリセットの位置が指示通りでない
+                // レスポンスコードは206(Partial Content)を返却する
+                return response($affected, 206) ?? abort(404);
+            }else if($preset_scene){
+                // プリセットの位置が指示通り
+                // ただし使用シーンなしまたはページ数なし
+                // レスポンスコードは205(Reset Content)を返却する
+                return response($affected, 205) ?? abort(404);
+            }else{
+                // プリセットの位置が指示通り
+                // レスポンスコードは204(No Content)を返却する
+                return response($affected, 204) ?? abort(404);
+            }
+            
         }else if($request->method == 'photo_update'){
             //写真アップデート
             if($request->photo){
@@ -383,12 +503,27 @@ class PropController extends Controller
             $usage_guraduation = !empty($request->usage_guraduation) ? 1 : 0;
             $usage_left = !empty($request->usage_left) ? 1 : 0;
             $usage_right = !empty($request->usage_right) ? 1 : 0;
-
+            $no_change_preset = 0;
+            if($first_preset === 0){
+                if($request->preset == 1){
+                   $preset = 1;
+                }else if($request->preset == 2){
+                   $preset = 2;
+                }else{
+                   $preset = 0;
+                }
+            }else{
+                if($first_preset != $request->preset){
+                    $no_change_preset = 1;
+                }
+                $preset = $first_preset;
+            }
+            
             DB::beginTransaction();
 
             try {
                 $affected = Prop::where('id', $id)
-                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right]);
+                             ->update(['name' => $request->name, 'kana' => $request->kana, 'owner_id' => $owner_id, 'quantity' => $quantity, 'location' => $location, 'handmade' => $handmade, 'decision' => $decision, 'public_id' => $public_id, 'url' => $url, 'usage' => $usage, 'usage_guraduation' => $usage_guraduation, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'preset' => $preset]);
                 
                 if(!$decision){
                     $affected_scene = Scene::where('prop_id', $id)
@@ -409,7 +544,7 @@ class PropController extends Controller
                         ->update(['usage_left' => 0]);
                 }else if(!$usage_right){
                     $affected_scene = Scene::where('prop_id', $id)
-                        ->update(['usage_left' => 0]);
+                        ->update(['usage_right' => 0]);
                 }
 
                 DB::commit();
@@ -427,8 +562,20 @@ class PropController extends Controller
                 throw $exception;
             }
             
-            // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204) ?? abort(404);
+            if($no_change_preset){
+                // プリセットの位置が指示通りでない
+                // レスポンスコードは206(Partial Content)を返却する
+                return response($affected, 206) ?? abort(404);
+            }else if($preset_scene){
+                // プリセットの位置が指示通り
+                // ただし使用シーンなしまたはページ数なし
+                // レスポンスコードは205(Reset Content)を返却する
+                return response($affected, 205) ?? abort(404);
+            }else{
+                // プリセットの位置が指示通り
+                // レスポンスコードは204(No Content)を返却する
+                return response($affected, 204) ?? abort(404);
+            }
         }
     }
 
@@ -454,12 +601,12 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_guraduation_left_to_right_change'){
             // 小道具編集時にしようとした場合
             $usage_left = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_left', 1)->get();
+                    ->where('prop_id', $id)->where('usage_left', 1)->first();
             if(empty($usage_left)){
                 $affected = Prop::where('id', $id)
                    ->update(['usage_guraduation' => 1, 'usage_left' => 0, 'usage_right' => 1]);
@@ -469,12 +616,12 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_guraduation_right_to_left_change'){
             // 小道具編集時にしようとした場合
             $usage_right = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_right', 1)->get();
+                    ->where('prop_id', $id)->where('usage_right', 1)->first();
             if(empty($usage_right)){
                 $affected = Prop::where('id', $id)
                    ->update(['usage_guraduation' => 1, 'usage_left' => 1, 'usage_right' => 0]);
@@ -484,12 +631,12 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_guraduation_1_left_0_change'){
             // 小道具編集時にしようとした場合
             $usage_left = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_left', 1)->get();
+                    ->where('prop_id', $id)->where('usage_left', 1)->first();
             if(empty($usage_left)){
                 $affected = Prop::where('id', $id)
                    ->update(['usage_guraduation' => 1, 'usage_left' => 0]);
@@ -499,12 +646,12 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_guraduation_1_right_0_change'){
             // 小道具編集時にしようとした場合
             $usage_right = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_right', 1)->get();
+                    ->where('prop_id', $id)->where('usage_right', 1)->first();
             if(empty($usage_right)){
                 $affected = Prop::where('id', $id)
                    ->update(['usage_guraduation' => 1, 'usage_right' => 0]);
@@ -514,14 +661,14 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_guraduation_0_left_0_change'){
             // 小道具編集時にしようとした場合
             $usage_guraduation = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_guraduation', 1)->get();
+                    ->where('prop_id', $id)->where('usage_guraduation', 1)->first();
             $usage_left = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_left', 1)->get();
+                    ->where('prop_id', $id)->where('usage_left', 1)->first();
             if(empty($usage_guraduation) || empty($usage_left)){
                 if(empty($usage_guraduation)){
                     $affected = Prop::where('id', $id)
@@ -535,14 +682,14 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_guraduation_0_right_0_change'){
             // 小道具編集時にしようとした場合
             $usage_guraduation = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_guraduation', 1)->get();
+                    ->where('prop_id', $id)->where('usage_guraduation', 1)->first();
             $usage_right = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_right', 1)->get();
+                    ->where('prop_id', $id)->where('usage_right', 1)->first();
             if(empty($usage_guraduation) || empty($usage_right)){
                 if(empty($usage_guraduation)){
                     $affected = Prop::where('id', $id)
@@ -556,12 +703,12 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_guraduation_0_change'){
             // 小道具編集時にしようとした場合
             $usage_guraduation = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_guraduation', 1)->get();
+                    ->where('prop_id', $id)->where('usage_guraduation', 1)->first();
             if(empty($usage_guraduation)){
                 $affected = Prop::where('id', $id)
                     ->update(['usage_guraduation' => 0]);
@@ -570,12 +717,12 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_left_to_right_change'){
             // 小道具編集時にしようとした場合
             $usage_left = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_left', 1)->get();
+                    ->where('prop_id', $id)->where('usage_left', 1)->first();
             if(empty($usage_left)){
                 $affected = Prop::where('id', $id)
                     ->update(['usage_left' => 0, 'usage_right' => 1]);
@@ -585,12 +732,12 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_right_to_left_change'){
             // 小道具編集時にしようとした場合
             $usage_right = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_right', 1)->get();
+                    ->where('prop_id', $id)->where('usage_right', 1)->first();
             if(empty($usage_right)){
                 $affected = Prop::where('id', $id)
                     ->update(['usage_left' => 1, 'usage_right' => 0]);
@@ -600,12 +747,12 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_left_0_change'){
             // 小道具編集時にしようとした場合
             $usage_left = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_left', 1)->get();
+                    ->where('prop_id', $id)->where('usage_left', 1)->first();
             if(empty($usage_left)){
                 $affected = Prop::where('id', $id)
                     ->update(['usage_left' => 0]);
@@ -614,12 +761,12 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
 
         }else if($request->method == 'usage_right_0_change'){
             // 小道具編集時にしようとした場合
             $usage_right = Scene::where('id', '<>', $request->id)
-                    ->where('prop_id', $id)->where('usage_right', 1)->get();
+                    ->where('prop_id', $id)->where('usage_right', 1)->first();
             if(empty($usage_right)){
                 $affected = Prop::where('id', $id)
                     ->update(['usage_right' => 0]);
@@ -628,7 +775,7 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }
     }
 
@@ -654,7 +801,7 @@ class PropController extends Controller
                     ->update(['location' => $yes_no]);
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }else if($request->method == 'handmade'){
             // 作るかどうか
             $affected= Prop::whereIn('id', $ids)
@@ -673,7 +820,7 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }else if($request->method == 'usage'){
             // 中間発表で使用するか
             $affected= Prop::whereIn('id', $ids)
@@ -685,7 +832,7 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }else if($request->method == 'usage_guraduation'){
             // 卒業公演で使用するか
             if($yes_no){
@@ -700,7 +847,7 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }else if($request->method == 'usage_left'){
             // 上手で使用するか
             if($yes_no){
@@ -715,7 +862,7 @@ class PropController extends Controller
             }            
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }else if($request->method == 'usage_right'){
             // 下手で使用するか
             if($yes_no){
@@ -730,7 +877,7 @@ class PropController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }
     }
 

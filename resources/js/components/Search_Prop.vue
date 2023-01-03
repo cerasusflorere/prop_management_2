@@ -114,6 +114,7 @@
   
               <!-- 使用するか -->
               <div class="search--select-area checkbox-area--together">
+                <label>使用する</label>
                 <span class="checkbox-area--together search--select-area--performance">
                   <input type="checkbox" id="search_prop_usage" class="form__check__input" v-model="search_prop.prop_search.usage">
                   <label for="search_prop_usage" class="form__check__label">中間発表</label>
@@ -132,7 +133,26 @@
                     <input type="checkbox" id="search_prop_usage_right" class="form__check__input" value="right" v-model="search_prop.prop_search.usage_right"></input>
                     <label for="search_prop_usage_right" class="form__check__label">下手</label>
                   </span>
-                </span>            
+                </span>
+              </div>
+
+              <!-- プリセット -->
+              <div class="search--select-area checkbox-area--together">
+                <label>プリセ</label>
+                <span class="checkbox-area--together search--select-area--performance">
+                  <input type="checkbox" id="search_prop_preset_left" class="form__check__input" v-model="search_prop.prop_search.preset_left">
+                  <label for="search_prop_preset_left" class="form__check__label">上手</label>
+                </span>
+
+                <span class="checkbox-area--together search--select-area--performance">
+                  <input type="checkbox" id="search_prop_preset_right" class="form__check__input" v-model="search_prop.prop_search.preset_right">
+                  <label for="search_prop_preset_right" class="form__check__label">下手</label>
+                </span>
+
+                <span class="checkbox-area--together search--select-area--performance">
+                  <input type="checkbox" id="search_prop_preset_no" class="form__check__input" v-model="search_prop.prop_search.preset_no">
+                  <label for="search_prop_preset_no" class="form__check__label">未定</label>
+                </span>
               </div>
             </div>
   
@@ -187,7 +207,10 @@
               usage: false,
               usage_guraduation: false,
               usage_left: false,
-              usage_right: false
+              usage_right: false,
+              preset_left: false,
+              preset_right: false,
+              preset_no: false
             }
           }
         }
@@ -255,7 +278,8 @@
           let usage = '!=' + 100;
           let usage_guraduation = '!=' + 100;
           let usage_left = '!=' + 100;
-          let usage_right = '!=' + 100;
+          let usage_right = '!=' + 100;          
+          let preset = '(a.preset !=' + 100;
           
           if(this.search_prop.prop_search.name.input){
             name_input = '==' + this.h(this.search_prop.prop_search.name.input);
@@ -320,8 +344,23 @@
           if(this.search_prop.prop_search.usage_right){
             usage_right = '===' + 1;
           }
+
+          if((this.search_prop.prop_search.preset_left || this.search_prop.prop_search.preset_right) && !this.search_prop.prop_search.preset_no){
+            preset = '(a.preset !==' + 0;
+            if(this.search_prop.prop_search.preset_left) {
+              preset = '(a.preset ===' + 1;
+              if(this.search_prop.prop_search.preset_right){
+                preset = preset + '|| a.preset === ' + 2;
+              }
+            }else if(this.search_prop.prop_search.preset_right){
+              preset = '(a.preset ===' + 2;
+            }
+          }else if((!this.search_prop.prop_search.preset_left && !this.search_prop.prop_search.preset_right) && this.search_prop.prop_search.preset_no){
+            preset = '(a.preset ===' + 0;
+          }
+          preset = preset + ')';
   
-          const refine = 'a.owner_id'+owner_id + '&& a.location'+location + '&&'+handmade +'&& a.decision'+decision + '&& a.usage'+usage + '&& a.usage_guraduation'+usage_guraduation + '&& a.usage_left'+usage_left + '&& a.usage_right'+usage_right;
+          const refine = 'a.owner_id'+owner_id + '&& a.location'+location + '&&'+handmade +'&& a.decision'+decision + '&& a.usage'+usage + '&& a.usage_guraduation'+usage_guraduation + '&& a.usage_left'+usage_left + '&& a.usage_right'+usage_right + '&&'+preset;
   
           this.$emit('close', this.search_prop.prop_sort, this.search_prop.prop_search.name, refine);
         },
@@ -346,6 +385,9 @@
           this.search_prop.prop_search.usage_guraduation = false;
           this.search_prop.prop_search.usage_left = false;
           this.search_prop.prop_search.usage_right = false;
+          this.search_prop.prop_search.preset_left = false;
+          this.search_prop.prop_search.preset_right = false;
+          this.search_prop.prop_search.preset_no = false;
         }
       }
     }

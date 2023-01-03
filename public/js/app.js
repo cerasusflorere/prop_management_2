@@ -2758,7 +2758,7 @@ var autokana;
         owner: {
           name: ''
         },
-        owner_id: '',
+        owner_id: 0,
         quantity: 1,
         location: 0,
         handmade: 0,
@@ -2770,6 +2770,7 @@ var autokana;
         usage_guraduation: 0,
         usage_left: 0,
         usage_right: 0,
+        preset: 'no',
         photo: 0,
         prop_comments: [],
         scenes: []
@@ -2804,6 +2805,8 @@ var autokana;
       // 編集範囲
       editPropMode_detail: "",
       editPropMode_memo: "",
+      // 編集時にプリセットが思い通りできたか
+      acci_change_preset: 0,
       // 削除confirm
       showContent_confirmDelete: false,
       postMessage_Delete: ""
@@ -2815,13 +2818,13 @@ var autokana;
         var _this = this;
 
         return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-          var i, autokana_id, content_dom, content_rect;
+          var i, autokana_id;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
                   if (!_this.postProp) {
-                    _context.next = 18;
+                    _context.next = 17;
                     break;
                   }
 
@@ -2848,21 +2851,25 @@ var autokana;
                   return _this.fetchProps();
 
                 case 12:
-                  // ふりがなのinput要素のidは省略可能
+                  _this.$el.querySelector('input[type="file"]').value = null; // ふりがなのinput要素のidは省略可能
                   // 使用シーン登録時のid=propと被るから
+
                   autokana_id = '#' + _this.prop.id;
                   autokana = vanilla_autokana__WEBPACK_IMPORTED_MODULE_3__.bind(autokana_id);
-                  autokana.input = _this.prop.kana;
-                  content_dom = _this.$refs.content_detail_prop;
-                  content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+                  autokana.input = _this.prop.kana; // 調整
 
-                  if (content_rect.top < 0) {
-                    _this.overlay_class = 0;
-                  } else {
-                    _this.overlay_class = 1;
-                  }
+                  _this.$nextTick(function () {
+                    var content_dom = _this.$refs.content_detail_prop;
+                    var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
 
-                case 18:
+                    if (content_rect.top < 0) {
+                      _this.overlay_class = 0;
+                    } else {
+                      _this.overlay_class = 1;
+                    }
+                  });
+
+                case 17:
                 case "end":
                   return _context.stop();
               }
@@ -2882,7 +2889,7 @@ var autokana;
               switch (_context2.prev = _context2.next) {
                 case 0:
                   if (!(_this2.editPropMode_detail === 100 || _this2.editPropMode_memo === 100)) {
-                    _context2.next = 8;
+                    _context2.next = 9;
                     break;
                   }
 
@@ -2902,7 +2909,17 @@ var autokana;
                     } else {
                       _this2.overlay_class = 1;
                     }
-                  }); // メッセージ登録
+                  });
+
+                  if (_this2.acci_change_preset === 1) {
+                    // プリセットが指示通り変換できたが使用シーンなしまたはページ数の登録なし
+                    alert('プリセットは変更しましたが、使用シーンが登録されていない、またはページ数の登録のある使用シーンがありません。');
+                    _this2.acci_change_preset = 0;
+                  } else if (_this2.acci_change_preset === 2) {
+                    // プリセットが指示通り変換できなかった
+                    alert('プリセットは該当小道具の最初の使用シーンの位置と異なったので変更していません。');
+                    _this2.acci_change_preset = 0;
+                  } // メッセージ登録
 
 
                   _this2.$store.commit('message/setContent', {
@@ -2910,30 +2927,35 @@ var autokana;
                     timeout: 6000
                   });
 
-                  _context2.next = 14;
+                  _context2.next = 15;
                   break;
 
-                case 8:
+                case 9:
                   if (!(_this2.editPropMode_detail || _this2.editPropMode_memo)) {
-                    _context2.next = 13;
+                    _context2.next = 14;
                     break;
                   }
 
-                  _context2.next = 11;
+                  _context2.next = 12;
                   return _this2.openModal_confirmEdit();
 
-                case 11:
-                  _context2.next = 14;
+                case 12:
+                  _context2.next = 15;
                   break;
 
-                case 13:
+                case 14:
                   if (_this2.editPropMode_detail === 0 && _this2.editPropMode_memo === 0) {
-                    alert('元のデータと同じです！変更してください');
+                    if (!_this2.editForm_prop.usage_left && _this2.editForm_prop.preset === 'left' || !_this2.editForm_prop.usage_right && _this2.editForm_prop.preset === 'right') {
+                      alert('使用しない袖でプリセットしようとしています。使用する袖を指定するか、プリセットを外してください。');
+                    } else {
+                      alert('元のデータと同じです！変更してください！');
+                    }
+
                     _this2.editPropMode_detail = "";
                     _this2.editPropMode_memo = "";
                   }
 
-                case 14:
+                case 15:
                 case "end":
                   return _context2.stop();
               }
@@ -3009,6 +3031,15 @@ var autokana;
                 _this3.editForm_prop.usage_guraduation = _this3.prop.usage_guraduation;
                 _this3.editForm_prop.usage_left = _this3.prop.usage_left;
                 _this3.editForm_prop.usage_right = _this3.prop.usage_right;
+
+                if (_this3.prop.preset === 1) {
+                  _this3.editForm_prop.preset = 'left';
+                } else if (_this3.prop.preset === 2) {
+                  _this3.editForm_prop.preset = 'right';
+                } else {
+                  _this3.editForm_prop.preset = 'no';
+                }
+
                 _this3.editForm_prop.prop_comments = JSON.parse(JSON.stringify(_this3.prop.prop_comments));
                 scenes = _this3.prop.scenes;
 
@@ -3028,8 +3059,7 @@ var autokana;
                   _this3.editForm_prop.photo = 0; // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
                 }
 
-                _this3.preview = null; // if(!this.editForm_prop.scenes.length){
-                //   this.editForm_prop.scenes[0] = Object.assign({}, this.editForm_prop.scenes[0], {character_id: null, section: '' , page: '', usage: '', scene_comments: []})
+                _this3.preview = null; //   this.editForm_prop.scenes[0] = Object.assign({}, this.editForm_prop.scenes[0], {character_id: null, section: '' , page: '', usage: '', scene_comments: []})
                 //   this.editForm_prop.scenes[0].scene_comments[0] = Object.assign({}, this.editForm_prop.scenes[0].scene_comments[0], {memo: null})
                 // }else{
                 //   this.editForm_prop.scenes.forEach((scene,index) => {
@@ -3039,18 +3069,7 @@ var autokana;
                 // }
 
                 _this3.editPropMode_detail = "";
-                _this3.editPropMode_memo = ""; // 調整
-
-                _this3.$nextTick(function () {
-                  var content_dom = _this3.$refs.content_detail_prop;
-                  var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-
-                  if (content_rect.top < 0) {
-                    _this3.overlay_class = 0;
-                  } else {
-                    _this3.overlay_class = 1;
-                  }
-                });
+                _this3.editPropMode_memo = "";
 
               case 33:
               case "end":
@@ -3317,6 +3336,7 @@ var autokana;
         this.guradutaion_tag = 0;
         this.editForm_prop.usage_left = 0;
         this.editForm_prop.usage_right = 0;
+        this.editForm_prop.preset = 'no';
       }
     },
     // 諸々リセット
@@ -3339,6 +3359,7 @@ var autokana;
       this.editForm_prop.usage_guraduation = 0;
       this.editForm_prop.usage_left = 0;
       this.editForm_prop.usage_right = 0;
+      this.editForm_prop.preset = 'no';
       this.editForm_prop.photo = 0;
       this.editForm_prop.prop_comments = [];
       this.editForm_prop.scenes = []; // 卒業公演
@@ -3639,15 +3660,19 @@ var autokana;
         this.editForm_prop.handmade = this.editForm_prop.handmade_complete;
       }
 
-      if (this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || !this.prop.owner_id && !this.editForm_prop.owner_id || this.prop.quantity !== this.editForm_prop.quantity || this.prop.location !== this.editForm_prop.location || this.prop.handmade !== this.editForm_prop.handmade || this.prop.decision !== this.editForm_prop.decision || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && (this.prop.public_id && this.editForm_prop.photo === 1 || !this.prop.public_id && !this.editForm_prop.photo)) {
-        // 怪しい
-        // if(!this.prop.owner_id && !this.editForm_prop.owner_id){
-        //   console.log('なんで');
-        //   this.editPropMode_detail = 0;
-        // }else{
+      var preset = 0;
+
+      if (this.editForm_prop.usage_left && this.editForm_prop.preset === 'left') {
+        preset = 1;
+      } else if (this.editForm_prop.usage_right && this.editForm_prop.preset === 'right') {
+        preset = 2;
+      } else if (!this.editForm_prop.usage_left && this.editForm_prop.preset === 'left' || !this.editForm_prop.usage_right && this.editForm_prop.preset === 'right') {
+        this.editPropMode_detail = 0;
+      }
+
+      if (this.editPropMode_detail !== 0 && this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.quantity !== this.editForm_prop.quantity || this.prop.location != this.editForm_prop.location || this.prop.handmade != this.editForm_prop.handmade || this.prop.decision != this.editForm_prop.decision || this.prop.usage != this.editForm_prop.usage || this.prop.usage_guraduation != this.editForm_prop.usage_guraduation || this.prop.usage_left != this.editForm_prop.usage_left || this.prop.usage_right != this.editForm_prop.usage_right || this.prop.preset !== preset) && (this.prop.public_id && this.editForm_prop.photo === 1 || !this.prop.public_id && !this.editForm_prop.photo)) {
         // 写真をアップデートしない
         this.editPropMode_detail = 1; // 'photo_non_update'
-        // }        
       } else if (this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo && this.editForm_prop.photo !== 1) {
         // 写真新規
         this.editPropMode_detail = 2; // 'photo_store'
@@ -3701,6 +3726,7 @@ var autokana;
       var usage_guraduation = '';
       var usage_left = '';
       var usage_right = '';
+      var preset = '';
 
       if (this.editForm_prop.location) {
         location = '持ってきてる';
@@ -3734,6 +3760,12 @@ var autokana;
         usage_right = '㊦';
       }
 
+      if (this.editForm_prop.preset === 'left') {
+        preset = '㊤';
+      } else if (this.editForm_prop.preset === 'right') {
+        preset = '㊦';
+      }
+
       var memos = [];
       this.editForm_prop.prop_comments.forEach(function (memo, index) {
         if (memo.memo && index !== _this14.editForm_prop.prop_comments.length - 1) {
@@ -3750,7 +3782,7 @@ var autokana;
         photo = '変更しない';
       }
 
-      this.postMessage_Edit = '以下のように編集します。\n小道具名：' + this.editForm_prop.name + '\nふりがな：' + this.editForm_prop.kana + '\n持ち主：' + this.editForm_prop.owner.name + '\n個数：' + this.editForm_prop.quantity + '\nピッコロに：' + location + '\n' + handmade + '\n決定：' + decision + '\n使用状況：' + usage + usage_guraduation + usage_left + usage_right + '\nメモ：' + memos + '\n写真：' + photo;
+      this.postMessage_Edit = '以下のように編集します。\n小道具名：' + this.editForm_prop.name + '\nふりがな：' + this.editForm_prop.kana + '\n持ち主：' + this.editForm_prop.owner.name + '\n個数：' + this.editForm_prop.quantity + '\nピッコロに：' + location + '\n' + handmade + '\n決定：' + decision + '\n使用状況：' + usage + usage_guraduation + usage_left + usage_right + '\nプリセット：' + preset + '\nメモ：' + memos + '\n写真：' + photo;
     },
     // 編集confirmのモーダル非表示_OKの場合
     closeModal_confirmEdit_OK: function closeModal_confirmEdit_OK() {
@@ -3804,7 +3836,7 @@ var autokana;
       var _this16 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
-        var response, formData, _response, _response2, _formData, _response3;
+        var preset, response, formData, _response, _response2, _formData, _response3;
 
         return _regeneratorRuntime().wrap(function _callee8$(_context8) {
           while (1) {
@@ -3815,12 +3847,20 @@ var autokana;
                   _this16.editForm_prop.owner_id = '';
                 }
 
+                preset = 0;
+
+                if (_this16.editForm_prop.usage_left && _this16.editForm_prop.preset === 'left') {
+                  preset = 1;
+                } else if (_this16.editForm_prop.usage_right && _this16.editForm_prop.preset === 'right') {
+                  preset = 2;
+                }
+
                 if (!(_this16.editPropMode_detail === 1)) {
-                  _context8.next = 15;
+                  _context8.next = 19;
                   break;
                 }
 
-                _context8.next = 4;
+                _context8.next = 6;
                 return axios.post('/api/props/' + _this16.prop.id, {
                   method: 'photo_non_update',
                   name: _this16.editForm_prop.name,
@@ -3833,23 +3873,24 @@ var autokana;
                   usage: _this16.editForm_prop.usage,
                   usage_guraduation: _this16.editForm_prop.usage_guraduation,
                   usage_left: _this16.editForm_prop.usage_left,
-                  usage_right: _this16.editForm_prop.usage_right
+                  usage_right: _this16.editForm_prop.usage_right,
+                  preset: preset
                 });
 
-              case 4:
+              case 6:
                 response = _context8.sent;
 
                 if (!(response.status === 422)) {
-                  _context8.next = 8;
+                  _context8.next = 10;
                   break;
                 }
 
                 _this16.errors.error = response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 8:
-                if (!(response.status !== 204)) {
-                  _context8.next = 11;
+              case 10:
+                if (!(response.status !== 204 && response.status !== 205 && response.status !== 206)) {
+                  _context8.next = 13;
                   break;
                 }
 
@@ -3857,19 +3898,27 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 11:
+              case 13:
+                if (response.status === 205) {
+                  _this16.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+                }
+
+                if (response.status === 206) {
+                  _this16.acci_change_preset = 2; // 変更できてない
+                }
+
                 _this16.editPropMode_detail = 100;
 
                 if (_this16.editPropMode_memo === 0) {
                   _this16.editPropMode_memo = 100;
                 }
 
-                _context8.next = 55;
+                _context8.next = 64;
                 break;
 
-              case 15:
+              case 19:
                 if (!(_this16.editPropMode_detail === 2)) {
-                  _context8.next = 43;
+                  _context8.next = 50;
                   break;
                 }
 
@@ -3887,24 +3936,25 @@ var autokana;
                 formData.append('usage_guraduation', _this16.editForm_prop.usage_guraduation);
                 formData.append('usage_left', _this16.editForm_prop.usage_left);
                 formData.append('usage_right', _this16.editForm_prop.usage_right);
+                formData.append('preset', preset);
                 formData.append('photo', _this16.editForm_prop.photo);
-                _context8.next = 32;
+                _context8.next = 37;
                 return axios.post('/api/props/' + _this16.prop.id, formData);
 
-              case 32:
+              case 37:
                 _response = _context8.sent;
 
                 if (!(_response.status === 422)) {
-                  _context8.next = 36;
+                  _context8.next = 41;
                   break;
                 }
 
                 _this16.errors.error = _response.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 36:
-                if (!(_response.status !== 204)) {
-                  _context8.next = 39;
+              case 41:
+                if (!(_response.status !== 204 && _response.status !== 205 && _response.status !== 206)) {
+                  _context8.next = 44;
                   break;
                 }
 
@@ -3912,23 +3962,31 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 39:
+              case 44:
+                if (_response.status === 205) {
+                  _this16.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+                }
+
+                if (_response.status === 206) {
+                  _this16.acci_change_preset = 2; // 変更できてない
+                }
+
                 _this16.editPropMode_detail = 100;
 
                 if (_this16.editPropMode_memo === 0) {
                   _this16.editPropMode_memo = 100;
                 }
 
-                _context8.next = 55;
+                _context8.next = 64;
                 break;
 
-              case 43:
+              case 50:
                 if (!(_this16.editPropMode_detail === 3)) {
-                  _context8.next = 55;
+                  _context8.next = 64;
                   break;
                 }
 
-                _context8.next = 46;
+                _context8.next = 53;
                 return axios.post('/api/props/' + _this16.prop.id, {
                   method: 'photo_delete',
                   name: _this16.editForm_prop.name,
@@ -3942,23 +4000,24 @@ var autokana;
                   usage: _this16.editForm_prop.usage,
                   usage_guraduation: _this16.editForm_prop.usage_guraduation,
                   usage_left: _this16.editForm_prop.usage_left,
-                  usage_right: _this16.editForm_prop.usage_right
+                  usage_right: _this16.editForm_prop.usage_right,
+                  preset: preset
                 });
 
-              case 46:
+              case 53:
                 _response2 = _context8.sent;
 
                 if (!(_response2.status === 422)) {
-                  _context8.next = 50;
+                  _context8.next = 57;
                   break;
                 }
 
                 _this16.errors.error = _response2.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 50:
-                if (!(_response2.status !== 204)) {
-                  _context8.next = 53;
+              case 57:
+                if (!(_response2.status !== 204 && _response2.status !== 205 && _response2.status !== 206)) {
+                  _context8.next = 60;
                   break;
                 }
 
@@ -3966,16 +4025,24 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 53:
+              case 60:
+                if (_response2.status === 205) {
+                  _this16.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+                }
+
+                if (_response2.status === 206) {
+                  _this16.acci_change_preset = 2; // 変更できてない
+                }
+
                 _this16.editPropMode_detail = 100;
 
                 if (_this16.editPropMode_memo === 0) {
                   _this16.editPropMode_memo = 100;
                 }
 
-              case 55:
+              case 64:
                 if (!(_this16.editPropMode_detail === 4)) {
-                  _context8.next = 82;
+                  _context8.next = 94;
                   break;
                 }
 
@@ -4008,25 +4075,27 @@ var autokana;
 
                 _formData.append('usage_right', _this16.editForm_prop.usage_right);
 
+                _formData.append('preset', preset);
+
                 _formData.append('photo', _this16.editForm_prop.photo);
 
-                _context8.next = 73;
+                _context8.next = 83;
                 return axios.post('/api/props/' + _this16.prop.id, _formData);
 
-              case 73:
+              case 83:
                 _response3 = _context8.sent;
 
                 if (!(_response3.status === 422)) {
-                  _context8.next = 77;
+                  _context8.next = 87;
                   break;
                 }
 
                 _this16.errors.error = _response3.data.errors;
                 return _context8.abrupt("return", false);
 
-              case 77:
-                if (!(_response3.status !== 204)) {
-                  _context8.next = 80;
+              case 87:
+                if (!(_response3.status !== 204 && _response3.status !== 205 && _response3.status !== 206)) {
+                  _context8.next = 90;
                   break;
                 }
 
@@ -4034,14 +4103,22 @@ var autokana;
 
                 return _context8.abrupt("return", false);
 
-              case 80:
+              case 90:
+                if (_response3.status === 205) {
+                  _this16.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+                }
+
+                if (_response3.status === 206) {
+                  _this16.acci_change_preset = 2; // 変更できてない
+                }
+
                 _this16.editPropMode_detail = 100;
 
                 if (_this16.editPropMode_memo === 0) {
                   _this16.editPropMode_memo = 100;
                 }
 
-              case 82:
+              case 94:
               case "end":
                 return _context8.stop();
             }
@@ -4380,6 +4457,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       editSceneMode_detail: "",
       editSceneMode_memo: "",
       editSceneMode_prop: "",
+      // 編集時にプリセットが思い通りできたか
+      acci_change_preset: 0,
       // 削除confirm
       showContent_confirmDelete: false,
       postMessage_Delete: ""
@@ -4391,13 +4470,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         var _this = this;
 
         return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-          var content_dom, content_rect;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
                   if (!_this.postScene) {
-                    _context.next = 12;
+                    _context.next = 10;
                     break;
                   }
 
@@ -4417,16 +4495,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   return _this.fetchScene();
 
                 case 9:
-                  content_dom = _this.$refs.content_detail_scene;
-                  content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+                  _this.$nextTick(function () {
+                    // 位置調整
+                    var content_dom = _this.$refs.content_detail_scene;
+                    var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
 
-                  if (content_rect.top < 0) {
-                    _this.overlay_class = 0;
-                  } else {
-                    _this.overlay_class = 1;
-                  }
+                    if (content_rect.top < 0) {
+                      _this.overlay_class = 0;
+                    } else {
+                      _this.overlay_class = 1;
+                    }
+                  });
 
-                case 12:
+                case 10:
                 case "end":
                   return _context.stop();
               }
@@ -4483,38 +4564,46 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             while (1) {
               switch (_context3.prev = _context3.next) {
                 case 0:
+                  console.log(_this3.editSceneMode_prop);
+
                   if (!(_this3.editSceneMode_prop === 100)) {
-                    _context3.next = 6;
+                    _context3.next = 8;
                     break;
                   }
 
-                  _context3.next = 3;
+                  _context3.next = 4;
                   return _this3.fetchScene();
 
-                case 3:
-                  // メッセージ登録
+                case 4:
+                  if (_this3.acci_change_preset === 1) {
+                    // プリセットが指示通り変換できたが使用シーンなしまたはページ数の登録なし
+                    alert('小道具のプリセットは変更しましたが、ページ数の登録のある使用シーンがありません。');
+                    _this3.acci_change_preset = 0;
+                  } // メッセージ登録
+
+
                   _this3.$store.commit('message/setContent', {
                     content: '使用シーンが変更されました！',
                     timeout: 6000
                   });
 
-                  _context3.next = 12;
+                  _context3.next = 14;
                   break;
 
-                case 6:
+                case 8:
                   if (!(_this3.editSceneMode_detail || _this3.editSceneMode_memo)) {
-                    _context3.next = 11;
+                    _context3.next = 13;
                     break;
                   }
 
-                  _context3.next = 9;
+                  _context3.next = 11;
                   return _this3.openModal_confirmEdit();
 
-                case 9:
-                  _context3.next = 12;
+                case 11:
+                  _context3.next = 14;
                   break;
 
-                case 11:
+                case 13:
                   if (_this3.editSceneMode_detail === 0 && _this3.editSceneMode_memo === 0) {
                     alert('元のデータと同じです！変更してください');
                     _this3.editSceneMode_detail = "";
@@ -4522,7 +4611,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     _this3.editSceneMode_prop = "";
                   }
 
-                case 12:
+                case 14:
                 case "end":
                   return _context3.stop();
               }
@@ -4541,15 +4630,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             while (1) {
               switch (_context4.prev = _context4.next) {
                 case 0:
+                  console.log('入った');
+                  console.log(_this4.editSceneMode_detail);
+                  console.log(_this4.editSceneMode_prop);
+
                   if (!(_this4.editSceneMode_detail === 100 && _this4.editSceneMode_prop === 1)) {
-                    _context4.next = 3;
+                    _context4.next = 6;
                     break;
                   }
 
-                  _context4.next = 3;
+                  _context4.next = 6;
                   return _this4.editProp_usage(_this4.editForm_scene.prop_id);
 
-                case 3:
+                case 6:
                 case "end":
                   return _context4.stop();
               }
@@ -4662,17 +4755,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this5.editSceneMode_prop = ""; // 調整
 
                 _this5.$nextTick(function () {
-                  // 位置調整
-                  var content_dom = _this5.$refs.content_detail_scene;
-                  var content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-
-                  if (content_rect.top < 0) {
-                    _this5.overlay_class = 0;
-                  } else {
-                    _this5.overlay_class = 1;
-                  } // 個数最大値
-
-
+                  // 個数最大値
                   var quantity = 1;
 
                   _this5.optionProps.forEach(function (prop) {
@@ -5157,7 +5240,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 pattern_number = /^([0-9]\d*|0)$/; // 0~9の数字かどうか
 
                 if (!(_this12.editSceneMode_detail === 1)) {
-                  _context11.next = 24;
+                  _context11.next = 30;
                   break;
                 }
 
@@ -5240,8 +5323,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context11.abrupt("return", false);
 
               case 17:
-                if (!(response.status !== 204)) {
-                  _context11.next = 20;
+                console.log(response.status);
+
+                if (!(response.status !== 204 && response.status !== 205)) {
+                  _context11.next = 21;
                   break;
                 }
 
@@ -5249,7 +5334,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context11.abrupt("return", false);
 
-              case 20:
+              case 21:
+                if (response.status === 205) {
+                  _this12.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+                }
+
+                console.log(_this12.acci_change_preset);
                 _this12.editSceneMode_detail = 100;
 
                 if (_this12.editSceneMode_memo === 0 && _this12.editSceneMode_prop === 0) {
@@ -5257,10 +5347,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this12.editSceneMode_prop = 100;
                 }
 
-                _context11.next = 25;
+                console.log(_this12.editSceneMode_detail);
+                console.log(_this12.editSceneMode_memo);
+                console.log(_this12.editSceneMode_prop);
+                _context11.next = 31;
                 break;
 
-              case 24:
+              case 30:
                 if (_this12.editSceneMode_detail === 2) {
                   // ページ数を新たに指定
                   _this12.editSceneMode_detail = "change"; // ページを分割
@@ -5426,7 +5519,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                           switch (_context10.prev = _context10.next) {
                             case 0:
                               if (!(index === 0)) {
-                                _context10.next = 13;
+                                _context10.next = 14;
                                 break;
                               }
 
@@ -5455,7 +5548,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                               return _context10.abrupt("return", false);
 
                             case 7:
-                              if (!(_response.status !== 204)) {
+                              if (!(_response.status !== 204 && _response.status !== 205)) {
                                 _context10.next = 10;
                                 break;
                               }
@@ -5464,6 +5557,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                               return _context10.abrupt("return", false);
 
                             case 10:
+                              if (_response.status === 205) {
+                                this.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+                              }
+
                               if (index === first_pages.length - 1) {
                                 this.editSceneMode_detail = 100;
 
@@ -5473,11 +5570,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                                 }
                               }
 
-                              _context10.next = 23;
+                              _context10.next = 25;
                               break;
 
-                            case 13:
-                              _context10.next = 15;
+                            case 14:
+                              _context10.next = 16;
                               return axios.post('/api/scenes', {
                                 character_id: this.editForm_scene.character_id,
                                 prop_id: this.editForm_scene.prop_id,
@@ -5491,27 +5588,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                                 memo: memo
                               });
 
-                            case 15:
+                            case 16:
                               _response2 = _context10.sent;
 
                               if (!(_response2.status === 422)) {
-                                _context10.next = 19;
+                                _context10.next = 20;
                                 break;
                               }
 
                               this.errors.error = _response2.data.errors;
                               return _context10.abrupt("return", false);
 
-                            case 19:
-                              if (!(_response2.status !== 201)) {
-                                _context10.next = 22;
+                            case 20:
+                              if (!(_response2.status !== 201 && _response2.status !== 205)) {
+                                _context10.next = 23;
                                 break;
                               }
 
                               this.$store.commit('error/setCode', _response2.status);
                               return _context10.abrupt("return", false);
 
-                            case 22:
+                            case 23:
+                              if (_response2.status === 205) {
+                                this.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+                              }
+
                               if (index === first_pages.length - 1) {
                                 this.editSceneMode_detail = 100;
 
@@ -5521,7 +5622,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                                 }
                               }
 
-                            case 23:
+                            case 25:
                             case "end":
                               return _context10.stop();
                           }
@@ -5535,7 +5636,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }(), _this12);
                 }
 
-              case 25:
+              case 31:
               case "end":
                 return _context11.stop();
             }
@@ -5692,24 +5793,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context13.prev = _context13.next) {
               case 0:
+                console.log('小道具更新'); // 同時に行う
+
                 if (!(_this14.scene.usage != _this14.editForm_scene.usage)) {
-                  _context13.next = 3;
+                  _context13.next = 4;
                   break;
                 }
 
-                _context13.next = 3;
+                _context13.next = 4;
                 return _this14.editProp_usage_passo();
 
-              case 3:
+              case 4:
                 if (!(_this14.scene.usage_guraduation != _this14.editForm_scene.usage_guraduation || _this14.editForm_scene.usage_guraduation)) {
-                  _context13.next = 6;
+                  _context13.next = 7;
                   break;
                 }
 
-                _context13.next = 6;
+                _context13.next = 7;
                 return _this14.editProp_usage_guraduation();
 
-              case 6:
+              case 7:
               case "end":
                 return _context13.stop();
             }
@@ -6222,21 +6325,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this16.editSceneMode_prop = 100;
 
               case 129:
-                _context15.next = 208;
+                _context15.next = 210;
                 break;
 
               case 131:
                 if (!_this16.editForm_scene.usage_guraduation) {
-                  _context15.next = 208;
+                  _context15.next = 210;
                   break;
                 }
+
+                // 卒業公演1→1
+                console.log(_this16.editForm_scene.usage_guraduation);
 
                 if (!(_this16.scene.usage_left && _this16.editForm_scene.usage_stage === "right")) {
-                  _context15.next = 145;
+                  _context15.next = 147;
                   break;
                 }
 
-                _context15.next = 135;
+                console.log(_this16.editForm_scene.usage_stage); // 上手→下手
+
+                _context15.next = 137;
                 return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_left_to_right_change',
                   id: _this16.scene.id,
@@ -6244,20 +6352,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   usage_right: 1
                 });
 
-              case 135:
+              case 137:
                 _response_prop11 = _context15.sent;
 
                 if (!(_response_prop11.status === 422)) {
-                  _context15.next = 139;
+                  _context15.next = 141;
                   break;
                 }
 
                 _this16.errors.error = _response_prop11.data.errors;
                 return _context15.abrupt("return", false);
 
-              case 139:
+              case 141:
                 if (!(_response_prop11.status !== 204)) {
-                  _context15.next = 142;
+                  _context15.next = 144;
                   break;
                 }
 
@@ -6265,18 +6373,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context15.abrupt("return", false);
 
-              case 142:
+              case 144:
                 _this16.editSceneMode_prop = 100;
-                _context15.next = 208;
+                _context15.next = 210;
                 break;
 
-              case 145:
+              case 147:
                 if (!(_this16.scene.usage_right && _this16.editForm_scene.usage_stage === "left")) {
-                  _context15.next = 158;
+                  _context15.next = 160;
                   break;
                 }
 
-                _context15.next = 148;
+                _context15.next = 150;
                 return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_right_to_left_change',
                   id: _this16.scene.id,
@@ -6284,20 +6392,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   usage_right: 0
                 });
 
-              case 148:
+              case 150:
                 _response_prop12 = _context15.sent;
 
                 if (!(_response_prop12.status === 422)) {
-                  _context15.next = 152;
+                  _context15.next = 154;
                   break;
                 }
 
                 _this16.errors.error = _response_prop12.data.errors;
                 return _context15.abrupt("return", false);
 
-              case 152:
+              case 154:
                 if (!(_response_prop12.status !== 204)) {
-                  _context15.next = 155;
+                  _context15.next = 157;
                   break;
                 }
 
@@ -6305,37 +6413,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context15.abrupt("return", false);
 
-              case 155:
+              case 157:
                 _this16.editSceneMode_prop = 100;
-                _context15.next = 208;
+                _context15.next = 210;
                 break;
 
-              case 158:
+              case 160:
                 if (!(!_this16.scene.usage_left && _this16.editForm_scene.usage_stage === "left")) {
-                  _context15.next = 171;
+                  _context15.next = 173;
                   break;
                 }
 
-                _context15.next = 161;
+                _context15.next = 163;
                 return axios.post('/api/props/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_left_change',
                   usage_left: 1
                 });
 
-              case 161:
+              case 163:
                 _response_prop13 = _context15.sent;
 
                 if (!(_response_prop13.status === 422)) {
-                  _context15.next = 165;
+                  _context15.next = 167;
                   break;
                 }
 
                 _this16.errors.error = _response_prop13.data.errors;
                 return _context15.abrupt("return", false);
 
-              case 165:
+              case 167:
                 if (!(_response_prop13.status !== 204)) {
-                  _context15.next = 168;
+                  _context15.next = 170;
                   break;
                 }
 
@@ -6343,37 +6451,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context15.abrupt("return", false);
 
-              case 168:
+              case 170:
                 _this16.editSceneMode_prop = 100;
-                _context15.next = 208;
+                _context15.next = 210;
                 break;
 
-              case 171:
+              case 173:
                 if (!(!_this16.scene.usage_right && _this16.editForm_scene.usage_stage === "right")) {
-                  _context15.next = 184;
+                  _context15.next = 186;
                   break;
                 }
 
-                _context15.next = 174;
+                _context15.next = 176;
                 return axios.post('/api/props/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_right_change',
                   usage_right: 1
                 });
 
-              case 174:
+              case 176:
                 _response_prop14 = _context15.sent;
 
                 if (!(_response_prop14.status === 422)) {
-                  _context15.next = 178;
+                  _context15.next = 180;
                   break;
                 }
 
                 _this16.errors.error = _response_prop14.data.errors;
                 return _context15.abrupt("return", false);
 
-              case 178:
+              case 180:
                 if (!(_response_prop14.status !== 204)) {
-                  _context15.next = 181;
+                  _context15.next = 183;
                   break;
                 }
 
@@ -6381,38 +6489,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context15.abrupt("return", false);
 
-              case 181:
+              case 183:
                 _this16.editSceneMode_prop = 100;
-                _context15.next = 208;
+                _context15.next = 210;
                 break;
 
-              case 184:
+              case 186:
                 if (!(_this16.scene.usage_left && !_this16.editForm_scene.usage_stage)) {
-                  _context15.next = 197;
+                  _context15.next = 199;
                   break;
                 }
 
-                _context15.next = 187;
+                _context15.next = 189;
                 return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_left_0_change',
                   id: _this16.scene.id,
                   usage_left: 0
                 });
 
-              case 187:
+              case 189:
                 _response_prop15 = _context15.sent;
 
                 if (!(_response_prop15.status === 422)) {
-                  _context15.next = 191;
+                  _context15.next = 193;
                   break;
                 }
 
                 _this16.errors.error = _response_prop15.data.errors;
                 return _context15.abrupt("return", false);
 
-              case 191:
+              case 193:
                 if (!(_response_prop15.status !== 204)) {
-                  _context15.next = 194;
+                  _context15.next = 196;
                   break;
                 }
 
@@ -6420,38 +6528,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context15.abrupt("return", false);
 
-              case 194:
+              case 196:
                 _this16.editSceneMode_prop = 100;
-                _context15.next = 208;
+                _context15.next = 210;
                 break;
 
-              case 197:
+              case 199:
                 if (!(_this16.scene.usage_right && !_this16.editForm_scene.usage_stage)) {
-                  _context15.next = 208;
+                  _context15.next = 210;
                   break;
                 }
 
-                _context15.next = 200;
+                _context15.next = 202;
                 return axios.post('/api/props_deep/' + _this16.editForm_scene.prop_id, {
                   method: 'usage_right_0_change',
                   id: _this16.scene.id,
                   usage_right: 0
                 });
 
-              case 200:
+              case 202:
                 _response_prop16 = _context15.sent;
 
                 if (!(_response_prop16.status === 422)) {
-                  _context15.next = 204;
+                  _context15.next = 206;
                   break;
                 }
 
                 _this16.errors.error = _response_prop16.data.errors;
                 return _context15.abrupt("return", false);
 
-              case 204:
+              case 206:
                 if (!(_response_prop16.status !== 204)) {
-                  _context15.next = 207;
+                  _context15.next = 209;
                   break;
                 }
 
@@ -6459,10 +6567,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context15.abrupt("return", false);
 
-              case 207:
+              case 209:
                 _this16.editSceneMode_prop = 100;
 
-              case 208:
+              case 210:
               case "end":
                 return _context15.stop();
             }
@@ -8226,7 +8334,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           usage: false,
           usage_guraduation: false,
           usage_left: false,
-          usage_right: false
+          usage_right: false,
+          preset_left: false,
+          preset_right: false,
+          preset_no: false
         }
       }
     };
@@ -8337,6 +8448,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var usage_guraduation = '!=' + 100;
       var usage_left = '!=' + 100;
       var usage_right = '!=' + 100;
+      var preset = '(a.preset !=' + 100;
 
       if (this.search_prop.prop_search.name.input) {
         name_input = '==' + this.h(this.search_prop.prop_search.name.input);
@@ -8408,7 +8520,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         usage_right = '===' + 1;
       }
 
-      var refine = 'a.owner_id' + owner_id + '&& a.location' + location + '&&' + handmade + '&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right;
+      if ((this.search_prop.prop_search.preset_left || this.search_prop.prop_search.preset_right) && !this.search_prop.prop_search.preset_no) {
+        preset = '(a.preset !==' + 0;
+
+        if (this.search_prop.prop_search.preset_left) {
+          preset = '(a.preset ===' + 1;
+
+          if (this.search_prop.prop_search.preset_right) {
+            preset = preset + '|| a.preset === ' + 2;
+          }
+        } else if (this.search_prop.prop_search.preset_right) {
+          preset = '(a.preset ===' + 2;
+        }
+      } else if (!this.search_prop.prop_search.preset_left && !this.search_prop.prop_search.preset_right && this.search_prop.prop_search.preset_no) {
+        preset = '(a.preset ===' + 0;
+      }
+
+      preset = preset + ')';
+      var refine = 'a.owner_id' + owner_id + '&& a.location' + location + '&&' + handmade + '&& a.decision' + decision + '&& a.usage' + usage + '&& a.usage_guraduation' + usage_guraduation + '&& a.usage_left' + usage_left + '&& a.usage_right' + usage_right + '&&' + preset;
       this.$emit('close', this.search_prop.prop_sort, this.search_prop.prop_search.name, refine);
     },
     // リセット
@@ -8431,6 +8560,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.search_prop.prop_search.usage_guraduation = false;
       this.search_prop.prop_search.usage_left = false;
       this.search_prop.prop_search.usage_right = false;
+      this.search_prop.prop_search.preset_left = false;
+      this.search_prop.prop_search.preset_right = false;
+      this.search_prop.prop_search.preset_no = false;
     }
   }
 });
@@ -8884,6 +9016,9 @@ var autokana;
       season_tag_prop: null,
       // 卒業公演
       guraduation_tag_prop: 0,
+      // 上手 or 下手
+      usage_right: false,
+      usage_left: false,
       // 写真プレビュー
       preview: null,
       // overlayのクラス
@@ -8907,6 +9042,7 @@ var autokana;
         usage_prop: '',
         usage_guraduation_prop: 0,
         usage_stage_prop: null,
+        preset_prop: 'no',
         comment: '',
         // 写真
         photo: ''
@@ -9132,6 +9268,7 @@ var autokana;
       } else {
         this.guraduation_tag_prop = 0;
         this.registerForm.usage_stage_prop = null;
+        this.registerForm.preset_prop = 'no';
       }
     },
     // 小道具リストのモーダル表示 
@@ -9230,6 +9367,7 @@ var autokana;
       this.registerForm.usage_prop = '';
       this.registerForm.usage_guraduation_prop = '';
       this.registerForm.usage_stage_prop = null;
+      this.registerForm.preset_prop = 'no';
       this.registerForm.comment = '';
       this.preview = null;
       this.registerForm.photo = '';
@@ -9627,30 +9765,39 @@ var autokana;
                   formData.append('usage_right', '');
                 }
 
+                if (_this7.registerForm.usage_stage_prop === "usage_left" && _this7.registerForm.preset_prop === "left") {
+                  formData.append('preset', 1);
+                } else if (_this7.registerForm.usage_stage_prop === "usage_right" && _this7.registerForm.preset_prop === "right") {
+                  formData.append('preset', 2);
+                } else {
+                  formData.append('preset', '');
+                }
+
                 formData.append('photo', _this7.registerForm.photo);
-                _context5.next = 64;
+                _context5.next = 65;
                 return axios.post('/api/props', formData);
 
-              case 64:
+              case 65:
                 response = _context5.sent;
+                console.log(response.status);
 
                 if (!(response.status === 422)) {
-                  _context5.next = 69;
+                  _context5.next = 71;
                   break;
                 }
 
                 _this7.errors.error = response.data.errors; // メッセージ登録
 
                 _this7.$store.commit('message/setContent', {
-                  content: '変更できませんでした',
+                  content: '登録できませんでした',
                   timeout: 6000
                 });
 
                 return _context5.abrupt("return", false);
 
-              case 69:
+              case 71:
                 if (!(response.status !== 201)) {
-                  _context5.next = 73;
+                  _context5.next = 75;
                   break;
                 }
 
@@ -9658,13 +9805,13 @@ var autokana;
 
 
                 _this7.$store.commit('message/setContent', {
-                  content: '変更できませんでした',
+                  content: '登録できませんでした',
                   timeout: 6000
                 });
 
                 return _context5.abrupt("return", false);
 
-              case 73:
+              case 75:
                 // 諸々データ削除
                 _this7.reset(); // メッセージ登録
 
@@ -9674,7 +9821,7 @@ var autokana;
                   timeout: 6000
                 });
 
-              case 75:
+              case 77:
               case "end":
                 return _context5.stop();
             }
@@ -10375,7 +10522,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   return _context6.abrupt("return", false);
 
                 case 6:
-                  if (!(response.status !== 201)) {
+                  if (!(response.status !== 201 && response.status !== 205)) {
                     _context6.next = 9;
                     break;
                   }
@@ -10385,7 +10532,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 case 9:
                   if (!(index === first_pages.length - 1)) {
-                    _context6.next = 52;
+                    _context6.next = 53;
                     break;
                   }
 
@@ -10393,7 +10540,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   usage = this.registerForm.usage;
                   usage_guraduation = this.registerForm.usage_guraduation; // 諸々データ削除
 
-                  this.reset(); // メッセージ登録
+                  this.reset();
+
+                  if (response.status === 205) {
+                    alert('該当小道具のプリセットを変更しましたが、ページ数の登録がありません。確認してください。');
+                  } // メッセージ登録
+
 
                   this.$store.commit('message/setContent', {
                     content: '使用シーンが投稿されました！',
@@ -10401,12 +10553,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }); // 要検討
 
                   if (!(usage || usage_guraduation)) {
-                    _context6.next = 52;
+                    _context6.next = 53;
                     break;
                   }
 
                   if (!usage) {
-                    _context6.next = 24;
+                    _context6.next = 25;
                     break;
                   }
 
@@ -10417,30 +10569,30 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   });
 
                   if (!(response_prop.status === 422)) {
-                    _context6.next = 21;
+                    _context6.next = 22;
                     break;
                   }
 
                   this.errors.error = response.data.errors;
                   return _context6.abrupt("return", false);
 
-                case 21:
+                case 22:
                   if (!(response_prop.statusText !== 204)) {
-                    _context6.next = 24;
+                    _context6.next = 25;
                     break;
                   }
 
                   this.$store.commit('error/setCode', response.status);
                   return _context6.abrupt("return", false);
 
-                case 24:
+                case 25:
                   if (!usage_guraduation) {
-                    _context6.next = 52;
+                    _context6.next = 53;
                     break;
                   }
 
                   if (!usage_left) {
-                    _context6.next = 35;
+                    _context6.next = 36;
                     break;
                   }
 
@@ -10452,29 +10604,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   });
 
                   if (!(_response_prop.status === 422)) {
-                    _context6.next = 30;
+                    _context6.next = 31;
                     break;
                   }
 
                   this.errors.error = response.data.errors;
                   return _context6.abrupt("return", false);
 
-                case 30:
+                case 31:
                   if (!(_response_prop.status !== 204)) {
-                    _context6.next = 33;
+                    _context6.next = 34;
                     break;
                   }
 
                   this.$store.commit('error/setCode', response.status);
                   return _context6.abrupt("return", false);
 
-                case 33:
-                  _context6.next = 52;
+                case 34:
+                  _context6.next = 53;
                   break;
 
-                case 35:
+                case 36:
                   if (!usage_right) {
-                    _context6.next = 45;
+                    _context6.next = 46;
                     break;
                   }
 
@@ -10486,27 +10638,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   });
 
                   if (!(_response_prop2.status === 422)) {
-                    _context6.next = 40;
+                    _context6.next = 41;
                     break;
                   }
 
                   this.errors.error = response.data.errors;
                   return _context6.abrupt("return", false);
 
-                case 40:
+                case 41:
                   if (!(_response_prop2.statusText !== 204)) {
-                    _context6.next = 43;
+                    _context6.next = 44;
                     break;
                   }
 
                   this.$store.commit('error/setCode', response.status);
                   return _context6.abrupt("return", false);
 
-                case 43:
-                  _context6.next = 52;
+                case 44:
+                  _context6.next = 53;
                   break;
 
-                case 45:
+                case 46:
                   // とりあえず卒業公演で使用
                   _response_prop3 = axios.post('/api/props/' + prop, {
                     method: 'usage_guraduation_change',
@@ -10514,23 +10666,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   });
 
                   if (!(_response_prop3.status === 422)) {
-                    _context6.next = 49;
+                    _context6.next = 50;
                     break;
                   }
 
                   this.errors.error = response.data.errors;
                   return _context6.abrupt("return", false);
 
-                case 49:
+                case 50:
                   if (!(_response_prop3.statusText !== 204)) {
-                    _context6.next = 52;
+                    _context6.next = 53;
                     break;
                   }
 
                   this.$store.commit('error/setCode', response.status);
                   return _context6.abrupt("return", false);
 
-                case 52:
+                case 53:
                 case "end":
                   return _context6.stop();
               }
@@ -12033,6 +12185,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }
                   }
                 }, {
+                  header: 'プリセ',
+                  key: 'preset',
+                  width: 12,
+                  style: {
+                    alignment: {
+                      vertical: "middle",
+                      horizontal: "center"
+                    }
+                  }
+                }, {
                   header: 'メモ',
                   key: 'memo',
                   width: 24,
@@ -12086,6 +12248,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 worksheet.getCell('J1').fill = fill;
                 worksheet.getCell('K1').font = font;
                 worksheet.getCell('K1').fill = fill;
+                worksheet.getCell('L1').font = font;
+                worksheet.getCell('L1').fill = fill;
 
                 _this14.showProps.forEach(function (prop, index) {
                   var datas = [];
@@ -12149,6 +12313,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     datas.push(null);
                   }
 
+                  if (prop.preset === 1) {
+                    datas.push('㊤');
+                  } else if (prop.preset === 2) {
+                    datas.push('㊦');
+                  } else {
+                    datas.push(null);
+                  }
+
                   if (prop.prop_comments.length) {
                     prop.prop_comments.forEach(function (comment, index_comment) {
                       if (index_comment) {
@@ -12168,10 +12340,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }); // ③ファイル生成
 
 
-                _context10.next = 32;
+                _context10.next = 34;
                 return workbook.xlsx.writeBuffer();
 
-              case 32:
+              case 34:
                 uint8Array = _context10.sent;
                 // xlsxの場合
                 blob = new Blob([uint8Array], {
@@ -12185,7 +12357,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 a.click();
                 a.remove();
 
-              case 41:
+              case 43:
               case "end":
                 return _context10.stop();
             }
@@ -14755,7 +14927,7 @@ var render = function render() {
     staticClass: "usage-show"
   }, [_c("i", {
     staticClass: "fas fa-check fa-fw"
-  })]) : _vm._e()]), _vm._v(" "), _c("div", [_vm.prop.usage ? _c("span", {
+  })]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("\n              使用するか:\n              "), _vm._v(" "), _vm.prop.usage ? _c("span", {
     staticClass: "usage-show"
   }, [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), _vm.prop.usage_guraduation ? _c("span", {
     staticClass: "usage-show"
@@ -14763,14 +14935,18 @@ var render = function render() {
     staticClass: "usage-show"
   }, [_vm._v("㊤")]) : _vm._e(), _vm._v(" "), _vm.prop.usage_right ? _c("span", {
     staticClass: "usage-show"
+  }, [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), _c("div", [_vm._v("\n              プリセット:\n              "), _vm._v(" "), _vm.prop.preset === 1 ? _c("span", {
+    staticClass: "usage-show"
+  }, [_vm._v("㊤")]) : _vm.prop.preset === 2 ? _c("span", {
+    staticClass: "usage-show"
   }, [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("メモ:")]), _vm._v(" "), _vm.prop.prop_comments.length ? _c("ul", _vm._l(_vm.prop.prop_comments, function (comment) {
     return _c("li", [_c("div", [_vm._v(_vm._s(comment.memo))])]);
   }), 0) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", [_vm._v("シーン:")]), _vm._v(" "), _vm.prop.scenes.length ? _c("ol", _vm._l(_vm.prop.scenes, function (scene) {
     return _c("li", [_c("span", {
       staticClass: "prop-detail--scene-area"
-    }, [_c("div", [_c("span", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), scene !== null && scene.first_page !== null && scene.final_page !== 1000 ? _c("span", [_vm._v(": p." + _vm._s(scene.first_page) + " \n                          "), scene !== null && scene.final_page !== null && scene.final_page !== 1000 ? _c("span", [_vm._v(" ~ p." + _vm._s(scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), scene !== null && scene.first_page === 1 && scene.final_page === 1000 ? _c("span", [_vm._v("\n                          : 全シーン\n                        ")]) : _vm._e()]), _vm._v(" "), _c("div", [scene.decision ? _c("span", {
+    }, [_c("div", [_c("span", [_vm._v(_vm._s(scene.character.name))]), _vm._v(" "), scene !== null && scene.first_page !== null && scene.final_page !== 1000 ? _c("span", [_vm._v(": p." + _vm._s(scene.first_page) + " \n                          "), scene !== null && scene.final_page !== null && scene.final_page !== 1000 ? _c("span", [_vm._v(" ~ p." + _vm._s(scene.final_page))]) : _vm._e()]) : _vm._e(), _vm._v(" "), scene !== null && scene.first_page === 1 && scene.final_page === 1000 ? _c("span", [_vm._v("\n                          : 全シーン\n                        ")]) : _vm._e(), _vm._v(" "), scene.decision ? _c("span", {
       staticClass: "usage-show"
-    }, [_vm._v("決定")]) : _vm._e(), _vm._v(" "), scene.usage ? _c("span", {
+    }, [_vm._v("決")]) : _vm._e(), _vm._v(" "), scene.usage ? _c("span", {
       staticClass: "usage-show"
     }, [_vm._v("Ⓟ")]) : _vm._e(), _vm._v(" "), scene.usage_guraduation ? _c("span", {
       staticClass: "usage-show"
@@ -15263,7 +15439,7 @@ var render = function render() {
         }
       }, _vm.selectGuraduation]
     }
-  })]), _vm._v(" "), _vm.guradutaion_tag ? _c("div", {
+  }), _vm._v(" "), _vm.guradutaion_tag ? _c("span", {
     staticClass: "checkbox-area--together"
   }, [_c("input", {
     directives: [{
@@ -15347,7 +15523,89 @@ var render = function render() {
     attrs: {
       "for": "prop_usage_right_prop_edit"
     }
-  }, [_vm._v("下手")])]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", {
+  }, [_vm._v("下手")])]) : _vm._e()])]), _vm._v(" "), _c("div", [_vm.guradutaion_tag ? _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    staticClass: "form__check__label"
+  }, [_vm._v("プリセット")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.preset,
+      expression: "editForm_prop.preset"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "radio",
+      id: "prop_preset_left_prop_edit",
+      value: "left"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editForm_prop.preset, "left")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.editForm_prop, "preset", "left");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "prop_preset_left_prop_edit"
+    }
+  }, [_vm._v("上手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.preset,
+      expression: "editForm_prop.preset"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "radio",
+      id: "prop_preset_right_prop_edit",
+      value: "right"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editForm_prop.preset, "right")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.editForm_prop, "preset", "right");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "prop_preset_right_prop_edit"
+    }
+  }, [_vm._v("下手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editForm_prop.preset,
+      expression: "editForm_prop.preset"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "radio",
+      id: "prop_preset_no_prop_edit",
+      value: "no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.editForm_prop.preset, "no")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.editForm_prop, "preset", "no");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "prop_preset_no_prop_edit"
+    }
+  }, [_vm._v("未定")])]) : _vm._e()]), _vm._v(" "), _c("div", [_c("label", {
     attrs: {
       "for": "prop_comment_edit"
     }
@@ -17545,7 +17803,7 @@ var render = function render() {
     }
   }, [_vm._v("してない")])])]), _vm._v(" "), _c("div", {
     staticClass: "search--select-area checkbox-area--together"
-  }, [_c("span", {
+  }, [_c("label", [_vm._v("使用する")]), _vm._v(" "), _c("span", {
     staticClass: "checkbox-area--together search--select-area--performance"
   }, [_c("input", {
     directives: [{
@@ -17715,7 +17973,135 @@ var render = function render() {
     attrs: {
       "for": "search_prop_usage_right"
     }
-  }, [_vm._v("下手")])])])])])]), _vm._v(" "), _vm._m(2)])])]);
+  }, [_vm._v("下手")])])])]), _vm._v(" "), _c("div", {
+    staticClass: "search--select-area checkbox-area--together"
+  }, [_c("label", [_vm._v("プリセ")]), _vm._v(" "), _c("span", {
+    staticClass: "checkbox-area--together search--select-area--performance"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_prop.prop_search.preset_left,
+      expression: "search_prop.prop_search.preset_left"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_prop_preset_left"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_prop.prop_search.preset_left) ? _vm._i(_vm.search_prop.prop_search.preset_left, null) > -1 : _vm.search_prop.prop_search.preset_left
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_prop.prop_search.preset_left,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_prop.prop_search, "preset_left", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_prop.prop_search, "preset_left", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_prop.prop_search, "preset_left", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_prop_preset_left"
+    }
+  }, [_vm._v("上手")])]), _vm._v(" "), _c("span", {
+    staticClass: "checkbox-area--together search--select-area--performance"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_prop.prop_search.preset_right,
+      expression: "search_prop.prop_search.preset_right"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_prop_preset_right"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_prop.prop_search.preset_right) ? _vm._i(_vm.search_prop.prop_search.preset_right, null) > -1 : _vm.search_prop.prop_search.preset_right
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_prop.prop_search.preset_right,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_prop.prop_search, "preset_right", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_prop.prop_search, "preset_right", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_prop.prop_search, "preset_right", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_prop_preset_right"
+    }
+  }, [_vm._v("下手")])]), _vm._v(" "), _c("span", {
+    staticClass: "checkbox-area--together search--select-area--performance"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.search_prop.prop_search.preset_no,
+      expression: "search_prop.prop_search.preset_no"
+    }],
+    staticClass: "form__check__input",
+    attrs: {
+      type: "checkbox",
+      id: "search_prop_preset_no"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.search_prop.prop_search.preset_no) ? _vm._i(_vm.search_prop.prop_search.preset_no, null) > -1 : _vm.search_prop.prop_search.preset_no
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.search_prop.prop_search.preset_no,
+            $$el = $event.target,
+            $$c = $$el.checked ? true : false;
+
+        if (Array.isArray($$a)) {
+          var $$v = null,
+              $$i = _vm._i($$a, $$v);
+
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.search_prop.prop_search, "preset_no", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.search_prop.prop_search, "preset_no", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.search_prop.prop_search, "preset_no", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "form__check__label",
+    attrs: {
+      "for": "search_prop_preset_no"
+    }
+  }, [_vm._v("未定")])])])])]), _vm._v(" "), _vm._m(2)])])]);
 };
 
 var staticRenderFns = [function () {
@@ -19164,7 +19550,92 @@ var render = function render() {
     attrs: {
       "for": "prop_usage_scene_right"
     }
-  }, [_vm._v("下手")])]) : _vm._e()])]), _vm._v(" "), _c("label", {
+  }, [_vm._v("下手")])]) : _vm._e()])]), _vm._v(" "), _c("div", [_c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.season_tag_prop === 2,
+      expression: "season_tag_prop === 2"
+    }]
+  }, [_vm.guraduation_tag_prop ? _c("div", {
+    staticClass: "checkbox-area--together"
+  }, [_c("label", {
+    attrs: {
+      "for": "prop_usage_scene_guraduation"
+    }
+  }, [_vm._v("プリセット")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.preset_prop,
+      expression: "registerForm.preset_prop"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_preset_left",
+      value: "left"
+    },
+    domProps: {
+      checked: _vm._q(_vm.registerForm.preset_prop, "left")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.registerForm, "preset_prop", "left");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_preset_left"
+    }
+  }, [_vm._v("上手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.preset_prop,
+      expression: "registerForm.preset_prop"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_preset_right",
+      value: "right"
+    },
+    domProps: {
+      checked: _vm._q(_vm.registerForm.preset_prop, "right")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.registerForm, "preset_prop", "right");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_preset_right"
+    }
+  }, [_vm._v("下手")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.registerForm.preset_prop,
+      expression: "registerForm.preset_prop"
+    }],
+    attrs: {
+      type: "radio",
+      id: "prop_preset_no",
+      value: "no"
+    },
+    domProps: {
+      checked: _vm._q(_vm.registerForm.preset_prop, "no")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.registerForm, "preset_prop", "no");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "prop_preset_no"
+    }
+  }, [_vm._v("未定")])]) : _vm._e()])]), _vm._v(" "), _c("label", {
     attrs: {
       "for": "comment_prop"
     }
@@ -20384,7 +20855,7 @@ var render = function render() {
     }
   })]) : _vm._e(), _vm._v(" "), _c("th", {
     staticClass: "th-non"
-  }), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("個数")]), _vm._v(" "), _c("th", [_vm._v("ピッコロ")]), _vm._v(" "), _c("th", [_vm._v("作るか")]), _vm._v(" "), _c("th", [_vm._v("決定")]), _vm._v(" "), _c("th", [_vm._v("中間")]), _vm._v(" "), _c("th", [_vm._v("卒業")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", {
+  }), _vm._v(" "), _c("th", [_vm._v("小道具名")]), _vm._v(" "), _c("th", [_vm._v("持ち主")]), _vm._v(" "), _c("th", [_vm._v("個数")]), _vm._v(" "), _c("th", [_vm._v("ピッコロ")]), _vm._v(" "), _c("th", [_vm._v("作るか")]), _vm._v(" "), _c("th", [_vm._v("決定")]), _vm._v(" "), _c("th", [_vm._v("中間")]), _vm._v(" "), _c("th", [_vm._v("卒業")]), _vm._v(" "), _c("th", [_vm._v("上手")]), _vm._v(" "), _c("th", [_vm._v("下手")]), _vm._v(" "), _c("th", [_vm._v("プリセ")]), _vm._v(" "), _c("th", {
     staticClass: "th-memo"
   }, [_vm._v("メモ")]), _vm._v(" "), _c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("th", [_vm._v("更新日時")])])]), _vm._v(" "), _c("tbody", _vm._l(_vm.showProps, function (prop, index) {
     return _c("tr", [_vm.choice_flag ? _c("td", [_c("input", {
@@ -20445,7 +20916,7 @@ var render = function render() {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td"), _vm._v(" "), prop.usage_right ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
-    })]) : _c("td"), _vm._v(" "), prop.prop_comments.length ? _c("td", _vm._l(prop.prop_comments, function (memo) {
+    })]) : _c("td"), _vm._v(" "), prop.preset === 1 ? _c("td", [_vm._v("㊤")]) : prop.preset === 2 ? _c("td", [_vm._v("㊦")]) : _c("td"), _vm._v(" "), prop.prop_comments.length ? _c("td", _vm._l(prop.prop_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td"), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.created_at))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.updated_at))])]);
   }), 0)]) : _vm._e(), _vm._v(" "), !_vm.showProps.length ? _c("div", [_vm._v("\n        小道具は登録されていません。 \n      ")]) : _vm._e()]) : _c("div", {
@@ -20528,7 +20999,7 @@ var render = function render() {
       staticClass: "fas fa-check fa-fw"
     })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("下手")]), _vm._v(" "), prop.usage_right ? _c("td", [_c("i", {
       staticClass: "fas fa-check fa-fw"
-    })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("メモ")]), _vm._v(" "), prop.prop_comments.length ? _c("td", _vm._l(prop.prop_comments, function (memo) {
+    })]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("プリセ")]), _vm._v(" "), prop.preset === 1 ? _c("td", [_vm._v("㊤")]) : prop.preset === 2 ? _c("td", [_vm._v("㊦")]) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("メモ")]), _vm._v(" "), prop.prop_comments.length ? _c("td", _vm._l(prop.prop_comments, function (memo) {
       return _c("div", [_vm._v(" " + _vm._s(memo.memo))]);
     }), 0) : _c("td")]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("登録日時")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.created_at))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("更新日時")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(prop.updated_at))])])]);
   }), 0)]) : _c("div", [_vm._v("\n        該当の小道具は登録されていません。 \n      ")])])]), _vm._v(" "), _c("div", {
@@ -20628,6 +21099,12 @@ var render = function render() {
     }, [_vm._v("Ⓖ")]) : _vm._e(), _vm._v(" "), prop.usage_left ? _c("span", {
       staticClass: "usage-show"
     }, [_vm._v("㊤")]) : _vm._e(), _vm._v(" "), prop.right ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), _c("div", [prop.preset ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("プリセ:")]) : _vm._e(), _vm._v(" "), prop.preset === 1 ? _c("span", {
+      staticClass: "usage-show"
+    }, [_vm._v("㊤")]) : prop.preset === 2 ? _c("span", {
       staticClass: "usage-show"
     }, [_vm._v("㊦")]) : _vm._e()]), _vm._v(" "), prop.prop_comments.length ? _c("div", [_c("span", [_vm._v("メモ: ")]), _vm._v(" "), _vm._l(prop.prop_comments, function (memo) {
       return _c("div", [_vm._v("\n                " + _vm._s(memo.memo) + "\n              ")]);

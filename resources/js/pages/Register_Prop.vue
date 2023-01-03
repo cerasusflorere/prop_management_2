@@ -93,6 +93,23 @@
             </div>
           </div>
         </div>
+
+        <!-- プリセット -->
+        <div>
+          <div v-show="season_tag_prop === 2">
+            <div v-if="guraduation_tag_prop" class="checkbox-area--together">
+              <label for="prop_usage_scene_guraduation">プリセット</label>
+              <input type="radio" id="prop_preset_left" value="left" v-model="registerForm.preset_prop">            
+              <label for="prop_preset_left">上手</label>
+
+              <input type="radio" id="prop_preset_right" value="right" v-model="registerForm.preset_prop">
+              <label for="prop_preset_right">下手</label>
+
+              <input type="radio" id="prop_preset_no" value="no" v-model="registerForm.preset_prop">
+              <label for="prop_preset_no">未定</label>
+            </div>
+          </div>
+        </div>
      
         <!-- メモ -->
         <label for="comment_prop">メモ</label>
@@ -159,6 +176,9 @@ export default {
       season_tag_prop: null,
       // 卒業公演
       guraduation_tag_prop: 0,
+      // 上手 or 下手
+      usage_right: false,
+      usage_left: false,
       // 写真プレビュー
       preview: null,
       // overlayのクラス
@@ -181,6 +201,7 @@ export default {
         usage_prop: '',
         usage_guraduation_prop: 0,
         usage_stage_prop: null,
+        preset_prop: 'no',
         comment: '',
         // 写真
         photo: ''
@@ -291,6 +312,7 @@ export default {
       }else{
         this.guraduation_tag_prop = 0;
         this.registerForm.usage_stage_prop = null;
+        this.registerForm.preset_prop = 'no';
       }
     },
 
@@ -386,6 +408,7 @@ export default {
       this.registerForm.usage_prop = '';
       this.registerForm.usage_guraduation_prop = '';
       this.registerForm.usage_stage_prop = null;
+      this.registerForm.preset_prop = 'no';
       this.registerForm.comment = '';
       this.preview = null;
       this.registerForm.photo = '';
@@ -628,6 +651,13 @@ export default {
         formData.append('usage_left', '');
         formData.append('usage_right', '');
       }
+      if(this.registerForm.usage_stage_prop === "usage_left" && this.registerForm.preset_prop === "left"){
+        formData.append('preset', 1);
+      }else if(this.registerForm.usage_stage_prop === "usage_right" && this.registerForm.preset_prop === "right"){
+        formData.append('preset', 2);
+      }else{
+        formData.append('preset', '');
+      }
       formData.append('photo', this.registerForm.photo);
       const response = await axios.post('/api/props', formData);
   
@@ -635,7 +665,7 @@ export default {
         this.errors.error = response.data.errors;
         // メッセージ登録
         this.$store.commit('message/setContent', {
-          content: '変更できませんでした',
+          content: '登録できませんでした',
           timeout: 6000
         });
         return false;
@@ -645,7 +675,7 @@ export default {
         this.$store.commit('error/setCode', response.status);
         // メッセージ登録
         this.$store.commit('message/setContent', {
-          content: '変更できませんでした',
+          content: '登録できませんでした',
           timeout: 6000
         });
         return false;

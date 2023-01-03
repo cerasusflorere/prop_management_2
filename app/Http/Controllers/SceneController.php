@@ -42,6 +42,7 @@ class SceneController extends Controller
         $usage_right = !empty($request->usage_right) ? 1 : 0;
         $setting_id = !empty($request->setting_id)? $request->setting_id : null; // nullで送ると文字列になる
 
+        // ページ更新について
         $exist = Scene::where([['character_id', '=', $request->character_id], 
                               ['prop_id', '=', $request->prop_id], 
                               ['first_page', '=', $first_page],
@@ -87,14 +88,14 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 上手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_left' => 1, 'usage_right' => 0, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 下手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_left' => 0,'usage_right' => 1,'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
@@ -111,14 +112,14 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 中間公演が0→1、上手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_left' => 1, 'usage_right' => 0, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 中間公演が0→1、下手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_left' => 0, 'usage_right' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
@@ -135,14 +136,14 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 卒業公演が0→1、上手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_left' => 1, 'usage_right' => 0,'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 卒業公演が0→1、下手が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_left' => 0,'usage_right' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
@@ -150,6 +151,23 @@ class SceneController extends Controller
                             // 卒業公演が0→1
                             $scene = Scene::where('id', $exist_update_first_page->id)
                                      ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'setting_id' => $setting_id]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
+                            }
+                        }
+                    }else if(!$confirm['usage'] && !$usage && $confirm['usage_guraduation'] && $usage_guraduation){
+                        // 中間公演が0→0、卒業公演が1→1
+                        if((!$confirm['usage_left'] && $usage_left) || (!$confirm['usage_right'] && $usage_right)){
+                            // 上手が0→1または下手が0→1
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'setting_id' => $setting_id]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                            }
+                        }else{
+                            // 更新する必要がなかった
+                            $scene = Scene::where('id', $exist_update_first_page->id)
+                                ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $exist_update_first_page->id, 'memo' => $request->memo]);
                             }
@@ -174,7 +192,7 @@ class SceneController extends Controller
                 // 決定か
                 if(!$decision && $scene){
                     // decision: 0
-                    $decision = Scene::where('id', '<>', $scene->id)
+                    $decision = Scene::where('id', '<>', $exist_update_first_page->id)
                         ->where('prop_id', $request->prop_id)->where('decision', 1)->first();
                     if(empty($decision)){
                         $affected_prop = Prop::where('id', $request->prop_id)
@@ -185,10 +203,127 @@ class SceneController extends Controller
                         ->update(['decision' => 1]);
                 }
 
+                // プリセットについて
+                $first_preset = 0; // 4は変えない
+                $preset_scene = 0; // 登録ページがないのに変えたかどうか 
+                if($first_page){
+                    // 新規投稿はページ登録有り
+                    $presets = Scene::where('id', '<>', $exist_update_first_page->id)
+                                ->where('prop_id', $request->prop_id)
+                                ->where('first_page', '>=', 1)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+
+                    if(count($presets)){
+                        // 使用ページ有り
+                        // ソートしたい要素の値を配列に入れる
+                        foreach ($presets as $preset => $colum) {
+                            $ArrPage[] = $colum['first_page'];
+                        }            
+                        // ソートする
+                        array_multisort($ArrPage, SORT_ASC, SORT_NUMERIC, $presets);
+
+                        if($presets[0]['first_page'] >= $first_page){
+                            // 既存の登録ページよりも前、つまり変更する可能性あり
+                            if($presets[0]['usage_left']){
+                                $first_preset = 1;
+                            }else if($presets[0]['usage_right']){
+                                $first_preset = 2;
+                            }else{
+                                $first_preset = 0;
+                            }
+                        }else{
+                            $first_preset = 4;
+                        }    
+                    }else{
+                        // 使用シーンなしまたはページ数の登録なし
+                        $presets = Scene::where('id', '<>', $exist_update_first_page->id)
+                                ->where('prop_id', $request->prop_id)
+                                ->where('first_page', '=', null)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+                        if(count($presets)){
+                            // ページ数の登録なし
+                            $prop_preset = Prop::where('id', $request->prop_id)
+                                            ->where('preset', '>=', 0)
+                                            ->select('preset')
+                                            ->first();
+                            if($prop_preset){
+                                // 小道具にプリセットの登録があった、念のため変えておく
+                                $preset_scene = 1;
+                            }  
+                        }
+                    }
+                }else{
+                    // 新規投稿にページ数なし
+                    $presets = Scene::where('id', '<>', $exist_update_first_page->id)
+                                ->where('prop_id', $request->prop_id)
+                                ->where('first_page', '>=', 1)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+                    if(!count($presets)){
+                        // 使用シーンなしまたはページ数の登録なし
+                        $presets = Scene::where('id', '<>', $exist_update_first_page->id)
+                                ->where('prop_id', $request->prop_id)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+                        if(count($presets)){
+                            // ページ数の登録なし
+                            $prop_preset = Prop::where('id', $request->prop_id)
+                                            ->where('preset', '>', 0)
+                                            ->select('preset')
+                                            ->first();
+                            if($prop_preset){
+                                // 小道具にプリセットの登録があった、念のため変えておく
+                                $preset_scene = 1;
+                            }else{
+                                // 小道具にプリセットの登録がない、登録しない
+                                $first_preset = 4;
+                            }
+                        }
+                    }else{
+                        // 使用シーンがある、登録しない
+                        $first_preset = 4;
+                    }
+                }
+
+                if($first_preset === 0){
+                    if($usage_left){
+                        $preset = 1;
+                    }else if($usage_right){
+                        $preset = 2;
+                    }else{
+                        $preset = 0;
+                    }
+                }else if($first_preset !==4){
+                    if($usage_left){
+                        $preset = 1;
+                    }else if($usage_right){
+                        $preset = 2;
+                    }else{
+                        $preset = 0;
+                    }
+                }
+
+                if($first_preset !== 4){
+                    $preset_affect = Prop::where('id', $request->prop_id)
+                                        ->update(['preset'=> $preset]);
+                }
+
                 DB::commit();
-                // リソースの新規作成なので
-                // レスポンスコードは201(CREATED)を返却する
-                return response($scene, 201);
+
+                if($preset_scene){
+                    // プリセットの位置が指示通り
+                    // ただし使用シーンなしまたはページ数なし
+                    // レスポンスコードは205(Reset Content)を返却する
+                    return response($scene, 205) ?? abort(404);
+                }else{
+                    // プリセットの位置が指示通り
+                    // リソースの新規作成なので
+                    // レスポンスコードは201(CREATED)を返却する
+                    return response($scene, 201) ?? abort(404);
+                }
+                
             }else if((!is_null($exist_update_fianl_page_null) || (!is_null($exist_update_fianl_page_notnull)) )){
                 // 登録済みが最初のページは一致するが、最後のページは一致しないかつより多くのページを含む場合
                 if(!is_null($exist_update_fianl_page_null)){
@@ -211,14 +346,21 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 上手が0→1
                             $scene = Scene::where('id', $id)
-                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_left' => 1, 'usage_right' => 0, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 下手が0→1
+                            $scene = Scene::where('id', $id)
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_left' => 0, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                            }
+                        }else{
+                            // 変更なし
                             $scene = Scene::where('id', $eid)
-                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                             }
@@ -228,14 +370,21 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 中間公演が0→1、上手が0→1
                             $scene = Scene::where('id', $id)
-                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_left' => 1, 'usage_right' => 0, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 中間公演が0→1、下手が0→1
-                            $scene = Scene::where('id', $exist_update_first_page->id)
-                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                            $scene = Scene::where('id', $id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'usage_left' => 0,'usage_right' => 1, 'setting_id' => $setting_id]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                            }
+                        }else{
+                            // 中間公演が0→1
+                            $scene = Scene::where('id', $id)
+                                     ->update(['first_page' => $first_page, 'final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage' => 1, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                             }
@@ -245,16 +394,40 @@ class SceneController extends Controller
                         if(!$confirm['usage_left'] && $usage_left){
                             // 卒業公演が0→1、上手が0→1
                             $scene = Scene::where('id', $id)
-                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_left' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_left' => 1, 'usage_right' => 0, 'setting_id' => $setting_id]);
                             if($request->memo){
                                 $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                             }
                         }else if(!$confirm['usage_right'] && $usage_right){
                             // 卒業公演が0→1、下手が0→1
                             $scene = Scene::where('id', $id)
-                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_right' => 1, 'setting_id' => $setting_id]);
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'usage_right' => 1, 'usage_right' => 0, 'setting_id' => $setting_id]);
                             if($request->memo){
-                                $scene_comment = Scenes_Comment::create(['scene_id' => $eid, 'memo' => $request->memo]);
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                            }
+                        }else{
+                            // 卒業公演が0→1
+                            $scene = Scene::where('id', $id)
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_guraduation' => 1, 'setting_id' => $setting_id]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                            }
+                        }
+                    }else if(!$confirm['usage'] && !$usage && $confirm['usage_guraduation'] && $usage_guraduation){
+                        // 中間公演が0→0、卒業公演が1→1
+                        if((!$confirm['usage_left'] && $usage_left) || (!$confirm['usage_right'] && $usage_right)){
+                            // 上手が0→1または下手が0→1
+                            $scene = Scene::where('id', $id)
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'usage_left' => $usage_left, 'usage_right' => $usage_right, 'setting_id' => $setting_id]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
+                            }
+                        }else{
+                            // 変更なし
+                            $scene = Scene::where('id', $id)
+                                     ->update(['final_page' => $final_page, 'quantity' => $quantity, 'decision' => $decision, 'setting_id' => $setting_id]);
+                            if($request->memo){
+                                $scene_comment = Scenes_Comment::create(['scene_id' => $id, 'memo' => $request->memo]);
                             }
                         }
                     }
@@ -270,7 +443,7 @@ class SceneController extends Controller
                 // 決定か
                 if(!$decision){
                     // decision: 0
-                    $decision = Scene::where('id', '<>', $scene->id)
+                    $decision = Scene::where('id', '<>', $id)
                             ->where('prop_id', $request->prop_id)->where('decision', 1)->first();
                     if(empty($decision)){
                         $affected_prop = Prop::where('id', $request->prop_id)
@@ -281,10 +454,127 @@ class SceneController extends Controller
                              ->update(['decision' => 1]);
                 }
 
+                // プリセットについて
+                $first_preset = 0; // 4は変えない
+                $preset_scene = 0; // 登録ページがないのに変えたかどうか 
+                if($first_page){
+                    // 新規投稿はページ登録有り
+                    $presets = Scene::where('id', '<>', $id)
+                                ->where('prop_id', $request->prop_id)
+                                ->where('first_page', '>=', 1)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+
+                    if(count($presets)){
+                        // 使用ページ有り
+                        // ソートしたい要素の値を配列に入れる
+                        foreach ($presets as $preset => $colum) {
+                            $ArrPage[] = $colum['first_page'];
+                        }            
+                        // ソートする
+                        array_multisort($ArrPage, SORT_ASC, SORT_NUMERIC, $presets);
+
+                        if($presets[0]['first_page'] >= $first_page){
+                            // 既存の登録ページよりも前、つまり変更する可能性あり
+                            if($presets[0]['usage_left']){
+                                $first_preset = 1;
+                            }else if($presets[0]['usage_right']){
+                                $first_preset = 2;
+                            }else{
+                                $first_preset = 0;
+                            }
+                        }else{
+                            $first_preset = 4;
+                        }    
+                    }else{
+                        // 使用シーンなしまたはページ数の登録なし
+                        $presets = Scene::where('id', '<>', $id)
+                                ->where('prop_id', $request->prop_id)
+                                ->where('first_page', '=', null)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+                        if(count($presets)){
+                            // ページ数の登録なし
+                            $prop_preset = Prop::where('id', $request->prop_id)
+                                            ->where('preset', '>=', 0)
+                                            ->select('preset')
+                                            ->first();
+                            if($prop_preset){
+                                // 小道具にプリセットの登録があった、念のため変えておく
+                                $preset_scene = 1;
+                            }  
+                        }
+                    }
+                }else{
+                    // 新規投稿にページ数なし
+                    $presets = Scene::where('id', '<>', $id)
+                                ->where('prop_id', $request->prop_id)
+                                ->where('first_page', '>=', 1)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+                    if(!count($presets)){
+                        // 使用シーンなしまたはページ数の登録なし
+                        $presets = Scene::where('id', '<>', $id)
+                                ->where('prop_id', $request->prop_id)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+                        if(count($presets)){
+                            // ページ数の登録なし
+                            $prop_preset = Prop::where('id', $request->prop_id)
+                                            ->where('preset', '>', 0)
+                                            ->select('preset')
+                                            ->first();
+                            if($prop_preset){
+                                // 小道具にプリセットの登録があった、念のため変えておく
+                                $preset_scene = 1;
+                            }else{
+                                // 小道具にプリセットの登録がない、登録しない
+                                $first_preset = 4;
+                            }
+                        }
+                    }else{
+                        // 使用シーンがある、登録しない
+                        $first_preset = 4;
+                    }
+                }
+
+                if($first_preset === 0){
+                    if($usage_left){
+                        $preset = 1;
+                    }else if($usage_right){
+                        $preset = 2;
+                    }else{
+                        $preset = 0;
+                    }
+                }else if($first_preset !==4){
+                    if($usage_left){
+                        $preset = 1;
+                    }else if($usage_right){
+                        $preset = 2;
+                    }else{
+                        $preset = 0;
+                    }
+                }
+
+                if($first_preset !== 4){
+                    $preset_affect = Prop::where('id', $request->prop_id)
+                                        ->update(['preset'=> $preset]);
+                }
+
                 DB::commit();
-                // リソースの新規作成なので
-                // レスポンスコードは201(CREATED)を返却する
-                return response($scene, 201);
+
+                if($preset_scene){
+                    // プリセットの位置が指示通り
+                    // ただし使用シーンなしまたはページ数なし
+                    // レスポンスコードは205(Reset Content)を返却する
+                    return response($scene, 205) ?? abort(404);
+                }else{
+                    // プリセットの位置が指示通り
+                    // リソースの新規作成なので
+                    // レスポンスコードは201(CREATED)を返却する
+                    return response($scene, 201) ?? abort(404);
+                }
+                
 
             }else if(!($exist)){
                 // 新規投稿
@@ -305,12 +595,132 @@ class SceneController extends Controller
                 }else{
                     $affected_prop = Prop::where('id', $request->prop_id)
                             ->update(['decision' => 1]);
-                }        
+                }
+
+                // プリセットについて
+                $first_preset = 0; // 4は変えない
+                $preset_scene = 0; // 登録ページがないのに変えたかどうか 
+                if($first_page){
+                    // 新規投稿はページ登録有り
+                    $presets = Scene::where('id', '<>', $scene->id)
+                                ->where('prop_id', $request->prop_id)
+                                ->where('first_page', '>=', 1)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+
+                    if(count($presets)){
+                        // 使用ページ有り
+                        // ソートしたい要素の値を配列に入れる
+                        foreach ($presets as $preset => $colum) {
+                            $ArrPage[] = $colum['first_page'];
+                        }            
+                        // ソートする
+                        array_multisort($ArrPage, SORT_ASC, SORT_NUMERIC, $presets);
+
+                        if($presets[0]['first_page'] >= $first_page){
+                            // 既存の登録ページよりも前、つまり変更する可能性あり
+                            if($presets[0]['usage_left']){
+                                $first_preset = 1;
+                            }else if($presets[0]['usage_right']){
+                                $first_preset = 2;
+                            }else{
+                                $first_preset = 0;
+                            }
+                        }else{
+                            $first_preset = 4;
+                        }    
+                    }else{
+                        // 使用シーンなしまたはページ数の登録なし
+                        $presets = Scene::where('id', '<>', $scene->id)
+                                ->where('prop_id', $request->prop_id)
+                                ->where('first_page', '=', null)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+                        if(count($presets)){
+                            // ページ数の登録なし
+                            $prop_preset = Prop::where('id', $request->prop_id)
+                                            ->where('preset', '>=', 0)
+                                            ->select('preset')
+                                            ->first();
+                            if($prop_preset){
+                                // 小道具にプリセットの登録があった、念のため変えておく
+                                $preset_scene = 1;
+                            }  
+                        }
+                    }
+                }else{
+                    // 新規投稿にページ数なし
+                    $presets = Scene::where('id', '<>', $scene->id)
+                                ->where('prop_id', $request->prop_id)
+                                ->where('first_page', '>=', 1)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+                    if(!count($presets)){
+                        // 使用シーンなしまたはページ数の登録なし
+                        $presets = Scene::where('id', '<>', $scene->id)
+                                ->where('prop_id', $request->prop_id)
+                                ->select('first_page', 'usage_left', 'usage_right')
+                                ->get()->toArray();
+                        if(count($presets)){
+                            // ページ数の登録なし
+                            $prop_preset = Prop::where('id', $request->prop_id)
+                                            ->where('preset', '>', 0)
+                                            ->select('preset')
+                                            ->first();
+                            if($prop_preset){
+                                // 小道具にプリセットの登録があった、念のため変えておく
+                                $preset_scene = 1;
+                            }else{
+                                // 小道具にプリセットの登録がない、登録しない
+                                $first_preset = 4;
+                            }
+                        }else{
+                            // 使用シーンなし
+                            $first_preset = 4;
+                        }
+                    }else{
+                        // 使用シーンがある、登録しない
+                        $first_preset = 4;
+                    }
+                }
+
+                if($first_preset === 0){
+                    if($usage_left){
+                        $preset = 1;
+                    }else if($usage_right){
+                        $preset = 2;
+                    }else{
+                        $preset = 0;
+                    }
+                }else if($first_preset !==4){
+                    if($usage_left){
+                        $preset = 1;
+                    }else if($usage_right){
+                        $preset = 2;
+                    }else{
+                        $preset = 0;
+                    }
+                }
+
+                if($first_preset !== 4){
+                    $preset_affect = Prop::where('id', $request->prop_id)
+                                        ->update(['preset'=> $preset]);
+                }
 
                 DB::commit();
-                // リソースの新規作成なので
-                // レスポンスコードは201(CREATED)を返却する
-                return response($scene, 201);
+
+                if($preset_scene){
+                    // プリセットの位置が指示通り
+                    // ただし使用シーンなしまたはページ数なし
+                    // レスポンスコードは205(Reset Content)を返却する
+                    return response($scene, 205) ?? abort(404);
+                }else{
+                    // プリセットの位置が指示通り
+                    // リソースの新規作成なので
+                    // レスポンスコードは201(CREATED)を返却する
+                    return response($scene, 201) ?? abort(404);
+                }
+                
             }
         }catch (\Exception $exception) {
             DB::rollBack();
@@ -372,6 +782,116 @@ class SceneController extends Controller
                 $affected_prop = Prop::where('id', $request->prop_id)
                          ->update(['decision' => 1]);
             }
+            
+            // プリセットについて
+            $first_preset = 0; // 4は変えない
+            $preset_scene = 0; // 登録ページがないのに変えたかどうか 
+            if($first_page){
+                // 編集シーンはページ登録有り
+                $presets = Scene::where('id', '<>', $id)
+                            ->where('prop_id', $request->prop_id)
+                            ->where('first_page', '>=', 1)
+                            ->select('first_page', 'usage_left', 'usage_right')
+                            ->get()->toArray();
+
+                if(count($presets)){
+                    // 使用ページ有り
+                    // ソートしたい要素の値を配列に入れる
+                    foreach ($presets as $preset => $colum) {
+                        $ArrPage[] = $colum['first_page'];
+                    }            
+                    // ソートする
+                    array_multisort($ArrPage, SORT_ASC, SORT_NUMERIC, $presets);
+
+                    if($presets[0]['first_page'] >= $first_page){
+                        // 既存の登録ページよりも前、つまり変更する可能性あり
+                        if($presets[0]['usage_left']){
+                            $first_preset = 1;
+                        }else if($presets[0]['usage_right']){
+                            $first_preset = 2;
+                        }else{
+                            $first_preset = 0;
+                        }
+                    }else{
+                        $first_preset = 4;
+                    }    
+                }else{
+                    // 使用シーンなしまたはページ数の登録なし
+                    $presets = Scene::where('id', '<>', $id)
+                            ->where('prop_id', $request->prop_id)
+                            ->where('first_page', '=', null)
+                            ->select('first_page', 'usage_left', 'usage_right')
+                            ->get()->toArray();
+                    if(count($presets)){
+                        // ページ数の登録なし
+                        $prop_preset = Prop::where('id', $request->prop_id)
+                                        ->where('preset', '>=', 0)
+                                        ->select('preset')
+                                        ->first();
+                        if($prop_preset){
+                            // 小道具にプリセットの登録があった、念のため変えておく
+                            $preset_scene = 1;
+                        }  
+                    }
+                }
+            }else{
+                // 編集シーンにページ数なし
+                $presets = Scene::where('id', '<>', $id)
+                            ->where('prop_id', $request->prop_id)
+                            ->where('first_page', '>=', 1)
+                            ->select('first_page', 'usage_left', 'usage_right')
+                            ->get()->toArray();
+                if(!count($presets)){
+                    // 使用シーンなしまたはページ数の登録なし
+                    $presets = Scene::where('id', '<>', $id)
+                            ->where('prop_id', $request->prop_id)
+                            ->select('first_page', 'usage_left', 'usage_right')
+                            ->get()->toArray();
+                    if(count($presets)){
+                        // ページ数の登録なし
+                        $prop_preset = Prop::where('id', $request->prop_id)
+                                        ->where('preset', '>', 0)
+                                        ->select('preset')
+                                        ->first();
+                        if($prop_preset){
+                            // 小道具にプリセットの登録があった、念のため変えておく
+                            $preset_scene = 1;
+                        }else{
+                            // 小道具にプリセットの登録がない、登録しない
+                            $first_preset = 4;
+                        }
+                    }else{
+                        // 使用シーンなし
+                        $first_preset = 4;
+                    }
+                }else{
+                    // 使用シーンがある、登録しない
+                    $first_preset = 4;
+                }
+            }
+
+            if($first_preset === 0){
+                if($usage_left){
+                    $preset = 1;
+                }else if($usage_right){
+                    $preset = 2;
+                }else{
+                    $preset = 0;
+                }
+            }else if($first_preset !==4){
+                if($usage_left){
+                    $preset = 1;
+                }else if($usage_right){
+                    $preset = 2;
+                }else{
+                    $preset = 0;
+                }
+            }
+
+            if($first_preset !== 4){
+                $preset_affect = Prop::where('id', $request->prop_id)
+                                    ->update(['preset'=> $preset]);
+            }
             DB::commit();
         }catch (\Exception $exception) {
             DB::rollBack();
@@ -379,8 +899,17 @@ class SceneController extends Controller
             throw $exception;
         }
 
-        // レスポンスコードは204(No Content)を返却する
-        return response($affected, 204) ?? abort(404);
+        if($preset_scene){
+            // プリセットの位置が指示通り
+            // ただし使用シーンなしまたはページ数なし
+            // レスポンスコードは205(Reset Content)を返却する
+            return response($scene, 205) ?? abort(404);
+        }else{
+            // プリセットの位置が指示通り
+            // リソースの新規作成なので
+            // レスポンスコードは204(No Content)を返却する
+           return response($affected, 204) ?? abort(404);
+        }
     }
     
     /**
@@ -445,12 +974,11 @@ class SceneController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }else if($request->method == 'usage'){
             // 中間発表で使用するか
             $affected= Scene::whereIn('id', $ids)
                     ->update(['usage' => $yes_no]);
-            var_dump($yes_no);
 
             // Prop
             if(!$yes_no){
@@ -486,14 +1014,13 @@ class SceneController extends Controller
                          ->update(['usage' => 0]);
                 }
             }else{
-                var_dump($yes_no);
                 // usage: 1
                 $affected_prop = Prop::whereIn('id', $prop_ids)
                          ->update(['usage' => 1]);
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }else if($request->method == 'usage_guraduation'){
             // 卒業公演で使用するか
             if(!$yes_no){
@@ -610,7 +1137,7 @@ class SceneController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }else if($request->method == 'usage_left'){
             // 上手で使用するか    
             if(!$yes_no){
@@ -658,7 +1185,7 @@ class SceneController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }else if($request->method == 'usage_right'){
             // 下手で使用するか
             if(!$yes_no){
@@ -706,7 +1233,7 @@ class SceneController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }else if($request->method == 'setting'){
             if(!$yes_no){
                 // setting: 0
@@ -715,7 +1242,7 @@ class SceneController extends Controller
             }
 
             // レスポンスコードは204(No Content)を返却する
-            return response($affected, 204);
+            return response($affected, 204) ?? abort(404);
         }
     }
 

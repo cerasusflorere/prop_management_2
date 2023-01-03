@@ -47,6 +47,7 @@
               <div>これで決定か: <span v-if="prop.decision" class="usage-show"><i class="fas fa-check fa-fw"></i></span></div>
 
               <div>
+                使用するか:
                 <!-- 中間発表 -->
                 <span v-if="prop.usage" class="usage-show">Ⓟ</span>
                 <!-- 卒業公演 -->
@@ -55,6 +56,14 @@
                 <span v-if="prop.usage_left" class="usage-show">㊤</span>
                 <!-- 下手 -->
                 <span v-if="prop.usage_right" class="usage-show">㊦</span>
+              </div>
+
+              <div>
+                プリセット:
+                <!-- 上手 -->
+                <span v-if="prop.preset === 1" class="usage-show">㊤</span>
+                <!-- 下手 -->
+                <span v-else-if="prop.preset === 2" class="usage-show">㊦</span>
               </div>
 
               <div>
@@ -81,11 +90,9 @@
                           <span v-if="scene !== null && scene.first_page === 1 && scene.final_page === 1000">
                             : 全シーン
                           </span>
-                        </div>
 
-                        <div>
                           <!-- 決定かどうか -->
-                          <span v-if="scene.decision" class="usage-show">決定</span>
+                          <span v-if="scene.decision" class="usage-show">決</span>
 
                           <!-- 使用状況 -->
                           <span v-if="scene.usage" class="usage-show">Ⓟ</span>
@@ -201,17 +208,35 @@
                 <div  class="checkbox-area--together">
                   <label for="prop_usage_guraduation_prop_edit" class="form__check__label">卒業公演での使用</label>
                   <input type="checkbox" id="prop_usage_guraduation_scene_edit" class="form__check__input" v-model="editForm_prop.usage_guraduation" @change="selectGuraduation">
+                
+                  <span v-if="guradutaion_tag"  class="checkbox-area--together">
+                    <input type="checkbox" id="prop_usage_left_prop_edit" class="form__check__input" value="left" v-model="editForm_prop.usage_left">
+                    <label for="prop_usage_left_prop_edit" class="form__check__label">上手</label>
+
+                    <input type="checkbox" id="prop_usage_right_prop_edit" class="form__check__input" value="right" v-model="editForm_prop.usage_right"></input>
+                    <label for="prop_usage_right_prop_edit" class="form__check__label">下手</label>                
+                  </span>
                 </div>
 
-                <div v-if="guradutaion_tag"  class="checkbox-area--together">
-                  <input type="checkbox" id="prop_usage_left_prop_edit" class="form__check__input" value="left" v-model="editForm_prop.usage_left">
-                  <label for="prop_usage_left_prop_edit" class="form__check__label">上手</label>
+                
+              </div>
 
-                  <input type="checkbox" id="prop_usage_right_prop_edit" class="form__check__input" value="right" v-model="editForm_prop.usage_right"></input>
-                  <label for="prop_usage_right_prop_edit" class="form__check__label">下手</label>                
+              <!--プリセット -->
+              <div>
+                <div v-if="guradutaion_tag"  class="checkbox-area--together">
+                  <label class="form__check__label">プリセット</label>
+                  <input type="radio" id="prop_preset_left_prop_edit" class="form__check__input" value="left" v-model="editForm_prop.preset">
+                  <label for="prop_preset_left_prop_edit" class="form__check__label">上手</label>
+
+                  <input type="radio" id="prop_preset_right_prop_edit" class="form__check__input" value="right" v-model="editForm_prop.preset"></input>
+                  <label for="prop_preset_right_prop_edit" class="form__check__label">下手</label> 
+                  
+                  <input type="radio" id="prop_preset_no_prop_edit" class="form__check__input" value="no" v-model="editForm_prop.preset"></input>
+                  <label for="prop_preset_no_prop_edit" class="form__check__label">未定</label> 
                 </div>
               </div>
 
+              <!-- メモ -->
               <div>
                 <label for="prop_comment_edit">メモ:</label>
                 <ul v-if="editForm_prop.prop_comments.length" >
@@ -357,7 +382,7 @@ export default {
         owner: {
           name: ''
         },
-        owner_id: '',
+        owner_id: 0,
         quantity: 1,
         location: 0,
         handmade: 0,
@@ -369,6 +394,7 @@ export default {
         usage_guraduation: 0,
         usage_left: 0,
         usage_right: 0,
+        preset: 'no',
         photo: 0,
         prop_comments: [],
         scenes: []
@@ -401,6 +427,8 @@ export default {
       // 編集範囲
       editPropMode_detail: "",
       editPropMode_memo: "",
+      // 編集時にプリセットが思い通りできたか
+      acci_change_preset: 0,
       // 削除confirm
       showContent_confirmDelete: false,
       postMessage_Delete: ""
@@ -421,20 +449,23 @@ export default {
           await this.fetchOwners();
           await this.fetchProps();
 
+          this.$el.querySelector('input[type="file"]').value = null;
           // ふりがなのinput要素のidは省略可能
           // 使用シーン登録時のid=propと被るから
           const autokana_id = '#'+ this.prop.id;
           autokana = AutoKana.bind(autokana_id);
           autokana.input = this.prop.kana;
 
-          const content_dom = this.$refs.content_detail_prop;
-          const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-
-          if(content_rect.top < 0){
-            this.overlay_class = 0;
-          }else{
-            this.overlay_class = 1;
-          }
+          // 調整
+          this.$nextTick(() => {
+            const content_dom = this.$refs.content_detail_prop;
+            const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+            if(content_rect.top < 0){
+              this.overlay_class = 0;
+            }else{
+              this.overlay_class = 1;
+            }
+          });
         }        
       },
       immediate: true,
@@ -456,6 +487,16 @@ export default {
             }
           });
 
+          if(this.acci_change_preset === 1){
+            // プリセットが指示通り変換できたが使用シーンなしまたはページ数の登録なし
+            alert('プリセットは変更しましたが、使用シーンが登録されていない、またはページ数の登録のある使用シーンがありません。');
+            this.acci_change_preset = 0;
+          }else if(this.acci_change_preset === 2){
+            // プリセットが指示通り変換できなかった
+            alert('プリセットは該当小道具の最初の使用シーンの位置と異なったので変更していません。');
+            this.acci_change_preset = 0;
+          }
+
           // メッセージ登録
           this.$store.commit('message/setContent', {
             content: '小道具が変更されました！',
@@ -464,7 +505,11 @@ export default {
         }else if(this.editPropMode_detail || this.editPropMode_memo){
           await this.openModal_confirmEdit();
         }else if(this.editPropMode_detail === 0 && this.editPropMode_memo === 0){
-          alert('元のデータと同じです！変更してください');
+          if((!this.editForm_prop.usage_left && this.editForm_prop.preset === 'left') || (!this.editForm_prop.usage_right && this.editForm_prop.preset === 'right')){
+            alert('使用しない袖でプリセットしようとしています。使用する袖を指定するか、プリセットを外してください。');
+          }else{
+            alert('元のデータと同じです！変更してください！');
+          }
           this.editPropMode_detail = "";
           this.editPropMode_memo = "";
         }
@@ -524,6 +569,14 @@ export default {
       this.editForm_prop.usage_left = this.prop.usage_left;
       this.editForm_prop.usage_right = this.prop.usage_right;
 
+      if(this.prop.preset === 1){
+        this.editForm_prop.preset = 'left';
+      }else if(this.prop.preset === 2){
+        this.editForm_prop.preset = 'right';
+      }else{
+        this.editForm_prop.preset = 'no';
+      }
+
       this.editForm_prop.prop_comments = JSON.parse(JSON.stringify(this.prop.prop_comments));
       const scenes = this.prop.scenes;
       this.sort_Standard(scenes);
@@ -541,7 +594,6 @@ export default {
         this.editForm_prop.photo = 0; // 写真が登録されていない（可能性：0のまま（この時pubic_idは存在しない）、写真バイナリ代入（この時public_idは存在しない））
       }
       this.preview = null;
-      // if(!this.editForm_prop.scenes.length){
       //   this.editForm_prop.scenes[0] = Object.assign({}, this.editForm_prop.scenes[0], {character_id: null, section: '' , page: '', usage: '', scene_comments: []})
       //   this.editForm_prop.scenes[0].scene_comments[0] = Object.assign({}, this.editForm_prop.scenes[0].scene_comments[0], {memo: null})
       // }else{
@@ -552,17 +604,6 @@ export default {
       // }
       this.editPropMode_detail = "";
       this.editPropMode_memo = "";
-
-      // 調整
-      this.$nextTick(() => {
-        const content_dom = this.$refs.content_detail_prop;
-        const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-        if(content_rect.top < 0){
-          this.overlay_class = 0;
-        }else{
-          this.overlay_class = 1;
-        }
-      });
     },
 
     sort_Standard(array){
@@ -743,6 +784,7 @@ export default {
         this.guradutaion_tag = 0;
         this.editForm_prop.usage_left = 0;
         this.editForm_prop.usage_right = 0;
+        this.editForm_prop.preset = 'no';
       }
     },
 
@@ -764,6 +806,7 @@ export default {
       this.editForm_prop.usage_guraduation = 0;
       this.editForm_prop.usage_left = 0;
       this.editForm_prop.usage_right = 0;
+      this.editForm_prop.preset = 'no';
       this.editForm_prop.photo = 0;
       this.editForm_prop.prop_comments = [];
       this.editForm_prop.scenes = [];
@@ -974,15 +1017,18 @@ export default {
         this.editForm_prop.handmade = this.editForm_prop.handmade_complete;
       }
 
-      if(this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || ((this.prop.owner_id !== this.editForm_prop.owner_id) || (!this.prop.owner_id && !this.editForm_prop.owner_id)) || this.prop.quantity !== this.editForm_prop.quantity || this.prop.location !== this.editForm_prop.location || this.prop.handmade !== this.editForm_prop.handmade || this.prop.decision !== this.editForm_prop.decision  || this.prop.usage !== this.editForm_prop.usage || this.prop.usage_guraduation !== this.editForm_prop.usage_guraduation || this.prop.usage_left !== this.editForm_prop.usage_left || this.prop.usage_right !== this.editForm_prop.usage_right) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo))){
-        // 怪しい
-        // if(!this.prop.owner_id && !this.editForm_prop.owner_id){
-        //   console.log('なんで');
-        //   this.editPropMode_detail = 0;
-        // }else{
-          // 写真をアップデートしない
-          this.editPropMode_detail = 1; // 'photo_non_update'
-        // }        
+      let preset = 0;
+      if(this.editForm_prop.usage_left && this.editForm_prop.preset === 'left'){
+        preset = 1;
+      }else if(this.editForm_prop.usage_right && this.editForm_prop.preset === 'right'){
+        preset = 2;
+      }else if((!this.editForm_prop.usage_left && this.editForm_prop.preset === 'left') || (!this.editForm_prop.usage_right && this.editForm_prop.preset === 'right')){
+        this.editPropMode_detail = 0;
+      }
+
+      if(this.editPropMode_detail !== 0 && (this.prop.id === this.editForm_prop.id && (this.prop.name !== this.editForm_prop.name || this.prop.kana !== this.editForm_prop.kana || this.prop.owner_id !== this.editForm_prop.owner_id || this.prop.quantity !== this.editForm_prop.quantity || this.prop.location != this.editForm_prop.location || this.prop.handmade != this.editForm_prop.handmade || this.prop.decision != this.editForm_prop.decision  || this.prop.usage != this.editForm_prop.usage || this.prop.usage_guraduation != this.editForm_prop.usage_guraduation || this.prop.usage_left != this.editForm_prop.usage_left || this.prop.usage_right != this.editForm_prop.usage_right || this.prop.preset !== preset) && ((this.prop.public_id && this.editForm_prop.photo === 1) || (!this.prop.public_id && !this.editForm_prop.photo)))){
+        // 写真をアップデートしない
+        this.editPropMode_detail = 1; // 'photo_non_update'
       }else if(this.prop.id === this.editForm_prop.id && !this.prop.public_id && this.editForm_prop.photo && this.editForm_prop.photo !== 1){
         // 写真新規
         this.editPropMode_detail = 2; // 'photo_store'
@@ -1035,6 +1081,7 @@ export default {
       let usage_guraduation = '';
       let usage_left = '';
       let usage_right = '';
+      let preset = '';
 
       if(this.editForm_prop.location) {
         location = '持ってきてる';
@@ -1065,6 +1112,12 @@ export default {
         usage_right = '㊦';
       }
 
+      if(this.editForm_prop.preset === 'left'){
+        preset = '㊤';
+      }else if(this.editForm_prop.preset === 'right'){
+        preset = '㊦';
+      }
+
       let memos = [];
       this.editForm_prop.prop_comments.forEach((memo, index) => {
         if(memo.memo && index !== this.editForm_prop.prop_comments.length - 1){
@@ -1081,7 +1134,7 @@ export default {
         photo = '変更しない';
       }
 
-      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name + '\nふりがな：'+this.editForm_prop.kana + '\n持ち主：'+this.editForm_prop.owner.name + '\n個数：'+this.editForm_prop.quantity +'\nピッコロに：'+location + '\n'+handmade + '\n決定：'+decision + '\n使用状況：'+usage+usage_guraduation+usage_left+usage_right + '\nメモ：'+memos + '\n写真：'+photo;
+      this.postMessage_Edit = '以下のように編集します。\n小道具名：'+this.editForm_prop.name + '\nふりがな：'+this.editForm_prop.kana + '\n持ち主：'+this.editForm_prop.owner.name + '\n個数：'+this.editForm_prop.quantity +'\nピッコロに：'+location + '\n'+handmade + '\n決定：'+decision + '\n使用状況：'+usage+usage_guraduation+usage_left+usage_right + '\nプリセット：'+preset + '\nメモ：'+memos + '\n写真：'+photo;
     },
     // 編集confirmのモーダル非表示_OKの場合
     async closeModal_confirmEdit_OK() {
@@ -1110,6 +1163,12 @@ export default {
       if(this.editForm_prop.owner_id === 0){
         this.editForm_prop.owner_id = '';
       }
+      let preset = 0;
+      if(this.editForm_prop.usage_left && this.editForm_prop.preset === 'left'){
+        preset = 1;
+      }else if(this.editForm_prop.usage_right && this.editForm_prop.preset === 'right'){
+        preset = 2;
+      }
 
       if(this.editPropMode_detail === 1){
         // 写真は変更しない
@@ -1125,7 +1184,8 @@ export default {
           usage: this.editForm_prop.usage,
           usage_guraduation: this.editForm_prop.usage_guraduation,
           usage_left: this.editForm_prop.usage_left,
-          usage_right: this.editForm_prop.usage_right
+          usage_right: this.editForm_prop.usage_right,
+          preset: preset
         });
 
         if (response.status === 422) {
@@ -1133,11 +1193,19 @@ export default {
           return false;
         }
 
-        if (response.status !== 204) {
+        if (response.status !== 204 && response.status !== 205 && response.status !== 206) {
           this.$store.commit('error/setCode', response.status);
           return false;
         }
-        
+
+        if(response.status === 205){
+          this.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+        }
+
+        if(response.status === 206){
+          this.acci_change_preset = 2; // 変更できてない
+        }
+
         this.editPropMode_detail = 100;
         if(this.editPropMode_memo === 0){
           this.editPropMode_memo = 100;
@@ -1158,6 +1226,7 @@ export default {
         formData.append('usage_guraduation', this.editForm_prop.usage_guraduation);
         formData.append('usage_left', this.editForm_prop.usage_left);
         formData.append('usage_right', this.editForm_prop.usage_right);
+        formData.append('preset', preset);
         formData.append('photo', this.editForm_prop.photo);
         const response = await axios.post('/api/props/'+ this.prop.id, formData);
 
@@ -1166,9 +1235,17 @@ export default {
           return false;
         }
 
-        if (response.status !== 204) {
+        if (response.status !== 204 && response.status !== 205 && response.status !== 206) {
           this.$store.commit('error/setCode', response.status);
           return false;
+        }
+
+        if(response.status === 205){
+          this.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+        }
+
+        if(response.status === 206){
+          this.acci_change_preset = 2; // 変更できてない
         }
 
         this.editPropMode_detail = 100;
@@ -1191,7 +1268,8 @@ export default {
           usage: this.editForm_prop.usage,
           usage_guraduation: this.editForm_prop.usage_guraduation,
           usage_left: this.editForm_prop.usage_left,
-          usage_right: this.editForm_prop.usage_right
+          usage_right: this.editForm_prop.usage_right,
+          preset: preset
         });
 
         if (response.status === 422) {
@@ -1199,9 +1277,17 @@ export default {
           return false;
         }
 
-        if (response.status !== 204) {
+        if (response.status !== 204 && response.status !== 205 && response.status !== 206) {
           this.$store.commit('error/setCode', response.status);
           return false;
+        }
+
+        if(response.status === 205){
+          this.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+        }
+
+        if(response.status === 206){
+          this.acci_change_preset = 2; // 変更できてない
         }
 
         this.editPropMode_detail = 100;
@@ -1225,6 +1311,7 @@ export default {
         formData.append('usage_guraduation', this.editForm_prop.usage_guraduation);
         formData.append('usage_left', this.editForm_prop.usage_left);
         formData.append('usage_right', this.editForm_prop.usage_right);
+        formData.append('preset', preset);
         formData.append('photo', this.editForm_prop.photo);
         const response = await axios.post('/api/props/'+ this.prop.id, formData);
 
@@ -1233,9 +1320,17 @@ export default {
           return false;
         }
 
-        if (response.status !== 204) {
+        if (response.status !== 204 && response.status !== 205 && response.status !== 206) {
           this.$store.commit('error/setCode', response.status);
           return false;
+        }
+
+        if(response.status === 205){
+          this.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+        }
+
+        if(response.status === 206){
+          this.acci_change_preset = 2; // 変更できてない
         }
 
         this.editPropMode_detail = 100;

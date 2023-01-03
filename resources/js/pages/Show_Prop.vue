@@ -70,6 +70,7 @@
               <th>卒業</th>
               <th>上手</th>
               <th>下手</th>
+              <th>プリセ</th>
               <th class="th-memo">メモ</th>
               <th>登録日時</th>
               <th>更新日時</th>
@@ -111,6 +112,10 @@
               <td v-else></td>
               <!-- 下手-->
               <td v-if="prop.usage_right"><i class="fas fa-check fa-fw"></i></td>
+              <td v-else></td>
+              <!-- プリセット-->
+              <td v-if="prop.preset === 1">㊤</td>
+              <td v-else-if="prop.preset === 2">㊦</td>
               <td v-else></td>
               <!-- メモ -->
               <td v-if="prop.prop_comments.length">
@@ -206,6 +211,13 @@
                 <th>下手</th>
                 <td v-if="prop.usage_right"><i class="fas fa-check fa-fw"></i></td>
                 <td v-else></td>
+              </tr>              
+              <tr>
+                <!-- プリセット -->
+                <th>プリセ</th>
+                <td v-if="prop.preset === 1">㊤</td>
+                <td v-else-if="prop.preset === 2">㊦</td>
+                <td v-else></td>
               </tr>
               <tr>
                 <!-- メモ -->
@@ -293,6 +305,13 @@
                 <span v-if="prop.usage_left" class="usage-show">㊤</span>
                 <!-- 下手 -->
                 <span v-if="prop.right" class="usage-show">㊦</span>
+              </div>
+
+              <!-- プリセット -->
+              <div>
+                <span v-if="prop.preset" class="usage-show">プリセ:</span>
+                <span v-if="prop.preset === 1" class="usage-show">㊤</span>
+                <span v-else-if="prop.preset === 2" class="usage-show">㊦</span>
               </div>
               
               <!-- メモ -->
@@ -823,6 +842,7 @@
           { header: '卒業公演', key: 'usage_guraduation', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '上手', key: 'usage_left', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: '下手', key: 'usage_right', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
+          { header: 'プリセ', key: 'preset', width: 12, style: { alignment: {vertical: "middle", horizontal: "center" }}},
           { header: 'メモ', key: 'memo', width: 24, style: { alignment: {vertical: "middle", horizontal: "center" }}},
         ];
 
@@ -854,6 +874,8 @@
         worksheet.getCell('J1').fill = fill;
         worksheet.getCell('K1').font = font;
         worksheet.getCell('K1').fill = fill;
+        worksheet.getCell('L1').font = font;
+        worksheet.getCell('L1').fill = fill;
 
         this.showProps.forEach((prop, index) => {
           let datas = [];
@@ -913,6 +935,14 @@
 
           if(prop.usage_right){
             datas.push('〇');
+          }else{
+            datas.push(null);
+          }
+
+          if(prop.preset === 1){
+            datas.push('㊤');
+          }else if(prop.preset === 2){
+            datas.push('㊦');
           }else{
             datas.push(null);
           }

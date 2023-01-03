@@ -315,6 +315,8 @@
         editSceneMode_detail: "",
         editSceneMode_memo: "",
         editSceneMode_prop: "",
+        // 編集時にプリセットが思い通りできたか
+        acci_change_preset: 0,
         // 削除confirm
         showContent_confirmDelete: false,
         postMessage_Delete: ""
@@ -329,13 +331,16 @@
             await this.fetchProps();
             await this.fetchScene();
             
-            const content_dom = this.$refs.content_detail_scene;
-            const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-            if(content_rect.top < 0){
-              this.overlay_class = 0;
-            }else{
-              this.overlay_class = 1;
-            }
+            this.$nextTick(() => {
+              // 位置調整
+              const content_dom = this.$refs.content_detail_scene;
+              const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+              if(content_rect.top < 0){
+                this.overlay_class = 0;
+              }else{
+                this.overlay_class = 1;
+              }
+            });
           }       
         },
         immediate: true,
@@ -362,8 +367,16 @@
       },
       editSceneMode_prop: {
         async handler(editSceneMode_prop){
+          console.log(this.editSceneMode_prop);
           if(this.editSceneMode_prop === 100){
             await this.fetchScene();
+
+            if(this.acci_change_preset === 1){
+              // プリセットが指示通り変換できたが使用シーンなしまたはページ数の登録なし
+              alert('小道具のプリセットは変更しましたが、ページ数の登録のある使用シーンがありません。');
+              this.acci_change_preset = 0;
+            }
+            
             // メッセージ登録
             this.$store.commit('message/setContent', {
               content: '使用シーンが変更されました！',
@@ -383,6 +396,9 @@
       },
       editSceneMode_detail: {
         async handler(editSceneMode_detail){
+          console.log('入った');
+          console.log(this.editSceneMode_detail);
+          console.log(this.editSceneMode_prop);
           if(this.editSceneMode_detail === 100 && this.editSceneMode_prop === 1){
             await this.editProp_usage(this.editForm_scene.prop_id);
           }
@@ -465,15 +481,6 @@
 
         // 調整
         this.$nextTick(() => {
-          // 位置調整
-          const content_dom = this.$refs.content_detail_scene;
-          const content_rect = content_dom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-          if(content_rect.top < 0){
-            this.overlay_class = 0;
-          }else{
-            this.overlay_class = 1;
-          }
-
           // 個数最大値
           let quantity = 1;
           this.optionProps.forEach((prop) => {
@@ -876,8 +883,7 @@
             sets_final = this.hankaku2Zenkaku(this.editForm_scene.final_page);
           }else if(pattern_number.test(this.editForm_scene.final_page)){
             sets_final = this.editForm_scene.final_page;
-          }
-          
+          }          
 
           if(parseInt(sets_first) > parseInt(sets_final)) {
             sets_final = 0;
@@ -902,16 +908,27 @@
             return false;
           }
 
-          if (response.status !== 204) {
+console.log(response.status);
+
+          if (response.status !== 204 && response.status !== 205) {
             this.$store.commit('error/setCode', response.status);
             return false;
           }
+
+          if(response.status === 205){
+            this.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
+          }
+          console.log(this.acci_change_preset);
 
           this.editSceneMode_detail = 100;
           if(this.editSceneMode_memo === 0 && this.editSceneMode_prop === 0){
             this.editSceneMode_memo = 100;
             this.editSceneMode_prop = 100;
           }
+
+          console.log(this.editSceneMode_detail);
+          console.log(this.editSceneMode_memo);
+          console.log(this.editSceneMode_prop);
 
         }else if(this.editSceneMode_detail === 2){
           // ページ数を新たに指定
@@ -1079,9 +1096,13 @@
                 return false
               }
     
-              if (response.status !== 204) {
+              if (response.status !== 204 && response.status !== 205) {
                 this.$store.commit('error/setCode', response.status);
                 return false;
+              }
+
+              if(response.status === 205){
+                this.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
               }
 
               if(index === first_pages.length-1){
@@ -1112,9 +1133,13 @@
                 return false;
               }
     
-              if (response.status !== 201) {
+              if (response.status !== 201 && response.status !== 205) {
                 this.$store.commit('error/setCode', response.status);
                 return false;
+              }
+
+              if(response.status === 205){
+                this.acci_change_preset = 1; // 変更はしたが使用シーンなしまたはページの登録なし
               }
 
               if(index === first_pages.length-1){
@@ -1196,6 +1221,7 @@
 
       // 小道具を更新する
       async editProp_usage() {
+        console.log('小道具更新');
         // 同時に行う
         if(this.scene.usage != this.editForm_scene.usage){
           await this.editProp_usage_passo();
@@ -1466,7 +1492,9 @@
           }
         }else if(this.editForm_scene.usage_guraduation){
           // 卒業公演1→1
+          console.log(this.editForm_scene.usage_guraduation);
           if(this.scene.usage_left && this.editForm_scene.usage_stage === "right"){
+            console.log(this.editForm_scene.usage_stage);
             // 上手→下手
             const response_prop = await axios.post('/api/props_deep/'+ this.editForm_scene.prop_id, {
               method: 'usage_left_to_right_change',

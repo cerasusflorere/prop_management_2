@@ -8,6 +8,7 @@
 {{ custom_dialog_edit_message }}
       </div>
 
+      <!-- 小道具 -->
       <div v-show="prop_scene_flag === 1">
         <div class="checkbox-area--together">
           <!-- ピッコロに持ってきたか -->

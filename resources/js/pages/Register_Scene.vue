@@ -519,7 +519,7 @@ export default {
           return false;
         }
   
-        if (response.status !== 201) {
+        if (response.status !== 201 && response.status !== 205) {
           this.$store.commit('error/setCode', response.status);
           return false;
         }
@@ -530,6 +530,10 @@ export default {
           const usage_guraduation = this.registerForm.usage_guraduation;
           // 諸々データ削除
           this.reset();
+
+          if(response.status === 205){
+            alert('該当小道具のプリセットを変更しましたが、ページ数の登録がありません。確認してください。')
+          }
 
           // メッセージ登録
           this.$store.commit('message/setContent', {
